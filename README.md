@@ -93,11 +93,13 @@
                 (2)
                 <br />
                 <textarea rows="10" cols="35"></textarea></form></p>
+                
         <p align="center">合言葉
         <br><input type="text" id="inputText" placeholder="テキストを入力">
         <button onclick="showOutput()">送信</button>
         <p id="output"></p>
-        <script src="nanka3.js"></script></p>
+        <script src="nanka1.js"></script></p>
+        
         <p align="center">clicker
             <div class="container">
         <pre>0</pre>
