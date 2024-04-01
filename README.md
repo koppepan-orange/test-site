@@ -18,21 +18,7 @@
 <meta property="twitter:title" content="test_site" />
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","headline":"test_site","name":"test_site","url":"https://koppepan-orange.github.io/test_site/"}</script>
-<!-- End Jekyll SEO tag -->
-
-    <link rel="stylesheet" href="/test_site/assets/css/style.css?v=c72f92aa86032047e280703e48f8eca8b176d097">
-    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
-
-<!-- Setup Google Analytics -->
-
-
-
-<!-- You can set your favicon here -->
-<!-- link rel="shortcut icon" type="image/x-icon" href="/test_site/favicon.ico" -->
-
-<!-- end custom head snippets -->
-
-  </head>
+ </head>
   <body>
     <div class="container-lg px-3 my-5 markdown-body">
       
@@ -94,7 +80,7 @@
                 <br />
                 <textarea rows="10" cols="35"></textarea></form></p>
                 
-        <p align="center">合言葉<br>404=合言葉が違う
+        <p align="center">合言葉<br>(404=合言葉が違う)
         <br><input type="text" id="inputText" placeholder="テキストを入力">
         <button onclick="showOutput()">送信</button>
         <p id="output"></p>
