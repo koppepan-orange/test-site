@@ -1,17 +1,20 @@
 function showOutput() {
-    // 入力フォームの値を取得
     const input = document.getElementById('inputText').value;
+    const outputDiv = document.getElementById('output');
+    outputDiv.innerHTML = ''; // 前の出力をクリアする
   
-    // 入力値に応じた処理
-    let output;
-    if (input.includes('koppepandesu')) {
-      output = 'success!';
-    } else if (input.includes('Gmailmal888')) {
-      output = 'a';
+    let redirectUrl;
+    if (input.includes('yabaikopppepandesu')) {
+      redirectUrl = 'https://true-koppepan-orenge.github.io/test_site_yabai/';
+    } else if(input.includes('yamiyamikoppepandesu')){
+      redirectUrl = 'https://true-koppepan-orenge.github.io/test_site_yamiyami/';
     } else {
-    output = 'パスワードが違います。';
+      'パスワードが違います。';
     }
   
-    // 結果を表示
-    document.getElementById('output').textContent = output;
+    const link = document.createElement('a');
+    link.href = redirectUrl;
+    link.textContent = 'success!';
+    link.target = '_blank'; // 新しいタブで開く
+    outputDiv.appendChild(link);
   }
