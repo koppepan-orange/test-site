@@ -4,7 +4,7 @@ function showOutput() {
     outputDiv.innerHTML = ''; // 前の出力をクリアする
   
     let redirectUrl;
-    if (input.includes('yabaikopppepandesu')) {
+    if (input.includes('yabaikoppepandesu')) {
       redirectUrl = 'https://true-koppepan-orenge.github.io/test_site_yabai/';
     } else if(input.includes('yamiyamikoppepandesu')){
       redirectUrl = 'https://true-koppepan-orenge.github.io/test_site_yamiyami/';
