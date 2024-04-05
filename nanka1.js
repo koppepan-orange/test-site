@@ -8,7 +8,9 @@ function showOutput() {
       redirectUrl = 'https://true-koppepan-orenge.github.io/test_site_yabai/';
     } else if(input.includes('yamiyamikoppepandesu')){
       redirectUrl = 'https://true-koppepan-orenge.github.io/test_site_yamiyami/';
-    } else {
+    } else if(input.includes('meibomisete')) {
+      redirectUrl = 'https://true-koppepan-orenge.github.io/test_site_meibo/';
+    }　else {
       'パスワードが違います。';
     }
   
