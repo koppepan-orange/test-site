@@ -55,7 +55,7 @@
             <br /><a href="https://github.com/koppepan-orange">github</a>
             <br /><a href="https://discord.com/channels/@me">discord</a>
             <br /><a href="https://chat.onl.jp/?koppepan23">チャットweb</a>
-            <br /><a href="https://www.pixiv.net/users/75087880">pixiv</a>
+            <br /><a href="https://www.pixiv.net/users/93550041">pixiv</a>
             <br /><a href="https://www.twitch.tv/koppepan_orange">twitch</a>
             <br /><a href="https://www.instagram.com/koppepan_orange/">instagram</a>
             <br /><a href="https://www.threads.net/@koppepan_orange">threads</a>
