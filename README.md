@@ -81,7 +81,7 @@
                 <textarea rows="10" cols="35"></textarea></form></p>
                 
         <p align="center">合言葉<br>(404=合言葉が違う)
-        <br><input type="text" id="inputText" placeholder="テキストを入力">
+        <br><input type="text" id="inputText" placeholder="write here">
         <button onclick="showOutput()">送信</button>
         <p id="output"></p>
         <script src="nanka1.js"></script></p>
