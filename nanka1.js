@@ -5,11 +5,11 @@ function showOutput() {
   
     let redirectUrl;
     if (input.includes('yabaikoppepandesu')) {
-      redirectUrl = 'https://true-koppepan-orenge.github.io/test_site_yabai/';
+      redirectUrl = 'https://true-koppepan-orange.github.io/test_site_yabai/';
     } else if(input.includes('yamiyamikoppepandesu')){
-      redirectUrl = 'https://true-koppepan-orenge.github.io/test_site_yamiyami/';
+      redirectUrl = 'https://true-koppepan-orange.github.io/test_site_yamiyami/';
     } else if(input.includes('meibomisete')) {
-      redirectUrl = 'https://true-koppepan-orenge.github.io/test_site_meibo/';
+      redirectUrl = 'https://true-koppepan-orange.github.io/test_site_meibo/';
     }　else {
       'パスワードが違います。';
     }
