@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<!-- Begin Jekyll SEO tag v2.8.0 -->
+  
 <title>test_site</title>
 <meta name="generator" content="Jekyll v3.9.5" />
 <meta property="og:title" content="test_site" />
@@ -79,7 +78,9 @@
                 (2)
                 <br />
                 <textarea rows="10" cols="35"></textarea></form></p>
-                
+         <p align="center">web-site-corps
+            <details><summary>bing.com</summary><br><iframe width="100%" height="1000" src="https://www.bing.com/?cc=jp"></iframe></details>
+            <details><summary>lit.link</summary><br><iframe width="100%" height="500" src="https://lit.link/koppepanorange"></iframe></details></p>
         <p align="center">合言葉<br>(404=合言葉が違う)
         <br><input type="text" id="inputText" placeholder="write here">
         <button onclick="showOutput()">送信</button>
