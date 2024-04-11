@@ -83,6 +83,8 @@
             <details><summary>lit.link</summary><br><iframe width="100%" height="500" src="https://lit.link/koppepanorange"></iframe></details></p>
           <p align="center">image-test<br>
           <details><summary>lemonade</summary><img src="https://github.com/koppepan-orange/test_site/blob/main/lemonade.png?raw=true"></details>
+            <br><details><summary>lemonade</summary><img src="https://github.com/koppepan-orange/test_site/blob/main/bited_carrot.png?raw=true
+"></details>
         <p align="center">合言葉<br>(404=合言葉が違う)
         <br><input type="text" id="inputText" placeholder="write here">
         <button onclick="showOutput()">送信</button>
