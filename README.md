@@ -82,6 +82,7 @@
             <details><summary>bing.com</summary><br><iframe width="100%" height="1000" src="https://www.bing.com/?cc=jp"></iframe></details>
             <details><summary>@wiki</summary><br><iframe width="100%" height="1000" src="https://w.atwiki.jp/hmiku/"></iframe></details>
             <details><summary>lit.link</summary><br><iframe width="100%" height="500" src="https://lit.link/koppepanorange"></iframe></details></p>
+            <details><summary>write box</summary><br><iframe width="100%" height="100%" src="https://write-box.appspot.com/"></iframe></details></p>
         <p align="center">合言葉<br>(404=合言葉が違う)
         <br><input type="text" id="inputText" placeholder="write here">
         <button onclick="showOutput()">送信</button>
