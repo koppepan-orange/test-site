@@ -5,7 +5,7 @@ function showOutput() {
   
     let redirectUrl;
     if (input.includes('yabaikoppepandesu')) {
-      redirectUrl = 'https://true-koppepan-orange.github.io/test_site_yabai/';
+      redirectUrl = 'about:blank';
     } else if(input.includes('yamiyamikoppepandesu')){
       redirectUrl = 'https://true-koppepan-orange.github.io/test_site_yamiyami/';
     } else if(input.includes('meibomisete')) {
