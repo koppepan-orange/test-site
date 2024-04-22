@@ -104,6 +104,7 @@
     </script>
         </p>
   <!-- この下、ブラックジャックです!!頑張りました！！！！ -->
+  <script src="blackjack.js"></script>
   <p align="center" class="blackjack">Black Jack Desu
   <br><b>dealer</b>
   <br><span id="DealerValue">0</span>
