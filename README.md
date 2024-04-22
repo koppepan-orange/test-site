@@ -2,8 +2,6 @@
 <html lang="en-US">
   <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
   
 <title>test_site</title>
 <meta name="generator" content="Jekyll v3.9.5" />
@@ -105,3 +103,15 @@
         });
     </script>
         </p>
+  <!-- この下、ブラックジャックです!!頑張りました！！！！ -->
+  <p align="center" class="blackjack">Black Jack Desu
+  <br><b>dealer</b>
+  <br><span id="DealerValue">0</span>
+  <br><br><b>player</b>
+  <br><span id="PlayerValue">0</span>
+  <br><br><br>
+  <button class="gamebutton" id="hit" onclick="hit()">Hit</button>  
+  <button class="gamebutton" id="stand" onclick="stand()">Stand</button>
+  <br><button onclick="reset()">reset</button>
+  </p>
+  <p align="center" id="log">pless "reset" to game start</p>
