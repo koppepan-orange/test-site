@@ -2,31 +2,9 @@
 <html lang="en-US">
   <head>
     <meta charset="UTF-8">
-  
-<title>test_site</title>
-<meta name="generator" content="Jekyll v3.9.5" />
-<meta property="og:title" content="test_site" />
-<meta property="og:locale" content="en_US" />
-<link rel="canonical" href="https://koppepan-orange.github.io/test_site/" />
-<meta property="og:url" content="https://koppepan-orange.github.io/test_site/" />
-<meta property="og:site_name" content="test_site" />
-<meta property="og:type" content="website" />
-<meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="test_site" />
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","headline":"test_site","name":"test_site","url":"https://koppepan-orange.github.io/test_site/"}</script>
- </head>
-  <body>
-    <div class="container-lg px-3 my-5 markdown-body">
-      
-      <h1><a href="https://koppepan-orange.github.io/test_site/">test_site</a></h1>
-      
-
-      <html>
-    <head>
-        <meta charset="UTF-8" />
-    </head>
-    <body bgcolor="#f9d793" link="#009D5B" vlink="#F68B1F">
+    <title>test_site</title>
+  </head>
+  <body bgcolor="#f9d793" link="#009D5B" vlink="#F68B1F">
          <h2><p align="center"><a name="top">Koppepan Orange's site</a></p></h2>
          <p align="center">ここは何でもあるサイト！！<i>ゆっくりしていってね！！</i></p>
 <hr noshade="true" />
@@ -78,9 +56,8 @@
                 <textarea rows="10" cols="35"></textarea></form></p>
          <p align="center">web-site-corps
             <details><summary>bing.com</summary><br><iframe width="100%" height="1000" src="https://www.bing.com/?cc=jp"></iframe></details>
-            <details><summary>@wiki</summary><br><iframe width="100%" height="1000" src="https://w.atwiki.jp/hmiku/"></iframe></details>
             <details><summary>lit.link</summary><br><iframe width="100%" height="500" src="https://lit.link/koppepanorange"></iframe></details>
-            <details><summary>write box</summary><br><iframe width="100%" height="1000" src="https://write-box.appspot.com/"></iframe></details></p>
+        </p>
         <p align="center">合言葉<br>(404=合言葉が違う)
         <br><input type="text" id="inputText" placeholder="write here">
         <button onclick="showOutput()">送信</button>
