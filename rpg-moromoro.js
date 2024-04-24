@@ -47,7 +47,7 @@ function bufftekiou(){
     if(playerbuff == 5){document.getElementById('PlayerBuff').textContent = 'luck';}
     if(playerbuff == 6){document.getElementById('PlayerBuff').textContent = 'great luck';}
 }
-function reset() {
+function Rreset() {
     turn = 0;
     playerhealth = 0;
     playermaxhealth = 0;
@@ -647,7 +647,7 @@ function playersutefuri(){
 }
 function defeat() {
     document.getElementById('Rlog').textContent = 'playerは力尽きた...残念だったネ!ﾆｬﾊﾊ!!';
-    window.setTimeout(reset, 2000)
+    window.setTimeout(Rreset, 2000)
 }
 function RStatusAppear() {
     document.getElementById('RStatus').textContent = '攻撃力:' + playerattack + '   防御力:' + playerdefense;
