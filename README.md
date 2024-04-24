@@ -93,6 +93,22 @@
           <button class="gamebutton" id="hit" onclick="hit()">Hit</button>  
           <button class="gamebutton" id="stand" onclick="stand()">Stand</button>
           <br><button onclick="reset()">reset</button>
+        <span id="Blog">pless "reset" to game start</span>
         </p>
-        <p align="center" id="log">pless "reset" to game start</p>
+  <!-- この下、クリッカー(ゲーム性ありver)です！結構好き>
+    <p align="center" class="rpg">RPG Clicker Desu
+      <br><b id="EnemyName">enemy</b>   <i>Lv.</i><i id="EnemyLevel">1</i>   <u id="EnemyDebuff"> </u>
+      <br><span id="EnemyHealth">0</span>/<span id="EnemyMaxHealth">0</span>
+      <br><br><b>player</b>   <i>Lv.</i><i id="PlayerLevel">1</i>   <u id="PlayerBuff"> </u>
+      <br><span id="PlayerHealth">0</span>/<span id="PlayerMaxHealth">0</span>
+      <br><br><br>
+      <button class="rpgbutton" id="Rselect1" onclick="Rselect1()">attack</button>  
+      <button class="rpgbutton" id="Rselect2" onclick="Rselect2()">magic</button>
+      <button class="rpgbutton" id="Rselect3" onclick="Rselect3()">tools</button>
+      <button class="rpgbutton" id="Rback" onclick="Rback()">pass</button>
+      <br><br><span align="center" id="Rlog">pless "reset" to game start</span>
+      <br><button class="rpgbutton" id="RStatusButton" onclick="RStatusAppear()">status</button>
+      <br><span id="RStatus"> </span>
+      <br><br><br><br><button align="center" onclick="reset()">reset</button>
+    </p>
   </details>
