@@ -4,7 +4,7 @@ let x = 0
 let increase = 0
 let turn = 1
 
-function reset(){
+function Breset(){
     dealervalue = 0
     playervalue = 0
     turn = 1
