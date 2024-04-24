@@ -81,7 +81,7 @@
             </script>
         </p>
   <!-- この下、ゲームセンターです!!ほぼ -->
-        <script src="blackjack.js"></script>
+        <script src="blackjack.js" src="rpg-moromoro.js"></script>
   <details><summary>minigames</summary>
   <!-- この下、ブラックジャックです!!頑張りました！！！！AI不使用です!!! -->
     <p align="center" class="blackjack">Black Jack Desu
