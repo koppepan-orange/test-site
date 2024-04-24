@@ -8,7 +8,7 @@ function reset(){
     dealervalue = 0
     playervalue = 0
     turn = 1
-    document.getElementById('log').textContent = 'game...start!!';
+    document.getElementById('Blog').textContent = 'game...start!!';
     tekiou()
     window.setTimeout(start, 1000)
 }
@@ -16,7 +16,7 @@ async function start(){
     x = dealervalue
     dealervalue += Math.floor(Math.random() * 10) + 1;
     increase = dealervalue - x
-    document.getElementById('log').textContent = 'dealerは' + increase + 'のカードを引きました！';
+    document.getElementById('Blog').textContent = 'dealerは' + increase + 'のカードを引きました！';
     tekiou()
 }
 function tekiou(){
@@ -31,7 +31,7 @@ function hit(){
     increase = playervalue - x
     }
     tekiou()
-    document.getElementById('log').textContent = 'playerは' + increase + 'のカードを引きました！';
+    document.getElementById('Blog').textContent = 'playerは' + increase + 'のカードを引きました！';
     if(playervalue > 21){
         window.setTimeout(youlose(), 500)
     }
@@ -46,7 +46,7 @@ function dealerturn(){
     dealervalue += Math.floor(Math.random() * 10) + 1;
     increase = dealervalue - x
     tekiou()
-    document.getElementById('log').textContent = 'dealerは' + increase + 'のカードを引きました！';
+    document.getElementById('Blog').textContent = 'dealerは' + increase + 'のカードを引きました！';
     if(dealervalue < 17){
     window.setTimeout(dealerturn, 1000)
     } else if(dealervalue > 21){
@@ -58,21 +58,21 @@ function dealerturn(){
     } else if(dealervalue == playervalue){
         window.setTimeout(draw(), 1500)
     } else {
-        document.getElementById('log').textContent = 'どうやってここまで？';
+        document.getElementById('Blog').textContent = 'どうやってここまで？';
     }
 }
 function youlose(){
     turn = 3
     tekiou()
-    document.getElementById('log').textContent = 'youlose...';
+    document.getElementById('Blog').textContent = 'youlose...';
 }
 function youwin(){
     turn = 3
     tekiou()
-    document.getElementById('log').textContent = 'youwin! utageja---!';
+    document.getElementById('Blog').textContent = 'youwin! utageja---!';
 }
 function draw(){
     turn = 3
     tekiou()
-    document.getElementById('log').textContent = 'dra..push!!';
+    document.getElementById('Blog').textContent = 'dra..push!!';
 }
