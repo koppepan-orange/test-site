@@ -8,7 +8,7 @@ function showOutput() {
       redirectUrl = 'https://true-koppepan-orange.github.io/test_site_yabai/';
     } else if(input.includes('yamiyamikoppepandesu')){
       redirectUrl = 'https://true-koppepan-orange.github.io/test_site_yamiyami/';
-    } else if(input.includes('meibomisete')) {
+    } else if(input.includes('gakkoudaisuki')) {
       redirectUrl = 'https://true-koppepan-orange.github.io/test_site_meibo/';
     }　else if(input.includes('ge-musitaidesu')) {
       redirectUrl = 'https://true-koppepan-orange.github.io/test_site_game/';
