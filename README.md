@@ -102,7 +102,7 @@
           <br><br><br>
           <button class="gamebutton" id="hit" onclick="hit()">Hit</button>  
           <button class="gamebutton" id="stand" onclick="stand()">Stand</button>
-          <br><button onclick="reset()">reset</button><br>
+          <br><button onclick="Breset()">reset</button><br>
         <span id="Blog">pless "reset" to game start</span>
         </p>
   <!-- この下、クリッカー(ゲーム性ありver)です！結構好き -->
@@ -119,6 +119,6 @@
       <br><br><span align="center" id="Rlog">pless "reset" to game start</span>
       <br><button class="rpgbutton" id="RStatusButton" onclick="RStatusAppear()">status</button>
       <br><span id="RStatus"> </span>
-      <br><br><br><br><button align="center" onclick="reset()">reset</button>
+      <br><br><br><br><button align="center" onclick="Rreset()">reset</button>
     </p>
   </details>
