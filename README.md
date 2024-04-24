@@ -4,6 +4,7 @@
   <head>
     <meta charset="UTF-8">
     <title>test_site</title>
+    <script src="blackjack.js" src="rpg-moromoro.js"></script>
   </head>
   <body bgcolor="#f9d793" link="#009D5B" vlink="#F68B1F">
          <h2><p align="center">Koppepan Orange's site</p></h2>
@@ -91,7 +92,6 @@
           </script>
       </p>
   <!-- この下、ゲームセンターです!!ほぼ -->
-        <script src="blackjack.js" src="rpg-moromoro.js"></script>
   <details><summary>minigames</summary>
   <!-- この下、ブラックジャックです!!頑張りました！！！！AI不使用です!!! -->
     <p align="center" class="blackjack">Black Jack Desu
@@ -102,7 +102,7 @@
           <br><br><br>
           <button class="gamebutton" id="hit" onclick="hit()">Hit</button>  
           <button class="gamebutton" id="stand" onclick="stand()">Stand</button>
-          <br><button onclick="reset()">reset</button>
+          <br><button onclick="reset()">reset</button><br>
         <span id="Blog">pless "reset" to game start</span>
         </p>
   <!-- この下、クリッカー(ゲーム性ありver)です！結構好き -->
