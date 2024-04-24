@@ -95,7 +95,7 @@
           <br><button onclick="reset()">reset</button>
         <span id="Blog">pless "reset" to game start</span>
         </p>
-  <!-- この下、クリッカー(ゲーム性ありver)です！結構好き>
+  <!-- この下、クリッカー(ゲーム性ありver)です！結構好き -->
     <p align="center" class="rpg">RPG Clicker Desu
       <br><b id="EnemyName">enemy</b>   <i>Lv.</i><i id="EnemyLevel">1</i>   <u id="EnemyDebuff"> </u>
       <br><span id="EnemyHealth">0</span>/<span id="EnemyMaxHealth">0</span>
