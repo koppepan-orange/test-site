@@ -4,7 +4,6 @@
   <head>
     <meta charset="UTF-8">
     <title>test_site</title>
-    <script src="blackjack.js" src="rpg-moromoro.js"></script>
   </head>
   <body bgcolor="#f9d793" link="#009D5B" vlink="#F68B1F">
          <h2><p align="center">Koppepan Orange's site</p></h2>
@@ -70,7 +69,7 @@
         <p id="output"></p>
         <script src="nanka1.js"></script></p>
   <!-- この下、クリッカーです!!AIよりもコンパクトにできました！！！！ -->
-        <p align="center">clicker
+      <p align="center">clicker
           <pre id="ClickerValue">0</pre>
             <button id="increment" onclick="clickerincrease()">+</button>
             <script>
@@ -80,7 +79,7 @@
               document.getElementById('ClickerValue').textContent = count;
               }
             </script>
-        </p>
+      </p>
       <p align="center">dice
         <br><image id="dicedesu" src="dice_1.png" height="100" width="100" onclick="throwdice()"></image>
           <script>
@@ -94,6 +93,7 @@
   <!-- この下、ゲームセンターです!!ほぼ -->
   <details><summary>minigames</summary>
   <!-- この下、ブラックジャックです!!頑張りました！！！！AI不使用です!!! -->
+    <script src="blackjack.js"></script>
     <p align="center" class="blackjack">Black Jack Desu
           <br><b>dealer</b>
           <br><span id="DealerValue">0</span>
@@ -106,6 +106,7 @@
         <span id="Blog">pless "reset" to game start</span>
         </p>
   <!-- この下、クリッカー(ゲーム性ありver)です！結構好き -->
+        <script src="rpg-moromoro.js"></script>
     <p align="center" class="rpg">RPG Clicker Desu
       <br><b id="EnemyName">enemy</b>   <i>Lv.</i><i id="EnemyLevel">1</i>   <u id="EnemyDebuff"> </u>
       <br><span id="EnemyHealth">0</span>/<span id="EnemyMaxHealth">0</span>
@@ -119,6 +120,6 @@
       <br><br><span align="center" id="Rlog">pless "reset" to game start</span>
       <br><button class="rpgbutton" id="RStatusButton" onclick="RStatusAppear()">status</button>
       <br><span id="RStatus"> </span>
-      <br><br><br><br><button align="center" onclick="Rreset()">reset</button>
+      <br><br><br><br><button align="center" onclick="reset()">reset</button>
     </p>
   </details>
