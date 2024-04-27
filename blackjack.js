@@ -1,13 +1,12 @@
 let dealervalue = 0
 let playervalue = 0
-let x = 0
 let increase = 0
-let turn = 1
+let Bturn = 1
 
 function Breset(){
     dealervalue = 0
     playervalue = 0
-    turn = 1
+    Bturn = 1
     document.getElementById('Blog').textContent = 'game...start!!';
     tekiou()
     window.setTimeout(start, 1000)
@@ -24,7 +23,7 @@ function tekiou(){
     document.getElementById('DealerValue').textContent = dealervalue;
 }
 function hit(){
-    if(turn == 1){
+    if(Bturn == 1){
     if(playervalue !== 21){
     x = playervalue
     playervalue += Math.floor(Math.random() * 10) + 1;
@@ -38,17 +37,17 @@ function hit(){
     }
     }
 function stand(){
-    turn = 2
-    window.setTimeout(dealerturn(), 500)
+    Bturn = 2
+    window.setTimeout(dealerBturn(), 500)
 }
-function dealerturn(){
+function dealerBturn(){
     x = dealervalue
     dealervalue += Math.floor(Math.random() * 10) + 1;
     increase = dealervalue - x
     tekiou()
     document.getElementById('Blog').textContent = 'dealerは' + increase + 'のカードを引きました！';
     if(dealervalue < 17){
-    window.setTimeout(dealerturn, 1000)
+    window.setTimeout(dealerBturn, 1000)
     } else if(dealervalue > 21){
         window.setTimeout(youwin(), 1500)
     } else if(dealervalue > playervalue){
@@ -62,17 +61,17 @@ function dealerturn(){
     }
 }
 function youlose(){
-    turn = 3
+    Bturn = 3
     tekiou()
     document.getElementById('Blog').textContent = 'youlose...';
 }
 function youwin(){
-    turn = 3
+    Bturn = 3
     tekiou()
     document.getElementById('Blog').textContent = 'youwin! utageja---!';
 }
 function draw(){
-    turn = 3
+    Bturn = 3
     tekiou()
     document.getElementById('Blog').textContent = 'dra..push!!';
 }
