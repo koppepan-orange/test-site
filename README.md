@@ -90,36 +90,3 @@
           }
           </script>
       </p>
-  <!-- この下、ゲームセンターです!!ほぼ -->
-  <details><summary>minigames</summary>
-  <!-- この下、ブラックジャックです!!頑張りました！！！！AI不使用です!!! -->
-    <script src="blackjack.js"></script>
-    <p align="center" class="blackjack">Black Jack Desu
-          <br><b>dealer</b>
-          <br><span id="DealerValue">0</span>
-          <br><br><b>player</b>
-          <br><span id="PlayerValue">0</span>
-          <br><br><br>
-          <button class="gamebutton" id="hit" onclick="hit()">Hit</button>  
-          <button class="gamebutton" id="stand" onclick="stand()">Stand</button>
-          <br><button onclick="Breset()">reset</button><br>
-        <span id="Blog">pless "reset" to game start</span>
-        </p>
-  <!-- この下、クリッカー(ゲーム性ありver)です！結構好き -->
-        <script src="rpg-moromoro.js"></script>
-    <p align="center" class="rpg">RPG Clicker Desu
-      <br><b id="EnemyName">enemy</b>   <i>Lv.</i><i id="EnemyLevel">1</i>   <u id="EnemyDebuff"> </u>
-      <br><span id="EnemyHealth">0</span>/<span id="EnemyMaxHealth">0</span>
-      <br><br><b>player</b>   <i>Lv.</i><i id="PlayerLevel">1</i>   <u id="PlayerBuff"> </u>
-      <br><span id="PlayerHealth">0</span>/<span id="PlayerMaxHealth">0</span>
-      <br><br><br>
-      <button class="rpgbutton" id="Rselect1" onclick="Rselect1()">attack</button>  
-      <button class="rpgbutton" id="Rselect2" onclick="Rselect2()">magic</button>
-      <button class="rpgbutton" id="Rselect3" onclick="Rselect3()">tools</button>
-      <button class="rpgbutton" id="Rback" onclick="Rback()">pass</button>
-      <br><br><span align="center" id="Rlog">pless "reset" to game start</span>
-      <br><button class="rpgbutton" id="RStatusButton" onclick="RStatusAppear()">status</button>
-      <br><span id="RStatus"> </span>
-      <br><br><br><br><button align="center" onclick="reset()">reset</button>
-    </p>
-  </details>
