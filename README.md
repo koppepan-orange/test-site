@@ -80,16 +80,6 @@
               }
             </script>
       </p>
-      <p align="center">dice
-        <br><image id="dicedesu" src="dice_1.png" height="100" width="100" onclick="throwdice()"></image>
-          <script>
-          let x = 0;
-          function throwdice(){
-            document.getElementById('dicedesu').src = 'dice_' + (Math.floor(Math.random() * 6) + 1) + '.png';
-            x = document.getElementById('dicedesu').src
-            }
-          </script>
-      </p>
       <details><summary>Game-Center</summary>
         <p align="center" class="blackjack">Count Game Desu
           <br><span id="COUNTGameBar"></span>
