@@ -87,6 +87,13 @@
           function throwdice(){
             document.getElementById('dicedesu').src = 'dice_' + (Math.floor(Math.random() * 6) + 1) + '.png';
             x = document.getElementById('dicedesu').src
-          }
+            }
           </script>
       </p>
+      <detail><summary>Game-Center</summary>
+        <p align="center" class="blackjack">Count Game Desu
+          <br><span id="COUNTGameBar"></span>
+          <br><br><span id="COUNTButton"><button onclick="COUNTGameStart()">start</button></span>
+          <br><br><span id="COUNTLog"></span>
+        </p>
+      </detail>
