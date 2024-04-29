@@ -90,10 +90,10 @@
             }
           </script>
       </p>
-      <detail><summary>Game-Center</summary>
+      <details><summary>Game-Center</summary>
         <p align="center" class="blackjack">Count Game Desu
           <br><span id="COUNTGameBar"></span>
           <br><br><span id="COUNTButton"><button onclick="COUNTGameStart()">start</button></span>
           <br><br><span id="COUNTLog"></span>
         </p>
-      </detail>
+      </details>
