@@ -67,4 +67,4 @@ function COUNTGameReset(){
     document.getElementById("COUNTLog").textContent = COUNTTips[Math.floor(Math.random() * COUNTTips.length)];
     document.getElementById("COUNTButton").innerHTML = '<button onclick="COUNTGameStart()">start</button>';
     COUNTx = 0;
-} 
+}
