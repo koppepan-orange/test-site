@@ -1,59 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>インラインエディターの実装</title>
-<style>
-  /* 編集可能な要素のスタイル */
-  .editable {
-    border: 1px solid #ccc;
-    padding: 5px;
-    cursor: pointer;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editable Content</title>
 </head>
 <body>
+  <div id="editableContent" contenteditable="true">
+    ここをクリックして編集できます。
+  </div>
+  <button onclick="saveChanges()">変更を保存する</button>
 
-<!-- 初めは表示専用の要素 -->
-<div id="editableElement" class="editable">
-  <p>クリックして編集</p>
-</div>
+  <script>
+    // 変更を保存する関数
+    function saveChanges() {
+      // 編集可能な要素を取得
+      var editableElement = document.getElementById('editableContent');
+      // 変更されたテキストを取得
+      var editedText = editableElement.innerText;
+      // サーバーに送信するためのデータを準備
+      var data = {
+        content: editedText
+      };
 
-<!-- 編集用のフォーム -->
-<div id="editForm" style="display: none;">
-  <textarea id="editTextarea" rows="4" cols="50"></textarea>
-  <button id="saveButton">保存</button>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // 編集可能な要素を取得
-  var editableElement = document.getElementById('editableElement');
-  // 編集用のフォームを取得
-  var editForm = document.getElementById('editForm');
-  var editTextarea = document.getElementById('editTextarea');
-  var saveButton = document.getElementById('saveButton');
-
-  // クリックされたときの処理
-  editableElement.addEventListener('click', function() {
-    // 編集用フォームを表示し、編集可能な要素を非表示にする
-    editForm.style.display = 'block';
-    editableElement.style.display = 'none';
-    // 編集用フォームに元のテキストをセット
-    editTextarea.value = editableElement.textContent.trim();
-  });
-
-  // 保存ボタンがクリックされたときの処理
-  saveButton.addEventListener('click', function() {
-    // フォームの内容を編集可能な要素にセット
-    editableElement.textContent = editTextarea.value;
-    // 編集用フォームを非表示にし、編集可能な要素を表示する
-    editForm.style.display = 'none';
-    editableElement.style.display = 'block';
-  });
-});
-</script>
-
+      // ここでAjaxリクエストを送信するなどの処理を行う
+      // 以下はサーバーにデータを送信する例（実際のサーバーへの送信方法に合わせて修正する必要があります）
+      fetch('http://example.com/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Data sent:', data);
+        // サーバーからの応答を処理する
+      })
+      .catch(error => {
+        console.error('There was a problem with your fetch operation:', error);
+      });
+    }
+  </script>
 </body>
 </html>
