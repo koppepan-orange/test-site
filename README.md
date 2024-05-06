@@ -61,7 +61,7 @@
          <p align="center">web-site-corps
             <details><summary>bing.com</summary><br><iframe width="100%" height="1000" src="https://www.bing.com/?cc=jp"></iframe></details>
             <details><summary>lit.link</summary><br><iframe width="100%" height="500" src="https://lit.link/koppepanorange"></iframe></details>
-            <a href="https://koppepan-orange.github.io/test_site/sentences">sentences</a>
+            <a href="https://koppepan-orange.github.io/test_site/sentence1.html">sentences</a>
         </p>
   <!-- この下、合言葉ゾーンです!!AIにちょっと頼りました...！！！！ -->
         <p align="center">合言葉<br>(404=合言葉が違う)
