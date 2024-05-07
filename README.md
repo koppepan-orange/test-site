@@ -11,7 +11,7 @@ this is read me desu.
     cursor: pointer;
   }
 </style>
-<span id='BUTTONDESU'><button class='button' onclick=invisibilty()></button></span>
+<span id='BUTTONDESU'><button class='button' onclick='invisibilty()'>     </button></span>
 <script>
   function invisibility(){
     document.getElementById('BUTTONDESU').innerHTML = '<a href='https://koppepan-orange-game.github.io/clicker_of_mugen/'>';
