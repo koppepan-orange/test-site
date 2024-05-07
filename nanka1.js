@@ -14,6 +14,8 @@ function showOutput() {
       redirectUrl = 'https://true-koppepan-orange.github.io/test_site_game/';
     }　else if(input.includes('hongayomitaidesu')) {
       redirectUrl = 'https://true-koppepan-orange.github.io/test_site_book/';
+    }　else if(input.includes('override')) {
+      redirectUrl = 'https://koppepan-orange.github.io/test_site/over_ride.html';
     }　else {
       'パスワードが違います。';
     }
