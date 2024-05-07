@@ -14,5 +14,5 @@ this is read me desu.
 <span id='BUTTONDESU'><button color="#FFFFFF" class='button' onclick='invisibilty()'>　　　</button></span>
 <script>
   function invisibilty(){
-    document.getElementById('BUTTONDESU').innerHTML = '<a color="#000000" href="https://koppepan-orange-game.github.io/clicker_of_mugen/">nice!</a>';};
+    document.getElementById('BUTTONDESU').innerHTML = '<a color="#000000" href="https://koppepan-orange-game.github.io/clicker_of_mugen/rpg-desu.html">nice!</a>';};
 </script>
