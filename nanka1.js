@@ -11,7 +11,7 @@ function showOutput() {
     } else if(input.includes('gakkoudaisuki')) {
       redirectUrl = 'https://true-koppepan-orange.github.io/test_site_meibo/';
     }　else if(input.includes('ge-mugasitaidesu')) {
-      redirectUrl = 'https://true-koppepan-orange.github.io/test_site_game/';
+      redirectUrl = 'https://koppepan-orange-game.github.io/game_daisuki/welcome_page.html';
     }　else if(input.includes('hongayomitaidesu')) {
       redirectUrl = 'https://true-koppepan-orange.github.io/test_site_book/';
     }　else if(input.includes('override')) {
