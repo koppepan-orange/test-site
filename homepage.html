@@ -57,6 +57,28 @@
                 (2)
                 <br />
                 <textarea rows="10" cols="35"></textarea></form></p>
+    <!-- こちら偏差値計算機です！！！！ -->
+        <p align="center">偏差値計算機
+          <input id="HENPoint" type="text" placeholder="write 得点" size="20" style="width:80px;"></input><br>
+          <input id="HENAve" type="text" placeholder="write 平均" size="20" style="width:80px;">   
+          <button onclick="HENsum()">go</button>
+          <br><span id="HENAnswer"></span>
+          <script>
+          let HENpoint = 0;
+          let HENave = 0;
+          let HENx = 0;
+          let HENy = 0;
+          let HENanswer = 0;
+          function  HENsum(){
+              HENpoint = document.getElementById("HENPoint").value;
+              HENave = document.getElementById("HENAve").value;
+              HENx = HENpoint - HENave;
+              HENy = HENx / 18 * 10;
+              HENanswer = Math.floor(HENy + 50);
+              document.getElementById("HENAnswer").textContent = '偏差値は' + HENanswer + 'です';
+          }
+          </script>
+        </p>
   <!-- この下、足つかないよゾーンです!!優しい友達に教えてもらいました！！！！神!!!! -->
          <p align="center">web-site-corps
             <details><summary>bing.com</summary><br><iframe width="100%" height="1000" src="https://www.bing.com/?cc=jp"></iframe></details>
@@ -71,7 +93,7 @@
         <script src="nanka1.js"></script></p>
   <!-- この下、クリッカーです!!AIよりもコンパクトにできました！！！！ -->
       <p align="center">clicker
-          <pre id="ClickerValue">0</pre>
+          <span id="ClickerValue">0</span>
             <button id="increment" onclick="clickerincrease()">+</button>
             <script>
               let count = 0
@@ -81,6 +103,7 @@
               }
             </script>
       </p>
+    <!-- まりぱのげーむをちょっとだけいれようかな〜と -->
       <details><summary>Game-Center</summary>
         <p align="center" class="blackjack">Count Game Desu
           <br><span id="COUNTGameBar"></span>
