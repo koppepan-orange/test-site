@@ -69,6 +69,13 @@
          <p align="center">web-site-corps
             <details><summary>bing.com</summary><br><iframe width="100%" height="1000" src="https://www.bing.com/?cc=jp"></iframe></details>
             <details><summary>lit.link</summary><br><iframe width="100%" height="500" src="https://lit.link/koppepanorange"></iframe></details>
+            <details><summary>link site</summary>
+            <input type="text" id="InputIdLinkDesu" placeholder="write link here"><button onclick="InputToOutputLink()">Go</button><br>
+            <iframe id="OutputIdLinkDesu" width="100%" height="600" src="about:blank"></iframe>
+            <script>
+                function InputToOutputLink(){document.getElementById("OutputIdLinkDesu").src = document.getElementById("InputIdLinkDesu").value;}
+            </script>
+            </details>
         </p>
   <!-- この下、合言葉ゾーンです!!AIにちょっと頼りました...！！！！ -->
         <script src="nanka1.js"></script>
