@@ -1,3 +1,6 @@
+<head>
+  <meta http-equiv="refresh" content="1;url=https://koppepan-orange.github.io/test_site/homepage.html">
+</head>
   <style>
   .button{
     border: 2px solid #FFFFFF;
