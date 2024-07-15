@@ -2,7 +2,7 @@ let COUNTx = 0;
 let COUNTope = 0;
 let COUNTgamebar = 0;
 const COUNTgamebars = ['##@','####@','######@','########@','##########@','############@','##############@'];
-const COUNTTips = ['パン工場〜','だから愛だよ','ひとえに、愛だよ','うにょ〜ん','異議あり!','ウロボロスの弟、ウヌボロス','もろたで四輪工藤','小籠包と小論文のハーフ、ショウロンプォゥン','なんだかすごそう建武の新政'];
+const COUNTTips = ['パン工場〜','だから愛だよ','ひとえに、愛だよ','うにょ〜ん','異議あり!','ウロボロスの弟、ウヌボロス','もろたで四輪工藤','小籠包と小論文のハーフ、ショウロンプォゥン','なんだかすごそう建武の新政','しのごの言わずにoh no, you know it's a pizza'];
 function COUNTGameStart(){
     COUNTgamebar = COUNTgamebars[Math.floor(Math.random() * COUNTgamebars.length)];
     document.getElementById("COUNTGameBar").textContent = COUNTgamebar;
