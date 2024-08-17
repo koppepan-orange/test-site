@@ -112,33 +112,46 @@
           <br><button onclick="RACEgamestart()">はじめます</button>
         </p>
         <p align="center">Renda Game Desu<br>
-    <button id="start-btn">スタート</button>
-    <div id="result"></div>
-    <button id="RENDABUTTON1000" onclick="RENDAchange(1000)">1s</button><button id="RENDABUTTON3000" onclick="RENDAchange(3000)">3s</button><button id="RENDABUTTON5000" onclick="RENDAchange(5000)" style="color:#23aa23;">5s</button><button id="RENDABUTTON10000" onclick="RENDAchange(10000)">10s</button><button id="RENDABUTTON30000" onclick="RENDAchange(30000)">30s</button>
-    <script>
-        let count = 0;
-        let startTime;
-        let duration = 5000;
-        document.getElementById('start-btn').addEventListener('click', () => {
-            count = 0;
-            startTime = Date.now();
-            document.getElementById('result').textContent = 'pless Enter(nandomo)';
-            document.getElementById('start-btn').style.display = 'none';
-            document.addEventListener('keyup', countRensha);
-            setTimeout(() => {
-                document.removeEventListener('keyup', countRensha);
-                document.getElementById('result').textContent = `結果: ${count} 回`;
-                document.getElementById('start-btn').style.display = 'block';
-            }, duration);
-        });
-        function countRensha(event) {if (event.key === 'Enter') {count++;}}
-        function RENDAchange(time) {
-            document.getElementById(`RENDABUTTON${duration}`).style.color = '#000000';
-            document.getElementById(`RENDABUTTON${time}`).style.color = '#23aa23';
-            duration = time;
-        }
-    </script>
-    </p>
+          <button id="start-btn">スタート</button>
+          <div id="result"></div>
+          <button id="RENDABUTTON1000" onclick="RENDAchange(1000)">1s</button><button id="RENDABUTTON3000" onclick="RENDAchange(3000)">3s</button><button id="RENDABUTTON5000" onclick="RENDAchange(5000)" style="color:#23aa23;">5s</button><button id="RENDABUTTON10000" onclick="RENDAchange(10000)">10s</button><button id="RENDABUTTON30000" onclick="RENDAchange(30000)">30s</button>
+          <script>
+              let count = 0;
+              let startTime;
+              let duration = 5000;
+              document.getElementById('start-btn').addEventListener('click', () => {
+                  count = 0;
+                  startTime = Date.now();
+                  document.getElementById('result').textContent = 'pless Enter(nandomo)';
+                  document.getElementById('start-btn').style.display = 'none';
+                  document.addEventListener('keyup', countRensha);
+                  setTimeout(() => {
+                      document.removeEventListener('keyup', countRensha);
+                      document.getElementById('result').textContent = `結果: ${count} 回`;
+                      document.getElementById('start-btn').style.display = 'block';
+                  }, duration);
+              });
+              function countRensha(event) {if (event.key === 'Enter') {count++;}}
+              function RENDAchange(time) {
+                  document.getElementById(`RENDABUTTON${duration}`).style.color = '#000000';
+                  document.getElementById(`RENDABUTTON${time}`).style.color = '#23aa23';
+                  duration = time;
+              }
+          </script>
+        </p>
+        <p align="center">Cooking Game<br>
+          <button id="CookingGameStart" onclick="Start()">start</button><br>
+          <div id="CookingGameArea">
+            <div id="CookingGameList"></div>
+            <button id="CookingGameChoose-1" onclick="CookingGameChoeese('1')">1</button>
+            <button id="CookingGameChoose-2" onclick="CookingGameChoeese('2')">2</button>
+            <button id="CookingGameChoose-3" onclick="CookingGameChoeese('3')">3</button>
+            <button id="CookingGameChoose-4" onclick="CookingGameChoeese('4')">4</button>
+            <button id="CookingGameChoose-5" onclick="CookingGameChoeese('5')">5</button>
+            <button id="CookingGameChoose-6" onclick="CookingGameChoeese('6')">6</button><br>
+            <span id="CookingGameLog">logやで</span>
+          </div>
+        </p>
       </details>
 </body>
 </html>
