@@ -163,14 +163,17 @@
                         startChat(username); // チャット画面の初期化
                         document.getElementById('room-select').style.display = 'block';
                         switch(username){//コッペくんあるある、専用要素作りがち
+                            case 'test':
+                                document.getElementById('room-select').appendChild(new Option("デバッグ用","debug"));
+                                break;
                             case 'koppepan_orange':
                                 document.getElementById('room-select').appendChild(new Option("koppepan","koppepan"));//textContent,value
                                 break;
                             case 'forest_inlet':
                                 document.getElementById('room-select').appendChild(new Option("forest","forest"));
                                 break;
-                            case 'test':
-                                document.getElementById('room-select').appendChild(new Option("デバッグ用","debug"));
+                            case 'luna':
+                                document.getElementById('room-select').appendChild(new Option("luna","luna"));
                                 break;
                         }
                     } else {
