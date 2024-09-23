@@ -252,7 +252,7 @@
                 messageElement.appendChild(usernameElement);
 
                 var textElement = document.createElement('div');
-                textElement.textContent = messageData.text;
+                textElement.innerHTML = messageData.text;
                 messageElement.appendChild(textElement);
 
                 messagesContainer.appendChild(messageElement);
