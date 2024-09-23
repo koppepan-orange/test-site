@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>チャットアプリ</title>
+    <title>chat-site</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -144,9 +144,10 @@
         var chatContainer = document.getElementById('chat-container');
         var loginError = document.getElementById('login-error');
         let room = 1;
+        let username = 'no name';
         loginForm.addEventListener('submit', function(event) {
             event.preventDefault();
-            var username = document.getElementById('username').value;
+            username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
 
             var usersRef = database.ref('users/' + username);
@@ -172,7 +173,7 @@
                             case 'forest_inlet':
                                 document.getElementById('room-select').appendChild(new Option("forest","forest"));
                                 break;
-                            case 'luna':
+                            case 'luna_':
                                 document.getElementById('room-select').appendChild(new Option("luna","luna"));
                                 break;
                         }
@@ -215,10 +216,9 @@
 
             // データベースから全てのメッセージを取得
             // メッセージ送信
-            sendButton.addEventListener('click', function() {
-                room = roomSelect.value;
+            sendButton.addEventListener('click', function(){
                 var message = messageInput.value;
-
+                var username = document.getElementById('username').value;
                 if (message.trim() !== ''){
                     messagesRef.push({
                         text: message,
@@ -228,41 +228,17 @@
                     messageInput.value = '';
                 }
                 console.log('Ref:'+messagesRef)
+                messagesRef.on('value', function(snapshot) {
+                    if(snapshot.numChildren() > 20){
+                        var firstMessageKey = Object.keys(snapshot.val())[0];
+                        messagesRef.child(firstMessageKey).remove();
+                        setTimeout(displayAllMessages, 200);
+                    }
+                });
             });
 
-
             // メッセージを全て表示する関数
-            function displayAllMessages(){
-                var roomSelect = document.getElementById('room-select');
-                room = roomSelect.value;
-                document.getElementById('messages').innerHTML = '';
-
-
-                // データベースから全てのメッセージを取得
-                messagesRef.once('value', function(snapshot){
-                    snapshot.forEach(function(childSnapshot){
-                        var messageData = childSnapshot.val();
-                        var messageElement = document.createElement('div');
-                        messageElement.className = 'message';
-                        messageElement.setAttribute('data-id', childSnapshot.key);
-
-                        var usernameElement = document.createElement('div');
-                        usernameElement.className = 'username';
-                        usernameElement.textContent = messageData.username;
-                        messageElement.appendChild(usernameElement);
-
-                        var textElement = document.createElement('div');
-                        textElement.textContent = messageData.text;
-                        messageElement.appendChild(textElement);
-
-                        messagesContainer.appendChild(messageElement);
-                    });
-
-                    // 最新のメッセージが見えるようにスクロール
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                });
-            }
-
+            
             // 新しいメッセージが追加された時のみ、そのメッセージを追加表示
             messagesRef.on('child_added', function(snapshot){
                 var messageData = snapshot.val();
@@ -281,8 +257,18 @@
 
                 messagesContainer.appendChild(messageElement);
 
+
+                messagesRef.on('value', function(snapshot) {
+                    if (snapshot.numChildren() > 20) {
+                        var firstMessageKey = Object.keys(snapshot.val())[0];
+                        messagesRef.child(firstMessageKey).remove();
+                    }
+                });
+
                 // 最新のメッセージが見えるようにスクロール
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                
             });
 
             messagesRef.once('value', function(snapshot) {
@@ -291,30 +277,7 @@
 
             
         }
-
-        //チャットの開始、送信、受信
-        function startChat(username){
-            room = roomSelect.value;
-
-            // メッセージ送信
-            sendButton.addEventListener('click', function() {
-                room = roomSelect.value;
-                var message = messageInput.value;
-
-                if (message.trim() !== ''){
-                    messagesRef.push({
-                        text: message,
-                        username: username,
-                        timestamp: firebase.database.ServerValue.TIMESTAMP
-                    });
-                    messageInput.value = '';
-                }
-                console.log('Ref:'+messagesRef)
-            });
-
-
-            // メッセージを全て表示する関数
-            function displayAllMessages(){
+        function displayAllMessages(){
                 var roomSelect = document.getElementById('room-select');
                 room = roomSelect.value;
                 document.getElementById('messages').innerHTML = '';
@@ -334,41 +297,28 @@
                         messageElement.appendChild(usernameElement);
 
                         var textElement = document.createElement('div');
-                        textElement.textContent = messageData.text;
+                        textElement.innerHTML = messageData.text;//innerHTML,textContentに変えれる
                         messageElement.appendChild(textElement);
 
                         messagesContainer.appendChild(messageElement);
+                    });
+
+                    messagesRef.on('value', function(snapshot) {
+                    if (snapshot.numChildren() > 20) {
+                        var firstMessageKey = Object.keys(snapshot.val())[0];
+                        messagesRef.child(firstMessageKey).remove();
+                    }
                     });
 
                     // 最新のメッセージが見えるようにスクロール
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                 });
             }
-            // 新しいメッセージが追加された時のみ、そのメッセージを追加表示
-            database.ref('rooms/'+document.getElementById('room-select').value+'/messages').on('child_added', function(snapshot){
-                var messageData = snapshot.val();
-                var messageElement = document.createElement('div');
-                messageElement.className = 'message';
-                messageElement.setAttribute('data-id', snapshot.key);
 
-                var usernameElement = document.createElement('div');
-                usernameElement.className = 'username';
-                usernameElement.textContent = messageData.username;
-                messageElement.appendChild(usernameElement);
-
-                var textElement = document.createElement('div');
-                textElement.textContent = messageData.text;
-                messageElement.appendChild(textElement);
-
-                messagesContainer.appendChild(messageElement);
-
-                // 最新のメッセージが見えるようにスクロール
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            });
-
-            messagesRef.once('value', function(snapshot) {
-                displayAllMessages();  // 一回だけ全メッセージを表示
-            });
+        //チャットの開始、送信、受信
+        function startChat(username){
+            room = roomSelect.value;
+            selectRoom();
         }
 
     </script>
