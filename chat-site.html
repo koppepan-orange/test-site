@@ -106,19 +106,12 @@
     <div class="chat-container" id="chat-container">
         <select id="room-select" name="room-select" onchange="selectRoom()">
             <option value="1">01</option>
-            <option value="2">02</option>
-            <option value="3">03</option>
-            <option value="4">04</option>
-            <option value="5">05</option>
-            <option value="6">06</option>
-            <option value="7">07</option>
-            <option value="8">08</option>
-            <option value="9">09</option>
-           <option value="10">10</option>
-        </select>
+        </select><br>
+        <imput type="text" id="room-make"></imput><button id="room-make-button" onclick="makeRoom()">部屋作成</button>
         <div class="messages" id="messages"></div>
         <input type="text" id="message-input" placeholder="メッセージを書く">
         <button id="send-button">送信</button>
+
     </div>
     
     
@@ -313,6 +306,15 @@
                     // 最新のメッセージが見えるようにスクロール
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                 });
+            }
+
+        
+            function makeRoom(){
+                const Loom = document.getElementById('room-make').value;
+                document.getElementById('room-select').appendChild(new Option(Loom,Loom));
+                roomSelect.value = Loom;
+                room = Loom;
+                selectRoom();
             }
 
         //チャットの開始、送信、受信
