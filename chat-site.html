@@ -106,8 +106,8 @@
     <div class="chat-container" id="chat-container">
         <select id="room-select" name="room-select" onchange="selectRoom()">
             <option value="1">01</option>
-        </select><br>
-        <imput type="text" id="room-make"></imput><button id="room-make-button" onclick="makeRoom()">部屋作成</button>
+        </select>
+        <input type="text" id="room-make" placeholder="write room name" /><button id="room-make-button" onclick="makeRoom()">部屋作成</button>
         <div class="messages" id="messages"></div>
         <input type="text" id="message-input" placeholder="メッセージを書く">
         <button id="send-button">送信</button>
@@ -182,6 +182,21 @@
                     loginForm.style.display = 'none';
                     chatContainer.style.display = 'flex';
                     startChat(username); // チャット画面の初期化
+                    document.getElementById('room-select').style.display = 'block';
+                    switch(username){//コッペくんあるある、専用要素作りがち
+                        case 'test':
+                            document.getElementById('room-select').appendChild(new Option("デバッグ用","debug"));
+                            break;
+                        case 'koppepan_orange':
+                            document.getElementById('room-select').appendChild(new Option("koppepan","koppepan"));//textContent,value
+                            break;
+                        case 'forest_inlet':
+                            document.getElementById('room-select').appendChild(new Option("forest","forest"));
+                            break;
+                        case 'luna_':
+                            document.getElementById('room-select').appendChild(new Option("luna","luna"));
+                            break;
+                    }
                 }
             });
         });
@@ -308,20 +323,22 @@
                 });
             }
 
-        
+            //部屋作ったりラジバンダリ
             function makeRoom(){
                 const Loom = document.getElementById('room-make').value;
                 document.getElementById('room-select').appendChild(new Option(Loom,Loom));
                 roomSelect.value = Loom;
                 room = Loom;
                 selectRoom();
+                document.getElementById('room-make').value = '';
+
             }
 
-        //チャットの開始、送信、受信
-        function startChat(username){
-            room = roomSelect.value;
-            selectRoom();
-        }
+            //チャットの開始、送信、受信
+            function startChat(username){
+                room = roomSelect.value;
+                selectRoom();
+            }
 
     </script>
 </body>
