@@ -135,7 +135,7 @@
             <button id="room-make-button" onclick="makeRoom()">Make</button>
         </div>
         <div class="messages" id="messages"></div>
-        <input type="text" id="message-input" placeholder="メッセージを書く">
+        <input type="textarea" id="message-input" placeholder="メッセージを書く">
         <button id="send-button">送信</button>
         <div class="member-list" id="member-list">
             <h3>online now</h3>
@@ -251,10 +251,14 @@
         var messagesRef = database.ref('rooms/' + room + '/messages');
 
         messageInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
+        if (e.key === 'Enter') {
+            if (!e.shiftKey) { // Shiftが押されていない場合
+                e.preventDefault();
                 sendButton.click();
             }
+        }
         });
+
 
         // 部屋変更時の処理
         function selectRoom() {
@@ -278,7 +282,7 @@
                 var username = document.getElementById('username').value;
                 if (message.trim() !== '') {
                     messagesRef.push({
-                        text: message,
+                        text: message.replace(/\n/g, '<br>'),
                         username: username,
                         timestamp: formatDate(new Date())
                     });
