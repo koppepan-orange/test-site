@@ -84,7 +84,11 @@
             width: 100%;
             height: 30px;
             border: 1px solid #ccc;
-
+        }
+        #room-make-zone{
+            display: flex; /* 子要素を横並びにする */
+            justify-content: space-between; /* 子要素の間隔を調整 */
+            padding: 10px; /* 必要に応じてパディングを追加 */
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -105,13 +109,20 @@
     <!-- チャット画面 -->
     <div class="chat-container" id="chat-container">
         <select id="room-select" name="room-select" onchange="selectRoom()">
-            <option value="1">01</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
         </select>
-        <input type="text" id="room-make" placeholder="write room name" /><button id="room-make-button" onclick="makeRoom()">部屋作成</button>
+        <div class="make-room-zone">
+            <input type="text" id="room-make" size="50" placeholder="write room name"/>
+            <input type="password" id="room-make-pass" size="12" placeholder="write room pass"/>
+            <button id="room-make-button" onclick="makeRoom()">Make</button>
+        </div>
         <div class="messages" id="messages"></div>
         <input type="text" id="message-input" placeholder="メッセージを書く">
         <button id="send-button">送信</button>
-
     </div>
     
     
@@ -138,20 +149,24 @@
         var loginError = document.getElementById('login-error');
         let room = 1;
         let username = 'no name';
+        let usersRef = null;
         loginForm.addEventListener('submit', function(event) {
             event.preventDefault();
             username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
 
-            var usersRef = database.ref('users/' + username);
+            usersRef = database.ref('users/' + username);
 
             // データベースでユーザーが存在するか確認
             usersRef.once('value').then(function(snapshot) {
-                if (snapshot.exists()) {
+                if (snapshot.exists()){
                     // 既存ユーザーの場合
                     var userData = snapshot.val();
                     if (userData.password === password) {
                         // パスワードが一致すればログイン
+                        usersRef.update({
+                            status: 'online'
+                        });
                         loginForm.style.display = 'none';
                         chatContainer.style.display = 'flex';
                         startChat(username); // チャット画面の初期化
@@ -176,8 +191,9 @@
                     }
                 } else {
                     // 新規ユーザーの場合、アカウント作成
-                    usersRef.set({
-                        password: password
+                    usersRef.update({
+                        password: password,
+                        status: 'online'
                     });
                     loginForm.style.display = 'none';
                     chatContainer.style.display = 'flex';
@@ -201,6 +217,12 @@
             });
         });
 
+        window.addEventListener('beforeunload', () => {
+            usersRef.update({
+                status: 'offline'
+            });
+        });
+
         //ここからチャットの動き
         var sendButton = document.getElementById('send-button');
         var messageInput = document.getElementById('message-input');
@@ -219,31 +241,37 @@
         function selectRoom(){
             messagesRef.off();
             room = roomSelect.value;
-            messagesRef = database.ref('rooms/'+room+'/messages'); // 部屋ごとのメッセージを参照
+            messagesRef = database.ref('rooms/'+room+'/messages');
             document.getElementById('messages').innerHTML = '';
 
-            // データベースから全てのメッセージを取得
+            function formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // 月は0から始まるので+1
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                return `${year}/${month}/${day} ${hours}:${minutes}`;
+            }
             // メッセージ送信
             sendButton.addEventListener('click', function(){
-                var message = messageInput.value;
-                var username = document.getElementById('username').value;
-                if (message.trim() !== ''){
-                    messagesRef.push({
-                        text: message,
-                        username: username,
-                        timestamp: firebase.database.ServerValue.TIMESTAMP
-                    });
-                    messageInput.value = '';
-                }
-                console.log('Ref:'+messagesRef)
-                messagesRef.on('value', function(snapshot) {
-                    if(snapshot.numChildren() > 20){
-                        var firstMessageKey = Object.keys(snapshot.val())[0];
-                        messagesRef.child(firstMessageKey).remove();
-                        setTimeout(displayAllMessages, 200);
-                    }
+            var message = messageInput.value;
+            var username = document.getElementById('username').value;
+            if (message.trim() !== ''){
+                messagesRef.push({
+                    text: message,
+                    username: username,
+                    timestamp: formatDate(new Date())
                 });
+                messageInput.value = '';
+            }
+            messagesRef.on('value', function(snapshot) {
+                if(snapshot.numChildren() > 20){
+                    var firstMessageKey = Object.keys(snapshot.val())[0];
+                    messagesRef.child(firstMessageKey).remove();
+                    setTimeout(displayAllMessages, 200);
+                }
             });
+        });
 
             // メッセージを全て表示する関数
             
@@ -254,10 +282,18 @@
                 messageElement.className = 'message';
                 messageElement.setAttribute('data-id', snapshot.key);
 
-                var usernameElement = document.createElement('div');
+                var usernameElement = document.createElement('span');
                 usernameElement.className = 'username';
                 usernameElement.textContent = messageData.username;
                 messageElement.appendChild(usernameElement);
+
+                var timestampElement = document.createElement('span');
+                timestampElement.className = 'timestamp';
+                timestampElement.textContent = '  —'+messageData.timestamp;
+                messageElement.appendChild(timestampElement);
+
+                var brElement = document.createElement('br');
+                messageElement.appendChild(brElement);
 
                 var textElement = document.createElement('div');
                 textElement.innerHTML = messageData.text;
@@ -299,10 +335,18 @@
                         messageElement.className = 'message';
                         messageElement.setAttribute('data-id', childSnapshot.key);
 
-                        var usernameElement = document.createElement('div');
+                        var usernameElement = document.createElement('span');
                         usernameElement.className = 'username';
                         usernameElement.textContent = messageData.username;
                         messageElement.appendChild(usernameElement);
+
+                        var timestampElement = document.createElement('span');
+                        timestampElement.className = 'timestamp';
+                        timestampElement.textContent = '  -—'+messageData.timestamp;
+                        messageElement.appendChild(timestampElement);
+
+                        var brElement = document.createElement('br');
+                        messageElement.appendChild(brElement);
 
                         var textElement = document.createElement('div');
                         textElement.innerHTML = messageData.text;//innerHTML,textContentに変えれる
@@ -326,12 +370,36 @@
             //部屋作ったりラジバンダリ
             function makeRoom(){
                 const Loom = document.getElementById('room-make').value;
-                document.getElementById('room-select').appendChild(new Option(Loom,Loom));
-                roomSelect.value = Loom;
-                room = Loom;
-                selectRoom();
-                document.getElementById('room-make').value = '';
+                const NowRef = database.ref('rooms/'+Loom);
+                const pass = document.getElementById('room-make-pass').value;
+                NowRef.once('value').then(function(snapshot) {
+                if(snapshot.exists()){//既存部屋の場合
+                    var roomData = snapshot.val();
+                    if(roomData.pass == pass){
+                        const Pass = {pass:document.getElementById('room-make-pass').value,};
+                        document.getElementById('room-select').appendChild(new Option(Loom,Loom));
+                        roomSelect.value = Loom;
+                        room = Loom;
+                        selectRoom();
+                        document.getElementById('room-make').value = '';
+                        document.getElementById('room-make-pass').value = '';
+                    }else{
+                        document.getElementById('room-make').value = 'missed!!';
+                        document.getElementById('room-make-pass').value = '';
+                    }
+                }else{
+                    const Pass = {pass:document.getElementById('room-make-pass').value,};
+                    document.getElementById('room-select').appendChild(new Option(Loom,Loom));
+                    roomSelect.value = Loom;
+                    room = Loom;
+                    
+                    NowRef.update(Pass);
 
+                    selectRoom();
+                    document.getElementById('room-make').value = '';
+                    document.getElementById('room-make-pass').value = '';
+                }
+                });
             }
 
             //チャットの開始、送信、受信
