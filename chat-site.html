@@ -85,10 +85,23 @@
             height: 30px;
             border: 1px solid #ccc;
         }
-        #room-make-zone{
-            display: flex; /* 子要素を横並びにする */
-            justify-content: space-between; /* 子要素の間隔を調整 */
-            padding: 10px; /* 必要に応じてパディングを追加 */
+        #room-make-zone {
+            display: flex; 
+            justify-content: space-between; 
+            padding: 10px; 
+        }
+        .member-list {
+            display: none; /* 初期状態では非表示 */
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .hamburger {
+            cursor: pointer;
+            font-size: 24px;
+            padding: 10px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -108,6 +121,7 @@
 
     <!-- チャット画面 -->
     <div class="chat-container" id="chat-container">
+        <div class="hamburger" id="hamburger">☰</div> <!-- ハンバーガーアイコン -->
         <select id="room-select" name="room-select" onchange="selectRoom()">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -123,9 +137,11 @@
         <div class="messages" id="messages"></div>
         <input type="text" id="message-input" placeholder="メッセージを書く">
         <button id="send-button">送信</button>
+        <div class="member-list" id="member-list">
+            <h3>online now</h3>
+            <ul id="online-users"></ul>
+        </div>
     </div>
-    
-    
 
     <script>
         // Firebaseの設定
@@ -150,6 +166,7 @@
         let room = 1;
         let username = 'no name';
         let usersRef = null;
+
         loginForm.addEventListener('submit', function(event) {
             event.preventDefault();
             username = document.getElementById('username').value;
@@ -169,22 +186,9 @@
                         });
                         loginForm.style.display = 'none';
                         chatContainer.style.display = 'flex';
-                        startChat(username); // チャット画面の初期化
+                        startChat(username);
                         document.getElementById('room-select').style.display = 'block';
-                        switch(username){//コッペくんあるある、専用要素作りがち
-                            case 'test':
-                                document.getElementById('room-select').appendChild(new Option("デバッグ用","debug"));
-                                break;
-                            case 'koppepan_orange':
-                                document.getElementById('room-select').appendChild(new Option("koppepan","koppepan"));//textContent,value
-                                break;
-                            case 'forest_inlet':
-                                document.getElementById('room-select').appendChild(new Option("forest","forest"));
-                                break;
-                            case 'luna_':
-                                document.getElementById('room-select').appendChild(new Option("luna","luna"));
-                                break;
-                        }
+                        updateOnlineUsers(); // オンラインユーザーを更新
                     } else {
                         // パスワードが間違っている
                         loginError.style.display = 'block';
@@ -197,22 +201,9 @@
                     });
                     loginForm.style.display = 'none';
                     chatContainer.style.display = 'flex';
-                    startChat(username); // チャット画面の初期化
+                    startChat(username);
                     document.getElementById('room-select').style.display = 'block';
-                    switch(username){//コッペくんあるある、専用要素作りがち
-                        case 'test':
-                            document.getElementById('room-select').appendChild(new Option("デバッグ用","debug"));
-                            break;
-                        case 'koppepan_orange':
-                            document.getElementById('room-select').appendChild(new Option("koppepan","koppepan"));//textContent,value
-                            break;
-                        case 'forest_inlet':
-                            document.getElementById('room-select').appendChild(new Option("forest","forest"));
-                            break;
-                        case 'luna_':
-                            document.getElementById('room-select').appendChild(new Option("luna","luna"));
-                            break;
-                    }
+                    updateOnlineUsers(); // オンラインユーザーを更新
                 }
             });
         });
@@ -223,13 +214,41 @@
             });
         });
 
-        //ここからチャットの動き
+        // オンラインユーザーを更新する関数
+        function updateOnlineUsers() {
+            const onlineUsersRef = database.ref('users');
+            onlineUsersRef.on('value', function(snapshot) {
+                const onlineUsers = document.getElementById('online-users');
+                onlineUsers.innerHTML = ''; // リストをクリア
+                snapshot.forEach(function(childSnapshot) {
+                    const userData = childSnapshot.val();
+                    if (userData.status === 'online') {
+                        const li = document.createElement('li');
+                        li.textContent = childSnapshot.key; // ユーザー名を表示
+                        onlineUsers.appendChild(li);
+                    }
+                });
+            });
+        }
+        // ハンバーガーアイコンをクリックしたときの処理
+        document.getElementById('hamburger').addEventListener('click', function() {
+            const memberList = document.getElementById('member-list');
+            if (memberList.style.display === 'none' || memberList.style.display === '') {
+                memberList.style.display = 'block'; // メンバーリストを表示
+                updateOnlineUsers(); // オンラインユーザーを更新
+            } else {
+                memberList.style.display = 'none'; // メンバーリストを非表示
+            }
+        });
+
+
+        // ここからチャットの動き
         var sendButton = document.getElementById('send-button');
         var messageInput = document.getElementById('message-input');
         var messagesContainer = document.getElementById('messages');
         var roomSelect = document.getElementById('room-select');
         room = roomSelect.value;
-        var messagesRef = database.ref('rooms/'+room+'/messages');
+        var messagesRef = database.ref('rooms/' + room + '/messages');
 
         messageInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
@@ -237,46 +256,45 @@
             }
         });
 
-        //部屋変更時のそれ
-        function selectRoom(){
+        // 部屋変更時の処理
+        function selectRoom() {
             messagesRef.off();
             room = roomSelect.value;
-            messagesRef = database.ref('rooms/'+room+'/messages');
+            messagesRef = database.ref('rooms/' + room + '/messages');
             document.getElementById('messages').innerHTML = '';
 
             function formatDate(date) {
                 const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0'); // 月は0から始まるので+1
+                const month = String(date.getMonth() + 1).padStart(2, '0');
                 const day = String(date.getDate()).padStart(2, '0');
                 const hours = String(date.getHours()).padStart(2, '0');
                 const minutes = String(date.getMinutes()).padStart(2, '0');
                 return `${year}/${month}/${day} ${hours}:${minutes}`;
             }
-            // メッセージ送信
-            sendButton.addEventListener('click', function(){
-            var message = messageInput.value;
-            var username = document.getElementById('username').value;
-            if (message.trim() !== ''){
-                messagesRef.push({
-                    text: message,
-                    username: username,
-                    timestamp: formatDate(new Date())
-                });
-                messageInput.value = '';
-            }
-            messagesRef.on('value', function(snapshot) {
-                if(snapshot.numChildren() > 20){
-                    var firstMessageKey = Object.keys(snapshot.val())[0];
-                    messagesRef.child(firstMessageKey).remove();
-                    setTimeout(displayAllMessages, 200);
-                }
-            });
-        });
 
-            // メッセージを全て表示する関数
-            
+            // メッセージ送信
+            sendButton.addEventListener('click', function() {
+                var message = messageInput.value;
+                var username = document.getElementById('username').value;
+                if (message.trim() !== '') {
+                    messagesRef.push({
+                        text: message,
+                        username: username,
+                        timestamp: formatDate(new Date())
+                    });
+                    messageInput.value = '';
+                }
+                messagesRef.on('value', function(snapshot) {
+                    if (snapshot.numChildren() > 20) {
+                        var firstMessageKey = Object.keys(snapshot.val())[0];
+                        messagesRef.child(firstMessageKey).remove();
+                        setTimeout(displayAllMessages, 200);
+                    }
+                });
+            });
+
             // 新しいメッセージが追加された時のみ、そのメッセージを追加表示
-            messagesRef.on('child_added', function(snapshot){
+            messagesRef.on('child_added', function(snapshot) {
                 var messageData = snapshot.val();
                 var messageElement = document.createElement('div');
                 messageElement.className = 'message';
@@ -289,7 +307,7 @@
 
                 var timestampElement = document.createElement('span');
                 timestampElement.className = 'timestamp';
-                timestampElement.textContent = '  —'+messageData.timestamp;
+                timestampElement.textContent = '  —' + messageData.timestamp;
                 messageElement.appendChild(timestampElement);
 
                 var brElement = document.createElement('br');
@@ -301,6 +319,54 @@
 
                 messagesContainer.appendChild(messageElement);
 
+                messagesRef.on('value', function(snapshot) {
+                    if (snapshot.numChildren() > 20) {
+                        var firstMessageKey = Object.keys(snapshot.val())[0];
+                        messagesRef.child(firstMessageKey).remove();
+                    }
+                });
+
+                // 最新のメッセージが見えるようにスクロール
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            });
+
+            messagesRef.once('value', function(snapshot) {
+                displayAllMessages();  // 一回だけ全メッセージを表示
+            });
+        }
+
+        function displayAllMessages() {
+            var roomSelect = document.getElementById('room-select');
+            room = roomSelect.value;
+            document.getElementById('messages').innerHTML = '';
+
+            // データベースから全てのメッセージを取得
+            messagesRef.once('value', function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    var messageData = childSnapshot.val();
+                    var messageElement = document.createElement('div');
+                    messageElement.className = 'message';
+                    messageElement.setAttribute('data-id', childSnapshot.key);
+
+                    var usernameElement = document.createElement('span');
+                    usernameElement.className = 'username';
+                    usernameElement.textContent = messageData.username;
+                    messageElement.appendChild(usernameElement);
+
+                    var timestampElement = document.createElement('span');
+                    timestampElement.className = 'timestamp';
+                    timestampElement.textContent = '  —' + messageData.timestamp;
+                    messageElement.appendChild(timestampElement);
+
+                    var brElement = document.createElement('br');
+                    messageElement.appendChild(brElement);
+
+                    var textElement = document.createElement('div');
+                    textElement.innerHTML = messageData.text;
+                    messageElement.appendChild(textElement);
+
+                    messagesContainer.appendChild(messageElement);
+                });
 
                 messagesRef.on('value', function(snapshot) {
                     if (snapshot.numChildren() > 20) {
@@ -311,103 +377,48 @@
 
                 // 最新のメッセージが見えるようにスクロール
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-                
             });
-
-            messagesRef.once('value', function(snapshot) {
-                displayAllMessages();  // 一回だけ全メッセージを表示
-            });
-
-            
         }
-        function displayAllMessages(){
-                var roomSelect = document.getElementById('room-select');
-                room = roomSelect.value;
-                document.getElementById('messages').innerHTML = '';
 
-
-                // データベースから全てのメッセージを取得
-                messagesRef.once('value', function(snapshot){
-                    snapshot.forEach(function(childSnapshot){
-                        var messageData = childSnapshot.val();
-                        var messageElement = document.createElement('div');
-                        messageElement.className = 'message';
-                        messageElement.setAttribute('data-id', childSnapshot.key);
-
-                        var usernameElement = document.createElement('span');
-                        usernameElement.className = 'username';
-                        usernameElement.textContent = messageData.username;
-                        messageElement.appendChild(usernameElement);
-
-                        var timestampElement = document.createElement('span');
-                        timestampElement.className = 'timestamp';
-                        timestampElement.textContent = '  -—'+messageData.timestamp;
-                        messageElement.appendChild(timestampElement);
-
-                        var brElement = document.createElement('br');
-                        messageElement.appendChild(brElement);
-
-                        var textElement = document.createElement('div');
-                        textElement.innerHTML = messageData.text;//innerHTML,textContentに変えれる
-                        messageElement.appendChild(textElement);
-
-                        messagesContainer.appendChild(messageElement);
-                    });
-
-                    messagesRef.on('value', function(snapshot) {
-                    if (snapshot.numChildren() > 20) {
-                        var firstMessageKey = Object.keys(snapshot.val())[0];
-                        messagesRef.child(firstMessageKey).remove();
-                    }
-                    });
-
-                    // 最新のメッセージが見えるようにスクロール
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                });
-            }
-
-            //部屋作ったりラジバンダリ
-            function makeRoom(){
-                const Loom = document.getElementById('room-make').value;
-                const NowRef = database.ref('rooms/'+Loom);
-                const pass = document.getElementById('room-make-pass').value;
-                NowRef.once('value').then(function(snapshot) {
-                if(snapshot.exists()){//既存部屋の場合
+        // 部屋作ったりラジバンダリ
+        function makeRoom() {
+            const Loom = document.getElementById('room-make').value;
+            const NowRef = database.ref('rooms/' + Loom);
+            const pass = document.getElementById('room-make-pass').value;
+            NowRef.once('value').then(function(snapshot) {
+                if (snapshot.exists()) { // 既存部屋の場合
                     var roomData = snapshot.val();
-                    if(roomData.pass == pass){
-                        const Pass = {pass:document.getElementById('room-make-pass').value,};
-                        document.getElementById('room-select').appendChild(new Option(Loom,Loom));
+                    if (roomData.pass == pass) {
+                        document.getElementById('room-select').appendChild(new Option(Loom, Loom));
                         roomSelect.value = Loom;
                         room = Loom;
                         selectRoom();
                         document.getElementById('room-make').value = '';
                         document.getElementById('room-make-pass').value = '';
-                    }else{
+                    } else {
                         document.getElementById('room-make').value = 'missed!!';
                         document.getElementById('room-make-pass').value = '';
                     }
-                }else{
-                    const Pass = {pass:document.getElementById('room-make-pass').value,};
-                    document.getElementById('room-select').appendChild(new Option(Loom,Loom));
+                } else {
+                    const Pass = { pass: document.getElementById('room-make-pass').value };
+                    document.getElementById('room-select').appendChild(new Option(Loom, Loom));
                     roomSelect.value = Loom;
                     room = Loom;
-                    
+
                     NowRef.update(Pass);
 
                     selectRoom();
                     document.getElementById('room-make').value = '';
                     document.getElementById('room-make-pass').value = '';
                 }
-                });
-            }
+            });
+        }
 
-            //チャットの開始、送信、受信
-            function startChat(username){
-                room = roomSelect.value;
-                selectRoom();
-            }
-
+        // チャットの開始、送信、受信
+        function startChat(username) {
+            room = roomSelect.value;
+            selectRoom();
+        }
     </script>
 </body>
 </html>
