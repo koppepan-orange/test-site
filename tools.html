@@ -25,6 +25,41 @@
           }      
         </script>
   </p>
+  <p align="center">
+    <input type="text" id="Input" size="3" maxlength="2" placeholder="num"><button id="ToggleButton" onclick="Toggle()">less</button><button onclick="Activate()">Go!</button><br>
+    <span id="OutPut"></span>
+    <script>
+       let input
+        let words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ']
+        function Toggle(){
+            switch(document.getElementById('ToggleButton').textContent){
+                case 'more':
+                    document.getElementById('ToggleButton').textContent = 'less'
+                    words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ'];
+                    break
+                case 'less':
+                    document.getElementById('ToggleButton').textContent = 'more'
+                    words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ','ァ','ィ','ゥ','ェ','ォ','ッ','ャ','ュ','ョ','ー'];
+                    break
+            }
+        }
+        function Activate(){
+            input = document.getElementById('Input').value
+            if(input == ''||input <= 0){document.getElementById('OutPut').textContent = '死ね'}
+            else{
+            let output = [];
+            document.getElementById('OutPut').innerHTML = ''
+            for(let i = 0; i < 10; i++){
+                for(let i = 0; i < input; i++){
+                    output.push(words[Math.floor(Math.random() * words.length)])
+                }
+                document.getElementById('OutPut').innerHTML += output.join('')+'<br>';
+                output = [];
+            }
+            }
+        }
+    </script>
+  </p>
   <!-- まりぱのげーむをちょっとだけいれようかな〜と -->
   <details style="margin:0 auto;"><summary>Game-Center</summary>
     <p align="center">Count Game Desu
