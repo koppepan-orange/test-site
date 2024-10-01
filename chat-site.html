@@ -252,9 +252,11 @@
 
         messageInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            if (!e.shiftKey) { // Shiftが押されていない場合
+            if(!e.shiftKey){
                 e.preventDefault();
                 sendButton.click();
+            }else{
+                messageInput.value += '<br>'
             }
         }
         });
