@@ -4,7 +4,6 @@
   <head>
     <meta charset="UTF-8">
     <link rel="icon" href="https://koppepan-orange.github.io/test_site/Ryo_Icon.ico">
-    <link href="https://koppepan-orange.github.io/test_site/homepage.css" rel="stylesheet" type="text/css">
     <!-- <script src="https://koppepan-orange.github.io/test_site/homepage.js"></script> -->
     <title>test_site</title>
     <style>
@@ -63,7 +62,8 @@
             <br><a target="_blank" href="https://www.arealme.com/">ARealMe</a>
             <br><a target="_blank" href="https://unityroom.com/new_arrivals">unityroom</a></details></p>
   <!-- この下、メモです!!初期の私のがんばりです！！！！ -->
-        <p align="center">メモ
+            <br><button onclick="document.querySelector('#MemoZone').requestFullscreen()">full</button>
+            <div id="MemoZone" align="center">メモ
             <form>
                 <input type="text" size="30">
                 (1)
@@ -73,15 +73,20 @@
                 <input type="text" size="30">
                 (2)
                 <br>
-                <textarea rows="10" cols="35"></textarea></form></p>
+                <textarea rows="10" cols="35"></textarea>
+            </form>
+            </div>
   <!-- この下、足つかないよゾーンです!!優しい友達に教えてもらいました！！！！神!!!! -->
          <p align="center">web-site-corps
-            <details><summary>bing.com</summary><br><iframe width="100%" height="1000" src="https://www.bing.com/search?q=%E3%81%8A%E5%89%8D%E3%82%92%E6%B6%88%E3%81%99%E6%96%B9%E6%B3%95&qs=n&form=QBRE&sp=-1&lq=0&pq=%E3%81%8A%E5%89%8D%E3%82%92%E6%B6%88%E3%81%99%E6%96%B9%E6%B3%95&sc=11-7&sk=&cvid=FBDC5F1CED54404D81F391D06D2A5962&ghsh=0&ghacc=0&ghpl="></iframe></details>
-            <details><summary>bing-trans</summary><br><iframe width="100%" height="1000" src="https://www.bing.com/translator?from=&to=ja&setlang=ja"></iframe></details>
+            <details><summary>bing.com</summary><button onclick="document.querySelector('#Iframe1').requestFullscreen()">full</button><br>
+              <iframe id="Iframe1" width="100%" height="1000" src="https://www.bing.com/search?q=%E3%81%8A%E5%89%8D%E3%82%92%E6%B6%88%E3%81%99%E6%96%B9%E6%B3%95&qs=n&form=QBRE&sp=-1&lq=0&pq=%E3%81%8A%E5%89%8D%E3%82%92%E6%B6%88%E3%81%99%E6%96%B9%E6%B3%95&sc=11-7&sk=&cvid=FBDC5F1CED54404D81F391D06D2A5962&ghsh=0&ghacc=0&ghpl="></iframe>
+            </details>
+            <details><summary>bing-trans</summary><button onclick="document.querySelector('#Iframe2').requestFullscreen()">full</button><br>
+              <iframe id="Iframe2" width="100%" height="1000" src="https://www.bing.com/translator?from=&to=ja&setlang=ja"></iframe></details>
             <details><summary>link site</summary>
-            <input type="text" id="InputIdLinkDesu" placeholder="write link here"><button onclick="InputToOutputLink()">Go</button><br>
-            <iframe id="OutputIdLinkDesu" width="100%" height="600" src="about:blank"></iframe>
-              <script>function InputToOutputLink(){document.getElementById("OutputIdLinkDesu").src = document.getElementById("InputIdLinkDesu").value;}</script>
+            <input type="text" id="InputIdLinkDesu" placeholder="write link here"><button onclick="InputToOutputLink()">Go</button><button onclick="document.querySelector('#Iframe3').requestFullscreen()">full</button><br>
+              <iframe id="Iframe3" width="100%" height="600" src="about:blank"></iframe>
+              <script>function InputToOutputLink(){document.getElementById("Iframe3").src = document.getElementById("InputIdLinkDesu").value;}</script>
             </details>
          </p>
     </p>
