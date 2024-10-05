@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>voice-chat_dekitara_iina_site</title>
+</head>
+<body>
+    <select id="TalkRoomSelect">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+    </select>
+    <button id="startCall">join talk</button>
+    <button id="hangUp">left talk</button>
+    <audio id="remoteAudio" autoplay></audio>
+
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebaseの設定
+        const firebaseConfig = {
+            apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
+            authDomain: "koppepan-orange.firebaseapp.com",
+            databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
+            projectId: "koppepan-orange",
+            storageBucket: "koppepan-orange.appspot.com",
+            messagingSenderId: "730150198097",
+            appId: "1:730150198097:web:076a074a3d406053155170",
+            measurementId: "G-MYKJWD203Z"
+        };
+        // Firebaseの初期化
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // WebRTCの設定
+        let peerConnection;
+        const config = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' } // STUNサーバーを利用
+            ]
+        };
+
+        const localStreamPromise = navigator.mediaDevices.getUserMedia({ audio: true });
+        const remoteAudio = document.getElementById('remoteAudio');
+
+        // シグナリングをFirebase経由で行う
+        let roomRef = database.ref('talk/1');
+        
+        document.getElementById('startCall').addEventListener('click', async () => {
+            const NumBar = document.getElementById('TalkRoomSelect').value;
+            roomRef = database.ref('talk/'+NumBar);
+            peerConnection = new RTCPeerConnection(config);
+            
+            // ローカル音声ストリームを追加
+            const localStream = await localStreamPromise;
+            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+            // リモートの音声を受け取ったら再生
+            peerConnection.ontrack = (event) => {
+                remoteAudio.srcObject = event.streams[0];
+            };
+
+            // ICE候補が発生したらFirebaseに送信
+            peerConnection.onicecandidate = event => {
+                if (event.candidate) {
+                    roomRef.child('callerCandidates').push(JSON.stringify(event.candidate));
+                }
+            };
+
+            // オファーを作成して、相手に送信
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            roomRef.child('offer').set(JSON.stringify(offer));
+
+            // 相手からの回答（アンサー）を待つ
+            roomRef.child('answer').on('value', async snapshot => {
+                const answer = snapshot.val();
+                if (answer) {
+                    const remoteDesc = new RTCSessionDescription(JSON.parse(answer));
+                    await peerConnection.setRemoteDescription(remoteDesc);
+                }
+            });
+
+            // 相手からのICE候補を受け取る
+            roomRef.child('calleeCandidates').on('child_added', async snapshot => {
+                const candidate = new RTCIceCandidate(JSON.parse(snapshot.val()));
+                await peerConnection.addIceCandidate(candidate);
+            });
+        });
+
+        // 通話終了処理
+        document.getElementById('hangUp').addEventListener('click', () => {
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            roomRef.remove(); // Firebaseのデータをリセット
+        });
+
+        // 相手からのオファーをリッスン
+        roomRef.child('offer').on('value', async snapshot => {
+            const offer = snapshot.val();
+            if (offer && !peerConnection) {
+                peerConnection = new RTCPeerConnection(config);
+                
+                // ローカル音声ストリームを追加
+                const localStream = await localStreamPromise;
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+                peerConnection.ontrack = (event) => {
+                    remoteAudio.srcObject = event.streams[0];
+                };
+
+                peerConnection.onicecandidate = event => {
+                    if (event.candidate) {
+                        roomRef.child('calleeCandidates').push(JSON.stringify(event.candidate));
+                    }
+                };
+
+                // 相手のオファーをリモートディスクリプションとして設定
+                const remoteDesc = new RTCSessionDescription(JSON.parse(offer));
+                await peerConnection.setRemoteDescription(remoteDesc);
+
+                // アンサーを作成して相手に送信
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+                roomRef.child('answer').set(JSON.stringify(answer));
+
+                // 相手のICE候補を受け取る
+                roomRef.child('callerCandidates').on('child_added', async snapshot => {
+                    const candidate = new RTCIceCandidate(JSON.parse(snapshot.val()));
+                    await peerConnection.addIceCandidate(candidate);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
