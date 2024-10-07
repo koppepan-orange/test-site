@@ -104,6 +104,18 @@
             top: 20px;
             right: 20px;
         }
+        #ReplyAppear{
+            display: none;
+            width: 500px;
+            height: 500px;
+            margin: 0 auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #dedede;/*大王*/
+            border: 1px solid #123;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -121,6 +133,7 @@
     </div>
 
     <!-- チャット画面 -->
+    <div id="ReplyAppear"></div>
     <div class="chat-container" id="chat-container">
         <div class="hamburger" id="hamburger">☰</div> <!-- ハンバーガーアイコン -->
         <select id="room-select" name="room-select" onchange="selectRoom()">
@@ -317,6 +330,15 @@
                 timestampElement.textContent = '  —' + messageData.timestamp;
                 messageElement.appendChild(timestampElement);
 
+                var replyButton = document.createElement('button');
+                replyButton.textContent = '↩︎';
+                replyButton.addEventListener('click', function() {
+                    messageInput.value = "<button onclick='setTimeout(N(`"+usernameElement.textContent+"`,`"+timestampElement.textContent+"`,`"+textElement.innerHTML+"`),100)'>→</button>"+ messageInput.value
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    messageInput.focus();
+                });
+                messageElement.appendChild(replyButton);
+
                 var brElement = document.createElement('br');
                 messageElement.appendChild(brElement);
 
@@ -364,6 +386,15 @@
                     timestampElement.className = 'timestamp';
                     timestampElement.textContent = '  —' + messageData.timestamp;
                     messageElement.appendChild(timestampElement);
+
+                    var replyButton = document.createElement('button');
+                    replyButton.textContent = '↩︎';
+                    replyButton.addEventListener('click', function() {
+                        messageInput.value = "<button onclick='N("+usernameElement.textContent,timestampElement.textContent,textElement.innerHTML+")'>→</button>"+ messageInput.value
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        messageInput.focus();
+                    });
+                    messageElement.appendChild(replyButton);
 
                     var brElement = document.createElement('br');
                     messageElement.appendChild(brElement);
@@ -419,6 +450,19 @@
                     document.getElementById('room-make-pass').value = '';
                 }
             });
+        }
+
+
+        function N(name, time, text) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        document.getElementById('ReplyAppear').style.display = 'block';
+        document.getElementById('ReplyAppear').innerHTML = `${name}${time}<br>${text}`;
+
+        const B = function() {
+            document.getElementById('ReplyAppear').removeEventListener('click', B); // 正しくリスナーを外す
+            document.getElementById('ReplyAppear').style.display = 'none';
+        };
+        addEventListener('click', B);
         }
 
         // チャットの開始、送信、受信
