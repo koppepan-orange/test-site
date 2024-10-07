@@ -1,5 +1,5 @@
 <head>
-  <meta http-equiv="refresh" content="1;url=https://koppepan-orange.github.io/test_site/homepage.html">
+  <meta http-equiv="refresh" content="1;url=https://koppepan-orange.github.io/test-site/homepage.html">
 </head>
   <style>
   .button{
