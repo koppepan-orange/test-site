@@ -333,7 +333,7 @@
                 var replyButton = document.createElement('button');
                 replyButton.textContent = '↩︎';
                 replyButton.addEventListener('click', function() {
-                    messageInput.value = "<button onclick='setTimeout(N(`"+usernameElement.textContent+"`,`"+timestampElement.textContent+"`,`"+textElement.innerHTML+"`),100)'>→</button>"+ messageInput.value
+                    messageInput.value = `<button onclick="setTimeout(() => N('${usernameElement.textContent}','${timestampElement.textContent}','${textElement.innerHTML}'),100)">→</button>`+messageInput.value
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     messageInput.focus();
                 });
@@ -390,10 +390,10 @@
                     var replyButton = document.createElement('button');
                     replyButton.textContent = '↩︎';
                     replyButton.addEventListener('click', function() {
-                        messageInput.value = "<button onclick='N("+usernameElement.textContent,timestampElement.textContent,textElement.innerHTML+")'>→</button>"+ messageInput.value
+                        messageInput.value = `<button onclick="setTimeout(() => N('${usernameElement.textContent}','${timestampElement.textContent}','${textElement.innerHTML}'),100)">→</button>`+messageInput.value
                         messagesContainer.scrollTop = messagesContainer.scrollHeight;
                         messageInput.focus();
-                    });
+                    });// <button onclick="setTimeout(() => N(`test`, `  —2024/10/08 19:51`, `ん`), 100)">→</button>
                     messageElement.appendChild(replyButton);
 
                     var brElement = document.createElement('br');
@@ -452,17 +452,20 @@
             });
         }
 
+        function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
 
-        function N(name, time, text) {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        document.getElementById('ReplyAppear').style.display = 'block';
-        document.getElementById('ReplyAppear').innerHTML = `${name}${time}<br>${text}`;
+        async function N(name, time, text){
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            document.getElementById('ReplyAppear').style.display = 'block';
+            document.getElementById('ReplyAppear').innerHTML = `${name}${time}<br>${text}`;
 
-        const B = function() {
-            document.getElementById('ReplyAppear').removeEventListener('click', B); // 正しくリスナーを外す
-            document.getElementById('ReplyAppear').style.display = 'none';
-        };
-        addEventListener('click', B);
+            const B = function(){
+                document.getElementById('ReplyAppear').removeEventListener('click', B); // 正しくリスナーを外す
+                document.getElementById('ReplyAppear').style.display = 'none';
+            };
+
+            await delay(100);
+            document.getElementById('ReplyAppear').addEventListener('click', B);
         }
 
         // チャットの開始、送信、受信
