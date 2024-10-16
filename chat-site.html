@@ -314,7 +314,7 @@
             });
 
             // 新しいメッセージが追加された時のみ、そのメッセージを追加表示
-            messagesRef.on('child_added', function(snapshot) {
+            messagesRef.on('child_added', function(snapshot){
                 var messageData = snapshot.val();
                 var messageElement = document.createElement('div');
                 messageElement.className = 'message';
@@ -330,14 +330,25 @@
                 timestampElement.textContent = '  —' + messageData.timestamp;
                 messageElement.appendChild(timestampElement);
 
-                var replyButton = document.createElement('button');
-                replyButton.textContent = '↩︎';
-                replyButton.addEventListener('click', function() {
-                    messageInput.value = `<button onclick="setTimeout(() => N('${usernameElement.textContent}','${timestampElement.textContent}','${textElement.innerHTML}'),100)">→</button>`+messageInput.value
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                    messageInput.focus();
+                var copyButton = document.createElement('button');
+                copyButton.textContent = '❐';
+                copyButton.addEventListener('click', function(){
+                    navigator.clipboard.writeText(messageData.text);
                 });
-                messageElement.appendChild(replyButton);
+                messageElement.appendChild(copyButton);
+
+                if(username == messageData.username){
+                    var editButton = document.createElement('button');
+                    editButton.textContent = '✎';
+                    editButton.addEventListener('click', function(){
+                        messageData.text = prompt('メッセージを編集', messageData.text);//messageInput.value;
+                        textElement.innerHTML = messageData.text;
+                        const ImadakeRef = database.ref('rooms/'+room+'/messages/'+childSnapshot.key);
+                        ImadakeRef.update(messageData);
+                        setTimeout(displayAllMessages, 200);
+                    });
+                    messageElement.appendChild(editButton);
+                }
 
                 var brElement = document.createElement('br');
                 messageElement.appendChild(brElement);
@@ -387,14 +398,25 @@
                     timestampElement.textContent = '  —' + messageData.timestamp;
                     messageElement.appendChild(timestampElement);
 
-                    var replyButton = document.createElement('button');
-                    replyButton.textContent = '↩︎';
-                    replyButton.addEventListener('click', function() {
-                        messageInput.value = `<button onclick="setTimeout(() => N('${usernameElement.textContent}','${timestampElement.textContent}','${textElement.innerHTML}'),100)">→</button>`+messageInput.value
-                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                        messageInput.focus();
-                    });// <button onclick="setTimeout(() => N(`test`, `  —2024/10/08 19:51`, `ん`), 100)">→</button>
-                    messageElement.appendChild(replyButton);
+                    var copyButton = document.createElement('button');
+                    copyButton.textContent = '❐';
+                    copyButton.addEventListener('click', function(){
+                        navigator.clipboard.writeText(messageData.text);
+                    });
+                    messageElement.appendChild(copyButton);
+
+                    if(username == messageData.username){
+                        var editButton = document.createElement('button');
+                        editButton.textContent = '✎';
+                        editButton.addEventListener('click', function(){
+                            messageData.text = prompt('メッセージを編集', messageData.text);//messageInput.value;
+                            textElement.innerHTML = messageData.text;
+                            const ImadakeRef = database.ref('rooms/'+room+'/messages/'+childSnapshot.key);
+                            ImadakeRef.update(messageData);
+                            setTimeout(displayAllMessages, 200);
+                        });
+                        messageElement.appendChild(editButton);
+                    }
 
                     var brElement = document.createElement('br');
                     messageElement.appendChild(brElement);
