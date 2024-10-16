@@ -295,11 +295,11 @@
             // メッセージ送信
             sendButton.addEventListener('click', function() {
                 var message = messageInput.value;
-                var username = document.getElementById('username').value;
-                if (message.trim() !== '') {
+                var Musername = document.getElementById('username').value;
+                if(message.trim() !== '') {
                     messagesRef.push({
                         text: message.replace(/\n/g, '<br>'),
-                        username: username,
+                        username: Musername,
                         timestamp: formatDate(new Date())
                     });
                     messageInput.value = '';
@@ -343,7 +343,7 @@
                     editButton.addEventListener('click', function(){
                         messageData.text = prompt('メッセージを編集', messageData.text);//messageInput.value;
                         textElement.innerHTML = messageData.text;
-                        const ImadakeRef = database.ref('rooms/'+room+'/messages/'+childSnapshot.key);
+                        const ImadakeRef = database.ref('rooms/'+room+'/messages/'+snapshot.key);
                         ImadakeRef.update(messageData);
                         setTimeout(displayAllMessages, 200);
                     });
