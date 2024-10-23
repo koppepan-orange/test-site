@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overview Site</title>
+</head>
+<body>
+    <select id="Select" onchange="document.getElementById('Iframe').src = this.value">
+        <option value="https://koppepan-orange.github.io/test-site/home.html">home</option>
+        <option value="https://koppepan-orange.github.io/test-site/tools.html">tools</option>
+        <option value="https://koppepan-orange.github.io/test-site/chat-site.html">chat</option>
+        <option value="https://koppepan-orange.github.io/game-site/welcome.html">game</option>
+    </select><button onclick="document.getElementById('Iframe').requestFullscreen()">Full</button><br>
+    <iframe src="home.html" id="Iframe" width="100%" height="1000"></iframe>
+    <script>
+        function InputToOutputLink() {
+            document.querySelector('#OutputIdLinkDesu').src = document.querySelector('#InputIdLinkDesu').value
+        }
+    </script>
+</body>
+</html>
