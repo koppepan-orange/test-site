@@ -116,6 +116,22 @@
             background-color: #dedede;/*大王*/
             border: 1px solid #123;
         }
+
+
+        .hover-element {
+            position: relative;
+            display: inline-block;
+        }
+        .popup {
+            display: none;
+            padding: 10px;
+            background-color: rgba(72, 72, 72, 0.563);
+            color: #fff;
+            border-radius: 5px;
+        }
+        .hover-element:hover .popup {
+            display: block;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -149,6 +165,15 @@
             <button id="room-make-button" onclick="makeRoom()">Make</button>
         </div>
         <div class="messages" id="messages"></div>
+        <div id="additional-zone">
+            <div class="hover-element">
+                <div class="popup">
+                    <button onclick="sendStamp(1)">OK</button> <button onclick="sendStamp(2)">最高か</button> <button onclick="sendStamp(3)">ぴえん</button> <button onclick="sendStamp(4)">わりどう</button><br>
+                    <button onclick="sendStamp(5)">ごめん</button> <button onclick="sendStamp(6)">無事終了</button> <button onclick="sendStamp(7)">LOVE</button> <button onclick="sendStamp(8)">SORENA</button><br>
+                </div>
+                囧
+            </div>
+        </div>
         <input type="textarea" id="message-input" placeholder="メッセージを書く">
         <button id="send-button">送信</button>
         <div class="member-list" id="member-list">
@@ -172,6 +197,7 @@
         // Firebaseの初期化
         firebase.initializeApp(firebaseConfig);
         var database = firebase.database();
+        //const storage = firebase.storage();
 
         //ログイン処理
         var loginForm = document.getElementById('login-form');
@@ -180,6 +206,32 @@
         let room = 1;
         let username = 'no name';
         let usersRef = null;
+
+        async function uploadImageToRTDB() {
+            const file = document.getElementById('imageInput').files[0];
+            if (!file) {
+                console.error("ファイルが選択されてない");
+                return;
+            }
+
+            const storageRef = storage.ref(`images/${file.name}`);
+            try {
+                // 画像をStorageにアップロード
+                await storageRef.put(file);
+                const downloadURL = await storageRef.getDownloadURL();
+
+                // Realtime Databaseにリンク保存
+                const newMessageRef = database.ref('messages').push();
+                await newMessageRef.set({
+                    imageUrl: downloadURL,
+                    timestamp: Date.now()
+                });
+
+                console.log("画像がアップロードされ、リンクがRealtime Databaseに保存された: ", downloadURL);
+            } catch (error) {
+                console.error("アップロード中にエラーが発生:", error);
+            }
+        }
 
         loginForm.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -275,28 +327,36 @@
         }
         });
 
+        function sendStamp(num){
+            messagesRef.push({
+                text: `<img src='assets/stamps/${num}.png' width="80" height="80"/>`,
+                username: username,
+                timestamp: formatDate(new Date())
+            });
+        }
+
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}/${month}/${day} ${hours}:${minutes}`;
+        }
 
         // 部屋変更時の処理
-        function selectRoom() {
+        function selectRoom(){
             messagesRef.off();
             room = roomSelect.value;
             messagesRef = database.ref('rooms/' + room + '/messages');
             document.getElementById('messages').innerHTML = '';
 
-            function formatDate(date) {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                const hours = String(date.getHours()).padStart(2, '0');
-                const minutes = String(date.getMinutes()).padStart(2, '0');
-                return `${year}/${month}/${day} ${hours}:${minutes}`;
-            }
 
             // メッセージ送信
-            sendButton.addEventListener('click', function() {
+            sendButton.addEventListener('click', async function(){
                 var message = messageInput.value;
                 var Musername = document.getElementById('username').value;
-                if(message.trim() !== '') {
+                if(message.trim() !== ''){
                     messagesRef.push({
                         text: message.replace(/\n/g, '<br>'),
                         username: Musername,
