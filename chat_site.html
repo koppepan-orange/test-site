@@ -158,6 +158,9 @@
             <option value="3">3</option>
             <option value="4">4</option>
             <option value="5">5</option>
+            <option value="Anonymous-1">Anonymous-1</option>
+            <option value="Anonymous-2">Anonymous-2</option>
+            <option value="Anonymous-3">Anonymous-3</option>
         </select>
         <div class="make-room-zone">
             <input type="text" id="room-make" size="50" placeholder="write room name"/>
@@ -206,6 +209,7 @@
         let room = 1;
         let username = 'no name';
         let usersRef = null;
+        let AnonymousName = '風吹けば名無し'
 
         async function uploadImageToRTDB() {
             const file = document.getElementById('imageInput').files[0];
@@ -356,6 +360,7 @@
             sendButton.addEventListener('click', async function(){
                 var message = messageInput.value;
                 var Musername = document.getElementById('username').value;
+                if(room == 'Anonymous-1'||room == 'Anonymous-2'||room == 'Anonymous-3'){Musername = AnonymousName;}
                 if(message.trim() !== ''){
                     messagesRef.push({
                         text: message.replace(/\n/g, '<br>'),
