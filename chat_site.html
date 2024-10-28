@@ -331,13 +331,21 @@
         }
         });
 
+        let stampawait = 0;
         function sendStamp(num){
+            if(stampawait == 1){return;}
+            if(room == 'debug'){return;}
+            let Musername = username;
+            if(room == 'Anonymous-1' || room == 'Anonymous-2' || room == 'Anonymous-3'){Musername = AnonymousName;}
             messagesRef.push({
                 text: `<img src='assets/stamps/${num}.png' width="80" height="80"/>`,
                 username: username,
                 timestamp: formatDate(new Date())
             });
+            stampawait = 1;
+            window.setTimeout(StampAwait, 10000);//10s
         }
+        function StampAwait(){stampawait = 0;}
 
         function formatDate(date) {
             const year = date.getFullYear();
