@@ -173,6 +173,9 @@
                 <div class="popup">
                     <button onclick="sendStamp(1)">OK</button> <button onclick="sendStamp(2)">最高か</button> <button onclick="sendStamp(3)">ぴえん</button> <button onclick="sendStamp(4)">わりどう</button><br>
                     <button onclick="sendStamp(5)">ごめん</button> <button onclick="sendStamp(6)">無事終了</button> <button onclick="sendStamp(7)">LOVE</button> <button onclick="sendStamp(8)">SORENA</button><br>
+                    <button onclick="sendStamp('hownice')">いいね</button> <button onclick="sendStamp('koresuki')">これすき</button> <button onclick="sendStamp('ohitasi')">おひたし</button> <button onclick="sendStamp('spacecat')">宇宙猫</button><br>
+                    <button onclick="sendStamp('youaresick')">病気ね</button> <button onclick="sendStamp('nasanao')">なさなお</button> <button onclick="sendStamp('4coma1')">外人4コマ-high</button> <button onclick="sendStamp('4coma2')">外人4コマ-low</button><br>
+                    <button onclick="sendStamp('maxwell1')">maxwell-hop</button> <button onclick="sendStamp('maxwell2')">maxwell-spin</button> <button onclick="sendStamp('hello')">こにちゃ</button> <button onclick="sendStamp('gdng')">おやすみ</button><br>
                 </div>
                 囧
             </div>
@@ -337,13 +340,15 @@
             if(room == 'debug'){return;}
             let Musername = username;
             if(room == 'Anonymous-1' || room == 'Anonymous-2' || room == 'Anonymous-3'){Musername = AnonymousName;}
+            let Mtext = `<img src='assets/stamps/${num}.png' width="80" height="80"/>`;
+            if(num == 'maxwell1'||num == `maxwell2`){Mtext = `<img src='assets/stamps/${num}.gif' width="80" height="80"/>`;};
             messagesRef.push({
-                text: `<img src='assets/stamps/${num}.png' width="80" height="80"/>`,
+                text: Mtext,
                 username: Musername,
                 timestamp: formatDate(new Date())
             });
             stampawait = 1;
-            window.setTimeout(StampAwait, 10000);//10s
+            window.setTimeout(StampAwait, 100);//10s
         }
         function StampAwait(){stampawait = 0;}
 
