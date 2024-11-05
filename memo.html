@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <style>
+    /* @font-face{font-family:Arial;src:url('Arial-font.ttf');} */
+    @font-face{font-family:comicsans;src:url('assets/comicsans.ttf');}
+    @font-face{font-family:Hangyaku;src:url('assets/Hangyaku.ttf');}
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    textarea{
+      margin: 0.5%;
+      width: 99%;
+      resize: vertical;
+      font:15px Arial;
+    }
+    #hontai{
+      display: none;
+    }
+
+    .login-container, .chat-container {
+      width: 500px;
+      max-width: 100%;
+      margin: 50px auto;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+    }
+    .login-container {
+      display: flex;
+    }
+    .login-form {
+      padding: 20px;
+    }
+    .login-form input {
+      width: calc(100% - 20px);
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .login-form button {
+      width: 100%;
+      padding: 10px;
+      background-color: #c8c8c8;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .login-form button:hover {
+      background-color: #8b8b8b;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+  </head>
+  <body>
+    <div class="login-container" id="login-container">
+      <form class="login-form" id="login-form">
+          <input type="text" id="username" placeholder="ユーザー名" required>
+          <input type="password" id="password" placeholder="パスワード" required>
+          <button type="submit">ログイン</button>
+          <div id="login-error" style="color: red; display: none;">パスワードが間違っています。</div>
+      </form>
+  </div>
+  <div id="hontai">
+    title:<input type="text" id="title"><button id="search">search</button> <select id="select" onchange="FontChange()"><option value="Arial">normal</option><option value="comicsans">comicsans</option><option value="Hangyaku">Hangyaku</option></select><br>
+    body:<br>
+  <textarea id="body"></textarea>
+  </div>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
+      authDomain: "koppepan-orange.firebaseapp.com",
+      databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
+      projectId: "koppepan-orange",
+      storageBucket: "koppepan-orange.appspot.com",
+      messagingSenderId: "730150198097",
+      appId: "1:730150198097:web:076a074a3d406053155170",
+      measurementId: "G-MYKJWD203Z"
+    };
+    const app = firebase.initializeApp(firebaseConfig)
+    const database = firebase.database();
+
+    function FontChange(){
+      let family = document.getElementById('select').value;
+      let size = 15;
+      if(family == 'Hangyaku'){size = 21};
+      document.getElementById('body').style.font = `${size}px ${family}`;
+    }
+
+    var loginForm = document.getElementById('login-form');
+    var loginError = document.getElementById('login-error');
+    let username = 'no name';
+    let usersRef = null;
+
+    loginForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      username = document.getElementById('username').value;
+      var password = document.getElementById('password').value;
+      usersRef = database.ref('users/' + username);
+
+      // データベースでユーザーが存在するか確認
+      usersRef.once('value').then(function(snapshot) {
+          if (snapshot.exists()){
+              // 既存ユーザーの場合
+              var userData = snapshot.val();
+              if (userData.password === password) {
+                  // パスワードが一致すればログイン
+                  document.getElementById('login-container').style.display = 'none';
+                  document.getElementById('hontai').style.display = 'block';
+              } else {
+                  // パスワードが間違っている
+                  loginError.style.display = 'block';
+              }
+          }else{
+              // 新規ユーザーの場合、アカウント作成
+              usersRef.update({
+                  password: password,
+              });
+              document.getElementById('login-container').style.display = 'none';
+              document.getElementById('hontai').style.display = 'block';
+          }
+      });
+  });
+
+  const bodyTextarea = document.querySelector('textarea#body');
+  const titleInput = document.querySelector('input#title');
+  const searchButton = document.querySelector('button#search');
+
+  bodyTextarea.addEventListener('input', () => {
+    const title = titleInput.value.trim();
+    const body = bodyTextarea.value;
+    database.ref(`users/${username}/memo/${title}`).update({body:body});
+  });
+
+  searchButton.addEventListener('click', () => {
+    const title = titleInput.value;
+    database.ref(`users/${username}/memo/${title}`).once('value').then((snapshot) => {
+      bodyTextarea.value = snapshot.val()?.body || '';
+    });
+  });
+
+  </script>
+  </body>
+</html>
