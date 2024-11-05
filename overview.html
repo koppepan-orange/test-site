@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>test-site</title>
     <style>
-        #Toolframe, #Chatframe, #Gameframe {
+        #Toolframe,#Chatframe,#Memoframe,#Gameframe {
             display: none;
         }
         #Homeframe{
@@ -17,14 +17,14 @@
 <body>
     <select id="Select" onchange="document.getElementById('Homeframe').style.display = 'none'; document.getElementById('Toolframe').style.display = 'none'; document.getElementById('Memoframe').style.display = 'none'; document.getElementById('Chatframe').style.display = 'none'; document.getElementById('Gameframe').style.display = 'none'; document.getElementById(this.value).style.display = 'block';">
         <option value="Homeframe">home</option>
-        <option value="Memoframe">memo</option>
         <option value="Toolframe">tools</option>
+        <option value="Memoframe">memo</option>
         <option value="Chatframe">chat</option>
         <option value="Gameframe">game</option>
     </select><button onclick="document.getElementById('Iframe').requestFullscreen()">Full</button><br>
     <iframe src="home.html" id="Homeframe" width="100%" height="1000"></iframe>
-    <iframe src="memo.html" id="Memoframe" width="100%" height="1000"></iframe>
     <iframe src="tools.html" id="Toolframe" width="100%" height="1000"></iframe>
+    <iframe src="memo.html" id="Memoframe" width="100%" height="1000"></iframe>
     <iframe src="chat-site.html" id="Chatframe" width="100%" height="1000"></iframe>
     <iframe src="https://koppepan-orange.github.io/game-site/welcome.html" id="Gameframe" width="100%" height="1000"></iframe>
     <script>
