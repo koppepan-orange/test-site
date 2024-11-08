@@ -372,12 +372,15 @@
             // メッセージ送信
             sendButton.addEventListener('click', async function(){
                 var message = messageInput.value;
-                var Musername = document.getElementById('username').value;
+                var Musername = username;
                 if(room == 'Anonymous-1'||room == 'Anonymous-2'||room == 'Anonymous-3'){Musername = AnonymousName;}
                 if(message.trim() !== ''){
+
+                    //commands
                     switch(message){
                         case '/clear':
                             database.ref('rooms/'+room).remove();
+                            setTimeout(displayAllMessages, 200);
                             messageInput.value = ''; return;
                         case '/reload':
                             window.location.reload();
@@ -389,7 +392,7 @@
                             usersRef.update({status: 'offline'});
                             messageInput.value = ''; return;
                     }   
-                    if(message.startsWith('/rename')){username = message.substring(8);return;}
+                    if(message.startsWith('/rename')){username = message.substring(8);messageInput.value = '';return;};
 
                     if(message.startsWith('/i')){message = '<i>'+message.substring(2)+'</i>';};
                     if(message.startsWith('/b')){message = '<b>'+message.substring(2)+'</b>';};
