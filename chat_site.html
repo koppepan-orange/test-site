@@ -378,16 +378,16 @@
                     switch(message){
                         case '/clear':
                             database.ref('rooms/'+room).remove();
-                            return;
+                            messageInput.value = ''; return;
                         case '/reload':
                             window.location.reload();
-                            return;
+                            messageInput.value = ''; return;
                         case '/online':
                             usersRef.update({status: 'online'});
-                        return;
+                            messageInput.value = ''; return;
                         case '/offline':
                             usersRef.update({status: 'offline'});
-                        return;
+                            messageInput.value = ''; return;
                     }   
                     if(message.startsWith('/rename')){username = message.substring(8);return;}
 
