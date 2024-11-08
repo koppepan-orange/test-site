@@ -375,8 +375,28 @@
                 var Musername = document.getElementById('username').value;
                 if(room == 'Anonymous-1'||room == 'Anonymous-2'||room == 'Anonymous-3'){Musername = AnonymousName;}
                 if(message.trim() !== ''){
+                    switch(message){
+                        case '/clear':
+                            database.ref('rooms/'+room).remove();
+                            return;
+                        case '/reload':
+                            window.location.reload();
+                            return;
+                        case '/online':
+                            usersRef.update({status: 'online'});
+                        return;
+                        case '/offline':
+                            usersRef.update({status: 'offline'});
+                        return;
+                    }   
+                    if(message.startsWith('/rename')){username = message.substring(8);return;}
+
+                    if(message.startsWith('/i')){message = '<i>'+message.substring(2)+'</i>';};
+                    if(message.startsWith('/b')){message = '<b>'+message.substring(2)+'</b>';};
+                    if(message.startsWith('/u')){message = '<u>'+message.substring(2)+'</u>';};
+                    if(message.startsWith('/s')){message = '<s>'+message.substring(2)+'</s>';};
                     messagesRef.push({
-                        text: message.replace(/\n/g, '<br>'),
+                        text: message,
                         username: Musername,
                         timestamp: formatDate(new Date())
                     });
