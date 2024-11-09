@@ -443,14 +443,17 @@
                     };
 
                     if(message.startsWith('/rename')){username = message.substring(8);messageInput.value = '';return;};
+                    if(message.startsWith('/rerename')){document.getElementById('username').value = message.substring(8);username = document.getElementById('username').value;messageInput.value = '';return;};
 
                     if(message.startsWith('/i')){message = '<i>'+message.substring(3)+'</i>';};
                     if(message.startsWith('/b')){message = '<b>'+message.substring(3)+'</b>';};
                     if(message.startsWith('/u')){message = '<u>'+message.substring(3)+'</u>';};
                     if(message.startsWith('/s')){message = '<s>'+message.substring(3)+'</s>';};
+                    //メッセージ送信と送る何か
                     messagesRef.push({
                         text: message,
                         username: Musername,
+                        realusername: document.getElementById('username').value,//偽物対策
                         timestamp: formatDate(new Date())
                     });
                     messageInput.value = '';
@@ -474,6 +477,13 @@
                 var usernameElement = document.createElement('span');
                 usernameElement.className = 'username';
                 usernameElement.textContent = messageData.username;
+                usernameElement.addEventListener('mouseover', function(){
+                    messageInput.value = '送信者:'+document.getElementById('username').value;
+                    const off = addEventListener('mouseout', function(){
+                        removeEventListener('mouseout', off);
+                        messageInput.value = '';
+                    })
+                })
                 messageElement.appendChild(usernameElement);
 
                 var timestampElement = document.createElement('span');
@@ -542,6 +552,15 @@
                     var usernameElement = document.createElement('span');
                     usernameElement.className = 'username';
                     usernameElement.textContent = messageData.username;
+                    usernameElement.id = document.getElementById('username').value;
+                    usernameElement.addEventListener('mouseover', function(){
+                        let moto = messageInput.value;
+                        messageInput.value = '送信者:'+messageData.realusername;
+                        const off = addEventListener('mouseout', function(){
+                            removeEventListener('mouseout', off);
+                            messageInput.value = moto;
+                        })
+                    })
                     messageElement.appendChild(usernameElement);
 
                     var timestampElement = document.createElement('span');
