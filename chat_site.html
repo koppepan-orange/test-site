@@ -212,7 +212,9 @@
         let room = 1;
         let username = 'no name';
         let usersRef = null;
+        let userData = null;
         let AnonymousName = '風吹けば名無し'
+        function load(){usersRef.once('value').then(function(snapshot){userData = snapshot.val();});}
 
         async function uploadImageToRTDB() {
             const file = document.getElementById('imageInput').files[0];
@@ -251,7 +253,7 @@
             usersRef.once('value').then(function(snapshot) {
                 if (snapshot.exists()){
                     // 既存ユーザーの場合
-                    var userData = snapshot.val();
+                    userData = snapshot.val();
                     if (userData.password === password) {
                         // パスワードが一致すればログイン
                         usersRef.update({
@@ -294,8 +296,8 @@
                 const onlineUsers = document.getElementById('online-users');
                 onlineUsers.innerHTML = ''; // リストをクリア
                 snapshot.forEach(function(childSnapshot) {
-                    const userData = childSnapshot.val();
-                    if (userData.status === 'online') {
+                    const auserData = childSnapshot.val();
+                    if (auserData.status === 'online') {
                         const li = document.createElement('li');
                         li.textContent = childSnapshot.key; // ユーザー名を表示
                         onlineUsers.appendChild(li);
@@ -378,6 +380,9 @@
 
                     //commands
                     switch(message){
+                        case '/save':
+                            load();//debuger用(適用と言えるかも)
+                            messageInput.value = ''; return;
                         case '/clear':
                             database.ref('rooms/'+room).remove();
                             setTimeout(displayAllMessages, 200);
@@ -391,13 +396,58 @@
                         case '/offline':
                             usersRef.update({status: 'offline'});
                             messageInput.value = ''; return;
+                        case '/now':
+                            load();
+                            messageInput.value = `${userData.yen ?? 0}円`;
+                            await delay(1000);messageInput.value = ''; return;
+                        case '/daily':
+                            const date = new Date();
+                            const year = date.getFullYear();
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const day = String(date.getDate()).padStart(2, '0');
+                            days = `${year}${month}${day}`;
+                            prevdays = userData.daily ?? 0;
+                            if(prevdays < days){
+                            x = userData.yen ?? 0;
+                            x += 500;
+                            usersRef.update({yen: x, daily: days});
+                            messageInput.value = 'ログインボーナス！ now:'+ x +'円';
+                            load();
+                            await delay(1000);messageInput.value = ''; return;
+                            }else{
+                            messageInput.value = '受け取り済みです。乙乙乙乙';
+                            await delay(1000);messageInput.value = ''; return;
+                            }
                     }   
+
+                    if(message.startsWith('/give')){
+                        messageInput.value = '';
+                        let parts = message.split(' ');//parts = '/give, user, amount'
+                        let user = parts[1];
+                        let amount = parseInt(parts[2]);
+                        console.log(user, amount);
+                        x = userData.yen ?? 0;
+                        if(userData.yen < amount){amount = userData.yen;messageInput.value = '所持金が不足しています。';await delay(1000);messageInput.value = '';return;};
+                        if(isNaN(amount)){amount = 0;messageInput.value = '金額が不明です。';await delay(1000);messageInput.value = '';return;};
+                        x -= amount;
+                        usersRef.update({yen: x});
+                        ToRef = database.ref('users/'+user);
+                        let ToData = null;
+                        await ToRef.once('value').then(function(snapshot){ToData = snapshot.val();});
+                        y = ToData.yen ?? 0;
+                        y += amount;
+                        ToRef.update({yen: y});
+                        load();
+                        messageInput.value = `${amount}円${user}に貢ぎました。`;
+                        await delay(1000);messageInput.value = '';return;
+                    };
+
                     if(message.startsWith('/rename')){username = message.substring(8);messageInput.value = '';return;};
 
-                    if(message.startsWith('/i')){message = '<i>'+message.substring(2)+'</i>';};
-                    if(message.startsWith('/b')){message = '<b>'+message.substring(2)+'</b>';};
-                    if(message.startsWith('/u')){message = '<u>'+message.substring(2)+'</u>';};
-                    if(message.startsWith('/s')){message = '<s>'+message.substring(2)+'</s>';};
+                    if(message.startsWith('/i')){message = '<i>'+message.substring(3)+'</i>';};
+                    if(message.startsWith('/b')){message = '<b>'+message.substring(3)+'</b>';};
+                    if(message.startsWith('/u')){message = '<u>'+message.substring(3)+'</u>';};
+                    if(message.startsWith('/s')){message = '<s>'+message.substring(3)+'</s>';};
                     messagesRef.push({
                         text: message,
                         username: Musername,
