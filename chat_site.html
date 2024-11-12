@@ -132,12 +132,29 @@
         .hover-element:hover .popup {
             display: block;
         }
+
+        #movingtext1{
+            position: absolute;
+            top: 80%;
+            right: 0;
+            background-color: rgba(228, 249, 255, 0.563);
+            color: #000000;
+            font-size: 20px;
+        }
+        #movingtext2{
+            position: absolute;
+            top: 60%;
+            right: 0;
+            background-color: rgba(228, 249, 255, 0.563);
+            color: #000000;
+            font-size: 20px;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 </head>
-<body>
+<body id="body">
     <!-- ログイン画面 -->
     <div class="login-container">
         <form class="login-form" id="login-form">
@@ -181,11 +198,12 @@
             </div>
         </div>
         <input type="textarea" id="message-input" placeholder="メッセージを書く">
-        <button id="send-button">送信</button>
+        <button id="send-button">送信</button>                            
         <div class="member-list" id="member-list">
             <h3>online now</h3>
             <ul id="online-users"></ul>
         </div>
+        <div id="movingtext1"></div><div id="movingtext2"></div>
     </div>
 
     <script>
@@ -214,6 +232,7 @@
         let usersRef = null;
         let userData = null;
         let AnonymousName = '風吹けば名無し'
+        let moving = [0,0];
         function load(){usersRef.once('value').then(function(snapshot){userData = snapshot.val();});}
 
         async function uploadImageToRTDB() {
@@ -374,6 +393,7 @@
             messagesRef = database.ref('rooms/' + room + '/messages');
             document.getElementById('messages').innerHTML = '';
 
+            
 
             // メッセージ送信
             sendButton.addEventListener('click', async function(){
@@ -450,7 +470,7 @@
                         await delay(1000);messageInput.value = '';return;
                     };
 
-                    if(message.startsWith('/rename')){username = message.substring(8);messageInput.value = '';return;};
+                    if(message.startsWith('/change')){username = message.substring(8);messageInput.value = '';return;};
                     if(message.startsWith('/rerename')){document.getElementById('username').value = message.substring(10);username = document.getElementById('username').value;messageInput.value = '';return;};
 
                     if(message.startsWith('/i')){message = '<i>'+message.substring(3)+'</i>';};
@@ -476,7 +496,7 @@
             });
 
             // 新しいメッセージが追加された時のみ、そのメッセージを追加表示
-            messagesRef.on('child_added', function(snapshot){
+            messagesRef.on('child_added', async function(snapshot){
                 var messageData = snapshot.val();
                 var messageElement = document.createElement('div');
                 messageElement.className = 'message';
@@ -485,12 +505,25 @@
                 var usernameElement = document.createElement('span');
                 usernameElement.className = 'username';
                 usernameElement.textContent = messageData.username;
-                usernameElement.addEventListener('click', function(){
-                    messageInput.value = '送信者:'+document.getElementById('username').value;
-                    const off = addEventListener('mousemove', function(){
-                        removeEventListener('mousemove', off);
-                        messageInput.value = '';
-                    })
+                usernameElement.addEventListener('click', async function(){
+                    const newDiv = document.createElement('div');
+                    newDiv.textContent = `送信者:${messageData.realusername}`;
+                    newDiv.style = `
+                    position: absolute;
+                    top: ${Math.random()*100}%;
+                    right: 0;
+                    background-color: rgba(228, 249, 255, 0.563);
+                    color: #000000;
+                    font-size: 20px;
+                    `
+                    document.getElementById('body').appendChild(newDiv);
+                    for(let i = 0; i < 100; i++){
+                        let val = i*15;
+                        newDiv.style.right = `${val}px`
+                        await delay(50);
+                    }
+                    newDiv.remove();
+
                 })
                 messageElement.appendChild(usernameElement);
 
@@ -544,7 +577,8 @@
             });
         }
 
-        function displayAllMessages() {
+
+        function displayAllMessages(){
             var roomSelect = document.getElementById('room-select');
             room = roomSelect.value;
             document.getElementById('messages').innerHTML = '';
@@ -561,13 +595,25 @@
                     usernameElement.className = 'username';
                     usernameElement.textContent = messageData.username;
                     usernameElement.id = document.getElementById('username').value;
-                    usernameElement.addEventListener('click', function(){
-                        let moto = messageInput.value;
-                        messageInput.value = '送信者:'+messageData.realusername;
-                        const off = addEventListener('mousemove', function(){
-                            removeEventListener('mousemove', off);
-                            messageInput.value = moto;
-                        })
+                    usernameElement.addEventListener('click', async function(){
+                        const newDiv = document.createElement('div');
+                        newDiv.textContent = `送信者:${messageData.realusername}`;
+                        newDiv.style = `
+                        position: absolute;
+                        top: ${Math.random()*100}%;
+                        right: 0;
+                        background-color: rgba(228, 249, 255, 0.563);
+                        color: #000000;
+                        font-size: 20px;
+                        `
+                        document.getElementById('body').appendChild(newDiv);
+                        for(let i = 0; i < 100; i++){
+                            let val = i*15;
+                            newDiv.style.right = `${val}px`
+                            await delay(50);
+                        }
+                        newDiv.remove();
+
                     })
                     messageElement.appendChild(usernameElement);
 
