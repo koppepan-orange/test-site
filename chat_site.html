@@ -405,11 +405,15 @@
                     //commands
                     if(message === '/save'){
                         load();
-                        messageInput.value = '';
+                        NicoNicoText('君、もしやデバッガーだね..?')
+                        messageInput.value = '';return;
                     }
                     if(message === '/clear'){
                         database.ref('rooms/'+room).remove();
                         setTimeout(displayAllMessages, 200);
+                        NicoNicoText('すべてのメッセージが消去されました。');
+                        NicoNicoText('あなたがやったのです。反省しろカス')
+                        NicoNicoText('草')
                         messageInput.value = '';return;
                     }
                     if(message === '/reload'){
@@ -418,16 +422,18 @@
                     }
                     if(message === '/online'){
                         usersRef.update({status: 'online'});
+                        NicoNicoText('onlineになったぜ')
                         messageInput.value = '';return;
                     }
                     if(message === '/offline'){
                         usersRef.update({status: 'offline'});
+                        NicoNicoText('offlineになったぜ')
                         messageInput.value = '';return;
                     }
                     if(message === '/now'){
                         load();
-                        messageInput.value = `${userData.yen ?? 0}円`;
-                        waitanddelete();return;
+                        NicoNicoText('now:'+userData.yen+'円');
+                        messageInput.value = '';return;
                     }
                     if(message == '/daily'){
                         const date = new Date();
@@ -440,11 +446,14 @@
                         x = userData.yen ?? 0;
                         x += 500;
                         usersRef.update({yen: x, daily: days});
-                        messageInput.value = 'ログインボーナス！ now:'+ x +'円';
-                        load();waitanddelete(); return;
+                        NicoNicoText('ログインボーナス！ now:'+x+'円')
+                        load();
+                        messageInput.value = '';
+                        return;
                         }else{
-                        messageInput.value = '受け取り済みです。乙乙乙乙';
-                        waitanddelete();return;
+                        NicoNicoText('受け取り済みです。乙乙乙乙')
+                        messageInput.value = '';
+                        return;
                         }
                     }
 
@@ -455,8 +464,8 @@
                         let amount = parseInt(parts[2]);
                         console.log(user, amount);
                         x = userData.yen ?? 0;
-                        if(userData.yen < amount){amount = userData.yen;messageInput.value = '所持金が不足しています。';await delay(1000);messageInput.value = '';return;};
-                        if(isNaN(amount)){amount = 0;messageInput.value = '金額が不明です。';await delay(1000);messageInput.value = '';return;};
+                        if(userData.yen < amount){amount = userData.yen;NicoNicoText('yenが不足しています..のでAll inとします');NicoNicoText('見栄張っちゃったねぇ....??');return;};
+                        if(isNaN(amount)){amount = 0;NicoNicoText('金額が不明です。');return;};
                         x -= amount;
                         usersRef.update({yen: x});
                         ToRef = database.ref('users/'+user);
@@ -466,9 +475,15 @@
                         y += amount;
                         ToRef.update({yen: y});
                         load();
-                        messageInput.value = `${amount}円${user}に貢ぎました。`;
-                        await delay(1000);messageInput.value = '';return;
+                        NicoNicoText(`${amount}円${user}に貢ぎました。`);
+                        messageInput.value = '';
+                        return;
                     };
+                    if(message.startsWith('/nico')){
+                        NicoNicoText(message.substring(6))
+                        messageInput.value = '';
+                        return;
+                    }
 
                     if(message.startsWith('/change')){username = message.substring(8);messageInput.value = '';return;};
                     if(message.startsWith('/rerename')){document.getElementById('username').value = message.substring(10);username = document.getElementById('username').value;messageInput.value = '';return;};
@@ -506,25 +521,7 @@
                 usernameElement.className = 'username';
                 usernameElement.textContent = messageData.username;
                 usernameElement.addEventListener('click', async function(){
-                    const newDiv = document.createElement('div');
-                    newDiv.textContent = `送信者:${messageData.realusername}`;
-                    newDiv.style = `
-                    position: absolute;
-                    top: ${Math.random()*100}%;
-                    right: 0;
-                    background-color: rgba(228, 249, 255, 0.563);
-                    color: #000000;
-                    font-size: 20px;
-                    `
-                    document.getElementById('body').appendChild(newDiv);
-                    let speed = Math.random()*100+1;
-                    for(let i = 0; window.innerWidth > i*15; i++){
-                        let val = i*speed;
-                        newDiv.style.right = `${val}px`
-                        await delay(50);
-                    }
-                    newDiv.remove();
-
+                    NicoNicoText(`送信者:${messageData.realusername}`);
                 })
                 messageElement.appendChild(usernameElement);
 
@@ -597,25 +594,7 @@
                     usernameElement.textContent = messageData.username;
                     usernameElement.id = document.getElementById('username').value;
                     usernameElement.addEventListener('click', async function(){
-                        const newDiv = document.createElement('div');
-                        newDiv.textContent = `送信者:${messageData.realusername}`;
-                        newDiv.style = `
-                        position: absolute;
-                        top: ${Math.random()*100}%;
-                        right: 0;
-                        background-color: rgba(228, 249, 255, 0.563);
-                        color: #000000;
-                        font-size: 20px;
-                        `
-                        document.getElementById('body').appendChild(newDiv);
-                        let speed = Math.random()*100+1;
-                        for(let i = 0; window.innerWidth > i*15; i++){
-                            let val = i*speed;
-                            newDiv.style.right = `${val}px`
-                            await delay(50);
-                        }
-                        newDiv.remove();
-
+                        NicoNicoText(`送信者:${messageData.realusername}`);
                     })
                     messageElement.appendChild(usernameElement);
 
@@ -664,6 +643,28 @@
                 // 最新のメッセージが見えるようにスクロール
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             });
+        }
+
+        async function NicoNicoText(mes){
+            const newDiv = document.createElement('div');
+            newDiv.textContent = mes;
+            newDiv.style = `
+            position: absolute;
+            top: ${Math.random()*100}vh;
+            right: 0;
+            background-color: rgba(228, 249, 255, 0.563);
+            color: #000000;
+            font-size: 20px;
+            `
+            document.getElementById('body').appendChild(newDiv);
+            //let speed = Math.random()*100+1;
+            let speed = mes.toString().length*2 
+            for(let i = 0; window.innerWidth > i*speed; i++){
+                let val = i*speed;
+                newDiv.style.right = `${val}px`
+                await delay(50);
+            }
+            newDiv.remove();
         }
 
         // 部屋作ったりラジバンダリ
