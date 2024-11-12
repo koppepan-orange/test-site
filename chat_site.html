@@ -517,12 +517,14 @@
                     font-size: 20px;
                     `
                     document.getElementById('body').appendChild(newDiv);
-                    for(let i = 0; window.width >= newDiv.style.right; i++){
-                        let val = i*15;
+                    let speed = Math.random()*100+1;
+                    for(let i = 0; window.innerWidth > i*15; i++){
+                        let val = i*speed;
                         newDiv.style.right = `${val}px`
                         await delay(50);
                     }
                     newDiv.remove();
+
                 })
                 messageElement.appendChild(usernameElement);
 
