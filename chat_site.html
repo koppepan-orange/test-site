@@ -363,6 +363,10 @@
             return `${year}/${month}/${day} ${hours}:${minutes}`;
         }
 
+        async function waitanddelete(){
+            await delay(1000);
+            messageInput.value = '';
+        }
         // 部屋変更時の処理
         function selectRoom(){
             messagesRef.off();
@@ -379,46 +383,50 @@
                 if(message.trim() !== ''){
 
                     //commands
-                    switch(message){
-                        case '/save':
-                            load();//debuger用(適用と言えるかも)
-                            messageInput.value = ''; return;
-                        case '/clear':
-                            database.ref('rooms/'+room).remove();
-                            setTimeout(displayAllMessages, 200);
-                            messageInput.value = ''; return;
-                        case '/reload':
-                            window.location.reload();
-                            messageInput.value = ''; return;
-                        case '/online':
-                            usersRef.update({status: 'online'});
-                            messageInput.value = ''; return;
-                        case '/offline':
-                            usersRef.update({status: 'offline'});
-                            messageInput.value = ''; return;
-                        case '/now':
-                            load();
-                            messageInput.value = `${userData.yen ?? 0}円`;
-                            await delay(1000);messageInput.value = ''; return;
-                        case '/daily':
-                            const date = new Date();
-                            const year = date.getFullYear();
-                            const month = String(date.getMonth() + 1).padStart(2, '0');
-                            const day = String(date.getDate()).padStart(2, '0');
-                            days = `${year}${month}${day}`;
-                            prevdays = userData.daily ?? 0;
-                            if(prevdays < days){
-                            x = userData.yen ?? 0;
-                            x += 500;
-                            usersRef.update({yen: x, daily: days});
-                            messageInput.value = 'ログインボーナス！ now:'+ x +'円';
-                            load();
-                            await delay(1000);messageInput.value = ''; return;
-                            }else{
-                            messageInput.value = '受け取り済みです。乙乙乙乙';
-                            await delay(1000);messageInput.value = ''; return;
-                            }
-                    }   
+                    if(message === '/save'){
+                        load();
+                        messageInput.value = '';
+                    }
+                    if(message === '/clear'){
+                        database.ref('rooms/'+room).remove();
+                        setTimeout(displayAllMessages, 200);
+                        messageInput.value = '';return;
+                    }
+                    if(message === '/reload'){
+                        window.location.reload();
+                        messageInput.value = '';return;
+                    }
+                    if(message === '/online'){
+                        usersRef.update({status: 'online'});
+                        messageInput.value = '';return;
+                    }
+                    if(message === '/offline'){
+                        usersRef.update({status: 'offline'});
+                        messageInput.value = '';return;
+                    }
+                    if(message === '/now'){
+                        load();
+                        messageInput.value = `${userData.yen ?? 0}円`;
+                        waitanddelete();return;
+                    }
+                    if(message == '/daily'){
+                        const date = new Date();
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        days = `${year}${month}${day}`;
+                        prevdays = userData.daily ?? 0;
+                        if(prevdays < days){
+                        x = userData.yen ?? 0;
+                        x += 500;
+                        usersRef.update({yen: x, daily: days});
+                        messageInput.value = 'ログインボーナス！ now:'+ x +'円';
+                        load();waitanddelete(); return;
+                        }else{
+                        messageInput.value = '受け取り済みです。乙乙乙乙';
+                        waitanddelete();return;
+                        }
+                    }
 
                     if(message.startsWith('/give')){
                         messageInput.value = '';
@@ -443,7 +451,7 @@
                     };
 
                     if(message.startsWith('/rename')){username = message.substring(8);messageInput.value = '';return;};
-                    if(message.startsWith('/rerename')){document.getElementById('username').value = message.substring(8);username = document.getElementById('username').value;messageInput.value = '';return;};
+                    if(message.startsWith('/rerename')){document.getElementById('username').value = message.substring(10);username = document.getElementById('username').value;messageInput.value = '';return;};
 
                     if(message.startsWith('/i')){message = '<i>'+message.substring(3)+'</i>';};
                     if(message.startsWith('/b')){message = '<b>'+message.substring(3)+'</b>';};
@@ -477,10 +485,10 @@
                 var usernameElement = document.createElement('span');
                 usernameElement.className = 'username';
                 usernameElement.textContent = messageData.username;
-                usernameElement.addEventListener('mouseover', function(){
+                usernameElement.addEventListener('click', function(){
                     messageInput.value = '送信者:'+document.getElementById('username').value;
-                    const off = addEventListener('mouseout', function(){
-                        removeEventListener('mouseout', off);
+                    const off = addEventListener('mousemove', function(){
+                        removeEventListener('mousemove', off);
                         messageInput.value = '';
                     })
                 })
@@ -553,11 +561,11 @@
                     usernameElement.className = 'username';
                     usernameElement.textContent = messageData.username;
                     usernameElement.id = document.getElementById('username').value;
-                    usernameElement.addEventListener('mouseover', function(){
+                    usernameElement.addEventListener('click', function(){
                         let moto = messageInput.value;
                         messageInput.value = '送信者:'+messageData.realusername;
-                        const off = addEventListener('mouseout', function(){
-                            removeEventListener('mouseout', off);
+                        const off = addEventListener('mousemove', function(){
+                            removeEventListener('mousemove', off);
                             messageInput.value = moto;
                         })
                     })
