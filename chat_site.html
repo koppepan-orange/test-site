@@ -567,7 +567,7 @@
                     usernameElement.className = 'username';
                     usernameElement.textContent = messageData.username;
                     usernameElement.id = document.getElementById('username').value;
-                    usernameElement.addEventListener('click', async function(){
+                    let from = usernameElement.addEventListener('click', async function(){
                         NicoNicoText(`送信者:${messageData.realusername}`);
                     })
                     messageElement.appendChild(usernameElement);
@@ -587,7 +587,7 @@
                     if(username == messageData.username){
                         var editButton = document.createElement('button');
                         editButton.textContent = '✎';
-                        editButton.addEventListener('click', function(){
+                        let edit = editButton.addEventListener('click', function(){
                             messageData.text = prompt('メッセージを編集', messageData.text);//messageInput.value;
                             textElement.innerHTML = messageData.text;
                             const ImadakeRef = database.ref('rooms/'+room+'/messages/'+childSnapshot.key);
@@ -610,6 +610,8 @@
                 messagesRef.on('value', function(snapshot) {
                     if (snapshot.numChildren() > 20) {
                         var firstMessageKey = Object.keys(snapshot.val())[0];
+                        messagesRef.child(firstMessageKey).removeEventListener('click', from);
+                        if(messagesRef.child(firstMessageKey).edit){messagesRef.child(firstMessageKey).removeEventListener('click', edit);}
                         messagesRef.child(firstMessageKey).remove();
                     }
                 });
