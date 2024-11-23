@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+  <title>Music Site</title>
+</head>
+<body>
+  <select id="fileSelector">
+    <option value="over_ride.mp3">オーバーライド</option>
+    <option value="venom.mp3">ベノム</option>
+    <!-- 他の曲をここに追加 -->
+  </select>
+  <button id="playButton">選曲して再生</button>
+  <audio id="audio" controls></audio>
+  <script>
+    // Firebase設定
+    const firebaseConfig = {
+        apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
+        authDomain: "koppepan-orange.firebaseapp.com",
+        databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
+        projectId: "koppepan-orange",
+        storageBucket: "koppepan-orange.appspot.com",
+        messagingSenderId: "730150198097",
+        appId: "1:730150198097:web:076a074a3d406053155170",
+        measurementId: "G-MYKJWD203Z"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // HTML要素
+    const audio = document.getElementById("audio");
+    const fileSelector = document.getElementById("fileSelector");
+    const playButton = document.getElementById("playButton");
+
+    // 選曲してFirebaseに送信
+    playButton.addEventListener("click", () => {
+        const selectedFile = fileSelector.value;
+        set(ref(db, "currentTrack"), {
+            file: selectedFile,
+            startTime: Math.floor(Date.now() / 1000), // 再生開始時刻
+        });
+    });
+
+    // 再生データを同期
+    onValue(ref(db, "currentTrack"), (snapshot) => {
+    const track = snapshot.val();
+    if (track) {
+        const { file, startTime } = track;
+        const now = Math.floor(Date.now() / 1000);
+        const playbackPosition = now - startTime;
+
+        audio.src = `https://raw.githubusercontent.com/koppepan-orange/musics/main/${file}`;
+        audio.currentTime = playbackPosition > 0 ? playbackPosition : 0;
+        audio.play();
+    }
+    });
+
+  </script>
+</body>
+</html>

@@ -459,7 +459,7 @@
                         return;
                     }
 
-                    if(message.startsWith('/change')){username = message.substring(8);messageInput.value = '';return;};
+                    if(message.startsWith('/rename')){username = message.substring(8);messageInput.value = '';return;};
                     if(message.startsWith('/rerename')){document.getElementById('username').value = message.substring(10);username = document.getElementById('username').value;messageInput.value = '';return;};
 
                     if(message.startsWith('/i')){message = '<i>'+message.substring(3)+'</i>';};
