@@ -176,7 +176,6 @@
             <h3>online now</h3>
             <ul id="online-users"></ul>
         </div>
-        <div id="movingtext1"></div><div id="movingtext2"></div>
     </div>
 
     <script>
@@ -204,9 +203,30 @@
         let username = 'no name';
         let usersRef = null;
         let userData = null;
-        let AnonymousName = '風吹けば名無し'
-        let moving = [0,0];
+        let AnonymousName = 'えびプリオ';
         function load(){usersRef.once('value').then(function(snapshot){userData = snapshot.val();});}
+
+
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
 
         async function uploadImageToRTDB() {
             const file = document.getElementById('imageInput').files[0];
@@ -234,6 +254,28 @@
             }
         }
 
+        window.addEventListener('DOMContentLoaded', function(){
+            autoLogin();
+        });
+
+
+        function autoLogin(){
+            var username = getCookie("username");
+            if(username){
+                console.log("自動ログインしました");
+                database.ref('users/' + username).update({
+                    status: 'online'
+                });
+                setCookie("username", username, 7);
+                chatContainer.style.display = 'flex';
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('room-select').style.display = 'block';
+                startChat();
+            } else {
+                console.log("ログインしてください");
+            }
+        }
+
         loginForm.addEventListener('submit', function(event) {
             event.preventDefault();
             username = document.getElementById('username').value;
@@ -251,10 +293,11 @@
                         usersRef.update({
                             status: 'online'
                         });
-                        document.getElementById('login-container').style.display = 'none';
+                        setCookie("username", username, 1);
                         chatContainer.style.display = 'flex';
-                        startChat();
+                        document.getElementById('login-container').style.display = 'none';
                         document.getElementById('room-select').style.display = 'block';
+                        startChat();
                     } else {
                         // パスワードが間違っている
                         loginError.style.display = 'block';
@@ -265,12 +308,14 @@
                         password: password,
                         status: 'online'
                     });
-                    document.getElementById('login-container').style.display = 'none';
+                    setCookie("username", username, 1);
                     chatContainer.style.display = 'flex';
-                    startChat();
+                    document.getElementById('login-container').style.display = 'none';
                     document.getElementById('room-select').style.display = 'block';
+                    startChat();
                 }
             });
+
         });
 
         window.addEventListener('beforeunload', () => {
