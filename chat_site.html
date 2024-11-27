@@ -260,13 +260,14 @@
 
 
         function autoLogin(){
-            var username = getCookie("username");
+            username = getCookie("username");
             if(username){
                 console.log("自動ログインしました");
-                database.ref('users/' + username).update({
+                usersRef = database.ref('users/' + username);
+                usersRef.update({
                     status: 'online'
                 });
-                setCookie("username", username, 7);
+                //setCookie("username", username, 7);
                 chatContainer.style.display = 'flex';
                 document.getElementById('login-container').style.display = 'none';
                 document.getElementById('room-select').style.display = 'block';
