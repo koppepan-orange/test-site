@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="icon" href="https://koppepan-orange.github.io/test-site/Icon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>chat-site</title>
+    <title>nanj-site</title>
     <style>
         body {
             overflow: hidden;
@@ -13,7 +13,51 @@
             margin: 0;
             padding: 0;
         }
-        .login-container, .chat-container {
+
+        #sideMenu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            color: #333344;
+            background-color: #cecece;
+            transition: left 0.3s;
+        }
+        #sideMenu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #sideMenu ul li {
+            padding: 3px;
+        }
+        #sideMenu ul li a {
+            color: #000000;
+            text-decoration: none;
+        }
+        #sideMenu button {
+            background: none;
+            border: none;
+            color: #000000;
+            font: hangyaku;
+            cursor: pointer;
+            text-decoration: none;
+            padding: 0;
+        }
+        #menuToggle {
+            display: none;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #000000;
+            border: none;
+            font-size: 26px;
+            cursor: pointer;
+        }
+        
+        /* login */
+        .login-container, .nanj-container{
             width: 500px;
             max-width: 100%;
             margin: 50px auto;
@@ -47,17 +91,19 @@
         .login-form button:hover {
             background-color: #8b8b8b;
         }
+
+        /* なんJ */
         .messages {
             flex: 1;
             padding: 10px;
             overflow-y: auto;
             max-height: 770px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #dedede;
         }
         .message {
             margin-bottom: 10px;
             padding: 8px 12px;
-            background-color: #cecece;
+            background-color: #bebebe;
             border-radius: 5px;
             max-width: 80%;
             max-height: 150px;
@@ -95,19 +141,6 @@
             justify-content: space-between; 
             padding: 10px; 
         }
-        .member-list {
-            display: none; /* 初期状態では非表示 */
-            padding: 10px;
-            border-top: 1px solid #ddd;
-        }
-        .hamburger {
-            cursor: pointer;
-            font-size: 24px;
-            padding: 10px;
-            position: absolute;
-            top: 0px;
-            right: 20px;
-        }
 
 
         .hover-element {
@@ -125,6 +158,79 @@
             display: block;
         }
 
+        /* twitter2 */
+        .twitter-container {
+            width: 500px;
+            margin: 50px auto;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            display: none;
+        }
+        .tweets {
+            position: relative;
+            flex: 1;
+            width: 500px;
+            overflow-y: scroll;
+            padding: 10px;
+            max-height: 770px;
+            border-bottom: 1px solid #dedede;
+        }
+        #t-make-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width:80px;
+            border: none;
+            padding: 5px;
+            background-color: #2d46fe;
+            color: #ffffff;
+            font-size: 32px;
+        }
+        #t-make-zone{
+            display: block;
+            position: absolute;
+            width: 500px;
+            height: 600px;
+            bottom: -600px;
+            background-color: #b5b5b5;
+            color:#000000;   
+            transition: bottom 0.3s;
+        }
+        #t-make-send, #t-make-cancel{
+            border: none;
+            background-color: none;
+            color: #2d46fe;
+            font-size: 18px;
+        }
+        #t-make-text{
+            background-color: #cecece;
+            resize: vertical;
+            height: 590px;
+        }
+        .tweet{
+            margin-bottom: 15px;
+            padding: 8px 12px;
+            background-color: #ededed;
+            border-radius: 5px;
+            max-width: 80%;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        /*
+        .t-username{
+
+        }
+        .t-timestamp{
+
+        }
+        .t-text{
+
+        }
+        */
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -140,8 +246,24 @@
             <div id="login-error" style="color: red; display: none;">パスワードが間違っています。</div>
         </form>
     </div>
-    <div class="hamburger" id="hamburger">☰</div>
-    <div class="chat-container" id="chat-container">
+    <div class="menuToggle" id="menuToggle">☰</div>
+    <!--サイドメニュー..-->
+    <nav id="sideMenu">
+        <hr noshade="true">
+        <ul>
+            <li><button onclick="GoTo('nanj')">NanJ</button></li>
+            <li><button onclick="GoTo('twitter')">Twitter2</button></li>
+        </ul>
+        <hr noshade="true">
+        <ul>
+          <li><a href="https://koppepan-orange.github.io/test_site/home.html">to home</a></li>
+          <li><a href="https://koppepan-orange.github.io/test_site/memo.html">to memo</a></li>
+          <li><a href="https://koppepan-orange.github.io/game_site/welcome.html">to game</a></li>
+        </ul>
+        <hr noshade="true">
+        <button id="logout-button" onclick="logout()">Logout</button>
+    </nav>
+    <div class="nanj-container" id="nanj-container">
         <select id="room-select" name="room-select" onchange="selectRoom()">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -171,10 +293,21 @@
             </div>
         </div>
         <input type="textarea" id="message-input" placeholder="メッセージを書く">
-        <button id="send-button">送信</button>                            
-        <div class="member-list" id="member-list">
-            <h3>online now</h3>
-            <ul id="online-users"></ul>
+        <button id="send-button">送信</button>     
+    </div>
+
+    <!--twitter2-->
+    <div class="twitter-container" id="twitter-container">
+        <select id="t-room-select" name="t-room-select" onchange="selectTweetsroom()">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        <div class="tweets" id="tweets"></div>
+        <button id="t-make-button">✎</button>
+        <div id="t-make-zone">
+            <span id="t-make-cancel">キャンセル</span>　<span id="t-make-send">完了</span><br>
+            <textarea id="t-make-text" rows="15" cols="72"></textarea>
         </div>
     </div>
 
@@ -197,13 +330,16 @@
 
         //ログイン処理
         var loginForm = document.getElementById('login-form');
-        var chatContainer = document.getElementById('chat-container');
+        var nanjContainer = document.getElementById('nanj-container');
+        var twitterContainer = document.getElementById('twitter-container');
         var loginError = document.getElementById('login-error');
         let room = 1;
         let username = 'no name';
+        let realusername = 'no name';
         let usersRef = null;
         let userData = null;
         let AnonymousName = 'えびプリオ';
+        function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
         function load(){usersRef.once('value').then(function(snapshot){userData = snapshot.val();});}
 
 
@@ -261,6 +397,7 @@
 
         function autoLogin(){
             username = getCookie("username");
+            realusername = username;
             if(username){
                 console.log("自動ログインしました");
                 usersRef = database.ref('users/' + username);
@@ -268,10 +405,12 @@
                     status: 'online'
                 });
                 //setCookie("username", username, 7);
-                chatContainer.style.display = 'flex';
+                menuToggle.style.display = 'block';
+                nanjContainer.style.display = 'flex';
                 document.getElementById('login-container').style.display = 'none';
                 document.getElementById('room-select').style.display = 'block';
-                startChat();
+                room = roomSelect.value;
+                selectRoom();
             } else {
                 console.log("ログインしてください");
             }
@@ -279,7 +418,8 @@
 
         loginForm.addEventListener('submit', function(event) {
             event.preventDefault();
-            username = document.getElementById('username').value;
+            realusername = document.getElementById('username').value;
+            username = realusername;
             var password = document.getElementById('password').value;
 
             usersRef = database.ref('users/' + username);
@@ -295,10 +435,12 @@
                             status: 'online'
                         });
                         setCookie("username", username, 1);
-                        chatContainer.style.display = 'flex';
+                        menuToggle.style.display = 'block';
+                        nanjContainer.style.display = 'flex';
                         document.getElementById('login-container').style.display = 'none';
                         document.getElementById('room-select').style.display = 'block';
-                        startChat();
+                        room = roomSelect.value;
+                        selectRoom();
                     } else {
                         // パスワードが間違っている
                         loginError.style.display = 'block';
@@ -310,10 +452,12 @@
                         status: 'online'
                     });
                     setCookie("username", username, 1);
-                    chatContainer.style.display = 'flex';
+                    menuToggle.style.display = 'block';
+                    nanjContainer.style.display = 'flex';
                     document.getElementById('login-container').style.display = 'none';
                     document.getElementById('room-select').style.display = 'block';
-                    startChat();
+                    room = roomSelect.value;
+                    selectRoom();
                 }
             });
 
@@ -325,8 +469,9 @@
             });
         });
 
+        /**
         // ハンバーガーアイコンをクリックしたときの処理
-        document.getElementById('hamburger').addEventListener('click', function() {
+        document.getElementById('menuToggle').addEventListener('click', function() {
             const onlineUsersRef = database.ref('users');
             onlineUsersRef.on('value', function(snapshot) {
                 let delay = 0;
@@ -342,8 +487,33 @@
                 });
             });
         });
+        */
+
+        const menuToggle = document.getElementById('menuToggle');
+        const sideMenu = document.getElementById('sideMenu');
+        menuToggle.addEventListener('click', () => {
+        if(sideMenu.style.left === '0px'){
+            sideMenu.style.left = '-250px';
+        }else{
+            sideMenu.style.left = '0px';
+        }
+        });
 
 
+
+        function GoTo(code){
+            nanjContainer.style.display = 'none';
+            twitterContainer.style.display = 'none';
+            switch(code){
+                case 'nanj':
+                    nanjContainer.style.display = 'flex';
+                    break;
+                case 'twitter':
+                    twitterContainer.style.display = 'flex';
+                    selectTweetsroom();
+                    break;
+            }
+        }
 
         // ここからチャットの動き
         var sendButton = document.getElementById('send-button');
@@ -390,14 +560,25 @@
             const minutes = String(date.getMinutes()).padStart(2, '0');
             return `${year}/${month}/${day} ${hours}:${minutes}`;
         }
+        function formatTime(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const time = `${year}${month}${day}${hours}${minutes}`;
+            return +time;
+        }
 
         async function waitanddelete(){
             await delay(1000);
             messageInput.value = '';
         }
         // 部屋変更時の処理
+        let MessageSendE;
         function selectRoom(){
             messagesRef.off();
+            sendButton.removeEventListener('click', MessageSendE);
             room = roomSelect.value;
             messagesRef = database.ref('rooms/' + room + '/messages');
             document.getElementById('messages').innerHTML = '';
@@ -405,7 +586,7 @@
             
 
             // メッセージ送信
-            sendButton.addEventListener('click', async function(){
+            MessageSendE = sendButton.addEventListener('click', async function(){
                 var message = messageInput.value;
                 var Musername = username;
                 if(room == 'Anonymous-1'||room == 'Anonymous-2'||room == 'Anonymous-3'){Musername = AnonymousName;}
@@ -457,15 +638,12 @@
                     }
                     if(message == '/daily'){
                         const date = new Date();
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
-                        days = `${year}${month}${day}`;
+                        let time = formatTime(date);
                         prevdays = userData.daily ?? 0;
-                        if(prevdays < days){
+                        if(prevdays < time){
                         x = userData.yen ?? 0;
                         x += 500;
-                        usersRef.update({yen: x, daily: days});
+                        usersRef.update({yen: x, daily: time});
                         NicoNicoText('ログインボーナス！ now:'+x+'円')
                         load();
                         messageInput.value = '';
@@ -506,8 +684,8 @@
                     }
 
                     if(message.startsWith('/rename')){username = message.substring(8);messageInput.value = '';return;};
-                    if(message.startsWith('/rerename')){document.getElementById('username').value = message.substring(10);username = document.getElementById('username').value;messageInput.value = '';return;};
-
+                    if(message.startsWith('/rerename')){realusername = message.substring(10);username = realusername;messageInput.value = '';return;};
+                    if(message.startsWith('/haidoumominasankonnnitihamikankoppepannnokoppepandesu')){document.getElementById('username').value = substring(43);realusername = document.getElementById('username').value;username = realusername;messageInput.value = '';return;}
                     if(message.startsWith('/i')){message = '<i>'+message.substring(3)+'</i>';};
                     if(message.startsWith('/b')){message = '<b>'+message.substring(3)+'</b>';};
                     if(message.startsWith('/u')){message = '<u>'+message.substring(3)+'</u>';};
@@ -516,7 +694,7 @@
                     messagesRef.push({
                         text: message,
                         username: Musername,
-                        realusername: document.getElementById('username').value,//偽物対策
+                        realusername: realusername,//偽物対策
                         timestamp: formatDate(new Date())
                     });
                     messageInput.value = '';
@@ -540,7 +718,7 @@
                 var usernameElement = document.createElement('span');
                 usernameElement.className = 'username';
                 usernameElement.textContent = messageData.username;
-                usernameElement.addEventListener('click', async function(){
+                let from = usernameElement.addEventListener('click', async function(){
                     NicoNicoText(`送信者:${messageData.realusername}`);
                 })
                 messageElement.appendChild(usernameElement);
@@ -552,7 +730,7 @@
 
                 var copyButton = document.createElement('button');
                 copyButton.textContent = '❐';
-                copyButton.addEventListener('click', function(){
+                let copy = copyButton.addEventListener('click', function(){
                     navigator.clipboard.writeText(messageData.text);
                 });
                 messageElement.appendChild(copyButton);
@@ -560,7 +738,7 @@
                 if(username == messageData.username){
                     var editButton = document.createElement('button');
                     editButton.textContent = '✎';
-                    editButton.addEventListener('click', function(){
+                    let edit = editButton.addEventListener('click', function(){
                         messageData.text = prompt('メッセージを編集', messageData.text);//messageInput.value;
                         textElement.innerHTML = messageData.text;
                         const ImadakeRef = database.ref('rooms/'+room+'/messages/'+snapshot.key);
@@ -723,14 +901,171 @@
             });
         }
 
-        function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
 
-
-        // チャットの開始、送信、受信
-        function startChat() {
-            room = roomSelect.value;
-            selectRoom();
+        // twitter2
+        const tweets = document.getElementById('tweets');
+        let troom = 1;
+        let tweetsRef = database.ref('tweets/1');
+        function selectTweetsroom(){
+            tweetsRef = database.ref('tweets/'+troom);
+            usersRef = database.ref('users/' + username);
+            tweetsRef.once('value', function(snapshot) {
+                displayAllTweets();  // 一回だけ全メッセージを表示
+            });
         }
+        document.getElementById('t-make-button').addEventListener('click', () => {//一方通行の色恋にしてもいいかも
+            const zone = document.getElementById('t-make-zone')
+            if(zone.style.bottom === '0px'){
+                zone.style.bottom = '-600px';
+            }else{
+                zone.style.bottom = '0px';
+            }
+        });
+        document.getElementById('t-make-send').addEventListener('click', () => {
+            const Text = document.getElementById('t-make-text').value;
+            tweetsRef.push({
+                text: Text,
+                username: document.getElementById('username').value,
+                timestamp: formatDate(new Date()),
+                time: formatTime(new Date())
+            });
+            document.getElementById('t-make-text').value = '';
+            const zone = document.getElementById('t-make-zone');
+            zone.style.bottom = '-600px';
+        })
+        document.getElementById('t-make-cancel').addEventListener('click', () => {
+            const zone = document.getElementById('t-make-zone')
+            zone.style.bottom = '-600px';
+            document.getElementById('t-make-text').value = '';
+        })
+
+        tweetsRef.on('child_added', async function(snapshot){
+            var messageData = snapshot.val();
+            var messageElement = document.createElement('div');
+            messageElement.className = 'tweet';
+            messageElement.setAttribute('data-id', snapshot.key);
+
+            var usernameElement = document.createElement('span');
+            usernameElement.className = 'username';
+            usernameElement.textContent = messageData.username;//クリックされたらその人のみに〜みたいなのあり
+            messageElement.appendChild(usernameElement);
+
+            var timestampElement = document.createElement('span');
+            timestampElement.className = 't-timestamp';
+            timestampElement.textContent = '　'+timeDifference(messageData.time.toString());
+            messageElement.appendChild(timestampElement);
+
+            var brElement = document.createElement('br');
+            messageElement.appendChild(brElement);
+
+            var textElement = document.createElement('pre');
+            textElement.textContent = messageData.text;
+            messageElement.appendChild(textElement);
+
+            tweets.insertBefore(messageElement, tweets.firstChild);
+        });
+
+
+
+        function displayAllTweets(){
+            troom = document.getElementById('t-room-select').value;
+            document.getElementById('tweets').innerHTML = '';
+
+            // データベースから全てのメッセージを取得
+            tweetsRef.once('value', function(snapshot){
+                snapshot.forEach(function(childSnapshot){
+                    var messageData = childSnapshot.val();
+                    var messageElement = document.createElement('div');
+                    messageElement.className = 'tweet';
+                    messageElement.setAttribute('data-id', childSnapshot.key);
+
+                    var usernameElement = document.createElement('span');
+                    usernameElement.className = 't-username';
+                    usernameElement.textContent = messageData.username;//クリックされたらその人のみに〜みたいなのあり
+                    messageElement.appendChild(usernameElement);
+                    
+                    var timestampElement = document.createElement('span');
+                    timestampElement.className = 't-timestamp';
+                    timestampElement.textContent = '　'+timeDifference(messageData.time.toString());
+                    messageElement.appendChild(timestampElement);
+
+                    var brElement = document.createElement('br');
+                    messageElement.appendChild(brElement);
+
+                    var textElement = document.createElement('pre');
+                    textElement.className = 't-text';
+                    textElement.textContent = messageData.text;
+                    messageElement.appendChild(textElement);
+
+                    messageElement.appendChild(brElement);
+
+                    var replyElement = document.createElement('span');
+                    replyElement.className = 't-reply';
+                    replyElement.textContent = '返信';
+                    replyElement.addEventListener('click', async function(){
+                        document.getElementById('t-make-text').value = '@'+messageData.username+' ';
+                    })
+
+                    var heartElement = document.createElement('span');
+                    heartElement.className = 't-heart';
+                    heartElement.textContent = '♡  '+messageData.heart.length;
+                    if(messageData.heart.includes(document.getElementById('username').value)){
+                        heartElement.style.color = 'red';
+                    }
+                    heartElement.addEventListener('click', async function(){
+                        if(messageData.heart.includes(document.getElementById('username').value)){
+                            messageData.heart.splice(messageData.heart.indexOf(document.getElementById('username').value), 1);
+                            heartElement.style.color = 'black';
+                        }else{
+                            messageData.heart.push(document.getElementById('username').value);
+                            heartElement.style.color = 'red';
+                        }
+                        tweetsRef.child(childSnapshot.key).update({
+                            heart: messageData.heart
+                        });
+                    })
+                    messageElement.appendChild(heartElement);
+
+                    tweets.insertBefore(messageElement, tweets.firstChild);
+                });
+            });
+        }
+
+
+        function timeDifference(pastTimestamp) {
+            const now = new Date(); // 現在時刻
+            const pastDate = new Date(
+                pastTimestamp.slice(0, 4),
+                pastTimestamp.slice(4, 6) - 1,
+                pastTimestamp.slice(6, 8),
+                pastTimestamp.slice(8, 10),
+                pastTimestamp.slice(10, 12)
+            );
+
+            const diffMs = now - pastDate; // ミリ秒の差分
+            const diffMinutes = Math.floor(diffMs / (1000 * 60)); // 分に変換
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60)); // 時間に変換
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24)); // 日に変換
+
+            const diffMonths = (now.getFullYear() - pastDate.getFullYear()) * 12 +
+                            now.getMonth() - pastDate.getMonth(); // 月差分計算
+
+            const diffYears = now.getFullYear() - pastDate.getFullYear(); // 年差分計算
+
+            // 条件分岐で返す
+            if (diffMinutes < 60) {
+                return `${diffMinutes}分前`;
+            } else if (diffHours < 24) {
+                return `${diffHours}時間前`;
+            } else if (diffDays < 30) { // 30日未満なら「日」
+                return `${diffDays}日前`;
+            } else if (diffMonths < 12) { // 12ヶ月未満なら「月」
+                return `${diffMonths}ヶ月前`;
+            } else { // それ以上なら「年」
+                return `${diffYears}年前`;
+            }
+        }
+
     </script>
 </body>
 </html>
