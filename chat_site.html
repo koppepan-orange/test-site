@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="icon" href="https://koppepan-orange.github.io/test-site/Icon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>nanj-site</title>
+    <title>chat-site</title>
     <style>
         body {
             overflow: hidden;
@@ -515,7 +515,31 @@
             }
         }
 
-        // ここからチャットの動き
+
+        async function NicoNicoText(mes){
+            const newDiv = document.createElement('div');
+            newDiv.textContent = mes;
+            newDiv.style = `
+            position: absolute;
+            top: ${Math.random()*100}vh;
+            right: 0;
+            background-color: rgba(228, 249, 255, 0.563);
+            color: #000000;
+            font-size: 20px;
+            `
+            document.getElementById('body').appendChild(newDiv);
+            let speed = Math.random()*100+1;
+            //let speed = mes.toString().length*2 
+            for(let i = 0; window.innerWidth > i*speed; i++){
+                let val = i*speed;
+                newDiv.style.right = `${val}px`
+                await delay(50);
+            }
+            newDiv.remove();
+        }
+
+
+        //#region ここからチャットの動き
         var sendButton = document.getElementById('send-button');
         var messageInput = document.getElementById('message-input');
         var messagesContainer = document.getElementById('messages');
@@ -845,29 +869,6 @@
             });
         }
 
-        async function NicoNicoText(mes){
-            const newDiv = document.createElement('div');
-            newDiv.textContent = mes;
-            newDiv.style = `
-            position: absolute;
-            top: ${Math.random()*100}vh;
-            right: 0;
-            background-color: rgba(228, 249, 255, 0.563);
-            color: #000000;
-            font-size: 20px;
-            `
-            document.getElementById('body').appendChild(newDiv);
-            let speed = Math.random()*100+1;
-            //let speed = mes.toString().length*2 
-            for(let i = 0; window.innerWidth > i*speed; i++){
-                let val = i*speed;
-                newDiv.style.right = `${val}px`
-                await delay(50);
-            }
-            newDiv.remove();
-        }
-
-        // 部屋作ったりラジバンダリ
         function makeRoom() {
             const Loom = document.getElementById('room-make').value;
             const NowRef = database.ref('rooms/' + Loom);
@@ -900,7 +901,7 @@
                 }
             });
         }
-
+        //#endregion
 
         // twitter2
         const tweets = document.getElementById('tweets');
@@ -928,7 +929,9 @@
                 username: document.getElementById('username').value,
                 timestamp: formatDate(new Date()),
                 time: formatTime(new Date()),
-                heart:['/÷']//なぜか消える。初期に誰か入れとくのもありかも
+                heart:{
+                    'null':true,
+                }
             });
             document.getElementById('t-make-text').value = '';
             const zone = document.getElementById('t-make-zone');
@@ -967,22 +970,21 @@
 
             var heartElement = document.createElement('span');
             heartElement.className = 't-heart';
-            heartElement.textContent = '♡  '+messageData.heart?.length??0;
-            if(messageData.heart?.includes(document.getElementById('username').value)??false){
+            let count = Object.values(messageData.heart).length;
+            count -= 1;//nullの分
+            heartElement.textContent = '♡  '+count;
+            if(realusername in messageData.heart??false){
                 heartElement.style.color = 'red';
             }
             heartElement.addEventListener('click', async function(){
                 console.log(realusername,messageData.heart);
-                if(realusername in messageData.heart??{}){
-                    database.ref('tweets/'+troom+'/'+snapshot.key+'/heart').child(username).remove()
+                if(realusername in messageData.heart??false){
+                    database.ref('tweets/'+troom+'/'+snapshot.key+'/heart').child(realusername).remove()
                     heartElement.style.color = 'black';
                 }else{
-                    database.ref('tweets/'+troom+'/'+snapshot.key+'/heart').child(username).set(true)
+                    database.ref('tweets/'+troom+'/'+snapshot.key+'/heart').child(realusername).set(true)
                     heartElement.style.color = 'red';
                 }
-                tweetsRef.child(childSnapshot.key).update({
-                    heart: messageData.heart
-                });
             })
             messageElement.appendChild(heartElement);
 
@@ -1025,22 +1027,24 @@
                             
                     var heartElement = document.createElement('span');
                     heartElement.className = 't-heart';
-                    heartElement.textContent = '♡  '+messageData.heart?.length??0;
-                    if(messageData.heart?.includes(document.getElementById('username').value)??false){
+                    let count = Object.values(messageData.heart).length;
+                    count -= 1;//nullの分
+                    heartElement.textContent = '♡  '+count;
+                    if(realusername in messageData.heart??false){
                         heartElement.style.color = 'red';
                     }
                     heartElement.addEventListener('click', async function(){
-                        console.log(realusername,messageData.heart);
-                        if(realusername in messageData.heart??{}){
-                            database.ref('tweets/'+troom+'/'+snapshot.key+'/heart').child(username).remove()
+                        if(realusername in messageData.heart??false){
+                            database.ref('tweets/'+troom+'/'+childSnapshot.key+'/heart').child(realusername).remove()
                             heartElement.style.color = 'black';
+                            count -= 1;
+                            heartElement.textContent = '♡  '+count;
                         }else{
-                            database.ref('tweets/'+troom+'/'+snapshot.key+'/heart').child(username).set(true)
+                            database.ref('tweets/'+troom+'/'+childSnapshot.key+'/heart').child(realusername).set(true)
                             heartElement.style.color = 'red';
+                            count += 1;
+                            heartElement.textContent = '♡  '+count;
                         }
-                        tweetsRef.child(childSnapshot.key).update({
-                            heart: messageData.heart
-                        });
                     })
                     messageElement.appendChild(heartElement);
 
