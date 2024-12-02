@@ -8,7 +8,7 @@
     <style>
     @font-face{font-family:Hangyaku;src:url('assets/Hangyaku.ttf');}
     @font-face{font-family:comicsans;src:url('assets/comicsans.ttf');}
-    *{font-family:Hangyaku; font-size: 20px;}
+    *{font-family:Hangyaku; font-size: 20px;background-color: #f0f8ff;}
     #Linkframe2,#Linkframe3,#Linkframe4{display:none;}
     #Linkframe1{display:block;}
     </style>
@@ -78,7 +78,7 @@
         </p>
   <!-- この下、足つかないよゾーンです!!優しい友達に教えてもらいました！！！！神!!!! -->
          <p><div style="margin:0 auto;">web-site-corps</div>
-            <details><summary>bing.com</summary><button onclick="document.querySelector('#Iframe1').requestFullscreen()">full</button><br><iframe id="Iframe1" width="100%" height="1000" src="https://www.bing.com/search?q=%E3%83%96%E3%83%AB%E3%83%BC%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96%E3%80%80%E5%8F%A4%E9%96%A2%E3%82%A6%E3%82%A4&qs=n&form=QBRE&sp=-1&ghc=1&lq=0&pq=%E3%83%96%E3%83%AB%E3%83%BC%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96%E3%80%80%E3%81%93%E3%81%9C%E3%81%8D%E3%81%86&sc=10-13&sk=&cvid=38F0C797082D4FD0ADBB1984C14B4CDD&ghsh=0&ghacc=0&ghpl="></iframe></details>
+            <details><summary>bing.com</summary><button onclick="document.querySelector('#Iframe1').requestFullscreen()">full</button><br><iframe id="Iframe1" width="100%" height="1000" src="https://www.bing.com/search?q=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae%e6%af%8d%e3%82%82%e6%88%91%e3%82%92%e5%be%85%e3%81%a4%e3%82%89%e3%82%80%e3%81%9d&qs=RQ&pq=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae&sc=4-18&cvid=BDF68943856B40AC93BF5E6E4207F06D&FORM=QBRE&sp=1&ghc=1&lq=0"></iframe></details>
             <details><summary>link site</summary>
             <input type="text" id="LinkInput" placeholder="write link here"><button onclick="LinkframeGo()">Go</button><button onclick="document.querySelector(`#${NowLinkframe}`).requestFullscreen()">full</button><select id="LinkSelect" onchange="NowLinkframe = this.value; document.getElementById('Linkframe1').style.display = 'none';document.getElementById('Linkframe2').style.display = 'none';document.getElementById('Linkframe3').style.display = 'none';document.getElementById('Linkframe4').style.display = 'none';document.getElementById(NowLinkframe).style.display = 'block';"><option value="Linkframe1">Link-1</option><option value="Linkframe2">Link-2</option><option value="Linkframe3">Link-3</option><option value="Linkframe4">Link-4</option></select><br>
             <iframe id="Linkframe1" width="100%" height="600" src="about:blank"></iframe>

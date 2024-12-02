@@ -8,6 +8,7 @@
     *{
       margin: 0;
       padding: 0;
+      background-color: #f0f8ff;
     }
     textarea{
       margin: 0.5%;
@@ -98,52 +99,93 @@
     let username = 'no name';
     let usersRef = null;
 
-    loginForm.addEventListener('submit', function(event) {
-      event.preventDefault();
-      username = document.getElementById('username').value;
-      var password = document.getElementById('password').value;
-      usersRef = database.ref('users/' + username);
+    function setLocalStorage(name, value) {
+      localStorage.setItem(name, value || ""); // 値が空なら空文字を入れる
+    }
 
-      // データベースでユーザーが存在するか確認
-      usersRef.once('value').then(function(snapshot) {
-          if (snapshot.exists()){
-              // 既存ユーザーの場合
-              var userData = snapshot.val();
-              if (userData.password === password) {
-                  // パスワードが一致すればログイン
-                  document.getElementById('login-container').style.display = 'none';
-                  document.getElementById('hontai').style.display = 'block';
-              } else {
-                  // パスワードが間違っている
-                  loginError.style.display = 'block';
-              }
-          }else{
-              // 新規ユーザーの場合、アカウント作成
-              usersRef.update({
-                  password: password,
-              });
-              document.getElementById('login-container').style.display = 'none';
-              document.getElementById('hontai').style.display = 'block';
-          }
-      });
-  });
+    function getLocalStorage(name) {
+      return localStorage.getItem(name); // 値をそのまま返す、ない場合はnull
+    }
 
-  const bodyTextarea = document.querySelector('textarea#body');
-  const titleInput = document.querySelector('input#title');
-  const searchButton = document.querySelector('button#search');
-
-  bodyTextarea.addEventListener('input', () => {
-    const title = titleInput.value.trim();
-    const body = bodyTextarea.value;
-    database.ref(`users/${username}/memo/${title}`).update({body:body});
-  });
-
-  searchButton.addEventListener('click', () => {
-    const title = titleInput.value;
-    database.ref(`users/${username}/memo/${title}`).once('value').then((snapshot) => {
-      bodyTextarea.value = snapshot.val()?.body || '';
+    window.addEventListener('DOMContentLoaded', function(){
+      autoLogin();
     });
-  });
+
+    function autoLogin(){
+      username = getLocalStorage("username"); // ログイン時
+      if(username){
+          usersRef = database.ref('users/'+username);
+          console.log("自動ログインしました");
+          document.getElementById('login-container').style.display = 'none';
+          document.getElementById('hontai').style.display = 'block';
+      }else{
+          console.log("ログインしてください");
+      }
+    }
+
+    loginForm.addEventListener('submit', function(event){
+        event.preventDefault();
+        username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+
+        usersRef = database.ref('users/' + username);
+
+        // データベースでユーザーが存在するか確認
+        usersRef.once('value').then(function(snapshot) {
+            if (snapshot.exists()){
+                // 既存ユーザーの場合
+                userData = snapshot.val();
+                if (userData.password === password) {
+                    // パスワードが一致すればログイン
+                    setLocalStorage("username", username); // ログイン成功時
+                    document.getElementById('login-container').style.display = 'none';
+                    document.getElementById('hontai').style.display = 'block';
+                } else {
+                    // パスワードが間違っている
+                    loginError.style.display = 'block';
+                }
+            } else {
+                // 新規ユーザーの場合、アカウント作成
+                usersRef.update({
+                    password: password,
+                });
+                setLocalStorage("username", username); // ログイン成功時
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('hontai').style.display = 'block';
+            }
+        });
+
+    });
+
+    window.addEventListener('beforeunload', () => {
+        usersRef.update({
+            status: 'offline'
+        });
+    });
+
+    function logout(){
+        localStorage.removeItem("username");
+        document.getElementById('login-container').style.display = 'block';
+        document.getElementById('username').value = '';username = 'no name';
+        document.getElementById('password').value = '';
+    }
+
+    const bodyTextarea = document.querySelector('textarea#body');
+    const titleInput = document.querySelector('input#title');
+    const searchButton = document.querySelector('button#search');
+
+    bodyTextarea.addEventListener('input', () => {
+      const title = titleInput.value.trim();
+      const body = bodyTextarea.value;
+      database.ref(`users/${username}/memo/${title}`).update({body:body});
+    });
+
+    searchButton.addEventListener('click', () => {
+      const title = titleInput.value;
+      database.ref(`users/${username}/memo/${title}`).once('value').then((snapshot) => {
+        bodyTextarea.value = snapshot.val()?.body || '';
+      });
+    });
 
   </script>
   </body>

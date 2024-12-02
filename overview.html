@@ -21,7 +21,7 @@
         <option value="Memoframe">memo</option>
         <option value="Chatframe">chat</option>
         <option value="Gameframe">game</option>
-    </select><button onclick="document.getElementById('Iframe').requestFullscreen()">Full</button><br>
+    </select><button onclick="document.getElementById(document.getElementById('Select').value).requestFullscreen()">Full</button><br>
     <iframe src="home.html" id="Homeframe" width="100%" height="1000"></iframe>
     <iframe src="tools.html" id="Toolframe" width="100%" height="1000"></iframe>
     <iframe src="memo.html" id="Memoframe" width="100%" height="1000"></iframe>
