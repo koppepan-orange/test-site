@@ -342,7 +342,7 @@
         function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
         function load(){usersRef.once('value').then(function(snapshot){userData = snapshot.val();});}
 
-
+        /**
         function setCookie(name, value, days) {
             var expires = "";
             if (days) {
@@ -363,6 +363,16 @@
             }
             return null;
         }
+        */
+
+        function setLocalStorage(name, value) {
+            localStorage.setItem(name, value || ""); // 値が空なら空文字を入れる
+        }
+
+        function getLocalStorage(name) {
+            return localStorage.getItem(name); // 値をそのまま返す、ない場合はnull
+        }
+
 
         async function uploadImageToRTDB() {
             const file = document.getElementById('imageInput').files[0];
@@ -396,27 +406,27 @@
 
 
         function autoLogin(){
-            username = getCookie("username");
+            username = getLocalStorage("username"); // ログイン時
             realusername = username;
+            document.getElementById('username').value = username;
             if(username){
                 console.log("自動ログインしました");
                 usersRef = database.ref('users/' + username);
                 usersRef.update({
                     status: 'online'
                 });
-                //setCookie("username", username, 7);
                 menuToggle.style.display = 'block';
                 nanjContainer.style.display = 'flex';
                 document.getElementById('login-container').style.display = 'none';
                 document.getElementById('room-select').style.display = 'block';
                 room = roomSelect.value;
                 selectRoom();
-            } else {
+            }else{
                 console.log("ログインしてください");
             }
         }
 
-        loginForm.addEventListener('submit', function(event) {
+        loginForm.addEventListener('submit', function(event){
             event.preventDefault();
             realusername = document.getElementById('username').value;
             username = realusername;
@@ -434,7 +444,7 @@
                         usersRef.update({
                             status: 'online'
                         });
-                        setCookie("username", username, 1);
+                        setLocalStorage("username", username); // ログイン成功時
                         menuToggle.style.display = 'block';
                         nanjContainer.style.display = 'flex';
                         document.getElementById('login-container').style.display = 'none';
@@ -451,7 +461,7 @@
                         password: password,
                         status: 'online'
                     });
-                    setCookie("username", username, 1);
+                    setLocalStorage("username", username); // ログイン成功時
                     menuToggle.style.display = 'block';
                     nanjContainer.style.display = 'flex';
                     document.getElementById('login-container').style.display = 'none';
@@ -468,6 +478,21 @@
                 status: 'offline'
             });
         });
+
+        function logout(){
+            usersRef.update({
+                status: 'offline'
+            })
+            localStorage.removeItem("username");
+            NicoNicoText("ログアウトしました");
+            sideMenu.style.left = '-250px';
+            menuToggle.style.display = 'none';
+            nanjContainer.style.display = 'none';
+            twitterContainer.style.display = 'none';
+            document.getElementById('login-container').style.display = 'block';
+            document.getElementById('username').value = '';realusername = '';username = 'no name';
+            document.getElementById('password').value = '';
+        }
 
         /**
         // ハンバーガーアイコンをクリックしたときの処理
@@ -710,6 +735,7 @@
                     if(message.startsWith('/rename')){username = message.substring(8);messageInput.value = '';return;};
                     if(message.startsWith('/rerename')){realusername = message.substring(10);username = realusername;messageInput.value = '';return;};
                     if(message.startsWith('/haidoumominasankonnnitihamikankoppepannnokoppepandesu')){document.getElementById('username').value = substring(43);realusername = document.getElementById('username').value;username = realusername;messageInput.value = '';return;}
+
                     if(message.startsWith('/i')){message = '<i>'+message.substring(3)+'</i>';};
                     if(message.startsWith('/b')){message = '<b>'+message.substring(3)+'</b>';};
                     if(message.startsWith('/u')){message = '<u>'+message.substring(3)+'</u>';};
