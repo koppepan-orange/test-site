@@ -43,7 +43,8 @@
     <script>
         const memoArea = document.getElementById('memo');
         const memoSlot = document.getElementById('memoSlot');
-        
+        function delay(ms){return new Promise(resolve => setTimeout(resolve, ms));}
+
         // ページ読み込み時に保存されたメモを復元
         window.addEventListener('load', () => {
             // 最後に選択されていたスロットを復元
@@ -59,16 +60,20 @@
             }
         });
         // スロット選択時の処理
-        memoSlot.addEventListener('change', () => {
-            // 現在のスロットのメモを保存
+        memoSlot.addEventListener('change',async function(){
+            console.log('changeされたで〜お相手は'+memoSlot.value+'ですわ〜〜');
+            
+            // 選択されたスロットのメモを保存
             localStorage.setItem(`savedMemo_${memoSlot.value}`, memoArea.value);
+            memoArea.value = 'wait for now...';
+            await delay(500);
             
             // 最後に選択されたスロットを記憶
             localStorage.setItem('lastSelectedSlot', memoSlot.value);
 
             // 新しいスロットのメモを復元
             const savedMemo = localStorage.getItem(`savedMemo_${memoSlot.value}`);
-            memoArea.value = savedMemo || '';
+            memoArea.value = savedMemo??'';
         });
 
         // メモの内容が変更されたら保存
