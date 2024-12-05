@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Memo Site</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        select {
+            margin-right: 10px;
+            padding: 5px;
+        }
+        textarea {
+            width: 100%;
+            height: 85vh;
+            font-size: 16px;
+            padding: 10px;
+            box-sizing: border-box;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <select id="memoSlot">
+            <option value="1">メモ 1</option>
+            <option value="2">メモ 2</option>
+            <option value="3">メモ 3</option>
+            <option value="4">メモ 4</option>
+            <option value="5">メモ 5</option>
+        </select>
+    </div>
+    <textarea id="memo" placeholder="write here your memo..."></textarea>
+
+    <script>
+        const memoArea = document.getElementById('memo');
+        const memoSlot = document.getElementById('memoSlot');
+        
+        // ページ読み込み時に保存されたメモを復元
+        window.addEventListener('load', () => {
+            // 最後に選択されていたスロットを復元
+            const lastSelectedSlot = localStorage.getItem('lastSelectedSlot');
+            if (lastSelectedSlot) {
+                memoSlot.value = lastSelectedSlot;
+            }
+
+            // 選択中のスロットのメモを復元
+            const savedMemo = localStorage.getItem(`savedMemo_${memoSlot.value}`);
+            if (savedMemo) {
+                memoArea.value = savedMemo;
+            }
+        });
+        // スロット選択時の処理
+        memoSlot.addEventListener('change', () => {
+            // 現在のスロットのメモを保存
+            localStorage.setItem(`savedMemo_${memoSlot.value}`, memoArea.value);
+            
+            // 最後に選択されたスロットを記憶
+            localStorage.setItem('lastSelectedSlot', memoSlot.value);
+
+            // 新しいスロットのメモを復元
+            const savedMemo = localStorage.getItem(`savedMemo_${memoSlot.value}`);
+            memoArea.value = savedMemo || '';
+        });
+
+        // メモの内容が変更されたら保存
+        memoArea.addEventListener('input', () => {
+            localStorage.setItem(`savedMemo_${memoSlot.value}`, memoArea.value);
+        });
+
+        // ページを閉じる前に保存
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem(`savedMemo_${memoSlot.value}`, memoArea.value);
+            localStorage.setItem('lastSelectedSlot', memoSlot.value);
+        });
+    </script>
+</body>
+</html>
