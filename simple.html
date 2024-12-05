@@ -65,8 +65,6 @@
         });
         // スロット選択時の処理
         memoSlot.addEventListener('change',async function(){
-            console.log('changeされたで〜！'+memoslot+'からのお相手は'+memoSlot.value+'ですわ〜〜');
-            
             // 選択されたスロットのメモを保存
             localStorage.setItem(`savedMemo_${memoslot}`, memoArea.value);
             memoArea.value = 'wait for now...';
