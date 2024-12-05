@@ -8,16 +8,67 @@
     *{
       margin: 0;
       padding: 0;
-      background-color: #f0f8ff;
     }
     textarea{
       margin: 0.5%;
       width: 99%;
+      height: 90vh;
       resize: vertical;
       font:15px Arial;
+      background-color: #f0f8ff;
     }
     #hontai{
       display: none;
+      background-color: #f0f8ff;
+    }
+    #select{
+      background-color: #f0f8ff;
+    }
+    #title{
+      background-color: #f0f8ff;
+    }
+
+
+    #sideMenu {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      color: #333344;
+      background-color: #cecece;
+      transition: left 0.3s;
+    }
+    #sideMenu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    #sideMenu ul li {
+        padding: 3px;
+    }
+    #sideMenu ul li a {
+        color: #333344;
+        text-decoration: none;
+    }
+    #sideMenu button {
+        background: none;
+        border: none;
+        color: #000000;
+        font: hangyaku;
+        cursor: pointer;
+        text-decoration: none;
+        padding: 0;
+    }
+    #menuToggle {
+        display: none;
+        position: absolute;
+        top: 5px;
+        right: 15px;
+        color: #000000;
+        border: none;
+        font-size: 26px;
+        cursor: pointer;
     }
 
     .login-container, .chat-container {
@@ -60,13 +111,26 @@
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
   </head>
   <body>
-    <div class="login-container" id="login-container">
-      <form class="login-form" id="login-form">
-          <input type="text" id="username" placeholder="ユーザー名" required>
-          <input type="password" id="password" placeholder="パスワード" required>
-          <button type="submit">ログイン</button>
-          <div id="login-error" style="color: red; display: none;">パスワードが間違っています。</div>
-      </form>
+    <div class="menuToggle" id="menuToggle">☰</div>
+    <!--サイドメニュー-->
+    <nav id="sideMenu">
+      <hr noshade="true">
+      <ul>
+        <li><a href="https://koppepan-orange.github.io/test_site/home.html">to home</a></li>
+        <li><a href="https://koppepan-orange.github.io/test_site/chat.html">to chat</a></li>
+        <li><a href="https://koppepan-orange.github.io/game_site/welcome.html">to game</a></li>
+      </ul>
+      <hr noshade="true">
+      <button id="logout-button" onclick="logout()">Logout</button>
+  </nav>
+  
+  <div class="login-container" id="login-container">
+    <form class="login-form" id="login-form">
+      <input type="text" id="username" placeholder="ユーザー名" required>
+      <input type="password" id="password" placeholder="パスワード" required>
+      <button type="submit">ログイン</button>
+      <div id="login-error" style="color: red; display: none;">パスワードが間違っています。</div>
+    </form>
   </div>
   <div id="hontai">
     title:<input type="text" id="title"><button id="search">search</button> <select id="select" onchange="FontChange()"><option value="Arial">normal</option><option value="comicsans">comicsans</option><option value="Hangyaku">Hangyaku</option></select><br>
@@ -118,6 +182,7 @@
           console.log("自動ログインしました");
           document.getElementById('login-container').style.display = 'none';
           document.getElementById('hontai').style.display = 'block';
+          document.getElementById('menuToggle').style.display = 'block';
       }else{
           console.log("ログインしてください");
       }
@@ -140,6 +205,7 @@
                     setLocalStorage("username", username); // ログイン成功時
                     document.getElementById('login-container').style.display = 'none';
                     document.getElementById('hontai').style.display = 'block';
+                    document.getElementById('menuToggle').style.display = 'block';
                 } else {
                     // パスワードが間違っている
                     loginError.style.display = 'block';
@@ -152,6 +218,7 @@
                 setLocalStorage("username", username); // ログイン成功時
                 document.getElementById('login-container').style.display = 'none';
                 document.getElementById('hontai').style.display = 'block';
+                document.getElementById('menuToggle').style.display = 'block';
             }
         });
 
@@ -162,11 +229,25 @@
     });
 
     function logout(){
+        sideMenu.style.left = '-250px';
         localStorage.removeItem("username");
+        document.getElementById('hontai').style.display = 'none';
+        document.getElementById('menuToggle').style.display = 'none';
         document.getElementById('login-container').style.display = 'block';
         document.getElementById('username').value = '';username = 'no name';
         document.getElementById('password').value = '';
     }
+
+
+    const menuToggle = document.getElementById('menuToggle');
+      const sideMenu = document.getElementById('sideMenu');
+      menuToggle.addEventListener('click', () => {
+        if(sideMenu.style.left === '0px'){
+            sideMenu.style.left = '-250px';
+        }else{
+            sideMenu.style.left = '0px';
+        }
+    });
 
     const bodyTextarea = document.querySelector('textarea#body');
     const titleInput = document.querySelector('input#title');
