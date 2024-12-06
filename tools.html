@@ -5,8 +5,60 @@
     <link rel="icon" href="https://koppepan-orange.github.io/test-site/Icon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>tool-site</title>
+    <style>
+      #sideMenu {
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 250px;
+        height: 100%;
+        color: #333344;
+        background-color: #cecece;
+        transition: left 0.3s;
+      }
+      #sideMenu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      #sideMenu ul li {
+        padding: 3px;
+      }
+      #sideMenu ul li a {
+        color: #333344;
+        text-decoration: none;
+      }
+      #sideMenu button {
+        background: none;
+        border: none;
+        color: #000000;
+        font: hangyaku;
+        cursor: pointer;
+        text-decoration: none;
+        padding: 0;
+      }
+      #menuToggle {
+        display: block;
+        position: absolute;
+        top: 5px;
+        right: 15px;
+        color: #000000;
+        border: none;
+        font-size: 26px;
+        cursor: pointer;
+      }
+    </style>
   </head>
   <body>
+    <button id="menuToggle">☰</button>
+    <nav id="sideMenu">
+      <hr noshade="true">
+      <ul>
+        <li><a href="home.html">to home</a></li>
+        <li><a href="chat.html">to chat</a></li>
+        <li><a href="https://koppepan-orange.github.io/game_site/welcome.html">to game</a></li>
+      </ul>
+    </nav>
     <!-- こちら偏差値計算機です！！！！ -->
     <p align="center">偏差値計算機<br>
       <input id="HENPoint" type="text" placeholder="write 得点" size="20" style="width:80px;"></input>　
