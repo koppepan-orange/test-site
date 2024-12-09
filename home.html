@@ -9,83 +9,151 @@
       @font-face{font-family:cube12;src:url('assets/cube12.ttf');}
       *{background-color: #f0f8ff;/*alice blue*/
         font-family:cube12;}
+
+        #sideMenu {
+          position: fixed;
+          top: 0;
+          left: -250px;
+          width: 250px;
+          height: 100%;
+          color: #333344;
+          background-color: #cecece;
+          transition: left 0.3s;
+        }
+        #sideMenu ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+        #sideMenu ul li {
+          padding: 3px;
+          background-color: #cecece;
+        }
+        #sideMenu ul li a {
+          color: #000000;
+          background-color: #cecece;
+          text-decoration: none;
+        }
+        #sideMenu button {
+          background-color: #cecece;
+          border: none;
+          color: #000000;
+          cursor: pointer;
+          text-decoration: none;
+          padding: 0;
+        }
+        #menuToggle {
+          display: block;
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          color: #000000;
+          border: none;
+          font-size: 26px;
+          cursor: pointer;
+        }
     </style>
-  </head>
-  <body>
-         <h2><p align="center">Koppepan Orange's site</p></h2>
-         <p align="center">ここは何でも<a href="https://koppepan-orange.github.io/test-site/home-ura.html" style="text-decoration: none; color: #000000;">ある</a>サイトです！<i>ゆっくりしていってね！！</i></p>
-<hr noshade="true" />
-  <!-- この下、メニーサイトゾーンです!!単純ですが、めちゃ便利です！！！！ -->
-        <p><span align="center">よく使う<a href="https://koppepan-orange.github.io/test-site/password-room.html" style="text-decoration: none; color: #000000;">サ</a>イトたち</span>
-            <details><summary>memos</summary>
-                <a href="https://koppepan-orange.github.io/test-site/memo.html">memo-site</a>
-            <br><a target="_blank" href="http://www.drpartners.jp/tools/browser-memocho.htm">ブラウザメモ帳</a>
-            <br><a target="_blank" href="https://memo.onl.jp/?koppepan22">メモweb</a>
-            <br><a target="_blank" href="https://file.onl.jp/?koppepan23">ファイルweb</a>
-            <br><a target="_blank" href="https://write-box.appspot.com/">writebox</a></details>
-            <br><details><summary>tools</summary>
-                <a href="https://koppepan-orange.github.io/test-site/tools.html">tool-site</a>
-            <br><a target="_blank" href="https://www.dropbox.com/home">dropbox</a>
-            <br><a target="_blank" href="https://anagram.httqs.com/">アナグラム生成機</a>
-            <br><a target="_blank" href="https://jp.piliapp.com/random/wheel/">ルーレット等生成機</a>
-            <br><a target="_blank" href="https://www.color-site.com/">カラーサイト</a>
-            <br><a target="_blank" href="https://123apps.com/ja/">mp3、mp4編集サイト</a></details>
-            <br><details><summary>makes</summary>
-                <a target="_blank" href="https://scratch.mit.edu/users/koppepan_orange/">scratch</a>
-            <br><a target="_blank" href="https://flat.io/ja">flat</a>
-            <br><a target="_blank" href="https://musescore.com/user/41107809">musescore</a>
-            <br><a target="_blank" href="https://pixnote.net/">pixnote</a>
-            <br><a target="_blank" href="https://www.pixilart.com/koppepanorange">pixlate</a>
-            <br><a target="_blank" href="https://thirtydollar.website/">thirty dollar</a></details>
-            <br><details><summary>studies</summary>
-                <a target="_blank" href="https://true-koppepan-orange.github.io/sub_test-site/meibo_site">meibo-site</a>
-            <br><a target="_blank" href="https://www.duolingo.com/profile/koppepan_orange">duolingo</a>
-            <br><a target="_blank" href="http://typingx0.net/sushida/">寿司打</a>
-            <br><a target="_blank" href="https://ankey.io/@koppepanorange">ankey</a></details>
-            <br><details><summary>SNSes</summary>
-                <a href="https://koppepan-orange.github.io/test-site/chat.html">chat-site</a>
-            <br><a target="_blank" href="https://www.reddit.com/user/koppepan_orange/">reddit</a>
-            <br><a target="_blank" href="https://github.com/koppepan-orange">github</a>
-            <br><a target="_blank" href="https://discord.com/channels/@me">discord</a>
-            <br><a target="_blank" href="https://chat.onl.jp/?koppepan23">チャットweb</a>
-            <br><a target="_blank" href="https://www.pixiv.net/users/93550041">pixiv</a>
-            <br><a target="_blank" href="https://www.twitch.tv/koppepan_orange">twitch</a>
-            <br><a target="_blank" href="https://www.instagram.com/koppepan_orange/">instagram</a>
-            <br><a target="_blank" href="https://www.threads.net/@koppepan_orange">threads</a>
-            <br><a target="_blank" href="https://twitter.com/koppepan_orange">twitter</a>
-            <br><a target="_blank" href="https://www.youtube.com/channel/UCFvmwWDRrVqM22icC7QLx1w">youtube</a>
-            <br><a target="_blank" href="https://lit.link/koppepanorange">lit.link</a>
-            <br><a target="_blank" href="https://kiite.jp/user/koppapan_orange">kiite</a>
-            <br><a target="_blank" href="https://draw.kuku.lu/pchat.php?hash=898857247">MagicalDraw</a></details>
-            <br><details><summary>games</summary>
-                <a href="https://koppepan-orange.github.io/game-site/welcome.html">game-site</a>
-            <br><a target="_blank" href="https://koppepan-orange.github.io/test-site/music-site.html">music-site</a>
-            <br><a target="_blank" href="https://cybercodeonline.com">cybercodeonline</a>
-            <br><a target="_blank" href="https://sdin.jp/browser/">browsergame</a>
-            <br><a target="_blank" href="https://www.arealme.com/">ARealMe</a>
-            <br><a target="_blank" href="https://unityroom.com/new_arrivals">unityroom</a></details></p>
+</head>
+<body>
+  <!--サイドメニュー..-->
+  <div class="menuToggle" id="menuToggle">☰</div>
+  <nav id="sideMenu">
+    <hr noshade="true">
+    <ul>
+    </ul>
+    <hr noshade="true">
+    <ul>
+      <li><a href="home.html">to home</a></li>
+      <li><a href="memo.html">to memo</a></li>
+      <li><a href="https://koppepan-orange.github.io/game-site/welcome.html">to game</a></li>
+    </ul>
+    <hr noshade="true">
+  </nav>
+  <h2><p align="center">Koppepan Orange's site</p></h2>
+  <p align="center">ここは何でも<a href="https://koppepan-orange.github.io/test-site/home-ura.html" style="text-decoration: none; color: #000000;">ある</a>サイトです！<i>ゆっくりしていってね！！</i></p>
+  <hr noshade="true">
+  <!-- この下、メニーサイトゾーンです!!単純ですが、めちゃ便利です！！！！  ...ここさ、mouth hoverですって出てきて押せるようにしない？detailsちょっとめんどい-->
+  <p><span align="center">よく使う<a href="https://koppepan-orange.github.io/test-site/password-room.html" style="text-decoration: none; color: #000000;">サ</a>イトたち</span>
+    <details><summary>memos</summary>
+        <a href="https://koppepan-orange.github.io/test-site/memo.html">memo-site</a>
+    <br><a target="_blank" href="http://www.drpartners.jp/tools/browser-memocho.htm">ブラウザメモ帳</a>
+    <br><a target="_blank" href="https://memo.onl.jp/?koppepan22">メモweb</a>
+    <br><a target="_blank" href="https://file.onl.jp/?koppepan23">ファイルweb</a>
+    <br><a target="_blank" href="https://write-box.appspot.com/">writebox</a></details>
+    <br><details><summary>tools</summary>
+        <a href="https://koppepan-orange.github.io/test-site/tools.html">tool-site</a>
+    <br><a target="_blank" href="https://www.dropbox.com/home">dropbox</a>
+    <br><a target="_blank" href="https://anagram.httqs.com/">アナグラム生成機</a>
+    <br><a target="_blank" href="https://jp.piliapp.com/random/wheel/">ルーレット等生成機</a>
+    <br><a target="_blank" href="https://www.color-site.com/">カラーサイト</a>
+    <br><a target="_blank" href="https://123apps.com/ja/">mp3、mp4編集サイト</a></details>
+    <br><details><summary>makes</summary>
+        <a target="_blank" href="https://scratch.mit.edu/users/koppepan_orange/">scratch</a>
+    <br><a target="_blank" href="https://flat.io/ja">flat</a>
+    <br><a target="_blank" href="https://musescore.com/user/41107809">musescore</a>
+    <br><a target="_blank" href="https://pixnote.net/">pixnote</a>
+    <br><a target="_blank" href="https://www.pixilart.com/koppepanorange">pixlate</a>
+    <br><a target="_blank" href="https://thirtydollar.website/">thirty dollar</a></details>
+    <br><details><summary>studies</summary>
+        <a target="_blank" href="https://true-koppepan-orange.github.io/sub_test-site/meibo_site">meibo-site</a>
+    <br><a target="_blank" href="https://www.duolingo.com/profile/koppepan_orange">duolingo</a>
+    <br><a target="_blank" href="http://typingx0.net/sushida/">寿司打</a>
+    <br><a target="_blank" href="https://ankey.io/@koppepanorange">ankey</a></details>
+    <br><details><summary>SNSes</summary>
+        <a href="https://koppepan-orange.github.io/test-site/chat.html">chat-site</a>
+    <br><a target="_blank" href="https://www.reddit.com/user/koppepan_orange/">reddit</a>
+    <br><a target="_blank" href="https://github.com/koppepan-orange">github</a>
+    <br><a target="_blank" href="https://discord.com/channels/@me">discord</a>
+    <br><a target="_blank" href="https://chat.onl.jp/?koppepan23">チャットweb</a>
+    <br><a target="_blank" href="https://www.pixiv.net/users/93550041">pixiv</a>
+    <br><a target="_blank" href="https://www.twitch.tv/koppepan_orange">twitch</a>
+    <br><a target="_blank" href="https://www.instagram.com/koppepan_orange/">instagram</a>
+    <br><a target="_blank" href="https://www.threads.net/@koppepan_orange">threads</a>
+    <br><a target="_blank" href="https://twitter.com/koppepan_orange">twitter</a>
+    <br><a target="_blank" href="https://www.youtube.com/channel/UCFvmwWDRrVqM22icC7QLx1w">youtube</a>
+    <br><a target="_blank" href="https://lit.link/koppepanorange">lit.link</a>
+    <br><a target="_blank" href="https://kiite.jp/user/koppapan_orange">kiite</a>
+    <br><a target="_blank" href="https://draw.kuku.lu/pchat.php?hash=898857247">MagicalDraw</a></details>
+    <br><details><summary>games</summary>
+        <a href="https://koppepan-orange.github.io/game-site/welcome.html">game-site</a>
+    <br><a target="_blank" href="https://koppepan-orange.github.io/test-site/music-site.html">music-site</a>
+    <br><a target="_blank" href="https://cybercodeonline.com">cybercodeonline</a>
+    <br><a target="_blank" href="https://sdin.jp/browser/">browsergame</a>
+    <br><a target="_blank" href="https://www.arealme.com/">ARealMe</a>
+    <br><a target="_blank" href="https://unityroom.com/new_arrivals">unityroom</a></details></p>
   <!-- この下、メモです!!初期の私のがんばりです！！！！ -->
-            <p>メモ
-            <form>
-                <input type="text" size="30"><br>
-                <textarea rows="12" cols="35"></textarea><br><br>
-                <input type="text" size="30"><br>
-                <textarea rows="10" cols="35"></textarea>
-            </form>
-            </p>
-  <!-- この下、足つかないよゾーンです!!優しい友達に教えてもらいました！！！！神!!!! -->
-         <p><span align="center">調べれたりするところ</span>
-            <details><summary>bing.com</summary><button onclick="document.querySelector('#Iframe1').requestFullscreen()">full</button><br>
-              <iframe id="Iframe1" width="100%" height="1000" src="https://www.bing.com/search?q=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae%e6%af%8d%e3%82%82%e6%88%91%e3%82%92%e5%be%85%e3%81%a4%e3%82%89%e3%82%80%e3%81%9d&qs=RQ&pq=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae&sc=4-18&cvid=BDF68943856B40AC93BF5E6E4207F06D&FORM=QBRE&sp=1&ghc=1&lq=0"></iframe>
-            </details>
-            <details><summary>bing-trans</summary><button onclick="document.querySelector('#Iframe2').requestFullscreen()">full</button><br>
-              <iframe id="Iframe2" width="100%" height="1000" src="https://www.bing.com/translator?from=&to=ja&setlang=ja"></iframe></details>
-            <details><summary>link site</summary>
-            <input type="text" id="InputIdLinkDesu" placeholder="write link here"><button onclick="InputToOutputLink()">Go</button><button onclick="document.querySelector('#Iframe3').requestFullscreen()">full</button><br>
-              <iframe id="Iframe3" width="100%" height="600" src="about:blank"></iframe>
-              <script>function InputToOutputLink(){document.getElementById("Iframe3").src = document.getElementById("InputIdLinkDesu").value;}</script>
-            </details>
-         </p>
+    <p>メモ
+    <form>
+        <input type="text" size="30"><br>
+        <textarea rows="12" cols="35"></textarea><br><br>
+        <input type="text" size="30"><br>
+        <textarea rows="10" cols="35"></textarea>
+    </form>
     </p>
+  <!-- この下、足つかないよゾーンです!!優しい友達に教えてもらいました！！！！神!!!! -->
+  <p><span align="center">調べれたりするところ</span>
+    <details><summary>bing.com</summary><button onclick="document.querySelector('#Iframe1').requestFullscreen()">full</button><br>
+      <iframe id="Iframe1" width="100%" height="1000" src="https://www.bing.com/search?q=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae%e6%af%8d%e3%82%82%e6%88%91%e3%82%92%e5%be%85%e3%81%a4%e3%82%89%e3%82%80%e3%81%9d&qs=RQ&pq=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae&sc=4-18&cvid=BDF68943856B40AC93BF5E6E4207F06D&FORM=QBRE&sp=1&ghc=1&lq=0"></iframe>
+    </details>
+    <details><summary>bing-trans</summary><button onclick="document.querySelector('#Iframe2').requestFullscreen()">full</button><br>
+      <iframe id="Iframe2" width="100%" height="1000" src="https://www.bing.com/translator?from=&to=ja&setlang=ja"></iframe></details>
+    <details><summary>link site</summary>
+    <input type="text" id="InputIdLinkDesu" placeholder="write link here"><button onclick="InputToOutputLink()">Go</button><button onclick="document.querySelector('#Iframe3').requestFullscreen()">full</button><br>
+      <iframe id="Iframe3" width="100%" height="600" src="about:blank"></iframe>
+      <script>function InputToOutputLink(){document.getElementById("Iframe3").src = document.getElementById("InputIdLinkDesu").value;}</script>
+    </details>
+  </p>
+  <script>
+    //サイドメニュー
+    const menuToggle = document.getElementById('menuToggle');
+    const sideMenu = document.getElementById('sideMenu');
+    menuToggle.addEventListener('click', () => {
+      if(sideMenu.style.left === '0px'){
+          sideMenu.style.left = '-250px';
+      }else{
+          sideMenu.style.left = '0px';
+      }
+    });
+  </script>
 </body>
 </html>
