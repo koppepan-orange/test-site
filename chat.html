@@ -7,7 +7,7 @@
     <title>chat-site</title>
     <style>
         body {
-            overflow: hidden;
+            overflow: auto;
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
             margin: 0;
@@ -97,7 +97,7 @@
             flex: 1;
             padding: 10px;
             overflow-y: auto;
-            max-height: 770px;
+            max-height: 750px;
             border-bottom: 1px solid #dedede;
         }
         .message {
@@ -176,7 +176,7 @@
             width: 500px;
             overflow-y: scroll;
             padding: 10px;
-            max-height: 770px;
+            max-height: 750px;
             border-bottom: 1px solid #dedede;
         }
         #t-make-button {
@@ -328,7 +328,7 @@
         var database = firebase.database();
         //const storage = firebase.storage();
 
-        //ログイン処理
+        //#region ログイン処理
         var loginForm = document.getElementById('login-form');
         var nanjContainer = document.getElementById('nanj-container');
         var twitterContainer = document.getElementById('twitter-container');
@@ -493,6 +493,9 @@
             document.getElementById('username').value = '';realusername = '';username = 'no name';
             document.getElementById('password').value = '';
         }
+        //#endregion
+
+        //#region メニュー
 
         /**
         // ハンバーガーアイコンをクリックしたときの処理
@@ -523,9 +526,9 @@
                 sideMenu.style.left = '0px';
             }
         });
+        //#endregion
 
-
-
+        //#region iroiro
         function GoTo(code){
             nanjContainer.style.display = 'none';
             twitterContainer.style.display = 'none';
@@ -562,6 +565,7 @@
             }
             newDiv.remove();
         }
+        //#endregion
 
 
         //#region ここからチャットの動き
@@ -734,7 +738,7 @@
 
                     if(message.startsWith('/rename')){username = message.substring(8);messageInput.value = '';return;};
                     if(message.startsWith('/rerename')){realusername = message.substring(10);username = realusername;messageInput.value = '';return;};
-                    if(message.startsWith('/haidoumominasankonnnitihamikankoppepannnokoppepandesu')){document.getElementById('username').value = substring(43);realusername = document.getElementById('username').value;username = realusername;messageInput.value = '';return;}
+                    if(message.startsWith('/haidoumominasankonnnitihamikankoppepannnokoppepandesu')){document.getElementById('username').value = message.substring(55);realusername = document.getElementById('username').value;username = realusername;messageInput.value = '';return;}
 
                     if(message.startsWith('/i')){message = '<i>'+message.substring(3)+'</i>';};
                     if(message.startsWith('/b')){message = '<b>'+message.substring(3)+'</b>';};
@@ -929,18 +933,84 @@
         }
         //#endregion
 
-        // twitter2
+        //#region twitter2
         const tweets = document.getElementById('tweets');
         let troom = 1;
         let tweetsRef = database.ref('tweets/1');
+
+        let TAdd
         function selectTweetsroom(){
+            removeEventListener('child_added', TAdd);
+            tweets.innerHTML = '';
+            troom = document.getElementById('t-room-select').value;
             tweetsRef = database.ref('tweets/'+troom);
-            usersRef = database.ref('users/' + username);
-            tweetsRef.once('value', function(snapshot) {
+            usersRef = database.ref('users/'+username);
+            tweetsRef.once('value', function(snapshot){
                 displayAllTweets();  // 一回だけ全メッセージを表示
             });
+
+
+            TAdd = tweetsRef.on('child_added', async function(snapshot){
+                var messageData = snapshot.val();
+                var messageElement = document.createElement('div');
+                messageElement.className = 'tweet';
+                messageElement.setAttribute('data-id', snapshot.key);
+
+                var usernameElement = document.createElement('span');
+                usernameElement.className = 'username';
+                usernameElement.textContent = messageData.username;//クリックされたらその人のみに〜みたいなのあり
+                messageElement.appendChild(usernameElement);
+
+                var timestampElement = document.createElement('span');
+                timestampElement.className = 't-timestamp';
+                timestampElement.textContent = '　'+timeDifference(messageData.time.toString());
+                messageElement.appendChild(timestampElement);
+
+                var brElement = document.createElement('br');
+                messageElement.appendChild(brElement);
+
+                var textElement = document.createElement('pre');
+                textElement.textContent = messageData.text;
+                messageElement.appendChild(textElement);
+
+                messageElement.appendChild(brElement);
+
+                var heartElement = document.createElement('span');
+                heartElement.className = 't-heart';
+                let count = Object.values(messageData.heart).length;
+                count -= 1;//nullの分
+                heartElement.textContent = '♡  '+count;
+                if(realusername in messageData.heart??false){
+                    heartElement.style.color = 'red';
+                }
+                heartElement.addEventListener('click', async function(){
+                    console.log(realusername,messageData.heart);
+                    if(realusername in messageData.heart??false){
+                        database.ref('tweets/'+troom+'/'+snapshot.key+'/heart').child(realusername).remove()
+                        heartElement.style.color = 'black';
+                    }else{
+                        database.ref('tweets/'+troom+'/'+snapshot.key+'/heart').child(realusername).set(true)
+                        heartElement.style.color = 'red';
+                    }
+                })
+                messageElement.appendChild(heartElement);
+
+                var replyElement = document.createElement('span');
+                replyElement.className = 't-reply';
+                replyElement.textContent = '  ↪︎';
+                replyElement.addEventListener('click', async function(){
+                    document.getElementById('t-make-text').value = messageData.text;
+                    const zone = document.getElementById('t-make-zone');
+                    zone.style.bottom = '0px';
+                });
+                messageElement.appendChild(replyElement);
+
+                tweets.insertBefore(messageElement, tweets.firstChild);
+            });
+
+
         }
-        document.getElementById('t-make-button').addEventListener('click', () => {//一方通行の色恋にしてもいいかも
+        document.getElementById('t-make-button').addEventListener('click', () => {//一方通行の色恋にしてもいいかも　
             const zone = document.getElementById('t-make-zone')
             if(zone.style.bottom === '0px'){
                 zone.style.bottom = '-600px';
@@ -956,7 +1026,18 @@
                 timestamp: formatDate(new Date()),
                 time: formatTime(new Date()),
                 heart:{
-                    'null':true,
+                    'null':true
+                },
+                reply:{
+                    '-KorE8NUl1DeSU4':{
+                        text:'null',
+                        username:'null',
+                        timestamp:'2009/07/04 17:34:00',
+                        time:20090704173400,
+                        heart:{
+                            'null':true,
+                        }
+                    }
                 }
             });
             document.getElementById('t-make-text').value = '';
@@ -969,58 +1050,8 @@
             document.getElementById('t-make-text').value = '';
         })
 
-        tweetsRef.on('child_added', async function(snapshot){
-            var messageData = snapshot.val();
-            var messageElement = document.createElement('div');
-            messageElement.className = 'tweet';
-            messageElement.setAttribute('data-id', snapshot.key);
-
-            var usernameElement = document.createElement('span');
-            usernameElement.className = 'username';
-            usernameElement.textContent = messageData.username;//クリックされたらその人のみに〜みたいなのあり
-            messageElement.appendChild(usernameElement);
-
-            var timestampElement = document.createElement('span');
-            timestampElement.className = 't-timestamp';
-            timestampElement.textContent = '　'+timeDifference(messageData.time.toString());
-            messageElement.appendChild(timestampElement);
-
-            var brElement = document.createElement('br');
-            messageElement.appendChild(brElement);
-
-            var textElement = document.createElement('pre');
-            textElement.textContent = messageData.text;
-            messageElement.appendChild(textElement);
-
-            messageElement.appendChild(brElement);
-
-            var heartElement = document.createElement('span');
-            heartElement.className = 't-heart';
-            let count = Object.values(messageData.heart).length;
-            count -= 1;//nullの分
-            heartElement.textContent = '♡  '+count;
-            if(realusername in messageData.heart??false){
-                heartElement.style.color = 'red';
-            }
-            heartElement.addEventListener('click', async function(){
-                console.log(realusername,messageData.heart);
-                if(realusername in messageData.heart??false){
-                    database.ref('tweets/'+troom+'/'+snapshot.key+'/heart').child(realusername).remove()
-                    heartElement.style.color = 'black';
-                }else{
-                    database.ref('tweets/'+troom+'/'+snapshot.key+'/heart').child(realusername).set(true)
-                    heartElement.style.color = 'red';
-                }
-            })
-            messageElement.appendChild(heartElement);
-
-            tweets.insertBefore(messageElement, tweets.firstChild);
-        });
-
-
 
         function displayAllTweets(){
-            troom = document.getElementById('t-room-select').value;
             document.getElementById('tweets').innerHTML = '';
 
             // データベースから全てのメッセージを取得
@@ -1074,6 +1105,16 @@
                     })
                     messageElement.appendChild(heartElement);
 
+                    var replyElement = document.createElement('span');
+                    replyElement.className = 't-reply';
+                    replyElement.textContent = '  ↪︎';
+                    replyElement.addEventListener('click', async function(){
+                        document.getElementById('t-make-text').value = messageData.text;
+                        const zone = document.getElementById('t-make-zone');
+                        zone.style.bottom = '0px';
+                    });
+                    messageElement.appendChild(replyElement);
+
                     tweets.insertBefore(messageElement, tweets.firstChild);
                 });
             });
@@ -1094,10 +1135,7 @@
             const diffMinutes = Math.floor(diffMs / (1000 * 60)); // 分に変換
             const diffHours = Math.floor(diffMs / (1000 * 60 * 60)); // 時間に変換
             const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24)); // 日に変換
-
-            const diffMonths = (now.getFullYear() - pastDate.getFullYear()) * 12 +
-                            now.getMonth() - pastDate.getMonth(); // 月差分計算
-
+            const diffMonths = (now.getFullYear() - pastDate.getFullYear()) * 12 + now.getMonth() - pastDate.getMonth(); // 月差分計算
             const diffYears = now.getFullYear() - pastDate.getFullYear(); // 年差分計算
 
             // 条件分岐で返す
@@ -1113,6 +1151,7 @@
                 return `${diffYears}年前`;
             }
         }
+        //#endregion
 
     </script>
 </body>
