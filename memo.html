@@ -17,7 +17,11 @@
       font:15px Arial;
       background-color: #f0f8ff;
     }
-    #hontai{
+    #ownMemo{
+      display: none;
+      background-color: #f0f8ff;
+    }
+    #yourselvesMemo{
       display: none;
       background-color: #f0f8ff;
     }
@@ -116,6 +120,11 @@
     <nav id="sideMenu">
       <hr noshade="true">
       <ul>
+          <li><button onclick="GoTo('own')">MyMemo</button></li>
+          <li><button onclick="GoTo('yourselves')">MinnnanoMemo</button></li>
+      </ul>
+      <hr noshade="true">
+      <ul>
         <li><a href="home.html">to home</a></li>
         <li><a href="chat.html">to chat</a></li>
         <li><a href="https://koppepan-orange.github.io/game-site/welcome.html">to game</a></li>
@@ -132,10 +141,15 @@
       <div id="login-error" style="color: red; display: none;">パスワードが間違っています。</div>
     </form>
   </div>
-  <div id="hontai">
+  <div id="ownMemo">
     title:<input type="text" id="title"><button id="search">search</button> <select id="select" onchange="FontChange()"><option value="Arial">normal</option><option value="comicsans">comicsans</option><option value="Hangyaku">Hangyaku</option></select><br>
     body:<br>
-  <textarea id="body"></textarea>
+    <textarea id="body"></textarea>
+  </div>
+  <div id="yourselvesMemo">
+    title:<input type="text" id="Ytitle"><button id="Ysearch">search</button> <select id="Yselect" onchange="FontChange()"><option value="Arial">normal</option><option value="comicsans">comicsans</option><option value="Hangyaku">Hangyaku</option></select> <input type="text" id="Yname"><br>
+    body:<br>
+    <textarea readonly id="readonly"></textarea>
   </div>
   <script>
     const firebaseConfig = {
@@ -150,6 +164,21 @@
     };
     const app = firebase.initializeApp(firebaseConfig)
     const database = firebase.database();
+
+
+    function GoTo(code){
+      switch(code){
+        case 'own':
+          document.getElementById('ownMemo').style.display = 'block';
+          document.getElementById('yourselvesMemo').style.display = 'none';
+          break;
+        case 'yourselves':
+          document.getElementById('ownMemo').style.display = 'none';
+          document.getElementById('yourselvesMemo').style.display = 'block';
+          break;
+      }
+      document.getElementById('sideMenu').style.left = '-250px';
+    }
 
     function FontChange(){
       let family = document.getElementById('select').value;
@@ -181,7 +210,7 @@
           usersRef = database.ref('users/'+username);
           console.log("自動ログインしました");
           document.getElementById('login-container').style.display = 'none';
-          document.getElementById('hontai').style.display = 'block';
+          document.getElementById('ownMemo').style.display = 'block';
           document.getElementById('menuToggle').style.display = 'block';
       }else{
           console.log("ログインしてください");
@@ -204,7 +233,7 @@
                     // パスワードが一致すればログイン
                     setLocalStorage("username", username); // ログイン成功時
                     document.getElementById('login-container').style.display = 'none';
-                    document.getElementById('hontai').style.display = 'block';
+                    document.getElementById('ownMemo').style.display = 'block';
                     document.getElementById('menuToggle').style.display = 'block';
                 } else {
                     // パスワードが間違っている
@@ -217,7 +246,7 @@
                 });
                 setLocalStorage("username", username); // ログイン成功時
                 document.getElementById('login-container').style.display = 'none';
-                document.getElementById('hontai').style.display = 'block';
+                document.getElementById('ownMemo').style.display = 'block';
                 document.getElementById('menuToggle').style.display = 'block';
             }
         });
@@ -231,7 +260,8 @@
     function logout(){
         sideMenu.style.left = '-250px';
         localStorage.removeItem("username");
-        document.getElementById('hontai').style.display = 'none';
+        document.getElementById('ownMemo').style.display = 'none';
+        document.getElementById('yourselvesMemo').style.display = 'none';
         document.getElementById('menuToggle').style.display = 'none';
         document.getElementById('login-container').style.display = 'block';
         document.getElementById('username').value = '';username = 'no name';
@@ -266,6 +296,21 @@
       });
     });
 
+    ////////////////////////////////////
+
+    document.getElementById('Ysearch').addEventListener('click', () => {
+      const title = document.getElementById('Ytitle').value;
+      const name = document.getElementById('Yname').value;
+      database.ref(`users/${name}/memo/${title}`).once('value').then((snapshot) => {
+        document.getElementById('readonly').value = snapshot.val()?.body || '';
+      });
+    });
+    function YFontChange(){
+      let family = document.getElementById('Yselect').value;
+      let size = 15;
+      if(family == 'Hangyaku'){size = 21};
+      document.getElementById('readonly').style.font = `${size}px ${family}`;
+    }
   </script>
   </body>
 </html>
