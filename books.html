@@ -168,9 +168,9 @@
 
     <div id="honmei">
         <ul id="list">
-            <li class="book" data-name="トランペッターの日常">トランペッターの日常</li>
+            <li class="book" data-name="trumpetter-everyday">トランペッターの日常</li>
             <li class="book" data-name="untitled">untitled</li>
-            <li class="book" data-name="別に全然仲良くもない男友達に毎日1回だけ「すき」って伝え続けるだけ">別に全然仲良くもない男友達に毎日1回だけ「すき」って伝え続けるだけ</li>
+            <li class="book" data-name="just-tell-suki">別に全然仲良くもない男友達に毎日1回だけ「すき」って伝え続けるだけ</li>
         </ul>
     </div>
     <div id="main" >
@@ -324,7 +324,7 @@
                 document.getElementById('main').style.display = 'block';
 
                 console.log(`assets/books/${name}.txt`);
-                document.getElementById('title').textContent = name;
+                document.getElementById('title').textContent = event.target.textContent;
                 fetch(`assets/books/${name}.txt`) //同じディレクトリ内のTXTファイル
                 .then(response => response.text())
                 .then(data => {document.getElementById('textzone').textContent = data;})
