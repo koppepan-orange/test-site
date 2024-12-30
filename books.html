@@ -1,0 +1,341 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="icon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: #f0f8ff;
+        }
+
+        .login-container{
+            width: 500px;
+            max-width: 100%;
+            margin: 50px auto;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+        }
+        .login-container {
+            display: flex;
+        }
+        .login-form {
+            padding: 20px;
+        }
+        .login-form input {
+            width: calc(100% - 20px);
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #c8c8c8;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .login-form button:hover {
+            background-color: #8b8b8b;
+        }
+
+        #sideMenu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            color: #333344;
+            background-color: #f0f8ff;
+            transition: left 0.3s;
+        }
+        #sideMenu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #sideMenu ul li {
+            padding: 3px;
+        }
+        #sideMenu ul li a {
+            color: #000000;
+            text-decoration: none;
+        }
+        #sideMenu button {
+            background: none;
+            border: none;
+            color: #000000;
+            font: hangyaku;
+            cursor: pointer;
+            text-decoration: none;
+            padding: 0;
+        }
+        #menuToggle {
+            display: none;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #000000;
+            border: none;
+            font-size: 26px;
+            cursor: pointer;
+        }
+        
+        #honmei{
+            width: 500px;
+            max-width: 100%;
+            margin: 50px auto;
+            background-color: #f0f8ff;
+            border: 1px solid #dedede;
+            border-radius: 5px;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+        }
+        #main{
+            width: 500px;
+            max-width: 100%;
+            margin: 50px auto;
+            background-color: #f0f8ff;
+            border: 1px solid #dedede;
+            border-radius: 5px;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+        }
+        #sub{
+            width: 100%;
+            height: 10px;
+            background-color: #f0f8ff;
+            color: #000001;
+            text-align: center;
+            line-height: 50px;
+            font-size: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        #title{
+            max-width: 100%;
+            overflow-x: scroll;
+            white-space: nowrap;
+            height: 25px;
+            background-color: #f0f8ff;
+            color: #000001;
+            text-align: center;
+            font-size: 20px;
+        }
+        #textzone{
+            width: 100%;
+            height: 750px;
+            padding: 5px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+</head>
+<body>
+    <div class="login-container" id="login-container">
+        <form class="login-form" id="login-form">
+            <input type="text" id="username" placeholder="ユーザー名" required>
+            <input type="password" id="password" placeholder="パスワード" required>
+            <button type="submit">ログイン</button>
+            <div id="login-error" style="color: red; display: none;">パスワードが間違っています。</div>
+        </form>
+    </div>
+    <div class="menuToggle" id="menuToggle">☰</div>
+    <nav id="sideMenu">
+        <hr noshade="true">
+        <ul>
+          <li><a href="https://koppepan-orange.github.io/test_site/home.html">to home</a></li>
+          <li><a href="https://koppepan-orange.github.io/test_site/memo.html">to memo</a></li>
+          <li><a href="https://koppepan-orange.github.io/test_site/chat.html">to chat</a></li>
+          <li><a href="https://koppepan-orange.github.io/game_site/welcome.html">to game</a></li>
+        </ul>
+        <hr noshade="true">
+        <button id="logout-button" onclick="logout()">Logout</button>
+    </nav>
+
+    <div id="honmei">
+        <ul id="list">
+            <li class="book" data-name="トランペッターの日常">トランペッターの日常</li>
+            <li class="book" data-name="untitled">untitled</li>
+            <li class="book" data-name="別に全然仲良くもない男友達に毎日1回だけ「すき」って伝え続けるだけ">別に全然仲良くもない男友達に毎日1回だけ「すき」って伝え続けるだけ</li>
+        </ul>
+    </div>
+    <div id="main" >
+        <div id="sub"><span id="sub-back">←</span><span id="sub-other">︙</div><br>
+        <div id="title">タイトルです。これが見えているならそれは機器のスペックが低いです。</div><br>
+        <div id="textzone">これが見えていると言うことは、何かバグっています。</div>
+    </div>
+    <script> 
+    // Firebaseの設定
+    const firebaseConfig = {
+            apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
+            authDomain: "koppepan-orange.firebaseapp.com",
+            databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
+            projectId: "koppepan-orange",
+            storageBucket: "koppepan-orange.appspot.com",
+            messagingSenderId: "730150198097",
+            appId: "1:730150198097:web:076a074a3d406053155170",
+            measurementId: "G-MYKJWD203Z"
+        };
+        // Firebaseの初期化
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+        //const storage = firebase.storage();
+
+        //#region ログイン処理
+        var loginForm = document.getElementById('login-form');
+        let room = 1;
+        let username = 'no name';
+        let usersRef = null;
+        let userData = null;
+        function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+        function load(){usersRef.once('value').then(function(snapshot){userData = snapshot.val();});}
+
+        function setLocalStorage(name, value) {
+            localStorage.setItem(name, value || ""); // 値が空なら空文字を入れる
+        }
+
+        function getLocalStorage(name) {
+            return localStorage.getItem(name); // 値をそのまま返す、ない場合はnull
+        }
+
+        window.addEventListener('DOMContentLoaded', function(){
+            autoLogin();
+        });
+
+
+        function autoLogin(){
+            username = getLocalStorage("username"); // ログイン時
+            realusername = username;
+            document.getElementById('username').value = username;
+            if(username){
+                console.log("自動ログインしました");
+                usersRef = database.ref('users/'+username);
+                menuToggle.style.display = 'block';
+                document.getElementById('honmei').style.display = 'flex';
+                document.getElementById('login-container').style.display = 'none';
+            }else{
+                console.log("ログインしてください");
+            }
+        }
+
+        loginForm.addEventListener('submit', function(event){
+            event.preventDefault();
+            username = realusername;
+            var password = document.getElementById('password').value;
+
+            usersRef = database.ref('users/' + username);
+
+            // データベースでユーザーが存在するか確認
+            usersRef.once('value').then(function(snapshot) {
+                if (snapshot.exists()){
+                    // 既存ユーザーの場合
+                    userData = snapshot.val();
+                    if (userData.password === password) {
+                        // パスワードが一致すればログイン
+                        setLocalStorage("username", username); // ログイン成功時
+                        menuToggle.style.display = 'block';
+                        document.getElementById('honmei').style.display = 'block';
+                        document.getElementById('login-container').style.display = 'none';
+                    } else {
+                        // パスワードが間違っている
+                        NicoNicoText("パスワードが違います");
+                    }
+                } else {
+                    // 新規ユーザーの場合、アカウント作成
+                    usersRef.update({
+                        password: password,
+                    });
+                    setLocalStorage("username", username); // ログイン成功時
+                    menuToggle.style.display = 'block';
+                    document.getElementById('honmei').style.display = 'block';
+                    document.getElementById('login-container').style.display = 'none';
+                }
+            });
+
+        });
+
+        function logout(){
+            usersRef.update({
+                status: 'offline'
+            })
+            localStorage.removeItem("username");
+            NicoNicoText("ログアウトしました");
+            sideMenu.style.left = '-250px';
+            menuToggle.style.display = 'none';;
+            document.getElementById('login-container').style.display = 'block';
+            username = 'no name';
+            document.getElementById('username').value = '';document.getElementById('password').value = '';
+        }
+
+        async function NicoNicoText(mes){
+            const newDiv = document.createElement('div');
+            newDiv.textContent = mes;
+            newDiv.style = `
+            position: absolute;
+            top: ${Math.random()*100}vh;
+            right: 0;
+            background-color: rgba(228, 249, 255, 0.563);
+            color: #000000;
+            font-size: 20px;
+            `
+            document.getElementById('body').appendChild(newDiv);
+            let speed = Math.random()*100+1;
+            //let speed = mes.toString().length*2 
+            for(let i = 0; window.innerWidth > i*speed; i++){
+                let val = i*speed;
+                newDiv.style.right = `${val}px`
+                await delay(50);
+            }
+            newDiv.remove();
+        }
+        //#endregion
+
+        //#region メニュー
+        const menuToggle = document.getElementById('menuToggle');
+        const sideMenu = document.getElementById('sideMenu');
+        menuToggle.addEventListener('click', () => {
+            if(sideMenu.style.left === '0px'){
+                sideMenu.style.left = '-250px';
+            }else{
+                sideMenu.style.left = '0px';
+            }
+        });
+        //#endregion
+
+        document.addEventListener('click', (event) => {
+            if(event.target.classList.contains('book')){
+                let name = event.target.getAttribute('data-name');
+
+                document.getElementById('honmei').style.display = 'none';
+                document.getElementById('main').style.display = 'block';
+
+                console.log(`assets/books/${name}.txt`);
+                document.getElementById('title').textContent = name;
+                fetch(`assets/books/${name}.txt`) //同じディレクトリ内のTXTファイル
+                .then(response => response.text())
+                .then(data => {document.getElementById('textzone').textContent = data;})
+                .catch(error => console.error('Error:', error));
+            }
+        });
+
+        document.getElementById('sub-back').addEventListener('click', () => {
+            document.getElementById('honmei').style.display = 'block';
+            document.getElementById('main').style.display = 'none';
+        })
+    </script>
+</body>
+</html>
