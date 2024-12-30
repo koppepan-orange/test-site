@@ -327,7 +327,7 @@
                 document.getElementById('title').textContent = event.target.textContent;
                 fetch(`assets/books/${name}.txt`) //同じディレクトリ内のTXTファイル
                 .then(response => response.text())
-                .then(data => {document.getElementById('textzone').textContent = data;})
+                .then(data => {document.getElementById('textzone').innerText = data;})
                 .catch(error => console.error('Error:', error));
             }
         });
