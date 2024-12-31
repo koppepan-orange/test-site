@@ -333,6 +333,8 @@
         });
 
         document.getElementById('sub-back').addEventListener('click', () => {
+            document.getElementById('title').textContent = '';
+            document.getElementById('textzone').innerText = '';
             document.getElementById('honmei').style.display = 'block';
             document.getElementById('main').style.display = 'none';
         })
