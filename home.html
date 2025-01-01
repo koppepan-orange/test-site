@@ -6,60 +6,92 @@
     <link rel="icon" href="Icon.ico">
     <title>test-site</title>
     <style>
+      @font-face{font-family:comicsans;src:url('assets/comicsans.ttf');}
+      @font-face{font-family:Hangyaku;src:url('assets/Hangyaku.ttf');}
       @font-face{font-family:cube12;src:url('assets/cube12.ttf');}
-      *{background-color: #f0f8ff;/*alice blue*/
-        font-family:cube12;}
+      @font-face{font-family:wingdings;src:url('assets/wingdings.ttf');}
+      @font-face{font-family:kaimetsu;src:url('assets/kaimetsu.otf');}
+      *{
+        background-color: #f0f8ff;
+      }
+      #all{
+        font-family:comicsans;
+      }
 
-        #sideMenu {
-          position: fixed;
-          top: 0;
-          left: -250px;
-          width: 250px;
-          height: 100%;
-          color: #333344;
-          background-color: #cecece;
-          transition: left 0.3s;
-        }
-        #sideMenu ul {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-        }
-        #sideMenu ul li {
-          padding: 3px;
-          background-color: #cecece;
-        }
-        #sideMenu ul li a {
-          color: #000000;
-          background-color: #cecece;
-          text-decoration: none;
-        }
-        #sideMenu button {
-          background-color: #cecece;
-          border: none;
-          color: #000000;
-          cursor: pointer;
-          text-decoration: none;
-          padding: 0;
-        }
-        #menuToggle {
-          display: block;
-          position: absolute;
-          top: 15px;
-          right: 15px;
-          color: #000000;
-          border: none;
-          font-size: 26px;
-          cursor: pointer;
-        }
+      #sideMenu {
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 250px;
+        height: 100%;
+        color: #333344;
+        background-color: #cecece;
+        transition: left 0.3s;
+      }
+      #sideMenu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      #sideMenu ul li {
+        padding: 3px;
+        background-color: #cecece;
+      }
+      #sideMenu ul li a {
+        color: #000000;
+        background-color: #cecece;
+        text-decoration: none;
+      }
+      #sideMenu ul li select{
+        background-color: #cecece;
+      }
+      #sideMenu button {
+        background-color: #cecece;
+        border: none;
+        color: #000000;
+        cursor: pointer;
+        text-decoration: none;
+        padding: 0;
+      }
+      #menuToggle {
+        display: block;
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        color: #000000;
+        border: none;
+        font-size: 26px;
+        cursor: pointer;
+      }
+
+      .wd{
+        display: none;
+      }
+      #wdcheck{
+        cursor: pointer;
+        font-size:4px;
+        font-family: wingdings!important;
+        background-color: #cecece;
+      }
+      #wdtextarea{
+        font-family: wingdings;
+      }
     </style>
 </head>
-<body>
+<body id="all">
   <!--サイドメニュー..-->
   <div class="menuToggle" id="menuToggle">☰</div>
   <nav id="sideMenu">
     <hr noshade="true">
-    <ul>
+    <ul><!--なんか機能をアンロックする形で-->
+      <li>
+        <select id="font-select" onchange="changeFont()">
+          <option value="comicsans">comicsans</option>
+          <option value="Hangyaku">Hangyaku</option>
+          <option value="cube12">cube12</option>
+          <option class="wd" value="wingdings">wingdings</option>
+        </select>
+      </li>
     </ul>
     <hr noshade="true">
     <ul>
@@ -70,6 +102,9 @@
       <li><a href="books.html">to books</a></li>
     </ul>
     <hr noshade="true">
+    <ul>
+      <li><span id="wdcheck">HELLO</spanid></li>
+    </ul>
   </nav>
   <h2><p align="center">Koppepan Orange's site</p></h2>
   <p align="center">ここは何でも<a href="https://koppepan-orange.github.io/test-site/home-ura.html" style="text-decoration: none; color: #000000;">ある</a>サイトです！<i>ゆっくりしていってね！！</i></p>
@@ -124,13 +159,18 @@
     <br><a target="_blank" href="https://www.arealme.com/">ARealMe</a>
     <br><a target="_blank" href="https://unityroom.com/new_arrivals">unityroom</a></details></p>
   <!-- この下、メモです!!初期の私のがんばりです！！！！ -->
-    <p>メモ
-    <form>
-        <input type="text" size="30"><br>
-        <textarea rows="12" cols="35"></textarea><br><br>
-        <input type="text" size="30"><br>
-        <textarea rows="10" cols="35"></textarea>
-    </form>
+    <p>メモ<br>
+      <input type="text" size="30"><br>
+      <textarea rows="12" cols="35"></textarea><br><br>
+      <input type="text" size="30"><br>
+      <textarea rows="10" cols="35"></textarea><br>
+      <input class="wd" type="text" size="30">　<input type=checkbox class="wd" id="wdonoff" checked><br>
+      <textarea class="wd" id="wdtextarea" rows="10" cols="35">
+WHY... WHY DID YOU KNOW THIS PLACE...?
+I...I AM? I AM JUST SCIENTIST.
+PEOPLE CALL ME...W.D.GASTER.
+I LIVE IN THE GAME WHICH MAKED BY TOBY FOX.
+THEN, LET'S MEET IN ITS GAME.</textarea>
     </p>
   <!-- この下、足つかないよゾーンです!!優しい友達に教えてもらいました！！！！神!!!! -->
   <p><span align="center">調べれたりするところ</span>
@@ -146,7 +186,7 @@
     </details>
   </p>
   <script>
-    //サイドメニュー
+    //#region サイドメニュー
     const menuToggle = document.getElementById('menuToggle');
     const sideMenu = document.getElementById('sideMenu');
     menuToggle.addEventListener('click', () => {
@@ -156,6 +196,45 @@
           sideMenu.style.left = '0px';
       }
     });
+
+    //change-font
+    function changeFont(){
+      document.getElementById('all').style.fontFamily = document.getElementById('font-select').value;
+      // if(document.getElementById('font-select').value == 'Hangyaku'){
+      //   document.getElementById('all').style.fontSize = '23px';
+      // }else{
+      //   document.getElementById('all').style.fontSize = '17px';
+      // }
+      if(document.getElementById('font-select').value == 'wingdings'){
+        document.getElementById('wdtextarea').style.fontFamily = 'wingdings, kaimetsu';
+        
+      }
+    }
+
+    //#endregion
+
+    //wingdings特殊機構のお話
+    let wdnow = 0;
+    document.getElementById('wdcheck').addEventListener('click', () => {
+      if(wdnow == 0){
+        wdnow = 1;
+        document.querySelectorAll('.wd').forEach(element => {
+          element.style.display = 'inline';
+        })
+      }else{
+        wdnow = 0;
+        document.querySelectorAll('.wd').forEach(element => {
+          element.style.display = 'none';
+        })
+      }
+    })
+    document.getElementById('wdonoff').addEventListener('change', () => {
+      if(document.getElementById('wdonoff').checked){
+        document.getElementById('wdtextarea').style.fontFamily = 'wingdings';
+      }else{
+        document.getElementById('wdtextarea').style.fontFamily = 'comicsans';
+      }
+    })
   </script>
 </body>
 </html>
