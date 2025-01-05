@@ -18,6 +18,17 @@
         font-family:comicsans;
       }
 
+      #description {
+        display: none;
+        position: fixed;
+        pointer-events: none;
+        background-color: rgba(90, 90, 90, 0.9);
+        color: rgb(255, 255, 255);
+        padding: 5px 10px;
+        border-radius: 5px;
+        z-index: 1000;
+      }
+
       #sideMenu {
         position: fixed;
         top: 0;
@@ -62,6 +73,21 @@
         border: none;
         font-size: 26px;
         cursor: pointer;
+      }
+
+      #iframe{
+        display: none;
+        width: 70%;
+        height: 80%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        border: 2px solid #ffbb00;
+        border-radius: 5px;
+        background-color: #f0f8ff;
+        overflow: scroll;
+        padding:2px;
       }
 
       .wd{
@@ -110,54 +136,9 @@
   <p align="center">ここは何でも<a href="https://koppepan-orange.github.io/test-site/home-ura.html" style="text-decoration: none; color: #000000;">ある</a>サイトです！<i>ゆっくりしていってね！！</i></p>
   <hr noshade="true">
   <!-- この下、メニーサイトゾーンです!!単純ですが、めちゃ便利です！！！！  ...ここさ、mouth hoverですって出てきて押せるようにしない？detailsちょっとめんどい-->
-  <p><span align="center">よく使う<a href="https://koppepan-orange.github.io/test-site/password-room.html" style="text-decoration: none; color: #000000;">サ</a>イトたち</span>
-    <details><summary>memos</summary>
-        <a href="https://koppepan-orange.github.io/test-site/memo.html">memo-site</a>
-    <br><a target="_blank" href="http://www.drpartners.jp/tools/browser-memocho.htm">ブラウザメモ帳</a>
-    <br><a target="_blank" href="https://memo.onl.jp/?koppepan22">メモweb</a>
-    <br><a target="_blank" href="https://file.onl.jp/?koppepan23">ファイルweb</a>
-    <br><a target="_blank" href="https://write-box.appspot.com/">writebox</a></details>
-    <br><details><summary>tools</summary>
-        <a href="https://koppepan-orange.github.io/test-site/tools.html">tool-site</a>
-    <br><a target="_blank" href="https://www.dropbox.com/home">dropbox</a>
-    <br><a target="_blank" href="https://anagram.httqs.com/">アナグラム生成機</a>
-    <br><a target="_blank" href="https://jp.piliapp.com/random/wheel/">ルーレット等生成機</a>
-    <br><a target="_blank" href="https://www.color-site.com/">カラーサイト</a>
-    <br><a target="_blank" href="https://123apps.com/ja/">mp3、mp4編集サイト</a></details>
-    <br><details><summary>makes</summary>
-        <a target="_blank" href="https://scratch.mit.edu/users/koppepan_orange/">scratch</a>
-    <br><a target="_blank" href="https://flat.io/ja">flat</a>
-    <br><a target="_blank" href="https://musescore.com/user/41107809">musescore</a>
-    <br><a target="_blank" href="https://pixnote.net/">pixnote</a>
-    <br><a target="_blank" href="https://www.pixilart.com/koppepanorange">pixlate</a>
-    <br><a target="_blank" href="https://thirtydollar.website/">thirty dollar</a></details>
-    <br><details><summary>studies</summary>
-        <a target="_blank" href="https://true-koppepan-orange.github.io/sub_test-site/meibo_site">meibo-site</a>
-    <br><a target="_blank" href="https://www.duolingo.com/profile/koppepan_orange">duolingo</a>
-    <br><a target="_blank" href="http://typingx0.net/sushida/">寿司打</a>
-    <br><a target="_blank" href="https://ankey.io/@koppepanorange">ankey</a></details>
-    <br><details><summary>SNSes</summary>
-        <a href="https://koppepan-orange.github.io/test-site/chat.html">chat-site</a>
-    <br><a target="_blank" href="https://www.reddit.com/user/koppepan_orange/">reddit</a>
-    <br><a target="_blank" href="https://github.com/koppepan-orange">github</a>
-    <br><a target="_blank" href="https://discord.com/channels/@me">discord</a>
-    <br><a target="_blank" href="https://chat.onl.jp/?koppepan23">チャットweb</a>
-    <br><a target="_blank" href="https://www.pixiv.net/users/93550041">pixiv</a>
-    <br><a target="_blank" href="https://www.twitch.tv/koppepan_orange">twitch</a>
-    <br><a target="_blank" href="https://www.instagram.com/koppepan_orange/">instagram</a>
-    <br><a target="_blank" href="https://www.threads.net/@koppepan_orange">threads</a>
-    <br><a target="_blank" href="https://twitter.com/koppepan_orange">twitter</a>
-    <br><a target="_blank" href="https://www.youtube.com/channel/UCFvmwWDRrVqM22icC7QLx1w">youtube</a>
-    <br><a target="_blank" href="https://lit.link/koppepanorange">lit.link</a>
-    <br><a target="_blank" href="https://kiite.jp/user/koppapan_orange">kiite</a>
-    <br><a target="_blank" href="https://draw.kuku.lu/pchat.php?hash=898857247">MagicalDraw</a></details>
-    <br><details><summary>games</summary>
-        <a href="https://koppepan-orange.github.io/game-site/welcome.html">game-site</a>
-    <br><a target="_blank" href="https://koppepan-orange.github.io/test-site/music-site.html">music-site</a>
-    <br><a target="_blank" href="https://cybercodeonline.com">cybercodeonline</a>
-    <br><a target="_blank" href="https://sdin.jp/browser/">browsergame</a>
-    <br><a target="_blank" href="https://www.arealme.com/">ARealMe</a>
-    <br><a target="_blank" href="https://unityroom.com/new_arrivals">unityroom</a></details></p>
+   <iframe id="iframe"></iframe>
+   <div id="description"></div>
+  <div id="links"></div>
   <!-- この下、メモです!!初期の私のがんばりです！！！！ -->
     <p>メモ<br>
       <input type="text" size="30"><br>
@@ -186,6 +167,369 @@ THEN, LET'S MEET IN ITS GAME.</textarea>
     </details>
   </p>
   <script>
+    document.addEventListener('mousemove', (e) => {
+      const HasDescription = document.getElementById('description');
+      HasDescription.style.left = `${e.clientX + 10}px`;
+      HasDescription.style.top = `${e.clientY + 10}px`;
+    });
+
+    document.addEventListener('mouseover', (e) => {
+      if(e.target.classList.contains('hasd')){
+          const description = e.target.dataset.description;
+          document.getElementById('description').innerHTML = description;
+          document.getElementById('description').style.display = 'block';
+      }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+      if(e.target.classList.contains('hasd')){
+          document.getElementById('description').innerHTML = '';
+          document.getElementById('description').style.display = 'none';
+      }
+    });
+
+    const Links = {
+      'memo':{
+      'memos': {
+        id: 'memos',
+        name: 'memo-site',
+        href: 'https://koppepan-orange.github.io/test-site/memo.html',
+        iframable:1,
+        description: 'メモができるサイト。まじで有能<br>You know?<br>あ、うざい？これ'
+      },
+      'browserMemo': {
+        id: 'browserMemo',
+        name: 'ブラウザメモ帳',
+        href: 'http://www.drpartners.jp/tools/browser-memocho.html',
+        iframable: 1,
+        description: 'メモができるサイト。保有量が大きい'
+      },
+      'memoWeb': {
+        id: 'memoWeb',
+        name: 'メモweb',
+        href: 'https://memo.onl.jp/?koppepan23',
+        iframable:0,
+        description: '昔使ってたところ。<br>今はmemo.html使ってるけどね'
+      },
+      'fileWeb': {
+        id: 'fileWeb',
+        name: 'ファイルweb',
+        href: 'https://file.onl.jp/?koppepan23',
+        iframable:0,
+        description: 'これは有用ちゃん<br>ファイルを送受信できる<br>そのうち作りたい.....'
+      },
+      'writebox': {
+        id: 'writebox',
+        name: 'writebox',
+        href: 'https://write-box.appspot.com/',
+        iframable:0,
+        description: '簡単にhtmlのテストができるサイト<br>けどjsとcssは無効'
+      },
+    },
+    'tool':{
+      'tools': {
+        id: 'tools',
+        name: 'tool-site',
+        href: 'https://koppepan-orange.github.io/test-site/tools.html',
+        iframable:1,
+        description: 'んー..あんまり実用的じゃない子<br>遊び目的。ほぼ<br>けど偏差値とかも測れるよ'
+      },
+      'dropbox': {
+        id: 'dropbox',
+        name: 'dropbox',
+        href: 'https://www.dropbox.com/home',
+        iframable:0,
+        description: '単純に優秀な子<br>ファイルWebよりも持続性が高い<br>ログイン必須'
+      },
+      'anagram': {
+        id: 'anagram',
+        name: 'アナグラム生成機',
+        href: 'https://anagram.httqs.com/',
+        iframable:1,
+        description: 'アナグラムを生成してくれる子<br>武器とかの名前はこいつに頼ってもいいかも'
+      },
+      'roulette': {
+        id: 'roulette',
+        name: 'ルーレット等生成機',
+        href: 'https://jp.piliapp.com/random/wheel/',
+        iframable:1,
+        description: '名の通り感。<br>他にも乱数とかもいける<br>暇つぶしできるかもね'
+      },
+      'colorSite': {
+        id: 'colorSite',
+        name: 'カラーサイト',
+        href: 'https://www.color-site.com/',
+        iframable:1,
+        description: '色の種類を調べれるサイト<br>まじで優秀<br>rgbにも対応'
+      },
+      'mediaEdit': {
+        id: 'mediaEdit',
+        name: 'mp3、mp4編集サイト',
+        href: 'https://123apps.com/ja/',
+        iframable:1,
+        description: '動画→音ができるサイト<br>いつも愛用させていただいております<br>かんしゃ〜'
+      },
+    },
+    'make':{
+      'scratch': {
+        id: 'scratch',
+        name: 'scratch',
+        href: 'https://scratch.mit.edu/users/koppepan_orange/',
+        iframable:0,
+        description: '言わずもがな<br>前はここで作ってた..っていう名残<br>でもやってほしい'
+      },
+      'flat': {
+        id: 'flat',
+        name: 'flat',
+        href: 'https://flat.io/ja',
+        iframable:0,
+        description: '音楽が比較的簡単に作れるサイト<br>ログイン必須'
+      },
+      'musescore': {
+        id: 'musescore',
+        name: 'musescore',
+        href: 'https://musescore.com/user/41107809',
+        iframable:0,
+        description: '楽譜を調べれるサイト<br>人気な曲はありがちだけど<br>そんなそんなな曲はないことが多い'
+      },
+      'pixnote': {
+        id: 'pixnote',
+        name: 'pixnote',
+        href: 'https://pixnote.net/',
+        iframable:1,
+        description: '簡単にドット絵が描けるサイト<br>まじで良い<br>ほんとに'
+      },
+      'pixlate': {
+        id: 'pixlate',
+        name: 'pixlate',
+        href: 'https://www.pixilart.com/koppepanorange',
+        iframable:0,
+        description: 'ドット絵が描けるサイト2<br>ちょっと複雑だけど自由度は高め'
+      },
+      'thirtyDollar': {
+        id: 'thirtyDollar',
+        name: 'thirty dollar',
+        href: 'https://thirtydollar.website/',
+        iframable:0,
+        description: '効果音で音楽を作れるサイト<br>internet overdoseやってる人もいたね'
+      },
+    },
+    'study':{
+      'meibo': {
+        id: 'meibo',
+        name: 'meibo-site',
+        href: 'https://true-koppepan-orange.github.io/sub_test-site/meibo_site',
+        iframable:1,
+        description: '学校の人の一覧を見れるサイト<br>ぜんーーーぜんいないのは内緒のお話'
+      },
+      'duolingo': {
+        id: 'duolingo',
+        name: 'duolingo',
+        href: 'https://www.duolingo.com/profile/koppepan_orange',
+        iframable:0,
+        description: '言語が学べるサイト<br>ﾁｮｳﾕｰﾒｲ!ﾔﾊﾞｵ'
+      },
+      'sushiDa': {
+        id: 'sushiDa',
+        name: '寿司打',
+        href: 'http://typingx0.net/sushida/',
+        iframable:0,
+        description: 'タイピング競いの定番<br私は苦手です'
+      },
+      'ankey': {
+        id: 'ankey',
+        name: 'ankey',
+        href: 'https://ankey.io/@koppepanorange',
+        iframable:0,
+        description: '歌詞とか色々でタイピングができるサイト<br>楽しい<br>好き'
+      },
+    },
+    'sns':{
+      'chatSite': {
+        id: 'chatSite',
+        name: 'chat-site',
+        href: 'https://koppepan-orange.github.io/test-site/chat.html',
+        iframable:1,
+        description: '人と話せるサイト<br>なんJスタイル<br>サイドバーからtwitter2が見れるよ'
+      },
+      'reddit': {
+        id: 'reddit',
+        name: 'reddit',
+        href: 'https://www.reddit.com/user/koppepan_orange/',
+        iframable:0,
+        description: '外国掲示板定番のやつ<br>英語しかない<br>絵はほとんど転載<br>まあ常時喧嘩してるtwitterよりはマシ'
+      },
+      'github': {
+        id: 'github',
+        name: 'github',
+        href: 'https://github.com/koppepan-orange',
+        iframable:0,
+        description: 'ほんとにいつもありがとね...<br>このサイトもあなたのおかげです'
+      },
+      'discord': {
+        id: 'discord',
+        name: 'discord',
+        href: 'https://discord.com/channels/@me',
+        iframable:0,
+        description: 'いつもありがとな、ほんとに<br>感謝してるぜ👍🏻'
+      },
+      'chatWeb': {
+        id: 'chatWeb',
+        name: 'チャットweb',
+        href: 'https://chat.onl.jp/?koppepan23',
+        iframable:0,
+        description: 'ちゃんと喋れるいいサイト<br>けどchat.htmlの方が良い'
+      },
+      'pixiv': {
+        id: 'pixiv',
+        name: 'pixiv',
+        href: 'https://www.pixiv.net/users/93550041',
+        iframable:0,
+        description: '絵が見れるサイト<br>twitterよりも民度が良い<br>絵師さんの巣窟'
+      },
+      'twitch': {
+        id: 'twitch',
+        name: 'twitch',
+        href: 'https://www.twitch.tv/koppepan_orange',
+        iframable:0,
+        description: '配信が見れるサイト<br>いつかはしてみたいねぇ....'
+      },
+      'instagram': {
+        id: 'instagram',
+        name: 'instagram',
+        href: 'https://www.instagram.com/koppepan_orange/',
+        iframable:0,
+        description: '2番目に好きなSNS<br>けど最近投稿できてない...'
+      },
+      'threads': {
+        id: 'threads',
+        name: 'threads',
+        href: 'https://www.threads.net/@koppepan_orange',
+        iframable:0,
+        description: 'instagramのtwitter(?)<br>人口が本当に少ない'
+      },
+      'twitter': {
+        id: 'twitter',
+        name: 'twitter',
+        href: 'https://twitter.com/koppepan_orange',
+        iframable:0,
+        description: '日本で最も人気なSNS<br>色んな界隈が入り混じってて良いけど<br>気抜いたら関係ないやつらが流れ込んでくるのが難点<br>好きだけどね'
+      },
+      'youtube': {
+        id: 'youtube',
+        name: 'youtube',
+        href: 'https://www.youtube.com/channel/UCFvmwWDRrVqM22icC7QLx1w',
+        iframable:0,
+        description: '言わずもがな〜な動画投稿サイト<br>たまーーーに投稿してる<br>のばまんさんはおすすめ'
+      },
+      'litLink': {
+        id: 'litLink',
+        name: 'lit.link',
+        href: 'https://lit.link/koppepanorange',
+        iframable:0,
+        description: '私についてまとめてあるサイト<br>けど多分このサイトだけで事足りる'
+      },
+      'kiite': {
+        id: 'kiite',
+        name: 'kiite',
+        href: 'https://kiite.jp/user/koppapan_orange',
+        iframable:1,
+        description: '音楽が広告なしで見れるサイト<br>ボカロのみ<br>けどニコ動基盤だから学校では無理<br>ガッデム..ってやつ？<br>ベアさんといよわさんはおすすめ'
+      },
+      'magicalDraw': {
+        id: 'magicalDraw',
+        name: 'MagicalDraw',
+        href: 'https://draw.kuku.lu/pchat.php?hash=898857247',
+        iframable:0,
+        description: '俗にいう"絵チャ"<br>友達と合作ができる<br>楽しい'
+      },
+    },
+    'game':{
+      'gameSite': {
+        id: 'gameSite',
+        name: 'game-site',
+        href: 'https://koppepan-orange.github.io/game-site/welcome.html',
+        iframable:1,
+        description: 'ゲームができるサイト<br>まじで楽しい<br>clicker-of-mugenはおすすめ<br>cardは未完成だけど絵見て欲しい'
+      },
+      'musicSite': {
+        id: 'musicSite',
+        name: 'music-site',
+        href: 'https://koppepan-orange.github.io/test-site/music-site.html',
+        iframable:1,
+        description: '全然できてない<br>kiite-cafeみたいなサイト作ろうとしたんだけどむずい'
+      },
+      'cybercode': {
+        id: 'cybercode',
+        name: 'cybercodeonline',
+        href: 'https://cybercodeonline.com',
+        iframable:0,
+        description: '硬派で古き良きMMORPG<br>まじで楽しい..いや人によるかも<br>AFKが充実してて好き'
+      },
+      'browserGame': {
+        id: 'browserGame',
+        name: 'browsergame',
+        href: 'https://sdin.jp/browser/',
+        iframable:0,
+        description: '色んなゲームで遊べるサイト<br>カジノ系列もあるよ<br>確かブロック貫通'
+      },
+      'arealMe': {
+        id: 'arealMe',
+        name: 'ARealMe',
+        href: 'https://www.arealme.com/',
+        iframable:0,
+        description: '色んなテストができるサイト<br>クリック速度とか反射神経とか'
+      },
+      'unityroom': {
+        id: 'unityroom',
+        name: 'unityroom',
+        href: 'https://unityroom.com/new_arrivals',
+        iframable:0,
+        description: '色んな人の作ったゲームで遊べるサイト<br>"ゆめきゃわ"みたいなやつはおすすめ'
+      }
+    },
+    };
+    let iframenow = 0;
+    Object.keys(Links).forEach(type => {
+      const details = document.createElement('details');
+      const summary = document.createElement('summary');
+      summary.textContent = type;
+      details.appendChild(summary);
+      details.id = type;
+      document.getElementById('links').appendChild(details);
+
+      Object.keys(Links[type]).forEach(key => {
+        const link = Links[type][key];
+        const a = document.createElement('a');
+        a.href = link.href;
+        a.textContent = link.name;
+        a.id = link.id;
+        a.className = 'hasd';
+        a.setAttribute('data-description', link.description);
+
+        if(link.iframable == 1){
+          console.log(`${link.id}はiframe可能！！！！！`);
+          a.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            if(iframenow == 0){
+              iframenow = 1;//なぜか反応してない。Links['memos']の形にするべき？
+              const iframe = document.getElementById('iframe');
+              iframe.style.display = 'block';
+              iframe.src = link.href;
+            }else{
+              iframenow = 0;
+              const iframe = document.getElementById('iframe');
+              iframe.style.display = 'none';
+            }
+          })
+        }
+        document.getElementById(type).appendChild(a);
+        document.getElementById(type).appendChild(document.createElement('br'));
+      });
+      document.getElementById(type).appendChild(document.createElement('br'));
+    })
+
+
     //#region サイドメニュー
     const menuToggle = document.getElementById('menuToggle');
     const sideMenu = document.getElementById('sideMenu');
@@ -212,8 +556,7 @@ THEN, LET'S MEET IN ITS GAME.</textarea>
     }
 
     //#endregion
-
-    //wingdings特殊機構のお話
+    //#region wingdings特殊機構のお話
     let wdnow = 0;
     document.getElementById('wdcheck').addEventListener('click', () => {
       if(wdnow == 0){
@@ -235,6 +578,7 @@ THEN, LET'S MEET IN ITS GAME.</textarea>
         document.getElementById('wdtextarea').style.fontFamily = 'comicsans';
       }
     })
+    //#endregion
   </script>
 </body>
 </html>
