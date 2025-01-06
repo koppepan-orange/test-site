@@ -109,10 +109,18 @@
         }
         #q-button {
             width: 50px;
-            height: 15px;
+            height: 30px;
         }
         #admin-form {
             display: none;
+        }
+
+        .a-question{
+            background-color: #eeeeee;
+            color:#2b2b2b;
+            border:1px solid #b2b2b2;
+            border-radius: 3px;
+            padding: 3px;
         }
     </style>
 </head>
@@ -175,8 +183,6 @@
         });
 
         document.querySelectorAll('.hastxt').forEach((element) => {
-            
-        
             addEventListener('click', (event) => {
                 element.addEventListener('click', (event) => {
                     if(cpopupNow == 0){
@@ -197,7 +203,6 @@
             })
         })
         //#endregion
-
         //#region haspopup
         let apperUIs = {
             'about':{
@@ -296,7 +301,6 @@
         let cpopupNow = 0;
         document.querySelectorAll('.cpopup').forEach(element => {
             element.addEventListener('click', () => {
-                console.log('cpopupが押されたね')
                 if(cpopupNow == 0){
                     const description = apperUIs[element.id]?.cpopup??'none';
                     cpopup.innerHTML = description;
@@ -310,6 +314,15 @@
             });
         })
         //#endregion
+        //#region 管理者モード
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}/${month}/${day} ${hours}:${minutes}`;
+        }
 
         const qForm = document.getElementById('q-form');
         const qButton = document.getElementById('q-button');
@@ -322,7 +335,11 @@
         qButton.addEventListener('click', e => {
             e.preventDefault();
             const question = document.getElementById('q-textarea').value;
-            database.ref('questions').push({question: question});
+            database.ref('questions').push({
+                question: question,
+                timestamp: formatDate(new Date())
+            });
+            qForm.reset();
         });
 
         adminButton.addEventListener('click', () => {
@@ -332,16 +349,21 @@
         adminSubmit.addEventListener('click', e => {
             e.preventDefault();
             const password = adminPassword.value;
-            if (password === 'koppepanorange') {
+            if(password === 'haidomodomo,adminyade'){
+                adminPassword.value = '';
+                adminForm.style.display = 'none';
                 database.ref('questions').on('value', snapshot => {
                     const questions = snapshot.val();
-                    const html = Object.keys(questions).map(key => `<p>${questions[key].question}</p>`).join('');
+                    const html = Object.keys(questions).map(key => `${questions[key].timestamp}<br><div class="a-question">${questions[key].question}</div>`).join('<br>');
                     adminQuestions.innerHTML = html;
                 });
             } else {
                 alert('Wrong password!');
+                adminPassword.value = '';
+                adminForm.style.display = 'none';
             }
         });
+        //#endregion
     </script>
 </body>
 </html>
