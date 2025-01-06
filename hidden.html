@@ -127,8 +127,8 @@
         </ul>
         <hr noshade="true">
         <ul>
-            <li data-name="chara">chara</li>
-            <li data-name="enemies">enemies</li>
+            <li class="hastxt" data-name="chara">chara</li>
+            <li class="hastxt" data-name="enemies">enemies</li>
         </ul>
     </nav>
     <div id="upperUI">
@@ -174,20 +174,27 @@
             }
         });
 
-        document.querySelectorAll('.hastxt').addEventListener('click', (event) => {
-            if(cpopupNow == 0){
-                let name = event.target.getAttribute('data-name');
-                fetch(`assets/txts/${name}.txt`)
-                .then(response => response.text())
-                .then(data => {cpopup.innerText = data;})
-                .catch(error => console.error('Error:', error));
-                cpopup.style.display = 'block';
-                cpopupNow = 1;
-            }else{
-                cpopup.innerHTML = '';
-                cpopup.style.display = 'none';
-                cpopupNow = 0;
-            }
+        document.querySelectorAll('.hastxt').forEach((element) => {
+            
+        
+            addEventListener('click', (event) => {
+                element.addEventListener('click', (event) => {
+                    if(cpopupNow == 0){
+                        let name = event.target.getAttribute('data-name');
+                        console.log(name+'が発動しましたぜぇい')
+                        fetch(`assets/txts/${name}.txt`)
+                        .then(response => response.text())
+                        .then(data => {cpopup.innerText = data;})
+                        .catch(error => console.error('Error:', error));
+                        cpopup.style.display = 'block';
+                        cpopupNow = 1;
+                    }else{
+                        cpopup.innerHTML = '';
+                        cpopup.style.display = 'none';
+                        cpopupNow = 0;
+                    }
+                })
+            })
         })
         //#endregion
 
