@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Site</title>
+    <style>
+        *{
+            background-color: #f0f8ff;
+        }
+        body{
+            overflow: hidden;
+        }
+
+        #menuToggle {
+            display: block;
+            position: absolute;
+            top: 5px;
+            right: 15px;
+            color: #000000;
+            background-color: rgba(255, 255, 255, 0);
+            border: none;
+            font-size: 26px;
+            cursor: pointer;
+        }
+        #sideMenu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            color: #333344;
+            background-color: #cecece;
+            transition: left 0.3s;
+            z-index: 9999;
+        }
+        #sideMenu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            background-color: #cecece;
+        }
+        #sideMenu ul li {
+            padding: 3px;
+            background-color: #cecece;
+        }
+        #sideMenu ul li a {
+            color: #333344;
+            text-decoration: none;
+            background-color: #cecece;
+        }
+
+        #upperUI {
+            width: 100%;
+            height: 30px;
+            background-color: #b2b2b2;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding:3px;
+        }
+        #upperUI span{
+            background-color: #b2b2b2;
+            cursor: pointer;
+        }
+
+        #popup{
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            background-color: #eeeeee;
+            color:#2b2b2b;
+            border: 2px solid #b2b2b2;
+            z-index: 999;
+        }
+
+        #click-popup{
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            max-height: 600px;
+            background-color: #eeeeee;
+            color:#2b2b2b;
+            border: 2px solid #b2b2b2;
+            z-index: 999;
+            overflow: auto;
+        }
+        #click-popup ul{
+            background-color: #eeeeee;
+        }
+        #click-popup ul li{
+            background-color: #eeeeee;
+        }
+
+        #q-form {
+            width: 300px;
+            margin: 0 auto;
+        }
+        #q-textarea {
+            width: 100%;
+            height: 200px;
+        }
+        #q-button {
+            width: 50px;
+            height: 15px;
+        }
+        #admin-form {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="menuToggle">☰</div>
+    <nav id="sideMenu">
+        <hr noshade="true">
+        <ul>
+            <li><a href="https://koppepan-orange.github.io/test-site/home.html">to home</a></li>
+            <li><a href="https://koppepan-orange.github.io/test-site/chat.html">to chat</a></li>
+            <li><a href="https://koppepan-orange.github.io/test-site/memo.html">to memo</a></li>
+        </ul>
+        <hr noshade="true">
+        <ul>
+            <li data-name="chara">chara</li>
+            <li data-name="enemies">enemies</li>
+        </ul>
+    </nav>
+    <div id="upperUI">
+        <span id="about" class="haspopup">About</span>　<span id="about-event" class="haspopup cpopup">Event</span>　<span id="admin-button" class="haspopup" data-description="管理者モードになれます<br>パスワードがわかれば、ですけどね〜〜〜">Admin-Mode</span>
+    </div>
+    <div id="popup"></div><div id="click-popup"></div>
+    <br>
+    <form id="q-form">
+        <textarea id="q-textarea" placeholder="Write here~♪"></textarea>
+        <button id="q-button">Send</button>
+    </form>
+    <form id="admin-form">
+        <input type="password" id="admin-password" placeholder="Password">
+        <button id="admin-submit">Submit</button>
+    </form>
+    <div id="admin-questions"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
+            authDomain: "koppepan-orange.firebaseapp.com",
+            databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
+            projectId: "koppepan-orange",
+            storageBucket: "koppepan-orange.appspot.com",
+            messagingSenderId: "730150198097",
+            appId: "1:730150198097:web:076a074a3d406053155170",
+            measurementId: "G-MYKJWD203Z"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        //#region sidemenu
+        const menuToggle = document.getElementById('menuToggle');
+        const sideMenu = document.getElementById('sideMenu');
+        menuToggle.addEventListener('click', () => {
+            if(sideMenu.style.left === '0px'){
+                sideMenu.style.left = '-250px';
+            }else{
+                sideMenu.style.left = '0px';
+            }
+        });
+
+        document.querySelectorAll('.hastxt').addEventListener('click', (event) => {
+            if(cpopupNow == 0){
+                let name = event.target.getAttribute('data-name');
+                fetch(`assets/txts/${name}.txt`)
+                .then(response => response.text())
+                .then(data => {cpopup.innerText = data;})
+                .catch(error => console.error('Error:', error));
+                cpopup.style.display = 'block';
+                cpopupNow = 1;
+            }else{
+                cpopup.innerHTML = '';
+                cpopup.style.display = 'none';
+                cpopupNow = 0;
+            }
+        })
+        //#endregion
+
+        //#region haspopup
+        let apperUIs = {
+            'about':{
+                haspopup:`
+                    匿名サイトへようこそ！これはもはや支援的な物ですね<br>
+                    っていうのも、私が個人的に皆さんに聞きたいこと..<br>
+                    つまり案とかを募集したいがためにあるんです<br>
+                    なのでたくさん送ってもらえると嬉しいです！
+                `
+            },
+            'about-event':{
+                haspopup:`
+                    ここは現在開催中..というか募集中の案についてですね<br>
+                    えー、今募集しているのは、clicker-of-mugenの"敵"と"仲間"です！<br>
+                    なんでかっていうと多分このままだと作者の趣味ゲームになるからですね<br>
+                    なので募集したいっていうわけです<br>
+                    (募集要項はクリックすると出ます)
+                `,
+                cpopup:`
+                    まず初めに、能力の感じとかは、<br>
+                    サイドメニューからenemiesとcharaを押して、<br>
+                    そこにあるキャラたちでなんとなく理解しといてね<br>
+                    そうしてくれるとありがたい<br><br>
+
+                    〜敵〜<br>
+                    敵は、clicker-of-mugenに出てくる"敵"ですね<br>
+                    まあ要はめちゃ重要ってわけです<br>
+                    募集要項としては、<br>
+                    <ul>
+                        <li>名前 例:蒼白の粘液, 慈愛のカスケイド</li>
+                        <li>種族や見た目 例:青いスライム｡小柄でぷよぷよしている</li>
+                        <li>住んでいる地域 例:創生黎明の原野, 水の国</li>
+                        <li>能力値のバランス 例;hp:+10, atk:-5, mp:0</li>
+                        <li>攻撃方法 例;体当たり:phplに攻撃力の90%, 終末を告げるシンフォニー:patkhに攻撃力の340%</li>
+                    </ul>
+                    できれば出身地のイメージと名前,技名等は合わせて欲しいです！<br>
+                    "創生黎明の原野"出身なら漢字多めとか、<br>
+                    "ガチェンレイゲスドゥールラート"出身ならカタカナ多めとか<br>
+                    あと今考えているのはサーカスの国(ユニークめな能力)と、<br>
+                    水の国(歌で有名なので名前に歌のジャンル入りがち)があります<br>
+                    でも他のイメージ(森,火山とか)でそのイメージでやってもらっても良きです！<br>
+                    攻撃方法については、"技名"と"内容"どっちも欲しいです！<br>
+                    発動時セリフがあるとより嬉しいです！「後ろだよぉ？」とか<br>
+                    まあ人以外の場合難しいですが....「ファサ..」とかでもありがたいですね<br>
+                    ではお願いしますね！！！！<br><br>
+
+                    〜仲間〜<br>
+                    仲間は..酒場で招待すると一緒にダンジョンに行くことができるようになるます！<br>
+                    ...言うなれば"ガチャ"ですね。なので"レア度"も重要になってきます！<br>
+                    なので、"強そう"もしくは"人気になりそう"なキャラはレア度を高めに！<br>
+                    っていうのをお願いしたいです！<br>
+                    募集要項としては、<br>
+                    <ul>
+                        <li>名前 例:飛花レイル, 裏花夜淡</li>
+                        <li>レア度 例:1, 2, 3</li>
+                        <li>口調 例:「ついに、私の出番ですね〜！」</li>
+                        <li>背景,性格 例:常に明るいが、空気は読めないタイプ 頭は悪い</li>
+                        <li>所属/出身 例:創生黎明の原野, トリニティ総合学園</li>
+                        <li>招待時カットイン 例:私の出番かな？</li>
+                        <li>招待時セリフ 例:私はトリニティのミカだよ〜☆brよろしくね！</li>
+                        <li>スキル等 例;N:敵に攻撃力の70%, S:敵に攻撃力の100%,左右にも50%</li>
+                    </ul>
+                    できれば出身地のイメージと名前,技名等は..って上で言ったか<br>
+                    できるだけ口調や背景,性格は細かく欲しいです！<br>
+                    その方がより反映しやすいかと思います！<br>
+                    名前は..できる限りいなさそうなのだと嬉しいです！<br>
+                    あ、あとカットインは、ガチャで出た時に最初に出てくるカットインの時のセリフ<br>
+                    セリフはガチャで出た時のセリフです！<br>
+                    正直、口調,性格さえ教えてくれればカットインとセリフはなくてもいいです！<br>
+                    それと、"改行"はbrと表してくださいね！！
+                    では、お願いしますね〜〜！！<br>
+
+                `
+            },
+            'admin-button':{
+                haspopup:`
+                    管理者モードになれます<br>
+                    パスワードがわかれば、ですけどね〜〜〜
+                `
+            }
+        }
+
+        const popup = document.getElementById('popup');
+        document.querySelectorAll('.haspopup').forEach(element => {
+            element.addEventListener('mouseover', () => {
+                const description = apperUIs[element.id]?.haspopup??'none';
+                popup.innerHTML = description;
+                popup.style.display = 'block';
+            });
+            element.addEventListener('mouseout', () => {
+                popup.innerHTML = '';
+                popup.style.display = 'none';
+            });
+        });
+        const cpopup = document.getElementById('click-popup');
+        let cpopupNow = 0;
+        document.querySelectorAll('.cpopup').forEach(element => {
+            element.addEventListener('click', () => {
+                console.log('cpopupが押されたね')
+                if(cpopupNow == 0){
+                    const description = apperUIs[element.id]?.cpopup??'none';
+                    cpopup.innerHTML = description;
+                    cpopup.style.display = 'block';
+                    cpopupNow = 1;
+                }else{
+                    cpopup.innerHTML = '';
+                    cpopup.style.display = 'none';
+                    cpopupNow = 0;
+                }
+            });
+        })
+        //#endregion
+
+        const qForm = document.getElementById('q-form');
+        const qButton = document.getElementById('q-button');
+        const adminButton = document.getElementById('admin-button');
+        const adminForm = document.getElementById('admin-form');
+        const adminSubmit = document.getElementById('admin-submit');
+        const adminPassword = document.getElementById('admin-password');
+        const adminQuestions = document.getElementById('admin-questions');
+
+        qButton.addEventListener('click', e => {
+            e.preventDefault();
+            const question = document.getElementById('q-textarea').value;
+            database.ref('questions').push({question: question});
+        });
+
+        adminButton.addEventListener('click', () => {
+            adminForm.style.display = 'block';
+        });
+
+        adminSubmit.addEventListener('click', e => {
+            e.preventDefault();
+            const password = adminPassword.value;
+            if (password === 'koppepanorange') {
+                database.ref('questions').on('value', snapshot => {
+                    const questions = snapshot.val();
+                    const html = Object.keys(questions).map(key => `<p>${questions[key].question}</p>`).join('');
+                    adminQuestions.innerHTML = html;
+                });
+            } else {
+                alert('Wrong password!');
+            }
+        });
+    </script>
+</body>
+</html>
