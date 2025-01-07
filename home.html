@@ -416,13 +416,6 @@ THEN, LET'S MEET IN ITS GAME.</textarea>
         iframable:0,
         description: '2番目に好きなSNS<br>けど最近投稿できてない...'
       },
-      'threads': {
-        id: 'threads',
-        name: 'threads',
-        href: 'https://www.threads.net/@koppepan_orange',
-        iframable:0,
-        description: 'instagramのtwitter(?)<br>人口が本当に少ない'
-      },
       'twitter': {
         id: 'twitter',
         name: 'twitter',
@@ -520,6 +513,7 @@ THEN, LET'S MEET IN ITS GAME.</textarea>
         a.textContent = link.name;
         a.id = link.id;
         a.className = 'hasd';
+        a.target = '_blank';
         a.setAttribute('data-description', link.description);
 
         if(link.iframable == 1){
