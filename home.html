@@ -151,6 +151,8 @@
     </ul>
     <hr noshade="true">
     <ul>
+      <li class="hastxt" data-name="chara+">chara+</li>
+      <li class="hastxt" data-name="enemies+">enemies+</li>
       <li class="hastxt" data-name="recomend">好きなアプリ発表ドラゴン</li>
     </ul>
     <hr noshade="true">
@@ -467,7 +469,7 @@ THEN, LET'S MEET IN ITS GAME.</textarea>
         id: 'kiite',
         name: 'kiite',
         href: 'https://kiite.jp/user/koppapan_orange',
-        iframable:1,
+        iframable:0,
         description: '音楽が広告なしで見れるサイト<br>ボカロのみ<br>けどニコ動基盤だから学校では無理<br>ガッデム..ってやつ？<br>ベアさんといよわさんはおすすめ'
       },
       'magicalDraw': {
@@ -543,7 +545,6 @@ THEN, LET'S MEET IN ITS GAME.</textarea>
         a.setAttribute('data-description', link.description);
 
         if(link.iframable == 1){
-          console.log(`${link.id}はiframe可能！！！！！`);
           a.addEventListener('contextmenu', (event) => {
             event.preventDefault();
             if(iframenow == 0){
@@ -595,6 +596,8 @@ THEN, LET'S MEET IN ITS GAME.</textarea>
       })
       **/
 
+      let cpopup = document.getElementById('cpopup');
+      let cpopupNow = 0;
       document.querySelectorAll('.hastxt').forEach((element) => {
         addEventListener('click', (event) => {
           element.addEventListener('click', (event) => {

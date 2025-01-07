@@ -34,7 +34,7 @@ document.addEventListener('mouseout', (e) => {
 
 //#endregion
 //#region haspopup
-const popup = document.getElementById('popup');
+const popup = document.getElementById('mpopup');
 document.querySelectorAll('.mpopup').forEach(element => {
     element.addEventListener('mouseover', () => {
         const description = apperUIs[element.id]?.haspopup??'none';
@@ -66,6 +66,8 @@ document.querySelectorAll('.cpopup').forEach(element => {
 //#endregion
 //#region hastxt
 
+//const cpopup = document.getElementById('cpopup');
+//let cpopupNow = 0;
 document.querySelectorAll('.hastxt').forEach((element) => {
     addEventListener('click', (event) => {
         element.addEventListener('click', (event) => {
