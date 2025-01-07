@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>tool-site</title>
     <style>
+      *{background-color: #f0f8ff;}
       #sideMenu {
         position: fixed;
         top: 0;
@@ -20,13 +21,16 @@
         list-style: none;
         padding: 0;
         margin: 0;
+        background-color: #cecece;
       }
       #sideMenu ul li {
         padding: 3px;
+        background-color: #cecece;
       }
       #sideMenu ul li a {
         color: #333344;
         text-decoration: none;
+        background-color: #cecece;
       }
       #sideMenu button {
         background: none;
@@ -43,9 +47,30 @@
         top: 5px;
         right: 15px;
         color: #000000;
+        background-color: rgba(255, 255, 255, 0);
         border: none;
         font-size: 26px;
         cursor: pointer;
+      }
+      #cpopup{
+        display: none;
+        position: fixed;
+        top: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 600px;
+        max-height: 600px;
+        background-color: #eeeeee;
+        color:#2b2b2b;
+        border: 2px solid #b2b2b2;
+        z-index: 999;
+        overflow-y: scroll;
+      }
+      #cpopup ul{
+        background-color: #eeeeee;
+      }
+      #cpopup ul li{
+        background-color: #eeeeee;
       }
     </style>
   </head>
@@ -58,7 +83,12 @@
         <li><a href="chat.html">to chat</a></li>
         <li><a href="https://koppepan-orange.github.io/game_site/welcome.html">to game</a></li>
       </ul>
+      <hr noshade="true">
+      <ul>
+        <li class="hastxt" data-name="chara++">chara++(よく見つけたね??ここ)</li>
+      </ul>
     </nav>
+    <div id="cpopup"></div>
     <!-- こちら偏差値計算機です！！！！ -->
     <p align="center">偏差値計算機<br>
       <input id="HENPoint" type="text" placeholder="write 得点" size="20" style="width:80px;"></input>　
@@ -81,37 +111,6 @@
   <p align="center">
     <input type="text" id="Input" size="3" maxlength="2" placeholder="num"><button id="ToggleButton" onclick="Toggle()">less</button><button onclick="Activate()">Go!</button><br>
     <span id="OutPut"></span>
-    <script>
-       let input
-        let words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ']
-        function Toggle(){
-            switch(document.getElementById('ToggleButton').textContent){
-                case 'more':
-                    document.getElementById('ToggleButton').textContent = 'less'
-                    words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ'];
-                    break
-                case 'less':
-                    document.getElementById('ToggleButton').textContent = 'more'
-                    words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ','ァ','ィ','ゥ','ェ','ォ','ッ','ャ','ュ','ョ','ー'];
-                    break
-            }
-        }
-        function Activate(){
-            input = document.getElementById('Input').value
-            if(input == ''||input <= 0){document.getElementById('OutPut').textContent = '死ね'}
-            else{
-            let output = [];
-            document.getElementById('OutPut').innerHTML = ''
-            for(let i = 0; i < 10; i++){
-                for(let i = 0; i < input; i++){
-                    output.push(words[Math.floor(Math.random() * words.length)])
-                }
-                document.getElementById('OutPut').innerHTML += output.join('')+'<br>';
-                output = [];
-            }
-            }
-        }
-    </script>
   </p>
   <!-- まりぱのげーむをちょっとだけいれようかな〜と -->
   <details style="margin:0 auto;"><summary>Game-Center</summary>
@@ -149,6 +148,71 @@
   </details>
     
   <script>
+    //#region sideMenu
+    const menuToggle = document.getElementById('menuToggle');
+    const sideMenu = document.getElementById('sideMenu');
+    menuToggle.addEventListener('click', () => {
+      if(sideMenu.style.left === '0px'){
+        sideMenu.style.left = '-250px';
+      }else{
+        sideMenu.style.left = '0px';
+      }
+    });
+    //#endregion
+    //#region hastxt
+    const cpopup = document.getElementById('cpopup');
+    let cpopupNow = 0;
+    document.querySelectorAll('.hastxt').forEach((element) => {
+      addEventListener('click', (event) => {
+        element.addEventListener('click', (event) => {
+          if(cpopupNow == 0){
+            let name = event.target.getAttribute('data-name');
+            console.log(name+'が発動しましたぜぇい')
+            fetch(`assets/txts/${name}.txt`)
+            .then(response => response.text())
+            .then(data => {cpopup.innerText = data;})
+            .catch(error => console.error('Error:', error));
+            cpopup.style.display = 'block';
+            cpopupNow = 1;
+          }else{
+            cpopup.innerHTML = '';
+            cpopup.style.display = 'none';
+            cpopupNow = 0;
+          }
+        })
+      })
+    })
+    //#endregion
+
+    let input
+    let words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ']
+    function Toggle(){
+        switch(document.getElementById('ToggleButton').textContent){
+            case 'more':
+                document.getElementById('ToggleButton').textContent = 'less'
+                words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ'];
+                break
+            case 'less':
+                document.getElementById('ToggleButton').textContent = 'more'
+                words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ','ァ','ィ','ゥ','ェ','ォ','ッ','ャ','ュ','ョ','ー'];
+                break
+        }
+    }
+    function Activate(){
+        input = document.getElementById('Input').value
+        if(input == ''||input <= 0){document.getElementById('OutPut').textContent = '死ね'}
+        else{
+        let output = [];
+        document.getElementById('OutPut').innerHTML = ''
+        for(let i = 0; i < 10; i++){
+            for(let i = 0; i < input; i++){
+                output.push(words[Math.floor(Math.random() * words.length)])
+            }
+            document.getElementById('OutPut').innerHTML += output.join('')+'<br>';
+            output = [];
+        }
+        }
+    }
     //HensatiSagasuYatu = HEN
     let HENpoint = 0;
     let HENave = 0;

@@ -74,6 +74,26 @@
         font-size: 26px;
         cursor: pointer;
       }
+      #cpopup{
+        display: none;
+        position: fixed;
+        top: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 600px;
+        max-height: 600px;
+        background-color: #eeeeee;
+        color:#2b2b2b;
+        border: 2px solid #b2b2b2;
+        z-index: 999;
+        overflow: auto;
+      }
+      #cpopup ul{
+        background-color: #eeeeee;
+      }
+      #cpopup ul li{
+        background-color: #eeeeee;
+      }
 
       #iframe{
         display: none;
@@ -127,12 +147,18 @@
       <li><a href="tools.html">to tools</a></li>
       <li><a href="books.html">to books</a>←new!!!</li>
       <li><a href="hidden.html">to hidden</a>←new!!!</li>
+      <li class="wd"><a href="home-ura.html">to ura</a></li>
+    </ul>
+    <hr noshade="true">
+    <ul>
+      <li class="hastxt" data-name="recomend">好きなアプリ発表ドラゴン</li>
     </ul>
     <hr noshade="true">
     <ul>
       <li><span id="wdcheck">HELLO</spanid></li>
     </ul>
   </nav>
+  <div id="cpopup"></div>
   <h2><p align="center">Koppepan Orange's site</p></h2>
   <p align="center">ここは何でも<a href="https://koppepan-orange.github.io/test-site/home-ura.html" style="text-decoration: none; color: #000000;">ある</a>サイトです！<i>ゆっくりしていってね！！</i></p>
   <hr noshade="true">
@@ -539,7 +565,7 @@ THEN, LET'S MEET IN ITS GAME.</textarea>
     })
 
 
-    //#region サイドメニュー
+    //#region sideMenu
     const menuToggle = document.getElementById('menuToggle');
     const sideMenu = document.getElementById('sideMenu');
     menuToggle.addEventListener('click', () => {
@@ -549,6 +575,46 @@ THEN, LET'S MEET IN ITS GAME.</textarea>
           sideMenu.style.left = '0px';
       }
     });
+
+    /**
+    const cpopup = document.getElementById('click-popup');
+      let cpopupNow = 0;
+      document.querySelectorAll('.cpopup').forEach(element => {
+        element.addEventListener('click', () => {
+          if(cpopupNow == 0){
+            const description = apperUIs[element.id]?.cpopup??'none';
+            cpopup.innerHTML = description;
+            cpopup.style.display = 'block';
+            cpopupNow = 1;
+          }else{
+            cpopup.innerHTML = '';
+            cpopup.style.display = 'none';
+            cpopupNow = 0;
+          }
+        });
+      })
+      **/
+
+      document.querySelectorAll('.hastxt').forEach((element) => {
+        addEventListener('click', (event) => {
+          element.addEventListener('click', (event) => {
+            if(cpopupNow == 0){
+              let name = event.target.getAttribute('data-name');
+              console.log(name+'が発動しましたぜぇい')
+              fetch(`assets/txts/${name}.txt`)
+              .then(response => response.text())
+              .then(data => {cpopup.innerText = data;})
+              .catch(error => console.error('Error:', error));
+              cpopup.style.display = 'block';
+              cpopupNow = 1;
+            }else{
+              cpopup.innerHTML = '';
+              cpopup.style.display = 'none';
+              cpopupNow = 0;
+            }
+          })
+        })
+      })
 
     //change-font
     function changeFont(){

@@ -12,9 +12,93 @@
     *{background-color: #f0f8ff;}
     #Linkframe2,#Linkframe3,#Linkframe4{display:none;}
     #Linkframe1{display:block;}
+
+    #sideMenu {
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 250px;
+        height: 100%;
+        color: #333344;
+        background-color: #cecece;
+        transition: left 0.3s;
+      }
+      #sideMenu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      #sideMenu ul li {
+        padding: 3px;
+        background-color: #cecece;
+      }
+      #sideMenu ul li a {
+        color: #000000;
+        background-color: #cecece;
+        text-decoration: none;
+      }
+      #sideMenu ul li select{
+        background-color: #cecece;
+      }
+      #sideMenu button {
+        background-color: #cecece;
+        border: none;
+        color: #000000;
+        cursor: pointer;
+        text-decoration: none;
+        padding: 0;
+      }
+      #menuToggle {
+        display: block;
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        color: #000000;
+        border: none;
+        font-size: 26px;
+        cursor: pointer;
+      }
+
+    #cpopup{
+        display: none;
+        position: fixed;
+        top: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 600px;
+        max-height: 600px;
+        background-color: #eeeeee;
+        color:#2b2b2b;
+        border: 2px solid #b2b2b2;
+        z-index: 999;
+        overflow: auto;
+    }
+    #cpopup ul{
+        background-color: #eeeeee;
+    }
+    #cpopup ul li{
+        background-color: #eeeeee;
+    }
     </style>
   </head>
   <body>
+    <div class="menuToggle" id="menuToggle">☰</div>
+    <nav id="sideMenu">
+        <hr noshade="true">
+        <ul>
+            <li><a href="home.html">to home</a></li>
+            <li><a href="memo.html">to memo</a></li>
+            <li><a href="https://koppepan-orange.github.io/game-site/welcome.html">to game</a></li>
+            <li><a href="tools.html">to tools</a></li>
+        </ul>
+        <hr noshade="true">
+        <ul>
+            <li class="hastxt" data-name="chara+">chara+</li>
+            <li class="hastxt" data-name="enemies+">enemies+</li>
+        </ul>
+    </nav>
+    <div id="cpopup"></div>
+
     ようこそ、少年<br>
     あ、ここに何かあると思ったかい？<br>
     残念ながらもうここには何もないんだ...<br>
@@ -118,5 +202,42 @@
    
     <br><br><a href="home.html">ここを押して帰るといい</a>
     
+    <script>
+        //#region sideMenu
+        const menuToggle = document.getElementById('menuToggle');
+        const sideMenu = document.getElementById('sideMenu');
+        menuToggle.addEventListener('click', () => {
+            if(sideMenu.style.left === '0px'){
+                sideMenu.style.left = '-250px';
+            }else{
+                sideMenu.style.left = '0px';
+            }
+        });
+        //#endregion
+        //#region hastxt
+        const cpopup = document.getElementById('cpopup');
+        let cpopupNow = 0;
+        document.querySelectorAll('.hastxt').forEach((element) => {
+            addEventListener('click', (event) => {
+                element.addEventListener('click', (event) => {
+                    if(cpopupNow == 0){
+                        let name = event.target.getAttribute('data-name');
+                        console.log(name+'が発動しましたぜぇい')
+                        fetch(`assets/txts/${name}.txt`)
+                        .then(response => response.text())
+                        .then(data => {cpopup.innerText = data;})
+                        .catch(error => console.error('Error:', error));
+                        cpopup.style.display = 'block';
+                        cpopupNow = 1;
+                    }else{
+                        cpopup.innerHTML = '';
+                        cpopup.style.display = 'none';
+                        cpopupNow = 0;
+                    }
+                })
+            })
+        })
+        //#endregion
+    </script>
 </body>
 </html>

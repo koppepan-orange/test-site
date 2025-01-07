@@ -140,7 +140,7 @@
         </ul>
     </nav>
     <div id="upperUI">
-        <span id="about" class="haspopup">About</span>　<span id="about-event" class="haspopup cpopup">Event</span>　<span id="admin-button" class="haspopup" data-description="管理者モードになれます<br>パスワードがわかれば、ですけどね〜〜〜">Admin-Mode</span>
+        <span id="about" class="mpopup">About</span>　<span id="about-event" class="mpopup cpopup">Event</span>　<span id="admin-button" class="mpopup" data-description="管理者モードになれます<br>パスワードがわかれば、ですけどね〜〜〜">Admin-Mode</span>
     </div>
     <div id="popup"></div><div id="click-popup"></div>
     <br>
@@ -203,10 +203,10 @@
             })
         })
         //#endregion
-        //#region haspopup
+        //#region mpopup
         let apperUIs = {
             'about':{
-                haspopup:`
+                mpopup:`
                     匿名サイトへようこそ！これはもはや支援的な物ですね<br>
                     っていうのも、私が個人的に皆さんに聞きたいこと..<br>
                     つまり案とかを募集したいがためにあるんです<br>
@@ -214,7 +214,7 @@
                 `
             },
             'about-event':{
-                haspopup:`
+                mpopup:`
                     ここは現在開催中..というか募集中の案についてですね<br>
                     えー、今募集しているのは、clicker-of-mugenの"敵"と"仲間"です！<br>
                     なんでかっていうと多分このままだと作者の趣味ゲームになるからですね<br>
@@ -278,7 +278,7 @@
                 `
             },
             'admin-button':{
-                haspopup:`
+                mpopup:`
                     管理者モードになれます<br>
                     パスワードがわかれば、ですけどね〜〜〜
                 `
@@ -286,9 +286,9 @@
         }
 
         const popup = document.getElementById('popup');
-        document.querySelectorAll('.haspopup').forEach(element => {
+        document.querySelectorAll('.mpopup').forEach(element => {
             element.addEventListener('mouseover', () => {
-                const description = apperUIs[element.id]?.haspopup??'none';
+                const description = apperUIs[element.id]?.mpopup??'none';
                 popup.innerHTML = description;
                 popup.style.display = 'block';
             });
