@@ -342,29 +342,6 @@
         function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
         function load(){usersRef.once('value').then(function(snapshot){userData = snapshot.val();});}
 
-        /**
-        function setCookie(name, value, days) {
-            var expires = "";
-            if (days) {
-                var date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/";
-        }
-
-        function getCookie(name) {
-            var nameEQ = name + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
-        }
-        */
-
         function setLocalStorage(name, value) {
             localStorage.setItem(name, value || ""); // 値が空なら空文字を入れる
         }
@@ -404,15 +381,8 @@
             autoLogin();
         });
 
-
-        function autoLogin(){
-            username = getLocalStorage("username"); // ログイン時
-            realusername = username;
-            document.getElementById('username').value = username;
-            if(username){
-                console.log("自動ログインしました");
-                usersRef = database.ref('users/' + username);
-                usersRef.update({
+        function login(){
+            usersRef.update({
                     status: 'online'
                 });
                 menuToggle.style.display = 'block';
@@ -421,6 +391,26 @@
                 document.getElementById('room-select').style.display = 'block';
                 room = roomSelect.value;
                 selectRoom();
+        }
+
+        function autoLogin(){
+            username = getLocalStorage("username"); // ログイン時
+            realusername = username;
+            document.getElementById('username').value = username;
+            if(username){
+                let uRef = database.ref(`users/${username}/banned`)
+                uRef.on('value', function(snapshot) {
+                    uRef = snapshot.val();
+                    console.log(uRef); // コンソールにデータを出力
+                    if(uRef == 0){ 
+                        usersRef = database.ref('users/' + username);
+                        console.log("自動ログインしました");
+                        login();
+                    }else{
+                        console.log("あなたはbanされています!!"+uRef);
+                    }
+                });
+                
             }else{
                 console.log("ログインしてください");
             }
@@ -439,35 +429,31 @@
                 if (snapshot.exists()){
                     // 既存ユーザーの場合
                     userData = snapshot.val();
-                    if (userData.password === password) {
-                        // パスワードが一致すればログイン
-                        usersRef.update({
-                            status: 'online'
+                    if (userData.password === password){
+                        let uRef = database.ref(`users/${username}/banned`)
+                        uRef.on('value', function(snapshot) {
+                            uRef = snapshot.val();
+                            if(uRef == 0){ 
+                                setLocalStorage("username", username); // ログイン成功時
+                                login();
+                            }else{
+                                NicoNicoText('このユーザーはbanされています');
+                                document.getElementById('username').value = '';
+                                document.getElementById('password').value = '';
+                            }
                         });
-                        setLocalStorage("username", username); // ログイン成功時
-                        menuToggle.style.display = 'block';
-                        nanjContainer.style.display = 'flex';
-                        document.getElementById('login-container').style.display = 'none';
-                        document.getElementById('room-select').style.display = 'block';
-                        room = roomSelect.value;
-                        selectRoom();
                     } else {
-                        // パスワードが間違っている
-                        loginError.style.display = 'block';
+                        NicoNicoText('パスワードが間違っています。');
                     }
                 } else {
                     // 新規ユーザーの場合、アカウント作成
                     usersRef.update({
                         password: password,
-                        status: 'online'
+                        banned: 0,
                     });
                     setLocalStorage("username", username); // ログイン成功時
-                    menuToggle.style.display = 'block';
-                    nanjContainer.style.display = 'flex';
-                    document.getElementById('login-container').style.display = 'none';
-                    document.getElementById('room-select').style.display = 'block';
-                    room = roomSelect.value;
-                    selectRoom();
+                    NicoNicoText('"chat"へ ようこそ')
+                    login();
                 }
             });
 
@@ -496,27 +482,6 @@
         //#endregion
 
         //#region メニュー
-
-        /**
-        // ハンバーガーアイコンをクリックしたときの処理
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            const onlineUsersRef = database.ref('users');
-            onlineUsersRef.on('value', function(snapshot) {
-                let delay = 0;
-                snapshot.forEach(function(childSnapshot) {
-                    const auserData = childSnapshot.val();
-                    if (auserData.status === 'online') {
-                        // インデックスを利用して遅延させる
-                        window.setTimeout(() => {
-                            NicoNicoText(childSnapshot.key + 'さん');
-                        }, delay);
-                        delay += 100; // 1秒ずつ間隔を増やす
-                    }
-                });
-            });
-        });
-        */
-
         const menuToggle = document.getElementById('menuToggle');
         const sideMenu = document.getElementById('sideMenu');
         menuToggle.addEventListener('click', () => {
@@ -543,6 +508,34 @@
             }
         }
 
+        function randbetween(min, max) {
+            return Math.ceil(Math.random() * (max - min + 1) + min)
+        }
+
+        function highlow() {
+            let num = randbetween(1, 100)
+            let guess = prompt(`数字は${num}です！\nさあ、次の数字は高いかな？低いかな？\n1~100で抽選されますわよ`)
+            guess = guess.toLowerCase()
+            guess = guess.trim()
+            let num2 = randbetween(1, 100)
+            if (((guess === 'higher' || guess === 'high' || guess === 'h') && num2 > num) || ((guess === 'lower' || guess === 'low' || guess === 'l') && num2 < num)) {
+                NicoNicoText(`数字は${num2} でした！！！ お前の勝ち！！！！`)
+            } else if (num2 === num) {
+                NicoNicoText(`数字は${num2} でした！！！ 引き分け乙！！！！！`)
+            } else {
+                NicoNicoText(`数字は${num2} でした！！！ お前の負け！！！`)
+            }
+            hln = 0;
+            
+        }
+        let hln = 0
+        document.addEventListener('keyup', key =>{
+            if(key == 'h' && hln == 0){
+                highlow();
+                hln = 1;
+            }
+        })
+
 
         async function NicoNicoText(mes){
             const newDiv = document.createElement('div');
@@ -556,8 +549,8 @@
             font-size: 20px;
             `
             document.getElementById('body').appendChild(newDiv);
-            let speed = Math.random()*100+1;
-            //let speed = mes.toString().length*2 
+            //let speed = Math.random()*100+1;
+            let speed = mes.toString().length*2 
             for(let i = 0; window.innerWidth > i*speed; i++){
                 let val = i*speed;
                 newDiv.style.right = `${val}px`
@@ -740,6 +733,25 @@
                     if(message.startsWith('/rerename')){realusername = message.substring(10);username = realusername;messageInput.value = '';return;};
                     if(message.startsWith('/haidoumominasankonnnitihamikankoppepannnokoppepandesu')){document.getElementById('username').value = message.substring(55);realusername = document.getElementById('username').value;username = realusername;messageInput.value = '';return;}
 
+                    if(message.startsWith('/ban')){
+                        let banuser = message.substring(5);
+                        database.ref(`users/${banuser}`).update({
+                            banned:1
+                        })
+                        NicoNicoText('Nice Job!')
+                        messageInput.value = '';
+                        return;
+                    }
+                    if(message.startsWith('/unban')){
+                        let banuser = message.substring(7);
+                        database.ref(`users/${banuser}`).update({
+                            banned:0
+                        })
+                        NicoNicoText('Nice Job!')
+                        messageInput.value = '';
+                        return;
+                    }
+
                     if(message.startsWith('/i')){message = '<i>'+message.substring(3)+'</i>';};
                     if(message.startsWith('/b')){message = '<b>'+message.substring(3)+'</b>';};
                     if(message.startsWith('/u')){message = '<u>'+message.substring(3)+'</u>';};
@@ -764,62 +776,77 @@
 
             // 新しいメッセージが追加された時のみ、そのメッセージを追加表示
             messagesRef.on('child_added', async function(snapshot){
-                var messageData = snapshot.val();
-                var messageElement = document.createElement('div');
-                messageElement.className = 'message';
-                messageElement.setAttribute('data-id', snapshot.key);
+                let uRef = database.ref(`users/${username}/banned`)
+                uRef.on('value', function(snapshot) {
+                    uRef = snapshot.val();
+                    if(uRef == 1){ 
+                        NicoNicoText('エラーが発生しました。')
+                        document.getElementById('username').value = '';
+                        document.getElementById('password').value = '';
+                        menuToggle.style.display = 'none';
+                        nanjContainer.style.display = 'none';
+                        document.getElementById('login-container').style.display = 'block';
+                        document.getElementById('room-select').style.display = 'none';
+                    }else{
+                        var messageData = snapshot.val();
+                        var messageElement = document.createElement('div');
+                        messageElement.className = 'message';
+                        messageElement.setAttribute('data-id', snapshot.key);
 
-                var usernameElement = document.createElement('span');
-                usernameElement.className = 'username';
-                usernameElement.textContent = messageData.username;
-                let from = usernameElement.addEventListener('click', async function(){
-                    NicoNicoText(`送信者:${messageData.realusername}`);
-                })
-                messageElement.appendChild(usernameElement);
+                        var usernameElement = document.createElement('span');
+                        usernameElement.className = 'username';
+                        usernameElement.textContent = messageData.username;
+                        let from = usernameElement.addEventListener('contextmenu', async function(){
+                            event.preventDefault();
+                            NicoNicoText(`送信者:${messageData.realusername}`);
+                        })
+                        messageElement.appendChild(usernameElement);
 
-                var timestampElement = document.createElement('span');
-                timestampElement.className = 'timestamp';
-                timestampElement.textContent = '  —' + messageData.timestamp;
-                messageElement.appendChild(timestampElement);
+                        var timestampElement = document.createElement('span');
+                        timestampElement.className = 'timestamp';
+                        timestampElement.textContent = '  —' + messageData.timestamp;
+                        messageElement.appendChild(timestampElement);
 
-                var copyButton = document.createElement('button');
-                copyButton.textContent = '❐';
-                let copy = copyButton.addEventListener('click', function(){
-                    navigator.clipboard.writeText(messageData.text);
-                });
-                messageElement.appendChild(copyButton);
+                        var copyButton = document.createElement('button');
+                        copyButton.textContent = '❐';
+                        let copy = copyButton.addEventListener('click', function(){
+                            navigator.clipboard.writeText(messageData.text);
+                        });
+                        messageElement.appendChild(copyButton);
 
-                if(username == messageData.username){
-                    var editButton = document.createElement('button');
-                    editButton.textContent = '✎';
-                    let edit = editButton.addEventListener('click', function(){
-                        messageData.text = prompt('メッセージを編集', messageData.text);//messageInput.value;
+                        if(username == messageData.username){
+                            var editButton = document.createElement('button');
+                            editButton.textContent = '✎';
+                            let edit = editButton.addEventListener('click', function(){
+                                messageData.text = prompt('メッセージを編集', messageData.text);//messageInput.value;
+                                textElement.innerHTML = messageData.text;
+                                const ImadakeRef = database.ref('rooms/'+room+'/messages/'+snapshot.key);
+                                ImadakeRef.update(messageData);
+                                setTimeout(displayAllMessages, 200);
+                            });
+                            messageElement.appendChild(editButton);
+                        }
+
+                        var brElement = document.createElement('br');
+                        messageElement.appendChild(brElement);
+
+                        var textElement = document.createElement('div');
                         textElement.innerHTML = messageData.text;
-                        const ImadakeRef = database.ref('rooms/'+room+'/messages/'+snapshot.key);
-                        ImadakeRef.update(messageData);
-                        setTimeout(displayAllMessages, 200);
-                    });
-                    messageElement.appendChild(editButton);
-                }
+                        messageElement.appendChild(textElement);
 
-                var brElement = document.createElement('br');
-                messageElement.appendChild(brElement);
+                        messagesContainer.appendChild(messageElement);
 
-                var textElement = document.createElement('div');
-                textElement.innerHTML = messageData.text;
-                messageElement.appendChild(textElement);
+                        messagesRef.on('value', function(snapshot) {
+                            if (snapshot.numChildren() > 20) {
+                                var firstMessageKey = Object.keys(snapshot.val())[0];
+                                messagesRef.child(firstMessageKey).remove();
+                            }
+                        });
 
-                messagesContainer.appendChild(messageElement);
-
-                messagesRef.on('value', function(snapshot) {
-                    if (snapshot.numChildren() > 20) {
-                        var firstMessageKey = Object.keys(snapshot.val())[0];
-                        messagesRef.child(firstMessageKey).remove();
+                        // 最新のメッセージが見えるようにスクロール
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     }
                 });
-
-                // 最新のメッセージが見えるようにスクロール
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
             });
 
             messagesRef.once('value', function(snapshot) {
@@ -845,7 +872,7 @@
                     usernameElement.className = 'username';
                     usernameElement.textContent = messageData.username;
                     usernameElement.id = document.getElementById('username').value;
-                    let from = usernameElement.addEventListener('click', async function(){
+                    let from = usernameElement.addEventListener('contextmenu', async function(){
                         NicoNicoText(`送信者:${messageData.realusername}`);
                     })
                     messageElement.appendChild(usernameElement);
