@@ -1,0 +1,393 @@
+const Cards = {
+    //こっからA
+    'slash':{
+        id:'slash',
+        name: 'スラッシュ',
+        nume: 2,
+        code: 'A',
+        rare: 'N',
+        cool: 2,
+        have: {}, //.lengthで所持枚数、中の数字が残りクールダウン
+        explain: '軽い斬撃。',
+        process:async function(cam,me,tcam,target){
+            tcam = 'enemies';
+            let atk = 2;
+            atk += eleatk;
+            let result = await damaged(cam,me,tcam,target,atk);
+            return result;
+        }
+    },
+    'sword':{
+        id:'sword',
+        name: 'ソード',
+        nume: 3,
+        code: 'A',
+        rare: 'N',
+        cool: 3,
+        have: {},
+        explain: '使うたびに攻撃力が上昇する。',
+        process:async function(cam,me,tcam,target){
+            let atk = 3;
+            atk += ソードeleatk;
+            atk += eleatk;
+            let result = await damaged(cam,me,me,target,atk);
+            if(nowturn == 'P'){ソードplayereleatk += 1}; 
+            if(nowturn == 'E'){ソードenemyeleatk += 1};
+            return result;
+        }
+    },
+    'rushsword':{
+        id:'rushsword',
+        name: 'ラッシュソード',
+        nume: '3+',
+        code: 'A',
+        rare: 'R',
+        cool: 4,
+        have: {},
+        explain: '基本3ダメージ、次のカードが自分の攻撃カードの場合3回攻撃になる。',
+        process:async function(cam,me,tcam,target){
+            let atk = 3;
+            if(nextcard.classList.contains('A') && nextcard.classList.contains('P')){atknum += 2;}else
+            if(prevcard.classList.contains('A') && prevcard.classList.contains('P')){atknum += 2;};//3回攻撃に
+            atk += eleatk;
+            let result = await damaged(cam,me,me,target,atk);
+            return result;
+        }
+    },
+    'soulknife':{
+        id:'soulknife',
+        name: 'ソウルナイフ',
+        nume: 4,
+        code: 'A',
+        rare: 'R',
+        cool: 3,
+        have: {},
+        explain: '相手にダメージを与え、与えた分回復する。',
+        process:async function(cam,me,tcam,target){
+            let atk = 4;
+            atk += eleatk;
+            if(enemyhealth <= atk){let atk = enemyhealth;}
+            repair = atk;
+            let result = await damaged(cam,me,me,target,atk);
+            return result;
+        }
+    },
+    'leafsword':{
+        id:'leafsword',
+        name: 'リーフソード',
+        nume: '5+',
+        code: 'A',
+        rare: 'R',
+        cool: 5,
+        have: {},
+        explain: '基本5ダメージ、クール中カードが5枚以上なら10ダメージ。',
+        process:async function(cam,me,tcam,target){
+            let atk = 5;
+            if(document.querySelectorAll('.cooldown').length >= 5){let atk = 10;}//こいつ廃止
+            atk += eleatk;
+            let result = await damaged(cam,me,me,target,atk);
+            return result;
+        }
+    },
+    'gamble':{
+        id:'gamble',
+        name: '博打',
+        nume: 8,
+        code: 'A',
+        rare: 'R',
+        cool: 4,
+        have: {},
+        explain: '3ダメージ、もしくは8ダメージを与える。',
+        process:async function(cam,me,tcam,target){
+            let atk = Math.floor(Math.random() * 2) == 0 ? 8 : 3; //3または8 50%
+            atk += eleatk;
+            let result = await damaged(cam,me,me,target,atk);
+            return result;
+        }
+    },
+    'dualcutter':{
+        id:'dualcutter',
+        name: 'デュアルカッター',
+        nume: '4x2',
+        code: 'A',
+        rare: 'R',
+        cool: 3,
+        have: {},
+        explain: '4ダメージで2回攻撃する。',
+        process:async function(cam,me,tcam,target){
+            let atk = 4;
+            atk += eleatk;
+            let result = await damaged(cam,me,me,target,atk);
+            return result;
+        }
+    },
+    'fevercutter':{
+        id:'fevercutter',
+        name: 'フィーバーカッター',
+        nume: '4+',
+        code: 'A',
+        rare: 'R',
+        cool: 3,
+        have: {},
+        explain: '4+相手のデバフの持続時間の合計で攻撃する。',
+        process:async function(cam,me,tcam,target){
+            let atk = 4;
+            atk += enemydebuff.time;
+            let result = await damaged(cam,me,me,target,atk);
+            return result;
+        }
+    },
+    'quadcutter':{
+        id:'quadcutter',
+        name: 'クアッドカッター',
+        nume: '4x4',
+        code: 'A',
+        rare: 'SR',
+        cool: 4,
+        have: {},
+        explain: '4ダメージで4回攻撃する。',
+        process:async function(cam,me,tcam,target){
+            let atk = 4;//ぶっ壊れになりそう..まあ名前かっこいいからいいよね！！
+            atk += eleatk;
+            atknum += 3;
+            let result = await damaged(cam,me,me,target,atk);
+            return result;
+        }
+    },
+    'feverslash':{
+        id:'feverslash',
+        name: 'フィーバースラッシュ',
+        nume: '4+x2',
+        code: 'A',
+        rare: 'SR',
+        cool: 4,
+        have: {},
+        explain: '4+相手のデバフの持続時間の合計で2回攻撃する。',
+        process:async function(cam,me,tcam,target){
+            let atk = 4;
+            atk += enemydebuff.time;
+            atknum += 1;
+            let result = await damaged(cam,me,me,target,atk);
+            return result;
+        }
+    },
+    'heartseeker':{
+        id:'heartseeker', //ハートを盗むもの...?
+        name: 'ハートシーカー',
+        nume: 'X',
+        code: 'A',
+        rare: 'SR',
+        cool: 5,
+        have: {},
+        explain: '自身のバリアを全て消費し、<br>相手に消費前のバリアの1.5倍のダメージを与える。',
+        process:async function(cam,me,tcam,target){
+            let atk = shield;
+            let shl = -atk;
+            atk += eleatk;
+            atk = Math.floor(atk * 1.5);//元ネタはハートの合図です 今思ったけど名前似てる...
+            let result = await damaged(cam,me,me,target,atk);
+            return result;
+        }
+    },//1.5倍に強化とか、強化版武器追加してもいいかも
+    'bloodknife':{
+        id:'bloodknife',
+        name: 'ブラッドナイフ',//これ好き(元:学マス-はじける水しぶき)
+        nume: '16',
+        code: 'A',
+        rare: 'SR',
+        cool: 5,
+        have: {},
+        explain: '自分のHPを7減らした後相手にダメージを与える。<br>自身にバリアがある場合、リカバリを2付与する'
+    },
+    'demondance':{//鬼踊....ww
+        id:'demondance',
+        name: '鬼神乱舞',//アークナイツモンハンコラボ、キリンRヤトウの2ndスキルより
+        nume: '4x6',//ちょっとやばいか...?ww
+        code: 'A',
+        rare: 'SSR',
+        cool: 6,
+        have: {},
+        explain: '4ダメージで6回攻撃する。<br>足掻こうが抗おうが無駄だ！',
+        process:async function(cam,me,tcam,target){
+            let atk = 4;
+            atk += eleatk;
+            atknum += 5;//ちょっとやばいかもよ？？ww
+            let result = await damaged(cam,me,me,target,atk);
+            return result;
+        }
+    },
+    'feverchainsaw':{
+        id:'feverchainsaw',
+        name: 'フィーバーチェーンソー',//夢の塊 ...え名前としてありすぎない？？夢の塊
+        nume: '4+x4',
+        code: 'A',
+        rare: 'UR',
+        cool: 5,
+        have: {},
+        explain: '4+相手のデバフの持続時間の合計で4回攻撃する。',
+        process:async function(cam,me,tcam,target){
+            let atk = 4;
+            atk += enemydebuff.time;
+            atknum += 3;
+        }
+    },
+
+    //こっからM
+
+    'shield':{
+        id:'shield',
+        name: '盾',
+        nume: 4,
+        code: 'M',
+        rare: 'N',
+        cool: 3,
+        have: {},
+        explain: '軽く盾を構える。',
+        process:async function(cam,me,tcam,target){
+            let shl = 4;
+            shl += eleshl; 
+            let result = await shield(cam,me,cam,me,shl);
+        }
+    },
+    'heal':{
+        id:'heal',
+        name: '回復',
+        nume: 4,
+        code: 'M',
+        rare: 'N',
+        cool: 2,
+        have: {},
+        explain: '自身のHPを4回復する。',
+        process:async function(cam,me,tcam,target){
+            let result = await heal(cam,me,me,4);
+            return result;
+        }
+    },
+    'attackup':{
+        id:'attackup',
+        name: '攻撃力上昇',
+        nume: 1,
+        code: 'M',
+        rare: 'R',
+        cool: 4,
+        have: {},
+        explain: '自身の攻撃力を上昇させる。',
+        process:async function(cam,me,tcam,target){
+            eleatk += 1;
+            return 'alive';
+        }
+        
+    },
+    'greentrain':{
+        id:'greentrain',//グリーン車ではないです
+        name: 'グリーン・トレイン',
+        nume: '',
+        code: 'M',
+        rare: 'R',
+        cool: 5,
+        have: {},
+        explain: '使用されたフェーズの配置されたカードを全て無効化する。<br>簡単に言えばスキップである',
+        process:async function(cam,me,tcam,target){
+            //ないっすよ。だってこれ存在するだけで効果だし
+            //逆に何を書けないいんですか？？
+            return 'alive';
+        }
+    },
+    'behard':{
+        id:'behard', //die hardも作りたいね DBDのやつ
+        name: '硬化',
+        nume: '',
+        code: 'M',
+        rare: 'R',
+        cool: 5,
+        have: {},
+        explain: '4硬化状態を得る',
+        process:async function(cam,me,tcam,target){
+            buffAdd(cam,me,'硬化',4);
+            return 'alive';
+        }
+    },
+    'dualcore':{
+        id:'dualcore',
+        name: 'デュアルコアシステム',//ダブルエントリーシステム的なやつができたらシステム消しといて
+        nume: '',
+        code: 'M',
+        rare: 'R',
+        cool: 5,
+        have: {},
+        explain: '次のターン、相手のカードを後ろに配置する。',
+        process:async function(cam,me,tcam,target){
+            if(cam == 'players'){nextcardactpat = '0011';}
+            if(cam == 'enemies'){nextcardactpat = '1100';}
+            return 'alive';
+        }
+    },
+    'yellowtrain':{
+        id:'yellowtrain', //黄色のドクターとかありじゃね？ だからあえてのそのまま
+        name: 'ドクター・イエロー',
+        nume: 'Px2',//P = Phase
+        code: 'M',
+        rare: 'SR',
+        cool: 6,
+        have: {},
+        explain: '使用されたフェーズの配置されたカードを全て無効化する。<br>ついでに体力を現在のフェーズ数x2回復する。',
+        process:async function(cam,me,tcam,target){
+            let result = await heal(cam,me,me,me.phase*2);
+            //これはあるんっすよ。ドクターイエローに感謝を
+            return result;
+        }
+
+    },
+    'thiefmask':{
+        id:'thiefmask',
+        name: 'シーフマスク',
+        nume: '',
+        code: 'M',
+        rare: 'SR',
+        cool: 5,
+        have: {},
+        explain: 'このカードの一つ前のカードを盗む。',
+        process:async function(cam,me,tcam,target){
+            if(prevcard){//敵が使った時
+                if(prevcard.classList.contains('P')&&nowturn == 'E'){
+                if(prevcard.classList.contains('A')){
+                    havecardA.name.splice(havecardA.name.indexOf(prevcard.id),1);
+                    console.log('多分盗まれたぜ!!Aの方ね')
+                }
+                if(prevcard.classList.contains('M')){
+                    havecardM.name.splice(havecardM.name.indexOf(prevcard.id),1);
+                    console.log('多分盗まれたぜ!!Mの方ね')
+                }
+                }
+            }
+            if(prevcard){//自分が使った時
+                if(prevcard.classList.contains('E')&&nowturn == 'P'){
+                if(prevcard.classList.contains('A')){
+                    havecardA.name.push(prevcard.id);
+                    console.log('多分盗んだぜ!Aを')
+                }
+                if(prevcard.classList.contains('M')){
+                    havecardM.name.push(prevcard.id);
+                    console.log('多分盗んだぜ!Mを')
+                }
+                }
+            }
+            return 'alive';
+            //シーフマスクのエフェクト出しといて(画像がちょっと浮いて消えるだけでいい)
+        }
+    },
+    'overdrive':{
+        id:'overdrive',
+        name: 'オーバードライブ',
+        nume: '',
+        code: 'M',
+        rare: 'UR',//初URこれね？ww
+        cool: 5,
+        have: {},
+        explain: '次のターン、相手のカードを無くす。<br>敵が使うことは絶対にない。',//まあ..使えたらかなりきっついからね とはいいつつ一人くらいあってもいいかも
+        process:async function(cam,me,tcam,targat){
+            playerhealth = document.querySelectorAll('.cooldown').length*2;
+            nextcardactpat = '0000';
+        }
+    }
+};
