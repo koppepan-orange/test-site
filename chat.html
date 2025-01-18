@@ -777,8 +777,8 @@
             // 新しいメッセージが追加された時のみ、そのメッセージを追加表示
             messagesRef.on('child_added', async function(snapshot){
                 let uRef = database.ref(`users/${username}/banned`)
-                uRef.on('value', function(snapshot) {
-                    uRef = snapshot.val();
+                uRef.on('value', function(ss) {
+                    uRef = ss.val();
                     if(uRef == 1){ 
                         NicoNicoText('エラーが発生しました。')
                         document.getElementById('username').value = '';
