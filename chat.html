@@ -338,7 +338,7 @@
         let realusername = 'no name';
         let usersRef = null;
         let userData = null;
-        let AnonymousName = 'えびプリオ';
+        let AnonymousName = "/nanj 名前 で変えられるよ!!!!";
         function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
         function load(){usersRef.once('value').then(function(snapshot){userData = snapshot.val();});}
 
@@ -395,13 +395,13 @@
 
         function autoLogin(){
             username = getLocalStorage("username"); // ログイン時
+            AnonymousName = getLocalStorage("AnonymousName")??AnonymousName;
             realusername = username;
             document.getElementById('username').value = username;
             if(username){
                 let uRef = database.ref(`users/${username}/banned`)
                 uRef.on('value', function(snapshot) {
                     uRef = snapshot.val();
-                    console.log(uRef); // コンソールにデータを出力
                     if(uRef == 0){ 
                         usersRef = database.ref('users/' + username);
                         console.log("自動ログインしました");
@@ -585,7 +585,6 @@
             if(stampawait == 1){return;}
             if(room == 'debug'){return;}
             let Musername = username;
-            if(room == 'Anonymous-1' || room == 'Anonymous-2' || room == 'Anonymous-3'){Musername = AnonymousName;}
             let Mtext = `<img src='assets/stamps/${num}.png' width="80" height="80"/>`;
             if(num == 'maxwell1'||num == `maxwell2`){Mtext = `<img src='assets/stamps/${num}.gif' width="80" height="80"/>`;};
             messagesRef.push({
@@ -635,7 +634,6 @@
             MessageSendE = sendButton.addEventListener('click', async function(){
                 var message = messageInput.value;
                 var Musername = username;
-                if(room == 'Anonymous-1'||room == 'Anonymous-2'||room == 'Anonymous-3'){Musername = AnonymousName;}
                 if(message.trim() !== ''){
 
                     //commands
@@ -654,11 +652,11 @@
                     }
                     if(message === '/alloff'){
                         const onlineUsersRef = database.ref('users');
-                        onlineUsersRef.on('value', function(snapshot) {
-                            snapshot.forEach(function(childSnapshot) {
-                                const auserData = childSnapshot.val();
+                        onlineUsersRef.on('value', function(pealentsnapshot) {
+                            pealentsnapshot.forEach(function(snapshot) {
+                                const auserData = snapshot.val();
                                 if (auserData.status === 'online') {
-                                    usersRef.child(childSnapshot.key).update({status: 'offline'});
+                                    usersRef.child(snapshot.key).update({status: 'offline'});
                                 }
                             });
                         });
@@ -732,6 +730,8 @@
                     if(message.startsWith('/rename')){username = message.substring(8);messageInput.value = '';return;};
                     if(message.startsWith('/rerename')){realusername = message.substring(10);username = realusername;messageInput.value = '';return;};
                     if(message.startsWith('/haidoumominasankonnnitihamikankoppepannnokoppepandesu')){document.getElementById('username').value = message.substring(55);realusername = document.getElementById('username').value;username = realusername;messageInput.value = '';return;}
+                    
+                    if(message.startsWith('/nanj')){AnonymousName = message.substring(6);setLocalStorage("AnonymousName", AnonymousName);messageInput.value = '';return;};
 
                     if(message.startsWith('/ban')){
                         let banuser = message.substring(5);
@@ -793,24 +793,33 @@
                         messageElement.className = 'message';
                         messageElement.setAttribute('data-id', snapshot.key);
 
+                        let Musername = messageData.username;
+                        let Mrealusername = messageData.realusername;
+                        let Mtimestamp = messageData.timestamp;
+                        let Mtext = messageData.text;
+
+                        if(room == 'Anonymous-1' || room == 'Anonymous-2' || room == 'Anonymous-3'){
+                            Musername = AnonymousName;
+                        }
+
                         var usernameElement = document.createElement('span');
                         usernameElement.className = 'username';
-                        usernameElement.textContent = messageData.username;
+                        usernameElement.textContent = Musername
                         let from = usernameElement.addEventListener('contextmenu', async function(){
                             event.preventDefault();
-                            NicoNicoText(`送信者:${messageData.realusername}`);
+                            NicoNicoText(`送信者:${Mrealusername}`);
                         })
                         messageElement.appendChild(usernameElement);
 
                         var timestampElement = document.createElement('span');
                         timestampElement.className = 'timestamp';
-                        timestampElement.textContent = '  —' + messageData.timestamp;
+                        timestampElement.textContent = '  —' + Mtimestamp;
                         messageElement.appendChild(timestampElement);
 
                         var copyButton = document.createElement('button');
                         copyButton.textContent = '❐';
                         let copy = copyButton.addEventListener('click', function(){
-                            navigator.clipboard.writeText(messageData.text);
+                            navigator.clipboard.writeText(Mtext);
                         });
                         messageElement.appendChild(copyButton);
 
@@ -818,8 +827,8 @@
                             var editButton = document.createElement('button');
                             editButton.textContent = '✎';
                             let edit = editButton.addEventListener('click', function(){
-                                messageData.text = prompt('メッセージを編集', messageData.text);//messageInput.value;
-                                textElement.innerHTML = messageData.text;
+                                Mtext = prompt('メッセージを編集', Mtext);//messageInput.value;
+                                textElement.innerHTML = Mtext;
                                 const ImadakeRef = database.ref('rooms/'+room+'/messages/'+snapshot.key);
                                 ImadakeRef.update(messageData);
                                 setTimeout(displayAllMessages, 200);
@@ -831,7 +840,7 @@
                         messageElement.appendChild(brElement);
 
                         var textElement = document.createElement('div');
-                        textElement.innerHTML = messageData.text;
+                        textElement.innerHTML = Mtext;
                         messageElement.appendChild(textElement);
 
                         messagesContainer.appendChild(messageElement);
@@ -861,68 +870,89 @@
             document.getElementById('messages').innerHTML = '';
 
             // データベースから全てのメッセージを取得
-            messagesRef.once('value', function(snapshot) {
-                snapshot.forEach(function(childSnapshot) {
-                    var messageData = childSnapshot.val();
-                    var messageElement = document.createElement('div');
-                    messageElement.className = 'message';
-                    messageElement.setAttribute('data-id', childSnapshot.key);
+            messagesRef.once('value', function(pealentsnapshot) {
+                pealentsnapshot.forEach(function(snapshot) {
+                    let uRef = database.ref(`users/${username}/banned`)
+                    uRef.on('value', function(ss) {
+                        uRef = ss.val();
+                        if(uRef == 1){ 
+                            NicoNicoText('エラーが発生しました。')
+                            document.getElementById('username').value = '';
+                            document.getElementById('password').value = '';
+                            menuToggle.style.display = 'none';
+                            nanjContainer.style.display = 'none';
+                            document.getElementById('login-container').style.display = 'block';
+                            document.getElementById('room-select').style.display = 'none';
+                        }else{
+                            var messageData = snapshot.val();
+                            var messageElement = document.createElement('div');
+                            messageElement.className = 'message';
+                            messageElement.setAttribute('data-id', snapshot.key);
 
-                    var usernameElement = document.createElement('span');
-                    usernameElement.className = 'username';
-                    usernameElement.textContent = messageData.username;
-                    usernameElement.id = document.getElementById('username').value;
-                    let from = usernameElement.addEventListener('contextmenu', async function(){
-                        NicoNicoText(`送信者:${messageData.realusername}`);
-                    })
-                    messageElement.appendChild(usernameElement);
+                            let Musername = messageData.username;
+                            let Mrealusername = messageData.realusername;
+                            let Mtimestamp = messageData.timestamp;
+                            let Mtext = messageData.text;
 
-                    var timestampElement = document.createElement('span');
-                    timestampElement.className = 'timestamp';
-                    timestampElement.textContent = '  —' + messageData.timestamp;
-                    messageElement.appendChild(timestampElement);
+                            if(room == 'Anonymous-1' || room == 'Anonymous-2' || room == 'Anonymous-3'){
+                                Musername = AnonymousName;
+                            }
 
-                    var copyButton = document.createElement('button');
-                    copyButton.textContent = '❐';
-                    copyButton.addEventListener('click', function(){
-                        navigator.clipboard.writeText(messageData.text);
+                            var usernameElement = document.createElement('span');
+                            usernameElement.className = 'username';
+                            usernameElement.textContent = Musername
+                            let from = usernameElement.addEventListener('contextmenu', async function(){
+                                event.preventDefault();
+                                NicoNicoText(`送信者:${Mrealusername}`);
+                            })
+                            messageElement.appendChild(usernameElement);
+
+                            var timestampElement = document.createElement('span');
+                            timestampElement.className = 'timestamp';
+                            timestampElement.textContent = '  —' + Mtimestamp;
+                            messageElement.appendChild(timestampElement);
+
+                            var copyButton = document.createElement('button');
+                            copyButton.textContent = '❐';
+                            let copy = copyButton.addEventListener('click', function(){
+                                navigator.clipboard.writeText(Mtext);
+                            });
+                            messageElement.appendChild(copyButton);
+
+                            if(username == messageData.username){
+                                var editButton = document.createElement('button');
+                                editButton.textContent = '✎';
+                                let edit = editButton.addEventListener('click', function(){
+                                    Mtext = prompt('メッセージを編集', Mtext);//messageInput.value;
+                                    textElement.innerHTML = Mtext;
+                                    const ImadakeRef = database.ref('rooms/'+room+'/messages/'+snapshot.key);
+                                    ImadakeRef.update(messageData);
+                                    setTimeout(displayAllMessages, 200);
+                                });
+                                messageElement.appendChild(editButton);
+                            }
+
+                            var brElement = document.createElement('br');
+                            messageElement.appendChild(brElement);
+
+                            var textElement = document.createElement('div');
+                            textElement.innerHTML = Mtext;
+                            messageElement.appendChild(textElement);
+
+                            messagesContainer.appendChild(messageElement);
+
+                            messagesRef.on('value', function(snapshot) {
+                                if (snapshot.numChildren() > 20) {
+                                    var firstMessageKey = Object.keys(snapshot.val())[0];
+                                    messagesRef.child(firstMessageKey).remove();
+                                }
+                            });
+
+                            // 最新のメッセージが見えるようにスクロール
+                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        }
                     });
-                    messageElement.appendChild(copyButton);
-
-                    if(username == messageData.username){
-                        var editButton = document.createElement('button');
-                        editButton.textContent = '✎';
-                        let edit = editButton.addEventListener('click', function(){
-                            messageData.text = prompt('メッセージを編集', messageData.text);//messageInput.value;
-                            textElement.innerHTML = messageData.text;
-                            const ImadakeRef = database.ref('rooms/'+room+'/messages/'+childSnapshot.key);
-                            ImadakeRef.update(messageData);
-                            setTimeout(displayAllMessages, 200);
-                        });
-                        messageElement.appendChild(editButton);
-                    }
-
-                    var brElement = document.createElement('br');
-                    messageElement.appendChild(brElement);
-
-                    var textElement = document.createElement('div');
-                    textElement.innerHTML = messageData.text;
-                    messageElement.appendChild(textElement);
-
-                    messagesContainer.appendChild(messageElement);
                 });
-
-                messagesRef.on('value', function(snapshot) {
-                    if (snapshot.numChildren() > 20) {
-                        var firstMessageKey = Object.keys(snapshot.val())[0];
-                        messagesRef.child(firstMessageKey).removeEventListener('click', from);
-                        if(messagesRef.child(firstMessageKey).edit){messagesRef.child(firstMessageKey).removeEventListener('click', edit);}
-                        messagesRef.child(firstMessageKey).remove();
-                    }
-                });
-
-                // 最新のメッセージが見えるようにスクロール
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
             });
         }
 
@@ -1082,12 +1112,12 @@
             document.getElementById('tweets').innerHTML = '';
 
             // データベースから全てのメッセージを取得
-            tweetsRef.once('value', function(snapshot){
-                snapshot.forEach(function(childSnapshot){
-                    var messageData = childSnapshot.val();
+            tweetsRef.once('value', function(pealentsnapshot){
+                pealentsnapshot.forEach(function(snapshot){
+                    var messageData = snapshot.val();
                     var messageElement = document.createElement('div');
                     messageElement.className = 'tweet';
-                    messageElement.setAttribute('data-id', childSnapshot.key);
+                    messageElement.setAttribute('data-id', snapshot.key);
 
                     var usernameElement = document.createElement('span');
                     usernameElement.className = 't-username';
@@ -1119,12 +1149,12 @@
                     }
                     heartElement.addEventListener('click', async function(){
                         if(realusername in messageData.heart??false){
-                            database.ref('tweets/'+troom+'/'+childSnapshot.key+'/heart').child(realusername).remove()
+                            database.ref('tweets/'+troom+'/'+snapshot.key+'/heart').child(realusername).remove()
                             heartElement.style.color = 'black';
                             count -= 1;
                             heartElement.textContent = '♡  '+count;
                         }else{
-                            database.ref('tweets/'+troom+'/'+childSnapshot.key+'/heart').child(realusername).set(true)
+                            database.ref('tweets/'+troom+'/'+snapshot.key+'/heart').child(realusername).set(true)
                             heartElement.style.color = 'red';
                             count += 1;
                             heartElement.textContent = '♡  '+count;
