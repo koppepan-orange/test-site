@@ -449,14 +449,20 @@
                         NicoNicoText('パスワードが間違っています。');
                     }
                 } else {
-                    // 新規ユーザーの場合、アカウント作成
-                    usersRef.update({
-                        password: password,
-                        banned: 0,
-                    });
-                    setLocalStorage("username", username); // ログイン成功時
-                    NicoNicoText('"chat"へ ようこそ')
-                    login();
+                    if(getLocalStorage("banned") == 0){
+                        usersRef.update({
+                            password: password,
+                            banned: 0,
+                        });
+                        setLocalStorage("username", username); // ログイン成功時
+                        NicoNicoText('"chat"へ ようこそ')
+                        login();
+                    }else{
+                        NicoNicoText('このユーザーはbanされています');
+                        setLocalStorage("banned", 1);
+                        document.getElementById('username').value = '';
+                        document.getElementById('password').value = '';
+                    }
                 }
             });
 
