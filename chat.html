@@ -346,7 +346,7 @@
             localStorage.setItem(name, value || ""); // 値が空なら空文字を入れる
         }
 
-        function getLocalStorage(name) {
+        function getLocalStorage(name){
             return localStorage.getItem(name); // 値をそのまま返す、ない場合はnull
         }
 
@@ -383,14 +383,15 @@
 
         function login(){
             usersRef.update({
-                    status: 'online'
-                });
-                menuToggle.style.display = 'block';
-                nanjContainer.style.display = 'flex';
-                document.getElementById('login-container').style.display = 'none';
-                document.getElementById('room-select').style.display = 'block';
-                room = roomSelect.value;
-                selectRoom();
+                status: 'online'
+            });
+            menuToggle.style.display = 'block';
+            nanjContainer.style.display = 'flex';
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('room-select').style.display = 'block';
+            room = roomSelect.value;
+            selectRoom();
+            setLocalStorage("banned", 0);
         }
 
         function autoLogin(){
@@ -402,12 +403,13 @@
                 let uRef = database.ref(`users/${username}/banned`)
                 uRef.on('value', function(snapshot) {
                     uRef = snapshot.val();
-                    if(uRef == 0){ 
+                    if(uRef == 0 && getLocalStorage("banned") != 1){
                         usersRef = database.ref('users/' + username);
                         console.log("自動ログインしました");
                         login();
                     }else{
                         console.log("あなたはbanされています!!"+uRef);
+                        setLocalStorage("banned", 1);
                     }
                 });
                 
@@ -433,11 +435,12 @@
                         let uRef = database.ref(`users/${username}/banned`)
                         uRef.on('value', function(snapshot) {
                             uRef = snapshot.val();
-                            if(uRef == 0){ 
+                            if(uRef == 0 && getLocalStorage("banned") != 1){
                                 setLocalStorage("username", username); // ログイン成功時
                                 login();
                             }else{
                                 NicoNicoText('このユーザーはbanされています');
+                                setLocalStorage("banned", 1);
                                 document.getElementById('username').value = '';
                                 document.getElementById('password').value = '';
                             }
