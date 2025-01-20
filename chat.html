@@ -439,10 +439,17 @@
                                 setLocalStorage("username", username); // ログイン成功時
                                 login();
                             }else{
-                                NicoNicoText('このユーザーはbanされています');
-                                setLocalStorage("banned", 1);
-                                document.getElementById('username').value = '';
-                                document.getElementById('password').value = '';
+                                if(uRef == 1){
+                                    NicoNicoText('このユーザーはbanされています');
+                                    setLocalStorage("banned", 1);
+                                    document.getElementById('username').value = '';
+                                    document.getElementById('password').value = '';
+                                }else{
+                                    NicoNicoText('神は其方を押す杭になったぞ');
+                                    setLocalStorage("banned", 0);
+                                    setLocalStorage("username", username);
+                                    login();
+                                }
                             }
                         });
                     } else {
