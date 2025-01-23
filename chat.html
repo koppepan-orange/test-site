@@ -408,7 +408,8 @@
                         console.log("自動ログインしました");
                         login();
                     }else{
-                        console.log("あなたはbanされています!!"+uRef);
+                        //console.log("あなたはbanされています!!"+uRef);
+                        console.log('ログインしてください')
                         setLocalStorage("banned", 1);
                     }
                 });
@@ -440,12 +441,13 @@
                                 login();
                             }else{
                                 if(uRef == 1){
-                                    NicoNicoText('このユーザーはbanされています');
+                                    NicoNicoText('パスワードが間違っています。');
+                                    //window.location.reload();
                                     setLocalStorage("banned", 1);
                                     document.getElementById('username').value = '';
                                     document.getElementById('password').value = '';
                                 }else{
-                                    NicoNicoText('神は其方をお救いになったぞ');
+                                    NicoNicoText('chatへようこそ');//神は其方をお救いになったぞ
                                     setLocalStorage("banned", 0);
                                     setLocalStorage("username", username);
                                     login();
@@ -465,7 +467,8 @@
                         NicoNicoText('"chat"へ ようこそ')
                         login();
                     }else{
-                        NicoNicoText('このユーザーはbanされています');
+                        //NicoNicoText('エラーが発生しました');
+                        window.location.reload();
                         setLocalStorage("banned", 1);
                         document.getElementById('username').value = '';
                         document.getElementById('password').value = '';
