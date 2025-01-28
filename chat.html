@@ -341,6 +341,15 @@
         let AnonymousName = "/nanj 名前 で変えられるよ!!!!";
         function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
         function load(){usersRef.once('value').then(function(snapshot){userData = snapshot.val();});}
+        function  displayLocalStorage(){
+            const itemCount = localStorage.length;
+            for (let i = 0; i < itemCount; i++) {
+                const key = localStorage.key(i); // キーを取得
+                const value = localStorage.getItem(key); // 値を取得
+                NicoNicoText(`キー: ${key}, 値: ${value}`);
+                console.log(`キー: ${key}, 値: ${value}`);
+            }
+        }
 
         function setLocalStorage(name, value) {
             localStorage.setItem(name, value || ""); // 値が空なら空文字を入れる
@@ -434,9 +443,9 @@
                     userData = snapshot.val();
                     if (userData.password === password){
                         let uRef = database.ref(`users/${username}/banned`)
-                        uRef.on('value', function(snapshot) {
+                        uRef.on('value', function(snapshot){
                             uRef = snapshot.val();
-                            if(uRef == 0 && getLocalStorage("banned") != 1){
+                            if(uRef == 0 && getLocalStorage("banned") == 0  || getLocalStorage("banned") == null){
                                 setLocalStorage("username", username); // ログイン成功時
                                 login();
                             }else{
@@ -458,7 +467,7 @@
                         NicoNicoText('パスワードが間違っています。');
                     }
                 } else {
-                    if(getLocalStorage("banned") == 0){
+                    if(getLocalStorage("banned") == 0 || getLocalStorage("banned") == null){
                         usersRef.update({
                             password: password,
                             banned: 0,
@@ -479,9 +488,13 @@
         });
 
         window.addEventListener('beforeunload', () => {
-            usersRef.update({
-                status: 'offline'
-            });
+            usersRef.once('value').then(function(snapshot) {
+                if(snapshot.exists()){
+                    usersRef.update({
+                        status: 'offline'
+                    });
+                }
+            })
         });
 
         function logout(){
@@ -697,6 +710,10 @@
                     if(message === '/now'){
                         load();
                         NicoNicoText('now:'+userData.yen+'円');
+                        messageInput.value = '';return;
+                    }
+                    if(message == '/showlocal'){
+                        displayLocalStorage();
                         messageInput.value = '';return;
                     }
                     if(message == '/daily'){

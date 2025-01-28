@@ -1,541 +1,643 @@
 <!DOCTYPE html>
 <html lang="en-US">
-<!-- 私のプログラム!!!がんばたよ！！！！ -->
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="Icon.ico">
     <title>test-site</title>
     <style>
-      @font-face{font-family:comicsans;src:url('assets/comicsans.ttf');}
-      @font-face{font-family:Hangyaku;src:url('assets/Hangyaku.ttf');}
-      @font-face{font-family:cube12;src:url('assets/cube12.ttf');}
-      @font-face{font-family:wingdings;src:url('assets/wingdings.ttf');}
-      @font-face{font-family:kaimetsu;src:url('assets/kaimetsu.otf');}
-      *{
-        background-color: #f0f8ff;
-      }
-      #all{
-        font-family:comicsans;
-      }
+        @font-face{font-family:comicsans;src:url('assets/comicsans.ttf');}
+        @font-face{font-family:Hangyaku;src:url('assets/Hangyaku.ttf');}
+        @font-face{font-family:cube12;src:url('assets/cube12.ttf');}
+        @font-face{font-family:wingdings;src:url('assets/wingdings.ttf');}
+        @font-face{font-family:kaimetsu;src:url('assets/kaimetsu.otf');}
+        *{
+            background-color: #f0f8ff;
+        }
+        #body{
+            font-family:comicsans;
+        }
 
-      #description {
-        display: none;
-        position: fixed;
-        pointer-events: none;
-        background-color: rgba(90, 90, 90, 0.9);
-        color: rgb(255, 255, 255);
-        padding: 5px 10px;
-        border-radius: 5px;
-        z-index: 1000;
-      }
+        #description {
+            display: none;
+            position: fixed;
+            pointer-events: none;
+            background-color: rgba(90, 90, 90, 0.9);
+            color: rgb(255, 255, 255);
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
 
-      #sideMenu {
-        position: fixed;
-        top: 0;
-        left: -250px;
-        width: 250px;
-        height: 100%;
-        color: #333344;
-        background-color: #cecece;
-        transition: left 0.3s;
-      }
-      #sideMenu ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      #sideMenu ul li {
-        padding: 3px;
-        background-color: #cecece;
-      }
-      #sideMenu ul li a {
-        color: #000000;
-        background-color: #cecece;
-        text-decoration: none;
-      }
-      #sideMenu ul li select{
-        background-color: #cecece;
-      }
-      #sideMenu button {
-        background-color: #cecece;
-        border: none;
-        color: #000000;
-        cursor: pointer;
-        text-decoration: none;
-        padding: 0;
-      }
-      #menuToggle {
-        display: block;
-        position: fixed;
-        top: 15px;
-        right: 15px;
-        color: #000000;
-        border: none;
-        font-size: 26px;
-        cursor: pointer;
-      }
-      #cpopup{
-        display: none;
-        position: fixed;
-        top: 70px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 600px;
-        max-height: 600px;
-        background-color: #eeeeee;
-        color:#2b2b2b;
-        border: 2px solid #b2b2b2;
-        z-index: 999;
-        overflow: auto;
-      }
-      #cpopup ul{
-        background-color: #eeeeee;
-      }
-      #cpopup ul li{
-        background-color: #eeeeee;
-      }
+        #sideMenu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            color: #333344;
+            background-color: #cecece;
+            transition: left 0.3s;
+        }
+        #sideMenu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #sideMenu ul li {
+            padding: 3px;
+            background-color: #cecece;
+        }
+        #sideMenu ul li a {
+            color: #000000;
+            background-color: #cecece;
+            text-decoration: none;
+        }
+        #sideMenu ul li select{
+            background-color: #cecece;
+        }
+        #sideMenu button {
+            background-color: #cecece;
+            border: none;
+            color: #000000;
+            cursor: pointer;
+            text-decoration: none;
+            padding: 0;
+        }
+        #menuToggle {
+            display: block;
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            color: #000000;
+            border: none;
+            font-size: 26px;
+            cursor: pointer;
+        }
 
-      #iframe{
-        display: none;
-        width: 70%;
-        height: 80%;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%,-50%);
-        border: 2px solid #ffbb00;
-        border-radius: 5px;
-        background-color: #f0f8ff;
-        overflow: scroll;
-        padding:2px;
-      }
+        #cpopup{
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            max-height: 600px;
+            background-color: #eeeeee;
+            color:#2b2b2b;
+            border: 2px solid #b2b2b2;
+            z-index: 999;
+            overflow: auto;
+        }
+        #cpopup ul{
+            background-color: #eeeeee;
+        }
+        #cpopup ul li{
+            background-color: #eeeeee;
+        }
 
-      .wd{
-        display: none;
-      }
-      #wdcheck{
-        cursor: pointer;
-        font-size:4px;
-        font-family: wingdings!important;
-        background-color: #cecece;
-      }
-      #wdtextarea{
-        font-family: wingdings;
-      }
+        #iframe{
+            display: none;
+            width: 70%;
+            height: 80%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            border: 2px solid #ffbb00;
+            border-radius: 5px;
+            background-color: #f0f8ff;
+            overflow: scroll;
+            padding:2px;
+        }
+        #Linkframe2,#Linkframe3,#Linkframe4{
+            display: none;
+        }
+        .iframe-button{
+            width: 30px;
+            height: 20px;
+            border: 1px solid #b2b2b2;
+            background-color: #e5ecf2;
+            text-align: center;
+            appearance: none;
+        }
+
+        .toggle{
+            width:50px;
+            height:20px;
+            border: 1px solid #b2b2b2;
+            background-color: #e5ecf2;
+        }
+
+        .wd{
+            display: none;
+        }
+        #wdcheck{
+            cursor: pointer;
+            font-size:4px;
+            font-family: wingdings!important;
+            background-color: #cecece;
+        }
+        #wdtextarea{
+            font-family: wingdings;
+        }
+
+        #links{
+            max-height: 300px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            border: 1px solid #cecece;
+        }
+
+        #memos{
+            max-height: 400px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            border: 1px solid #cecece;
+        }
+        .m-title{
+            width: 300px;
+            height: 20px;
+            background-color: #f0f8ff;
+        }
+        .m-textarea{
+            width: 300px;
+            height: 150px;
+            background-color: #f0f8ff
+        }
+
+        #iframes{
+            max-height: 1200px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            border: 1px solid #cecece;
+        }
     </style>
 </head>
-<body id="all">
-  <!--サイドメニュー..-->
-  <div class="menuToggle" id="menuToggle">☰</div>
-  <nav id="sideMenu">
+<body id="body">
+    <!--サイドメニュー..-->
+    <div class="menuToggle" id="menuToggle">☰</div>
+    <nav id="sideMenu">
+        <hr noshade="true">
+        <ul>
+            <li><input type="checkbox" data-name="links" class="toggles" checked>Links</li>
+            <li><input type="checkbox" data-name="memos" class="toggles" checked>Memos</li>
+            <li><input type="checkbox" data-name="iframes" class="toggles" checked>Iframes</li>
+        </ul>
+        <hr noshade="true">
+        <ul>
+        <li>
+            <select id="font-select" onchange="changeFont()">
+                <option value="comicsans">comicsans</option>
+                <option value="Hangyaku">Hangyaku</option>
+                <option value="cube12">cube12</option>
+                <option class="wd" value="wingdings">wingdings</option>
+            </select>
+        </li>
+        </ul>
+        <hr noshade="true">
+        <ul>
+            <li><a href="home.html">to home</a></li>
+            <li><a href="memo.html">to memo</a></li>
+            <li><a href="https://koppepan-orange.github.io/game-site/welcome.html">to game</a></li>
+            <li><a href="tools.html">to tools</a></li>
+            <li><a href="books.html">to books</a>←new!!!</li>
+            <li><a href="hidden.html">to hidden</a>←new!!!</li>
+            <li class="wd"><a href="home-ura.html">to ura</a></li>
+        </ul>
+        <hr noshade="true">
+        <ul>
+            <li class="hastxt" data-name="chara+">chara+</li>
+            <li class="hastxt" data-name="enemies+">enemies+</li>
+            <li class="hastxt" data-name="recomend">好きなアプリ発表ドラゴン</li>
+        </ul>
+        <hr noshade="true">
+        <ul>
+            <li><span id="wdcheck">HELLO</spanid></li>
+        </ul>
+    </nav>
+    <div id="cpopup"></div>
+    <h2><p align="center">Koppepan Orange's site</p></h2>
+    <p align="center">ここは何でもあるサイトです！ <i>ゆっくりしていってね！！</i></p>
     <hr noshade="true">
-    <ul><!--なんか機能をアンロックする形で-->
-      <li>
-        <select id="font-select" onchange="changeFont()">
-          <option value="comicsans">comicsans</option>
-          <option value="Hangyaku">Hangyaku</option>
-          <option value="cube12">cube12</option>
-          <option class="wd" value="wingdings">wingdings</option>
-        </select>
-      </li>
-    </ul>
-    <hr noshade="true">
-    <ul>
-      <li><a href="home.html">to home</a></li>
-      <li><a href="memo.html">to memo</a></li>
-      <li><a href="https://koppepan-orange.github.io/game-site/welcome.html">to game</a></li>
-      <li><a href="tools.html">to tools</a></li>
-      <li><a href="books.html">to books</a>←new!!!</li>
-      <li><a href="hidden.html">to hidden</a>←new!!!</li>
-      <li class="wd"><a href="home-ura.html">to ura</a></li>
-    </ul>
-    <hr noshade="true">
-    <ul>
-      <li class="hastxt" data-name="chara+">chara+</li>
-      <li class="hastxt" data-name="enemies+">enemies+</li>
-      <li class="hastxt" data-name="recomend">好きなアプリ発表ドラゴン</li>
-    </ul>
-    <hr noshade="true">
-    <ul>
-      <li><span id="wdcheck">HELLO</spanid></li>
-    </ul>
-  </nav>
-  <div id="cpopup"></div>
-  <h2><p align="center">Koppepan Orange's site</p></h2>
-  <p align="center">ここは何でも<a href="https://koppepan-orange.github.io/test-site/home-ura.html" style="text-decoration: none; color: #000000;">ある</a>サイトです！<i>ゆっくりしていってね！！</i></p>
-  <hr noshade="true">
-  <!-- この下、メニーサイトゾーンです!!単純ですが、めちゃ便利です！！！！  ...ここさ、mouth hoverですって出てきて押せるようにしない？detailsちょっとめんどい-->
-   <iframe id="iframe"></iframe>
-   <div id="description"></div>
-  <div id="links"></div>
-  <!-- この下、メモです!!初期の私のがんばりです！！！！ -->
-    <p>メモ<br>
-      <input type="text" size="30"><br>
-      <textarea rows="12" cols="35"></textarea><br><br>
-      <input type="text" size="30"><br>
-      <textarea rows="10" cols="35"></textarea><br>
-      <input class="wd" type="text" size="30">　<input type=checkbox class="wd" id="wdonoff" checked><br>
-      <textarea class="wd" id="wdtextarea" rows="10" cols="35">
-WHY... WHY DID YOU KNOW THIS PLACE...?
-I...I AM? I AM JUST SCIENTIST.
-PEOPLE CALL ME...W.D.GASTER.
-I LIVE IN THE GAME WHICH MAKED BY TOBY FOX.
-THEN, LET'S MEET IN ITS GAME.</textarea>
-    </p>
-  <!-- この下、足つかないよゾーンです!!優しい友達に教えてもらいました！！！！神!!!! -->
-  <p><span align="center">調べれたりするところ</span>
-    <details><summary>bing.com</summary><button onclick="document.querySelector('#Iframe1').requestFullscreen()">full</button><br>
-      <iframe id="Iframe1" width="100%" height="1000" src="https://www.bing.com/search?q=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae%e6%af%8d%e3%82%82%e6%88%91%e3%82%92%e5%be%85%e3%81%a4%e3%82%89%e3%82%80%e3%81%9d&qs=RQ&pq=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae&sc=4-18&cvid=BDF68943856B40AC93BF5E6E4207F06D&FORM=QBRE&sp=1&ghc=1&lq=0"></iframe>
-    </details>
-    <details><summary>bing-trans</summary><button onclick="document.querySelector('#Iframe2').requestFullscreen()">full</button><br>
-      <iframe id="Iframe2" width="100%" height="1000" src="https://www.bing.com/translator?from=&to=ja&setlang=ja"></iframe></details>
-    <details><summary>link site</summary>
-    <input type="text" id="InputIdLinkDesu" placeholder="write link here"><button onclick="InputToOutputLink()">Go</button><button onclick="document.querySelector('#Iframe3').requestFullscreen()">full</button><br>
-      <iframe id="Iframe3" width="100%" height="600" src="about:blank"></iframe>
-      <script>function InputToOutputLink(){document.getElementById("Iframe3").src = document.getElementById("InputIdLinkDesu").value;}</script>
-    </details>
-  </p>
-  <script>
-    document.addEventListener('mousemove', (e) => {
-      const HasDescription = document.getElementById('description');
-      HasDescription.style.left = `${e.clientX + 10}px`;
-      HasDescription.style.top = `${e.clientY + 10}px`;
-    });
 
-    document.addEventListener('mouseover', (e) => {
-      if(e.target.classList.contains('hasd')){
-          const description = e.target.dataset.description;
-          document.getElementById('description').innerHTML = description;
-          document.getElementById('description').style.display = 'block';
-      }
-    });
+    <iframe id="iframe"></iframe>
+    <div id="description"></div>
+    <div id="links"></div>
+    <br>
+    <div id="memos">
+        <input class="m-title" type="text"><br>
+        <textarea class="m-textarea" data-name="1"></textarea>
+        <br><br>
+        <input class="m-title" type="text"><br>
+        <textarea class="m-textarea" data-name="2"></textarea>
+        <br><br>
+        <input class="m-title" type="text"><br>
+        <textarea class="m-textarea" data-name="3"></textarea>
+        <br><br>
+        <input class="m-title" type="text"><br>
+        <textarea class="m-textarea" data-name="4"></textarea>
+    </div>
+    <br>
+    <div id="iframes"><span align="center">調べれたりするところ</span>
+       <details><summary>bing.com</summary><button class="iframe-button" data-id="Iframe-bing">full</button><br>
+            <iframe id="Iframe-bing" width="100%" height="1000" src="https://www.bing.com/search?q=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae%e6%af%8d%e3%82%82%e6%88%91%e3%82%92%e5%be%85%e3%81%a4%e3%82%89%e3%82%80%e3%81%9d&qs=RQ&pq=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae&sc=4-18&cvid=BDF68943856B40AC93BF5E6E4207F06D&FORM=QBRE&sp=1&ghc=1&lq=0"></iframe>
+        </details>
+        <details><summary>bing-trans</summary><button class="iframe-button" data-id="Iframe-bing-trans">full</button><br>
+            <iframe id="Iframe-bing-trans" width="100%" height="1000" src="https://www.bing.com/translator?from=&to=ja&setlang=ja"></iframe>
+        </details>
+        <details><summary>AI Chat</summary><button  class="iframe-button" data-id="Iframe-AI">full</button><br>
+            <iframe id="IframeAI" width="100%" height="1000" src="https://deepai.org/chat"></iframe>
+        </details>
+        <details><summary>link site</summary>
+            <input type="text" id="LinkInput" placeholder="write link here">
+            <button class="iframe-button" onclick="LinkframeGo()">Go</button>
+            <select id="LinkSelect" class="iframe-button">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+            <button class="iframe-button">full</button><br>
+            <iframe id="Linkframe1" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+            <iframe id="Linkframe2" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+            <iframe id="Linkframe3" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+            <iframe id="Linkframe4" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+        </details>
+    </div>
+    <script>
+        //#region 扱いやすい子達
+        function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+        async function NicoNicoText(mes){
+            const newDiv = document.createElement('div');
+            newDiv.textContent = mes;
+            newDiv.style = `
+            position: absolute;
+            top: ${Math.random()*100}vh;
+            right: 0;
+            background-color: rgba(228, 249, 255, 0.563);
+            color: #000000;
+            font-size: 20px;
+            `
+            document.getElementById('body').appendChild(newDiv);
+            //let speed = Math.random()*100+1;
+            let speed = mes.toString().length*2 
+            for(let i = 0; window.innerWidth > i*speed; i++){
+                let val = i*speed;
+                newDiv.style.right = `${val}px`
+                await delay(50);
+            }
+            newDiv.remove();
+        }
 
-    document.addEventListener('mouseout', (e) => {
-      if(e.target.classList.contains('hasd')){
-          document.getElementById('description').innerHTML = '';
-          document.getElementById('description').style.display = 'none';
-      }
-    });
+        function displayLocalStorage() {
+            const itemCount = localStorage.length;
+            for (let i = 0; i < itemCount; i++) {
+                const key = localStorage.key(i); // キーを取得
+                const value = localStorage.getItem(key); // 値を取得
+                NicoNicoText(`キー: ${key}, 値: ${value}`);
+            }
+        }
+        
+        document.addEventListener('mousemove', (e) => {
+        const HasDescription = document.getElementById('description');
+        HasDescription.style.left = `${e.clientX + 10}px`;
+        HasDescription.style.top = `${e.clientY + 10}px`;
+        });
 
-    const Links = {
-      'memo':{
-      'memos': {
+        document.addEventListener('mouseover', (e) => {
+        if(e.target.classList.contains('hasd')){
+        const description = e.target.dataset.description;
+        document.getElementById('description').innerHTML = description;
+        document.getElementById('description').style.display = 'block';
+        }
+        });
+        document.addEventListener('mouseout', (e) => {
+        if(e.target.classList.contains('hasd')){
+        document.getElementById('description').innerHTML = '';
+        document.getElementById('description').style.display = 'none';
+        }
+        });
+        //#endregion
+        //#region リンクたちの動き
+        const Links = {
+        'memo':{
+        'memos': {
         id: 'memos',
         name: 'memo-site',
         href: 'https://koppepan-orange.github.io/test-site/memo.html',
         iframable:1,
         description: 'メモができるサイト。まじで有能<br>You know?<br>あ、うざい？これ'
-      },
-      'browserMemo': {
+        },
+        'browserMemo': {
         id: 'browserMemo',
         name: 'ブラウザメモ帳',
         href: 'http://www.drpartners.jp/tools/browser-memocho.html',
         iframable: 1,
         description: 'メモができるサイト。保有量が大きい'
-      },
-      'memoWeb': {
+        },
+        'memoWeb': {
         id: 'memoWeb',
         name: 'メモweb',
         href: 'https://memo.onl.jp/?koppepan23',
         iframable:0,
         description: '昔使ってたところ。<br>今はmemo.html使ってるけどね'
-      },
-      'fileWeb': {
+        },
+        'fileWeb': {
         id: 'fileWeb',
         name: 'ファイルweb',
         href: 'https://file.onl.jp/?koppepan23',
         iframable:0,
         description: 'これは有用ちゃん<br>ファイルを送受信できる<br>そのうち作りたい.....'
-      },
-      'writebox': {
+        },
+        'writebox': {
         id: 'writebox',
         name: 'writebox',
         href: 'https://write-box.appspot.com/',
         iframable:0,
         description: '簡単にhtmlのテストができるサイト<br>けどjsとcssは無効'
-      },
-    },
-    'tool':{
-      'tools': {
+        },
+        },
+        'tool':{
+        'tools': {
         id: 'tools',
         name: 'tool-site',
         href: 'https://koppepan-orange.github.io/test-site/tools.html',
         iframable:1,
         description: 'んー..あんまり実用的じゃない子<br>遊び目的。ほぼ<br>けど偏差値とかも測れるよ'
-      },
-      'books': {
+        },
+        'books': {
         id: 'books',
         name: 'book-site',
         href: 'https://koppepan-orange.github.io/test-site/books.html',
         iframable:1,
         description: '本が読める子<br>作者は匿名なのでhiddenにでも送ってくれたら載せますよ'
-      },
-      'hidden': {
+        },
+        'hidden': {
         id: 'hidden',
         name: 'hidden-site',
         href: 'https://koppepan-orange.github.io/test-site/hidden.html',
         iframable:1,
         description: '匿名で投稿できるサイト！！！！<br>管理者しか見れないんで<br>定期的にEventは確認して欲しいね'
-      },
-      'dropbox': {
+        },
+        'dropbox': {
         id: 'dropbox',
         name: 'dropbox',
         href: 'https://www.dropbox.com/home',
         iframable:0,
         description: '単純に優秀な子<br>ファイルWebよりも持続性が高い<br>ログイン必須'
-      },
-      'anagram': {
+        },
+        'anagram': {
         id: 'anagram',
         name: 'アナグラム生成機',
         href: 'https://anagram.httqs.com/',
         iframable:1,
         description: 'アナグラムを生成してくれる子<br>武器とかの名前はこいつに頼ってもいいかも'
-      },
-      'roulette': {
+        },
+        'roulette': {
         id: 'roulette',
         name: 'ルーレット等生成機',
         href: 'https://jp.piliapp.com/random/wheel/',
         iframable:1,
         description: '名の通り感。<br>他にも乱数とかもいける<br>暇つぶしできるかもね'
-      },
-      'colorSite': {
+        },
+        'colorSite': {
         id: 'colorSite',
         name: 'カラーサイト',
         href: 'https://www.color-site.com/',
         iframable:1,
         description: '色の種類を調べれるサイト<br>まじで優秀<br>rgbにも対応'
-      },
-      'mediaEdit': {
+        },
+        'mediaEdit': {
         id: 'mediaEdit',
         name: 'mp3、mp4編集サイト',
         href: 'https://123apps.com/ja/',
         iframable:1,
         description: '動画→音ができるサイト<br>いつも愛用させていただいております<br>かんしゃ〜'
-      },
-    },
-    'make':{
-      'scratch': {
+        },
+        },
+        'make':{
+        'scratch': {
         id: 'scratch',
         name: 'scratch',
         href: 'https://scratch.mit.edu/users/koppepan_orange/',
         iframable:0,
         description: '言わずもがな<br>前はここで作ってた..っていう名残<br>でもやってほしい'
-      },
-      'flat': {
+        },
+        'flat': {
         id: 'flat',
         name: 'flat',
         href: 'https://flat.io/ja',
         iframable:0,
         description: '音楽が比較的簡単に作れるサイト<br>ログイン必須'
-      },
-      'musescore': {
+        },
+        'musescore': {
         id: 'musescore',
         name: 'musescore',
         href: 'https://musescore.com/user/41107809',
         iframable:0,
         description: '楽譜を調べれるサイト<br>人気な曲はありがちだけど<br>そんなそんなな曲はないことが多い'
-      },
-      'pixnote': {
+        },
+        'pixnote': {
         id: 'pixnote',
         name: 'pixnote',
         href: 'https://pixnote.net/',
         iframable:1,
         description: '簡単にドット絵が描けるサイト<br>まじで良い<br>ほんとに'
-      },
-      'pixlate': {
+        },
+        'pixlate': {
         id: 'pixlate',
         name: 'pixlate',
         href: 'https://www.pixilart.com/koppepanorange',
         iframable:0,
         description: 'ドット絵が描けるサイト2<br>ちょっと複雑だけど自由度は高め'
-      },
-      'thirtyDollar': {
+        },
+        'thirtyDollar': {
         id: 'thirtyDollar',
         name: 'thirty dollar',
         href: 'https://thirtydollar.website/',
         iframable:0,
         description: '効果音で音楽を作れるサイト<br>internet overdoseやってる人もいたね'
-      },
-    },
-    'study':{
-      'meibo': {
+        },
+        },
+        'study':{
+        'meibo': {
         id: 'meibo',
         name: 'meibo-site',
         href: 'https://true-koppepan-orange.github.io/sub_test-site/meibo_site',
         iframable:1,
         description: '学校の人の一覧を見れるサイト<br>ぜんーーーぜんいないのは内緒のお話'
-      },
-      'duolingo': {
+        },
+        'duolingo': {
         id: 'duolingo',
         name: 'duolingo',
         href: 'https://www.duolingo.com/profile/koppepan_orange',
         iframable:0,
         description: '言語が学べるサイト<br>ﾁｮｳﾕｰﾒｲ!ﾔﾊﾞｵ'
-      },
-      'sushiDa': {
+        },
+        'sushiDa': {
         id: 'sushiDa',
         name: '寿司打',
         href: 'http://typingx0.net/sushida/',
         iframable:0,
         description: 'タイピング競いの定番<br私は苦手です'
-      },
-      'ankey': {
+        },
+        'ankey': {
         id: 'ankey',
         name: 'ankey',
         href: 'https://ankey.io/@koppepanorange',
         iframable:0,
         description: '歌詞とか色々でタイピングができるサイト<br>楽しい<br>好き'
-      },
-    },
-    'sns':{
-      'chatSite': {
+        },
+        },
+        'sns':{
+        'chatSite': {
         id: 'chatSite',
         name: 'chat-site',
         href: 'https://koppepan-orange.github.io/test-site/chat.html',
         iframable:1,
         description: '人と話せるサイト<br>なんJスタイル<br>サイドバーからtwitter2が見れるよ'
-      },
-      'reddit': {
+        },
+        'reddit': {
         id: 'reddit',
         name: 'reddit',
         href: 'https://www.reddit.com/user/koppepan_orange/',
         iframable:0,
         description: '外国掲示板定番のやつ<br>英語しかない<br>絵はほとんど転載<br>まあ常時喧嘩してるtwitterよりはマシ'
-      },
-      'github': {
+        },
+        'github': {
         id: 'github',
         name: 'github',
         href: 'https://github.com/koppepan-orange',
         iframable:0,
         description: 'ほんとにいつもありがとね...<br>このサイトもあなたのおかげです'
-      },
-      'discord': {
+        },
+        'discord': {
         id: 'discord',
         name: 'discord',
         href: 'https://discord.com/channels/@me',
         iframable:0,
         description: 'いつもありがとな、ほんとに<br>感謝してるぜ👍🏻'
-      },
-      'chatWeb': {
+        },
+        'chatWeb': {
         id: 'chatWeb',
         name: 'チャットweb',
         href: 'https://chat.onl.jp/?koppepan23',
         iframable:0,
         description: 'ちゃんと喋れるいいサイト<br>けどchat.htmlの方が良い'
-      },
-      'pixiv': {
+        },
+        'pixiv': {
         id: 'pixiv',
         name: 'pixiv',
         href: 'https://www.pixiv.net/users/93550041',
         iframable:0,
         description: '絵が見れるサイト<br>twitterよりも民度が良い<br>絵師さんの巣窟'
-      },
-      'twitch': {
+        },
+        'twitch': {
         id: 'twitch',
         name: 'twitch',
         href: 'https://www.twitch.tv/koppepan_orange',
         iframable:0,
         description: '配信が見れるサイト<br>いつかはしてみたいねぇ....'
-      },
-      'instagram': {
+        },
+        'instagram': {
         id: 'instagram',
         name: 'instagram',
         href: 'https://www.instagram.com/koppepan_orange/',
         iframable:0,
         description: '2番目に好きなSNS<br>けど最近投稿できてない...'
-      },
-      'twitter': {
+        },
+        'twitter': {
         id: 'twitter',
         name: 'twitter',
         href: 'https://twitter.com/koppepan_orange',
         iframable:0,
         description: '日本で最も人気なSNS<br>色んな界隈が入り混じってて良いけど<br>気抜いたら関係ないやつらが流れ込んでくるのが難点<br>好きだけどね'
-      },
-      'youtube': {
+        },
+        'youtube': {
         id: 'youtube',
         name: 'youtube',
         href: 'https://www.youtube.com/channel/UCFvmwWDRrVqM22icC7QLx1w',
         iframable:0,
         description: '言わずもがな〜な動画投稿サイト<br>たまーーーに投稿してる<br>のばまんさんはおすすめ'
-      },
-      'litLink': {
+        },
+        'litLink': {
         id: 'litLink',
         name: 'lit.link',
         href: 'https://lit.link/koppepanorange',
         iframable:0,
         description: '私についてまとめてあるサイト<br>けど多分このサイトだけで事足りる'
-      },
-      'kiite': {
+        },
+        'kiite': {
         id: 'kiite',
         name: 'kiite',
         href: 'https://kiite.jp/user/koppapan_orange',
         iframable:0,
         description: '音楽が広告なしで見れるサイト<br>ボカロのみ<br>けどニコ動基盤だから学校では無理<br>ガッデム..ってやつ？<br>ベアさんといよわさんはおすすめ'
-      },
-      'magicalDraw': {
+        },
+        'magicalDraw': {
         id: 'magicalDraw',
         name: 'MagicalDraw',
         href: 'https://draw.kuku.lu/pchat.php?hash=898857247',
         iframable:0,
         description: '俗にいう"絵チャ"<br>友達と合作ができる<br>楽しい'
-      },
-    },
-    'game':{
-      'gameSite': {
+        },
+        },
+        'game':{
+        'gameSite': {
         id: 'gameSite',
         name: 'game-site',
         href: 'https://koppepan-orange.github.io/game-site/welcome.html',
         iframable:1,
         description: 'ゲームができるサイト<br>まじで楽しい<br>clicker-of-mugenはおすすめ<br>cardは未完成だけど絵見て欲しい'
-      },
-      'musicSite': {
+        },
+        'musicSite': {
         id: 'musicSite',
         name: 'music-site',
         href: 'https://koppepan-orange.github.io/test-site/music-site.html',
         iframable:1,
         description: '全然できてない<br>kiite-cafeみたいなサイト作ろうとしたんだけどむずい'
-      },
-      'cybercode': {
+        },
+        'cybercode': {
         id: 'cybercode',
         name: 'cybercodeonline',
         href: 'https://cybercodeonline.com',
         iframable:0,
         description: '硬派で古き良きMMORPG<br>まじで楽しい..いや人によるかも<br>AFKが充実してて好き'
-      },
-      'browserGame': {
+        },
+        'browserGame': {
         id: 'browserGame',
         name: 'browsergame',
         href: 'https://sdin.jp/browser/',
         iframable:0,
         description: '色んなゲームで遊べるサイト<br>カジノ系列もあるよ<br>確かブロック貫通'
-      },
-      'arealMe': {
+        },
+        'arealMe': {
         id: 'arealMe',
         name: 'ARealMe',
         href: 'https://www.arealme.com/',
         iframable:0,
         description: '色んなテストができるサイト<br>クリック速度とか反射神経とか'
-      },
-      'unityroom': {
+        },
+        'unityroom': {
         id: 'unityroom',
         name: 'unityroom',
         href: 'https://unityroom.com/new_arrivals',
         iframable:0,
         description: '色んな人の作ったゲームで遊べるサイト<br>"ゆめきゃわ"みたいなやつはおすすめ'
-      }
-    },
-    };
-    let iframenow = 0;
-    Object.keys(Links).forEach(type => {
-      const details = document.createElement('details');
-      const summary = document.createElement('summary');
-      summary.textContent = type;
-      details.appendChild(summary);
-      details.id = type;
-      document.getElementById('links').appendChild(details);
+        }
+        },
+        };
+        let iframenow = 0;
+        Object.keys(Links).forEach(type => {
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = type;
+        details.appendChild(summary);
+        details.id = type;
+        document.getElementById('links').appendChild(details);
 
-      Object.keys(Links[type]).forEach(key => {
+        Object.keys(Links[type]).forEach(key => {
         const link = Links[type][key];
         const a = document.createElement('a');
         a.href = link.href;
@@ -546,118 +648,136 @@ THEN, LET'S MEET IN ITS GAME.</textarea>
         a.setAttribute('data-description', link.description);
 
         if(link.iframable == 1){
-          a.addEventListener('contextmenu', (event) => {
-            event.preventDefault();
-            if(iframenow == 0){
-              iframenow = 1;//なぜか反応してない。Links['memos']の形にするべき？
-              const iframe = document.getElementById('iframe');
-              iframe.style.display = 'block';
-              iframe.src = link.href;
-            }else{
-              iframenow = 0;
-              const iframe = document.getElementById('iframe');
-              iframe.style.display = 'none';
-            }
-          })
+        a.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+        if(iframenow == 0){
+        iframenow = 1;//なぜか反応してない。Links['memos']の形にするべき？
+        const iframe = document.getElementById('iframe');
+        iframe.style.display = 'block';
+        iframe.src = link.href;
+        }else{
+        iframenow = 0;
+        const iframe = document.getElementById('iframe');
+        iframe.style.display = 'none';
+        }
+        })
         }
         document.getElementById(type).appendChild(a);
         document.getElementById(type).appendChild(document.createElement('br'));
-      });
-      document.getElementById(type).appendChild(document.createElement('br'));
-    })
-
-
-    //#region sideMenu
-    const menuToggle = document.getElementById('menuToggle');
-    const sideMenu = document.getElementById('sideMenu');
-    menuToggle.addEventListener('click', () => {
-      if(sideMenu.style.left === '0px'){
-          sideMenu.style.left = '-250px';
-      }else{
-          sideMenu.style.left = '0px';
-      }
-    });
-
-    /**
-    const cpopup = document.getElementById('click-popup');
-      let cpopupNow = 0;
-      document.querySelectorAll('.cpopup').forEach(element => {
-        element.addEventListener('click', () => {
-          if(cpopupNow == 0){
-            const description = apperUIs[element.id]?.cpopup??'none';
-            cpopup.innerHTML = description;
-            cpopup.style.display = 'block';
-            cpopupNow = 1;
-          }else{
-            cpopup.innerHTML = '';
-            cpopup.style.display = 'none';
-            cpopupNow = 0;
-          }
         });
-      })
-      **/
-
-      let cpopup = document.getElementById('cpopup');
-      let cpopupNow = 0;
-      document.querySelectorAll('.hastxt').forEach((element) => {
-        addEventListener('click', (event) => {
-          element.addEventListener('click', (event) => {
-            if(cpopupNow == 0){
-              let name = event.target.getAttribute('data-name');
-              console.log(name+'が発動しましたぜぇい')
-              fetch(`assets/txts/${name}.txt`)
-              .then(response => response.text())
-              .then(data => {cpopup.innerText = data;})
-              .catch(error => console.error('Error:', error));
-              cpopup.style.display = 'block';
-              cpopupNow = 1;
-            }else{
-              cpopup.innerHTML = '';
-              cpopup.style.display = 'none';
-              cpopupNow = 0;
-            }
-          })
+        document.getElementById(type).appendChild(document.createElement('br'));
         })
-      })
+        //#endregion
+        //#region sideMenu
+        const menuToggle = document.getElementById('menuToggle');
+        const sideMenu = document.getElementById('sideMenu');
+        menuToggle.addEventListener('click', () => {
+            if(sideMenu.style.left === '0px'){
+                sideMenu.style.left = '-250px';
+            }else{
+                sideMenu.style.left = '0px';
+            }
+        });
 
-    //change-font
-    function changeFont(){
-      document.getElementById('all').style.fontFamily = document.getElementById('font-select').value;
-      // if(document.getElementById('font-select').value == 'Hangyaku'){
-      //   document.getElementById('all').style.fontSize = '23px';
-      // }else{
-      //   document.getElementById('all').style.fontSize = '17px';
-      // }
-      if(document.getElementById('font-select').value == 'wingdings'){
+
+        let cpopup = document.getElementById('cpopup');
+        let cpopupNow = 0;
+        document.querySelectorAll('.hastxt').forEach((element) => {
+            addEventListener('click', (event) => {
+                element.addEventListener('click', (event) => {
+                    if(cpopupNow == 0){
+                        let name = event.target.getAttribute('data-name');
+                        console.log(name+'が発動しましたぜぇい')
+                        fetch(`assets/txts/${name}.txt`)
+                        .then(response => response.text())
+                        .then(data => {cpopup.innerText = data;})
+                        .catch(error => console.error('Error:', error));
+                        cpopup.style.display = 'block';
+                        cpopupNow = 1;
+                    }else{
+                        cpopup.innerHTML = '';
+                        cpopup.style.display = 'none';
+                        cpopupNow = 0;
+                    }
+                })
+            })
+        })
+
+        //change-font
+        function changeFont(){
+        document.getElementById('body').style.fontFamily = document.getElementById('font-select').value;
+        // if(document.getElementById('font-select').value == 'Hangyaku'){
+        //     document.getElementById('body').style.fontSize = '23px';
+        // }else{
+        //     document.getElementById('body').style.fontSize = '17px';
+        // }
+        if(document.getElementById('font-select').value == 'wingdings'){
         document.getElementById('wdtextarea').style.fontFamily = 'wingdings, kaimetsu';
-        
-      }
-    }
 
-    //#endregion
-    //#region wingdings特殊機構のお話
-    let wdnow = 0;
-    document.getElementById('wdcheck').addEventListener('click', () => {
-      if(wdnow == 0){
+        }
+        }
+
+        //toggle
+        document.querySelectorAll('.toggles').forEach((element) => {
+            element.addEventListener('change', (event) => {
+                console.log(event.target.getAttribute('data-name'))
+                if(event.target.checked){
+                    document.getElementById(event.target.getAttribute('data-name')).style.display = 'block';
+                }else{
+                    document.getElementById(event.target.getAttribute('data-name')).style.display = 'none';
+                }
+            })
+        })
+
+        //#endregion
+        //#region wingdings特殊機構のお話
+        let wdnow = 0;
+        document.getElementById('wdcheck').addEventListener('click', () => {
+        if(wdnow == 0){
         wdnow = 1;
         document.querySelectorAll('.wd').forEach(element => {
-          element.style.display = 'inline';
+        element.style.display = 'inline';
         })
-      }else{
+        }else{
         wdnow = 0;
         document.querySelectorAll('.wd').forEach(element => {
-          element.style.display = 'none';
+        element.style.display = 'none';
         })
-      }
-    })
-    document.getElementById('wdonoff').addEventListener('change', () => {
-      if(document.getElementById('wdonoff').checked){
-        document.getElementById('wdtextarea').style.fontFamily = 'wingdings';
-      }else{
-        document.getElementById('wdtextarea').style.fontFamily = 'comicsans';
-      }
-    })
-    //#endregion
-  </script>
+        }
+        })
+        //#endregion
+        //#region iframeのお話
+        let NowLinkframe = 1;
+        function LinkframeGo(){
+            document.getElementById(`Linkframe${NowLinkframe}`).setAttribute('data-src', document.getElementById("LinkInput").value);
+            document.getElementById(`Linkframe${NowLinkframe}`).src = document.getElementById("LinkInput").value;
+            NicoNicoText('うぇいとふぉあな〜う'); //好きな言葉ランキング上位"wait for now"
+        }
+        document.getElementById('LinkSelect').addEventListener('change', event    =>{
+            let Link = `Linkframe${event.target.value}`;
+            document.getElementById('Linkframe1').style.display = 'none';
+            document.getElementById('Linkframe2').style.display = 'none';
+            document.getElementById('Linkframe3').style.display = 'none';
+            document.getElementById('Linkframe4').style.display = 'none';
+            document.getElementById(Link).style.display = 'block';
+            document.getElementById('LinkInput').value = document.getElementById(`Linkframe${event.target.value}`).getAttribute('data-src');
+        })
+        //#endregion
+        //#region memos-保存するよ
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.m-textarea').forEach(element => {
+                element.value = localStorage.getItem(element.getAttribute('data-name')) || '';
+
+                element.addEventListener('change', () => {
+                    console.log('変わったね');
+                    localStorage.setItem(element.getAttribute('data-name'), element.value);
+                });
+            });
+        });
+        //#endregion
+
+
+        
+    </script>
 </body>
 </html>
