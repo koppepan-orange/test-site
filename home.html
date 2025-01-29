@@ -322,99 +322,106 @@
         //#region リンクたちの動き
         const Links = {
         'memo':{
-        'memos': {
-        id: 'memos',
-        name: 'memo-site',
-        href: 'https://koppepan-orange.github.io/test-site/memo.html',
-        iframable:1,
-        description: 'メモができるサイト。まじで有能<br>You know?<br>あ、うざい？これ'
-        },
-        'browserMemo': {
-        id: 'browserMemo',
-        name: 'ブラウザメモ帳',
-        href: 'http://www.drpartners.jp/tools/browser-memocho.html',
-        iframable: 1,
-        description: 'メモができるサイト。保有量が大きい'
-        },
-        'memoWeb': {
-        id: 'memoWeb',
-        name: 'メモweb',
-        href: 'https://memo.onl.jp/?koppepan23',
-        iframable:0,
-        description: '昔使ってたところ。<br>今はmemo.html使ってるけどね'
-        },
-        'fileWeb': {
-        id: 'fileWeb',
-        name: 'ファイルweb',
-        href: 'https://file.onl.jp/?koppepan23',
-        iframable:0,
-        description: 'これは有用ちゃん<br>ファイルを送受信できる<br>そのうち作りたい.....'
-        },
-        'writebox': {
-        id: 'writebox',
-        name: 'writebox',
-        href: 'https://write-box.appspot.com/',
-        iframable:0,
-        description: '簡単にhtmlのテストができるサイト<br>けどjsとcssは無効'
-        },
+            'memos': {
+            id: 'memos',
+            name: 'memo-site',
+            href: 'https://koppepan-orange.github.io/test-site/memo.html',
+            iframable:1,
+            description: 'メモができるサイト。まじで有能<br>ずっと開いてたほうが楽で良き<br>私はゲーム制作の案メモにしてます'
+            },
+            'files':{
+            id: 'files',
+            name: 'file-site',
+            href: 'https://forest-inlet.github.io/tools/fileTransfer?forestinlet ',
+            iframable:1,
+            description: 'ファイルを送受信できるサイトです！！<br>まじですごいと思う<br>あ友達作です'
+            },
+            'browserMemo': {
+            id: 'browserMemo',
+            name: 'ブラウザメモ帳',
+            href: 'http://www.drpartners.jp/tools/browser-memocho.html',
+            iframable: 1,
+            description: 'メモができるサイト。保有量が大きい'
+            },
+            'memoWeb': {
+            id: 'memoWeb',
+            name: 'メモweb',
+            href: 'https://memo.onl.jp/?koppepan23',
+            iframable:0,
+            description: '昔使ってたところ。<br>今はmemo.html使ってるけどね'
+            },
+            'fileWeb': {
+            id: 'fileWeb',
+            name: 'ファイルweb',
+            href: 'https://file.onl.jp/?koppepan23',
+            iframable:0,
+            description: 'これは有用ちゃん<br>ファイルを送受信できる<br>そのうち作りたい.....'
+            },
+            'writebox': {
+            id: 'writebox',
+            name: 'writebox',
+            href: 'https://write-box.appspot.com/',
+            iframable:0,
+            description: '簡単にhtmlのテストができるサイト<br>けどjsとcssは無効'
+            },
         },
         'tool':{
-        'tools': {
-        id: 'tools',
-        name: 'tool-site',
-        href: 'https://koppepan-orange.github.io/test-site/tools.html',
-        iframable:1,
-        description: 'んー..あんまり実用的じゃない子<br>遊び目的。ほぼ<br>けど偏差値とかも測れるよ'
-        },
-        'books': {
-        id: 'books',
-        name: 'book-site',
-        href: 'https://koppepan-orange.github.io/test-site/books.html',
-        iframable:1,
-        description: '本が読める子<br>作者は匿名なのでhiddenにでも送ってくれたら載せますよ'
-        },
-        'hidden': {
-        id: 'hidden',
-        name: 'hidden-site',
-        href: 'https://koppepan-orange.github.io/test-site/hidden.html',
-        iframable:1,
-        description: '匿名で投稿できるサイト！！！！<br>管理者しか見れないんで<br>定期的にEventは確認して欲しいね'
-        },
-        'dropbox': {
-        id: 'dropbox',
-        name: 'dropbox',
-        href: 'https://www.dropbox.com/home',
-        iframable:0,
-        description: '単純に優秀な子<br>ファイルWebよりも持続性が高い<br>ログイン必須'
-        },
-        'anagram': {
-        id: 'anagram',
-        name: 'アナグラム生成機',
-        href: 'https://anagram.httqs.com/',
-        iframable:1,
-        description: 'アナグラムを生成してくれる子<br>武器とかの名前はこいつに頼ってもいいかも'
-        },
-        'roulette': {
-        id: 'roulette',
-        name: 'ルーレット等生成機',
-        href: 'https://jp.piliapp.com/random/wheel/',
-        iframable:1,
-        description: '名の通り感。<br>他にも乱数とかもいける<br>暇つぶしできるかもね'
-        },
-        'colorSite': {
-        id: 'colorSite',
-        name: 'カラーサイト',
-        href: 'https://www.color-site.com/',
-        iframable:1,
-        description: '色の種類を調べれるサイト<br>まじで優秀<br>rgbにも対応'
-        },
-        'mediaEdit': {
-        id: 'mediaEdit',
-        name: 'mp3、mp4編集サイト',
-        href: 'https://123apps.com/ja/',
-        iframable:1,
-        description: '動画→音ができるサイト<br>いつも愛用させていただいております<br>かんしゃ〜'
-        },
+            'tools': {
+            id: 'tools',
+            name: 'tool-site',
+            href: 'https://koppepan-orange.github.io/test-site/tools.html',
+            iframable:1,
+            description: 'んー..あんまり実用的じゃない子<br>遊び目的。ほぼ<br>けど偏差値とかも測れるよ'
+            },
+            'books': {
+            id: 'books',
+            name: 'book-site',
+            href: 'https://koppepan-orange.github.io/test-site/books.html',
+            iframable:1,
+            description: '本が読める子<br>作者は匿名なのでhiddenにでも送ってくれたら載せますよ'
+            },
+            'hidden': {
+            id: 'hidden',
+            name: 'hidden-site',
+            href: 'https://koppepan-orange.github.io/test-site/hidden.html',
+            iframable:1,
+            description: '匿名で投稿できるサイト！！！！<br>管理者しか見れないんで<br>定期的にEventは確認して欲しいね'
+            },
+            'dropbox': {
+            id: 'dropbox',
+            name: 'dropbox',
+            href: 'https://www.dropbox.com/home',
+            iframable:0,
+            description: '単純に優秀な子<br>ファイルWebよりも持続性が高い<br>ログイン必須'
+            },
+            'anagram': {
+            id: 'anagram',
+            name: 'アナグラム生成機',
+            href: 'https://anagram.httqs.com/',
+            iframable:1,
+            description: 'アナグラムを生成してくれる子<br>武器とかの名前はこいつに頼ってもいいかも'
+            },
+            'roulette': {
+            id: 'roulette',
+            name: 'ルーレット等生成機',
+            href: 'https://jp.piliapp.com/random/wheel/',
+            iframable:1,
+            description: '名の通り感。<br>他にも乱数とかもいける<br>暇つぶしできるかもね'
+            },
+            'colorSite': {
+            id: 'colorSite',
+            name: 'カラーサイト',
+            href: 'https://www.color-site.com/',
+            iframable:1,
+            description: '色の種類を調べれるサイト<br>まじで優秀<br>rgbにも対応'
+            },
+            'mediaEdit': {
+            id: 'mediaEdit',
+            name: 'mp3、mp4編集サイト',
+            href: 'https://123apps.com/ja/',
+            iframable:1,
+            description: '動画→音ができるサイト<br>いつも愛用させていただいております<br>かんしゃ〜'
+            },
         },
         'make':{
         'scratch': {
