@@ -405,6 +405,7 @@
         }
 
         function autoLogin(){
+            setLocalStorage("banned", 0);//消して
             username = getLocalStorage("username"); // ログイン時
             AnonymousName = getLocalStorage("AnonymousName")??AnonymousName;
             realusername = username;
@@ -413,14 +414,14 @@
                 let uRef = database.ref(`users/${username}/banned`)
                 uRef.on('value', function(snapshot) {
                     uRef = snapshot.val();
-                    if(uRef == 0 && getLocalStorage("banned") != 1){
+                    if(!uRef && getLocalStorage("banned") !== 1){
                         usersRef = database.ref('users/' + username);
                         console.log("自動ログインしました");
                         login();
                     }else{
                         //console.log("あなたはbanされています!!"+uRef);
                         console.log('ログインしてください')
-                        setLocalStorage("banned", 1);
+                        setLocalStorage("banned", 0);//1に
                     }
                 });
                 
@@ -453,7 +454,7 @@
                                 if(uRef == 1){
                                     NicoNicoText('パスワードが間違っています。');
                                     //window.location.reload();
-                                    setLocalStorage("banned", 1);
+                                    setLocalStorage("banned", 0);//1に
                                     document.getElementById('username').value = '';
                                     document.getElementById('password').value = '';
                                 }else{
@@ -474,12 +475,12 @@
                             banned: 0,
                         });
                         setLocalStorage("username", username); // ログイン成功時
-                        NicoNicoText('"chat"へ ようこそ')
+                        NicoNicoText('"chat"へようこそ')
                         login();
                     }else{
                         //NicoNicoText('エラーが発生しました');
                         window.location.reload();
-                        setLocalStorage("banned", 1);
+                        setLocalStorage("banned", 0);//1に
                         document.getElementById('username').value = '';
                         document.getElementById('password').value = '';
                     }

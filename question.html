@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <title>Box-in-Season</title><!-- 直訳で"旬な箱" -->
+    <style>
+        @font-face {font-family: comicsans;src: url(assets/comicsans.ttf);}
+        @font-face {font-family: wingdings;src: url(assets/wingdings.ttf);}
+        @font-face {font-family: genjuu;src: url(assets/genjuu.ttf);}
+        /*こっから雑に扱ってもいい子*/
+        #movabledescription {
+        display: none;
+        position: fixed;  /* 画面上の絶対位置に固定 */
+        pointer-events: none;  /* マウスイベントを通過させる */
+        background-color: rgba(90, 90, 90, 0.9);
+        color: rgb(255, 255, 255);
+        padding: 5px 10px;
+        border-radius: 5px;
+        z-index: 1000;  /* 他の要素の上に表示 */
+        }
+
+        /*こっから全体のやつ*/
+        #body{
+            font-family:comicsans;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            background-color: #f0f8ff;
+        }
+
+        /* こっからログインのやつ */
+        #login{
+            width: 500px;
+            max-width: 100%;
+            margin: 50px auto;
+            background-color: #def0ff;
+            border: 1px solid #b5dcff;
+            border-radius: 5px;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            display: flex;
+        }
+        #login-form {
+            padding: 20px;
+        }
+        #login-form input {
+            width: calc(100% - 20px);
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #c8c8c8;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #login-form button:hover {
+            background-color: #8b8b8b;
+        }
+
+        /*こっから上のUI(upperUI)*/
+        #upperUI{
+            display: none;
+            border-bottom: 3px solid #cfe9ff;
+            background-color: #def0ff;
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 7vh;
+            z-index: 997;
+        }
+        #menuToggle{
+            display: block;
+            width:25px;
+            height:25px;
+            position: absolute;
+            right:25px;
+            top:5px;
+            font-size:35px;
+            cursor: pointer;
+            z-index: 998;
+        }
+
+        /*こっからsideMenu*/
+        #sideMenu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            color: #333344;
+            background-color: #def0ff!important;
+            border-right: 3px solid #cfe9ff;
+            transition: left 0.3s;
+            z-index:999;
+        };
+        hr{
+            background-color: #cfe9ff;
+            border: 2px solid #cfe9ff;
+        }
+        #sideMenu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        };
+        #sideMenu ul li {
+            padding: 3px;
+        };
+        #sideMenu ul li a {
+            color: #000000;
+            text-decoration: none;
+        };
+
+        /*こっからmains*/
+        #answer, #question, #search, #profile{
+            display: none;
+            width:100%;
+            height: 90vh;
+            background-color: #f0f8ff;
+        }
+
+        /*こっからtab*/
+        #tabs{
+            font-family: wingdings;
+            font-size: 35px;
+            display: none;
+            justify-content: space-between;
+            padding: 10px;
+            padding-left: 40px;
+            padding-right: 40px;
+            background-color: #def0ff;
+            position: fixed;
+            left:0;right:0;
+            bottom:10px;
+            z-index: 998;
+        }
+        .tab{
+            cursor: pointer;
+        }
+
+        /*こっからquestion*/
+        .question{
+            border: 1px solid #4473ad;
+            background-color: #b5dcff;
+            width:85%;
+            max-height: 80px;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            padding: 10px;
+            padding-bottom: 20px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .q-timestamp, .a-timestamp{
+            position: absolute;
+            left: 2px;
+            bottom: 2px;
+        }
+        .q-answer,.a-username{
+            position: absolute;
+            right: 2px;
+            bottom: 2px;
+        }
+
+        /*こっからwq(write-question)*/
+        #letswritequestion{
+            width: 95%;
+            height: 40px;
+            background-color: #cfe9ff;
+            border: 3px solid #b5dcff;
+            padding: 10px;
+            font-size: 30px;
+            margin: 0 auto;
+            text-align: center;
+            cursor: pointer;
+        }
+        #wq-zone{
+            display: block;
+            position: fixed;
+            width: 80%;
+            height: 100vh;
+            right: -80%;
+            top:0;
+            z-index: 999;
+            
+            background-color: #def0ff;
+            border-left: 3px solid #cfe9ff;
+            color:#333444;
+            transition: right 0.3s;
+        }
+        #wq-zone-header{
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        #wq-zone-body{
+            padding: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        #wq-text{
+            border: 3px solid #cfe9ff;
+            height: 75vh;
+        }
+
+    </style>
+</head>
+<body id="body">
+    <div id="login">
+        <div id="login-form">
+            <input type="text" id="username" placeholder="username">
+            <input type="password" id="password" placeholder="password">
+            <button id="login-button">Login</button>
+        </div>
+    </div>
+
+    <div id="upperUI">
+        <div id="menuToggle">☰</div>
+    </div>
+    <div id="mains">
+        <div id="answer" class="main">1</div>
+        <div id="question" class="main">
+            <div id="letswritequestion">質問を送信</div>
+            <div id="wq-zone">
+                <div id="wq-zone-header">
+                    <div id="wq-cansel">キャンセル</div>
+                    <div id="wq-send">送信</div>
+                </div>
+                <div id="wq-zone-body">
+                    <div id="wq-sender">
+                        <div id="wq-sender-name"></div>
+                        <div id="wq-sender-search">
+                            <div id="wq-sender-search-area" contenteditable="true"></div>
+                            <div id="wq-sender-search-result"></div>
+                        </div>
+                    </div>
+                    <div id="wq-text" contenteditable="true"></div>
+                </div>
+            </div>
+        </div>
+        <div id="search" class="main">ｻｧﾝ</div>
+        <div id="profile" class="main">4</div>
+    </div>
+    <div id="tabs">
+        <div id="answer-tab" class="tab">/</div>
+        <div id="question-tab" class="tab">!</div>
+        <div id="search-tab" class="tab">:</div>
+        <div id="profile-tab" class="tab">+</div>
+    </div>
+
+    <nav id="sideMenu">
+        <hr>
+        <ul>
+            <li><a href="home.html">to home</a></li>
+            <li><a href="memo.html">to memo</a></li>
+            <li><a href="https://koppepan-orange.github.io/game-site/welcome.html">to game</a></li>
+            <li><a href="hidden.html">to hidden</a></li>
+        </ul>
+        <hr>
+    </nav>
+    <div id="movabledescription"></div>
+    <script src="library.js"></script>
+    <script>
+        //#region documentの子たち
+        const Mains = document.getElementById('mains');
+        const Answer = document.getElementById('answer');
+        const Question = document.getElementById('question');
+        const Search = document.getElementById('search');
+        const Profile = document.getElementById('profile');
+
+        const Tabs = document.getElementById('tabs');
+        const answerTab = document.getElementById('answer-tab');
+        const questionTab = document.getElementById('question-tab');
+        const searchTab = document.getElementById('search-tab');
+        const profileTab = document.getElementById('profile-tab');
+
+        const upperUI = document.getElementById('upperUI');
+        const menuToggle = document.getElementById('menuToggle');
+        const sideMenu = document.getElementById('sideMenu');
+        //#endregion
+        //#region 色々雑に扱ってもいい子達
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function copy(obj) {
+            if (obj === null || typeof obj !== 'object') return obj;
+            if (Array.isArray(obj)) return obj.map(copy);
+            const result = {};
+            for (const key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    result[key] = copy(obj[key]);
+                }
+            }
+            return result;
+        }
+
+        function arraySelect(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function arrayShuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function setLocalStorage(name, value) {
+            localStorage.setItem(name, value || ""); // 値が空なら空文字を入れる
+        }
+
+        function getLocalStorage(name){
+            return localStorage.getItem(name); // 値をそのまま返す、ない場合はnull
+        }
+
+
+        document.addEventListener('mousemove', (e) => {
+            const HasDescription = document.getElementById('movabledescription');
+            if (HasDescription) {
+                HasDescription.style.left = `${e.clientX + 10}px`;
+                HasDescription.style.top = `${e.clientY + 10}px`;
+            }
+        });
+
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.classList.contains('hasd')) {
+                const movabledescription = e.target.dataset.description;
+                const descElement = document.getElementById('movabledescription');
+                if (descElement) {
+                    descElement.innerHTML = movabledescription;
+                    descElement.style.display = 'block';
+                }
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.classList.contains('hasd')) {
+                const descElement = document.getElementById('movabledescription');
+                if (descElement) {
+                    descElement.innerHTML = '';
+                    descElement.style.display = 'none';
+                }
+            }
+        });
+
+        async function NicoNicoText(mes) {
+            const newDiv = document.createElement('div');
+            newDiv.textContent = mes;
+            newDiv.style = `
+                position: absolute;
+                top: ${Math.random() * 100}vh;
+                right: 0;
+                background-color: rgba(228, 249, 255, 0.563);
+                color: #000000;
+                font-size: 20px;
+            `;
+            document.body.appendChild(newDiv);
+            let speed = 10;
+            for (let i = 0; window.innerWidth > i * speed; i++) {
+                let val = i * speed;
+                newDiv.style.right = `${val}px`;
+                await delay(50);
+            }
+            newDiv.remove();
+        }
+
+        menuToggle.addEventListener('click', () => {
+            if(sideMenu.style.left === '0px'){
+                sideMenu.style.left = '-250px';
+            }else{
+                sideMenu.style.left = '0px';
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            const HasDescription = document.getElementById('movabledescription');
+            HasDescription.style.left = `${e.clientX + 10}px`;
+            HasDescription.style.top = `${e.clientY + 10}px`;
+        });
+
+        document.addEventListener('mouseover', (e) => {
+            if(e.target.classList.contains('hasd')){
+                const description = e.target.dataset.description;
+                document.getElementById('movabledescription').innerHTML = description;
+                document.getElementById('movabledescription').style.display = 'block';
+            }
+        });
+        document.addEventListener('mouseout', (e) => {
+            if(e.target.classList.contains('hasd')){
+                document.getElementById('movabledescription').innerHTML = '';
+                document.getElementById('movabledescription').style.display = 'none';
+            }
+        });
+
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}/${month}/${day} ${hours}:${minutes}`;
+        }
+        function formatTime(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const time = `${year}${month}${day}${hours}${minutes}`;
+            return +time;
+        }
+        function getTimestamp(time){
+            let from = formatTime(new Date(time));
+            let now = formatTime(new Date());
+
+            let diffMs = now - from;
+            let diffMin = Math.floor(diffMs / (1000 * 60));
+            let diffHour = Math.floor(diffMs / (1000 * 60 * 60));
+            let diffDay = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            let diffMonths = (now.getFullYear() - from.getFullYear()) * 12 + now.getMonth() - from.getMonth(); // 月差分計算
+            let diffYears = now.getFullYear() - pastDate.getFullYear();
+
+            if(diffMin < 60){
+                return `${diffMin}分前`;
+            }else if(diffHours < 24){
+                return `${diffHour}時間前`;
+            }else if(diffDays < 30){ // 30日未満なら「日」
+                return `${diffDay}日前`;
+            }else if(diffMonths < 12){ // 12ヶ月未満なら「月」
+                return `${diffMonths}ヶ月前`;
+            }else{ // それ以上なら「年」
+                return `${diffYears}年前`;
+            }
+        }
+        //#endregion
+        //#region tab-select
+        let datas = {
+            'answer':{
+                'open':'.',// /
+                'close':'-'// ,
+            },
+            'question':{
+                'open':'?',
+                'close':'!'
+            },
+            'search':{
+                'open':':',
+                'close':':'
+            },
+            'profile':{
+                'open':'+',
+                'close':'+'
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.tab').forEach(tab => {
+                let id = tab.id;
+                tab.dataset.open = datas[id.substring(0, id.length - 4)].open;
+                tab.dataset.close = datas[id.substring(0, id.length - 4)].close;
+            })
+            autoLogin();
+        })
+        
+        document.querySelectorAll('.tab').forEach(ele => {
+            ele.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(tab => {
+                    let id = tab.id.substring(0, tab.id.length - 4);
+                    document.getElementById(id).style.display = 'none';
+                    document.getElementById(`${id}-tab`).textContent = tab.dataset.close;
+                })
+                document.getElementById(ele.id.substring(0,ele.id.length-4)).style.display = 'block';
+                ele.textContent = ele.dataset.open;
+            })
+        })
+        //#endregion
+        //#region firebase-設定とかmoromoro
+        const firebaseConfig = {
+            apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
+            authDomain: "koppepan-orange.firebaseapp.com",
+            databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
+            projectId: "koppepan-orange",
+            storageBucket: "koppepan-orange.appspot.com",
+            messagingSenderId: "730150198097",
+            appId: "1:730150198097:web:076a074a3d406053155170",
+            measurementId: "G-MYKJWD203Z"
+        };
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+
+        let username = 'no name';
+        let myquestionRef = database.ref(`users/${username}/BoxinSeason/questions`);
+        let myanswerRef = database.ref(`users/${username}/BoxinSeason/answers`);
+        let myRef = database.ref(`users/${username}/BoxinSeason`);
+        let usersRef = database.ref(`users/${username}`);
+
+        //#region ログインの動き
+        function login(){
+            document.getElementById('login').style.display = 'none';
+            upperUI.style.display = 'block';
+            Tabs.style.display = 'flex';
+            answerTab.click();
+            nowtab = 'Question';
+
+            myquestionRef.once('value', function(snapshot){
+                if(snapshot.exists()){
+                    let data = snapshot.val();
+                    let keys = Object.keys(data);
+                    keys.forEach(key => {
+                        makeQuestion(data[key],key);
+                        Question.appendChild(questionElement);
+                    })
+                }
+            })
+
+            myanswerRef.once('value', function(snapshot){
+                if(snapshot.exists()){
+                    let data = snapshot.val();
+                    let keys = Object.keys(data);
+                    keys.forEach(key => {
+                        makeAnswer(data[key],key);
+                        Answer.appendChild(answerElement);
+                    })
+                }
+            })
+        }
+
+        document.getElementById('login-button').addEventListener('click', () => {
+            let username = document.getElementById('username').value;
+            let password = document.getElementById('password').value;
+
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+
+            let kariusersRef = database.ref(`users/${username}`);
+            kariusersRef.once('value', function(snapshot){
+                if(snapshot.exists()){
+                    if(snapshot.val().password == password){
+                        setLocalStorage("username", username)
+                        login();   
+                    }
+                }else{
+                    let usersRef = database.ref(`users/${username}`);
+                    usersRef.update({
+                        password:password,
+                        banned: 0,
+                        blocked: [],
+                    })
+                    NicoNicoText('ようこそ');
+                    setLocalStorage("username", username)
+                    login();
+                }
+            })
+        })
+
+        function autoLogin(){
+            let username = getLocalStorage("username");
+            if(username){
+                console.log("自動ログインしました");
+                usersRef = database.ref('users/'+username);
+                login();
+            }else{
+                console.log("ログインしてください");
+            }
+        }
+        //#endregion
+        //#endregion
+        //#region question
+        myquestionRef.on('child_added', function(snapshot){
+            if(snapshot.exists()){
+                let data = snapshot.val();
+                let key = snapshot.key;
+                questionElement = makeQuestion(data,key);
+                Question.appendChild(questionElement);
+            }
+        })
+        function makeQuestion(data,key){
+            let question = data;
+            let questionElement = document.createElement('div');
+            questionElement.className = 'question';
+            questionElement.setAttribute('data-from', data.from); //ブロックとかする用。でも有識者の場合匿名が剥がれる
+            questionElement.setAttribute('data-time', data.time);
+            questionElement.setAttribute('data-key', key);
+
+            let timestamp = getTimestamp(data.time);
+            let timestampElement = document.createElement('div');
+            timestampElement.className = 'q-timestamp';
+            timestampElement.textContent = timestamp;
+            questionElement.appendChild(timestampElement);
+            
+            let textElement = document.createElement('div');
+            textElement.className = 'q-text';
+            textElement.innerText = data.text
+            questionElement.appendChild(textElement);
+
+            let buttonElement = document.createElement('button');
+            buttonElement.className = 'q-answer';
+            buttonElement.textContent = 'answer this';
+            questionElement.appendChild(buttonElement);
+
+            return questionElement
+        }
+
+        //#endregion
+        //#region answer
+        myanswerRef.on('child_added', function(snapshot){
+            if(snapshot.exists()){
+                let data = snapshot.val();
+                let key = snapshot.key;
+                let answer = data;
+                let answerElement = makeAnswer(answer,key);
+                Answer.appendChild(answerElement);
+            }
+        })
+        function makeAnswer(data,key){
+            let answer = data;
+            let answerElement = document.createElement('div');
+            answerElement.className = 'answer';
+            answerElement.setAttribute('data-from', data.from); //ブロックとかする用。でも有識者の場合匿名が剥がれる
+            answerElement.setAttribute('data-time', data.time);
+            answerElement.setAttribute('data-key', key);
+
+            let usernameElement = document.createElement('div');
+            usernameElement.className = 'a-username';
+            usernameElement.textContent = data.from;
+            answerElement.appendChild(usernameElement);
+
+            let timestamp = getTimestamp(data.time);
+            let timestampElement = document.createElement('div');
+            timestampElement.className = 'a-timestamp';
+            timestampElement.textContent = timestamp;
+            answerElement.appendChild(timestampElement);
+            
+            let textElement = document.createElement('div');
+            textElement.className = 'a-text';
+            textElement.innerText = data.text
+            answerElement.appendChild(textElement);
+
+            return answerElement
+        }
+        //#endregion
+        //#region write-question
+        document.getElementById('letswritequestion').addEventListener('click', () => {
+            document.getElementById('wq-text').value = '';
+            document.getElementById('wq-zone').style.right = '0';
+
+        })
+        document.getElementById('wq-cansel').addEventListener('click', () => {
+            document.getElementById('wq-text').value = '';
+            document.getElementById('wq-zone').style.right = '-80%';
+        })
+        document.getElementById('wq-send').addEventListener('click', () => {
+            let text = document.getElementById('wq-text').value;
+            let time = Date.now();
+            let question = {
+                from: username,
+                to: sender,
+                time: time,
+                text: text.trim(),
+            }
+            let senderRef = database.ref(`users/${sender}/BoxinSeason/questions`);
+            senderRef.push(question);
+            document.getElementById('wq-zone').style.right = '-80%';
+        })
+
+        document.getElementById('wq-sender-search-area').addEventListener('submit', (event) => {
+            event.preventDefault(); // フォームのリロードを防ぐ
+
+            let sendersearch = document.getElementById('wq-sender-search').value.trim().toLowerCase();
+            if (!sendersearch) return;
+
+            let sendersRef = database.ref('users');
+
+            sendersRef.orderByChild('username').startAt(sendersearch).endAt(sendersearch + "\uf8ff").once('value', (snapshot) => {
+                let results = snapshot.val();
+                let resultList = document.getElementById('wq-search-results');
+                resultList.innerHTML = ''; // 検索結果をクリア
+
+                if (results) {
+                    Object.keys(results).forEach(userId => {
+                        let user = results[userId];
+                        let listItem = document.createElement('li');
+                        listItem.innerText = user.username;
+                        listItem.onclick = () => {
+                            sender = user.username;
+                            document.getElementById('wq-sender-search-area').value = '';
+                            document.getElementById('wq-sender-search-result').style.display = 'none';
+                            document.getElementById('wq-sender-name').textContent = sender
+
+                            selectUser(user.username);
+                        };
+                        resultList.appendChild(listItem);
+                    });
+                } else {
+                    resultList.innerHTML = '<li>該当なし</li>';
+                }
+            });
+        });
+
+        //#endregion
+</script>
+</body>
+</html>
