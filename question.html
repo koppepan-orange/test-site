@@ -178,7 +178,7 @@
             background-color: #cfe9ff;
             border: 3px solid #b5dcff;
             padding: 10px;
-            font-size: 30px;
+            font-size: 23px;
             margin: 0 auto;
             text-align: center;
             cursor: pointer;
@@ -209,7 +209,74 @@
             padding-left: 20px;
             padding-right: 20px;
         }
+        #wq-sender-name{
+            display: none;
+            border: 2px solid #cfe9ff;
+            height: 23px;
+            position: relative;
+        }
+        #wq-sender-name-area{
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            
+        }
+        #wq-sender-name-cansel{
+            position: absolute;
+            right: 5px;
+            top: 1px;
+            bottom: 1px;
+            cursor: pointer;
+        }
+        #wq-sender-search-area, #wq-sender-search-result{
+            border: 2px solid #cfe9ff;
+
+        }
         #wq-text{
+            border: 3px solid #cfe9ff;
+            height: 75vh;
+        }
+
+
+        #wa-zone{
+            display: block;
+            position: fixed;
+            width: 80%;
+            height: 100vh;
+            right: -80%;
+            top:0;
+            z-index: 999;
+            
+            background-color: #def0ff;
+            border-left: 3px solid #cfe9ff;
+            color:#333444;
+            transition: right 0.3s;
+        }
+        #wa-zone-header{
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        #wa-zone-body{
+            padding: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        #wa-sender-name{
+            display: none;
+            border: 2px solid #cfe9ff;
+            height: 23px;
+            position: relative;
+        }
+        #wa-sender-name-area{
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            
+        }
+        #wa-text{
             border: 3px solid #cfe9ff;
             height: 75vh;
         }
@@ -229,7 +296,9 @@
         <div id="menuToggle">☰</div>
     </div>
     <div id="mains">
-        <div id="answer" class="main">1</div>
+        <div id="answer" class="main">
+            <div id="questions"></div>
+        </div>
         <div id="question" class="main">
             <div id="letswritequestion">質問を送信</div>
             <div id="wq-zone">
@@ -239,7 +308,10 @@
                 </div>
                 <div id="wq-zone-body">
                     <div id="wq-sender">
-                        <div id="wq-sender-name"></div>
+                        <div id="wq-sender-name">
+                            <div id="wq-sender-name-area"></div>
+                            <div id="wq-sender-name-cansel">x</div>
+                        </div>
                         <div id="wq-sender-search">
                             <div id="wq-sender-search-area" contenteditable="true"></div>
                             <div id="wq-sender-search-result"></div>
@@ -248,6 +320,7 @@
                     <div id="wq-text" contenteditable="true"></div>
                 </div>
             </div>
+            <div id="answers"></div>
         </div>
         <div id="search" class="main">ｻｧﾝ</div>
         <div id="profile" class="main">4</div>
@@ -274,8 +347,8 @@
     <script>
         //#region documentの子たち
         const Mains = document.getElementById('mains');
-        const Answer = document.getElementById('answer');
-        const Question = document.getElementById('question');
+        const Answer = document.getElementById('answers');
+        const Question = document.getElementById('questions');
         const Search = document.getElementById('search');
         const Profile = document.getElementById('profile');
 
@@ -422,16 +495,29 @@
             const time = `${year}${month}${day}${hours}${minutes}`;
             return +time;
         }
+        function motonimodore(now){
+            const year = Math.floor(now / 10000000000); // 2025
+            const month = Math.floor((now % 10000000000) / 100000000) - 1; // 1 (0から始まるため、2月は1)
+            const day = Math.floor((now % 100000000) / 1000000); // 5
+            const hours = Math.floor((now % 10000) / 100); // 7
+            const minutes = now % 100; // 33
+
+            // Dateオブジェクトを作成
+            return new Date(year, month, day, hours, minutes);
+        }
         function getTimestamp(time){
             let from = formatTime(new Date(time));
             let now = formatTime(new Date());
 
-            let diffMs = now - from;
+            let asfrom = motonimodore(from);
+            let asnow = motonimodore(now);
+
+            let diffMs = asnow - asfrom;
             let diffMin = Math.floor(diffMs / (1000 * 60));
             let diffHour = Math.floor(diffMs / (1000 * 60 * 60));
             let diffDay = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            let diffMonths = (now.getFullYear() - from.getFullYear()) * 12 + now.getMonth() - from.getMonth(); // 月差分計算
-            let diffYears = now.getFullYear() - pastDate.getFullYear();
+            let diffMonths = (asnow.getFullYear() - asfrom.getFullYear()) * 12 + asnow.getMonth() - asfrom.getMonth(); // 月差分計算
+            let diffYears = asnow.getFullYear() - asfrom.getFullYear();
 
             if(diffMin < 60){
                 return `${diffMin}分前`;
@@ -519,7 +605,7 @@
                     let data = snapshot.val();
                     let keys = Object.keys(data);
                     keys.forEach(key => {
-                        makeQuestion(data[key],key);
+                        let questionElement = makeQuestion(data[key],key);
                         Question.appendChild(questionElement);
                     })
                 }
@@ -530,7 +616,7 @@
                     let data = snapshot.val();
                     let keys = Object.keys(data);
                     keys.forEach(key => {
-                        makeAnswer(data[key],key);
+                        let answerElement = makeAnswer(data[key],key);
                         Answer.appendChild(answerElement);
                     })
                 }
@@ -566,10 +652,13 @@
         })
 
         function autoLogin(){
-            let username = getLocalStorage("username");
+            username = getLocalStorage("username");
             if(username){
                 console.log("自動ログインしました");
                 usersRef = database.ref('users/'+username);
+                myRef = database.ref(`users/${username}/BoxinSeason`);
+                myquestionRef = database.ref(`users/${username}/BoxinSeason/questions`);
+                myanswerRef = database.ref(`users/${username}/BoxinSeason/answers`);
                 login();
             }else{
                 console.log("ログインしてください");
@@ -582,7 +671,7 @@
             if(snapshot.exists()){
                 let data = snapshot.val();
                 let key = snapshot.key;
-                questionElement = makeQuestion(data,key);
+                let questionElement = makeQuestion(data,key);
                 Question.appendChild(questionElement);
             }
         })
@@ -656,37 +745,47 @@
             document.getElementById('wq-text').value = '';
             document.getElementById('wq-zone').style.right = '0';
 
+            document.getElementById('wq-sender-name').style.display = 'none';
+            document.getElementById('wq-sender-name-area').textContent = '';
+            document.getElementById('wq-sender-search-area').style.display = 'block';
+            document.getElementById('wq-sender-search-result').innerHTML = '';
+            document.getElementById('wq-sender-search-result').style.display = 'none';
+            //押された時にsytle通りにnonetobぉckyattoite
+
         })
         document.getElementById('wq-cansel').addEventListener('click', () => {
             document.getElementById('wq-text').value = '';
             document.getElementById('wq-zone').style.right = '-80%';
         })
         document.getElementById('wq-send').addEventListener('click', () => {
-            let text = document.getElementById('wq-text').value;
+            let text = document.getElementById('wq-text').innerText.trim();
+            if(!text){document.getElementById('wq-zone').style.right = '-80%';return;}
             let time = Date.now();
             let question = {
                 from: username,
                 to: sender,
                 time: time,
-                text: text.trim(),
+                text: text,
             }
             let senderRef = database.ref(`users/${sender}/BoxinSeason/questions`);
             senderRef.push(question);
             document.getElementById('wq-zone').style.right = '-80%';
         })
 
-        document.getElementById('wq-sender-search-area').addEventListener('submit', (event) => {
+        document.getElementById('wq-sender-search-area').addEventListener('keydown', (event) => {
+            if(event.key !== 'Enter')return;
             event.preventDefault(); // フォームのリロードを防ぐ
 
-            let sendersearch = document.getElementById('wq-sender-search').value.trim().toLowerCase();
+            let sendersearch = document.getElementById('wq-sender-search-area').innerText.trim().toLowerCase();
             if (!sendersearch) return;
 
             let sendersRef = database.ref('users');
 
             sendersRef.orderByChild('username').startAt(sendersearch).endAt(sendersearch + "\uf8ff").once('value', (snapshot) => {
                 let results = snapshot.val();
-                let resultList = document.getElementById('wq-search-results');
+                let resultList = document.getElementById('wq-sender-search-result');
                 resultList.innerHTML = ''; // 検索結果をクリア
+                resultList.style.display = 'block';
 
                 if (results) {
                     Object.keys(results).forEach(userId => {
@@ -695,11 +794,11 @@
                         listItem.innerText = user.username;
                         listItem.onclick = () => {
                             sender = user.username;
-                            document.getElementById('wq-sender-search-area').value = '';
+                            document.getElementById('wq-sender-search-area').innerText = '';
+                            document.getElementById('wq-sender-search-area').style.display = 'none';
                             document.getElementById('wq-sender-search-result').style.display = 'none';
-                            document.getElementById('wq-sender-name').textContent = sender
-
-                            selectUser(user.username);
+                            document.getElementById('wq-sender-name').style.display = 'block';
+                            document.getElementById('wq-sender-name-area').textContent = sender;
                         };
                         resultList.appendChild(listItem);
                     });
@@ -708,7 +807,49 @@
                 }
             });
         });
-
+        document.getElementById('wq-sender-name-cansel').addEventListener('click', () => {
+            sender = '';
+            document.getElementById('wq-sender-name-cansel').style.display = 'none';
+            document.getElementById('wq-sender-name-area').textContent = '';
+            document.getElementById('wq-sender-name').style.display = 'block';
+            document.getElementById('wq-sender-search-area').style.display = 'block';
+        })
+        //#endregion
+        //#region write-answer
+        document.querySelectorAll('.q-answer').forEach((element) => {
+            element.addEventListener('click', () => {
+                document.getElementById('wq-zone').style.right = '0';
+                document.getElementById('wq-text').value = '';
+                let questionKey = element.parentElement.dataset.key;
+                sender = element.parentElement.dataset.from;
+                let question = element.parentElement.innerText
+                document.getElementById('wq-sender-name-area').style.display = block;
+                document.getElementById('wq-sender-name-area').textContent = sender;
+                let senderRef = database.ref(`users/${sender}/BoxinSeason/answers`);
+                questionRef.once('value').then((snapshot) => {
+                    let question = snapshot.val();
+                    //document.getElementById('wq-text').innerText = `> ${question.text}`;
+                })
+            })
+        });
+        document.getElementById('wa-cansel').addEventListener('click', () => {
+            document.getElementById('wa-text').value = '';
+            document.getElementById('wa-zone').style.right = '-80%';
+        })
+        document.getElementById('wa-send').addEventListener('click', () => {
+            let text = document.getElementById('wa-text').innerText.trim();
+            if(!text){document.getElementById('wa-zone').style.right = '-80%';return;}
+            let time = Date.now();
+            let answer = {
+                from: username,
+                to: sender,
+                time: time,
+                text: text,
+            }
+            let senderRef = database.ref(`users/${sender}/BoxinSeason/answers`);
+            senderRef.push(answer);
+            document.getElementById('wa-zone').style.right = '-80%';
+        })
         //#endregion
 </script>
 </body>
