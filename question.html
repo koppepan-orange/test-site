@@ -89,6 +89,68 @@
             cursor: pointer;
             z-index: 998;
         }
+        #user{
+            position: absolute;
+            width: 150px;
+            height: 100%;
+            left: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 998;
+            background-color: #e6f4ff;
+            text-align: left;
+            overflow-x: scroll;
+        }
+        #Username{
+            position: absolute;
+            left: 10px;
+            bottom: 20px;
+            font-size: 16px;
+            z-index: 999;
+        }
+        #Level{
+            position: absolute;
+            left: 10px;
+            top: 0px;
+            font-size: 16px;
+            z-index: 999;
+        }
+    
+        #expbar{
+            position: absolute;
+            width: 50%;
+            height: 30px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 998;
+            background-color: #4473ad;
+            text-align: center;
+        }
+        #exp{
+            position: absolute;
+            width:0%;
+            height: 24px;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #365172;
+            z-index: 999;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        #exptext{
+            position:absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-size: 20px;
+            color: #f0f8ff;
+            display: inline-block;
+            vertical-align: middle;
+            z-index: 1000;
+        }
 
         /*こっからsideMenu*/
         #sideMenu {
@@ -121,11 +183,15 @@
         };
 
         /*こっからmains*/
+        #mains{
+            margin-top: 7vh+20px;
+        }
         #answer, #question, #search, #profile{
             display: none;
             width:100%;
             height: 90vh;
             background-color: #f0f8ff;
+            padding-top: 10px;
         }
 
         /*こっからtab*/
@@ -147,28 +213,113 @@
             cursor: pointer;
         }
 
+        /*こっから既読/未読切り替えとかsとか*/
+        #q-toggle, #a-toggle{
+            display: block;
+        }
+        #a-toggle{
+            margin-top:5px;
+        }
+        .toggle{    
+            width: 90%;
+            position: relative;
+        }
+        .toggle-unread{
+            width: 45%;
+            position: absolute;
+            left: 5px;
+            transition: background 0.3s, color 0.3s;
+            cursor: pointer;
+        }
+        .toggle-read{
+            width: 45%;
+            position: absolute;
+            right: 5px;
+            transition: background 0.3s, color 0.3s;
+            cursor: pointer;
+        }
+
+        .active {
+            background: #b5dcff;
+            color: #2b2b2b;
+        }
+
+        .unactive {
+            background: #def0ff;
+            color: #2b2b2b;
+        }
+
+
         /*こっからquestion*/
         .question{
-            border: 1px solid #4473ad;
-            background-color: #b5dcff;
+            border: 1px solid #b5dcff;
+            background-color: #cfe9ff;
             width:85%;
             max-height: 80px;
             overflow-x: hidden;
             overflow-y: scroll;
             padding: 10px;
-            padding-bottom: 20px;
+            padding-bottom: 30px;
             margin-bottom: 10px;
             position: relative;
         }
         .q-timestamp, .a-timestamp{
             position: absolute;
-            left: 2px;
+            left: 27px;
             bottom: 2px;
         }
-        .q-answer,.a-username{
+        .q-mark, .a-mark{
+            position: absolute;
+            left: 3px;
+            bottom: 2px;
+            cursor: pointer;
+        }
+        .q-answer,.a-username,.q-delete{
             position: absolute;
             right: 2px;
             bottom: 2px;
+        }
+        
+
+        /*こっからanswer*/
+        #questions, #answers, #m-questions, #m-answers{
+            margin-top: 30px;
+        }
+        #m-questions, #m-answers{
+            display: none;
+        }
+        .answer{
+            border: 1px solid #b5dcff;
+            background-color: #cfe9ff;
+            width:85%;
+            max-height: 80px;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            padding: 10px;
+            padding-bottom: 30px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .a-timestamp{
+            position: absolute;
+            left: 2px;
+            bottom: 2px;
+        }
+        .a-username{
+            position: absolute;
+            right: 2px;
+            bottom: 2px;
+        }
+        .a-anchor{
+            margin: 0 auto;
+            text-align: left;
+            padding:3px;
+            background-color: #fcfeff;
+        }
+        .a-text{
+            margin: 0 auto;
+            text-align: left;
+
         }
 
         /*こっからwq(write-question)*/
@@ -276,7 +427,13 @@
             top: 0px;
             
         }
+        #wa-anchor{
+            padding-top: 10px;            
+            border: 2px solid #cfe9ff;
+            height: 23px;
+        }
         #wa-text{
+            padding-top: 10px;
             border: 3px solid #cfe9ff;
             height: 75vh;
         }
@@ -293,14 +450,41 @@
     </div>
 
     <div id="upperUI">
+        <div id="user">
+            <div id="Username">no name</div>
+            <div id="Level">Lv:1</div>
+        </div>
+        <div id="expbar">
+            <div id="exp"></div>
+            <div id="exptext">0/NaN</div>
+        </div>
         <div id="menuToggle">☰</div>
     </div>
     <div id="mains">
         <div id="answer" class="main">
+            <div id="wa-zone">
+                <div id="wa-zone-header">
+                    <div id="wa-cansel">キャンセル</div>
+                    <div id="wa-send">送信</div>
+                </div>
+                <div id="wa-zone-body">
+                    <div id="wa-sender">
+                        <div id="wa-sender-name">
+                            <div id="wa-sender-name-area"></div>
+                        </div>
+                    </div>
+                    <div id="wa-anchor"></div>
+                    <div id="wa-text" contenteditable="true"></div>
+                </div>
+            </div>
+            <div id="q-toggle" class="toggle">
+                <div id="q-toggle-unread" class="toggle-unread toggle active" data-mark="unread">unRead</div>
+                <div id="q-toggle-read" class="toggle-read toggle unactive" data-mark="read">Read</div>
+            </div>
             <div id="questions"></div>
+            <div id="m-questions"></div>
         </div>
         <div id="question" class="main">
-            <div id="letswritequestion">質問を送信</div>
             <div id="wq-zone">
                 <div id="wq-zone-header">
                     <div id="wq-cansel">キャンセル</div>
@@ -320,9 +504,15 @@
                     <div id="wq-text" contenteditable="true"></div>
                 </div>
             </div>
+            <div id="letswritequestion">質問を送信</div>
+            <div id="a-toggle" class="toggle">
+                <div id="a-toggle-unread" class="toggle-unread toggle active" data-mark="unread">unRead</div>
+                <div id="a-toggle-read" class="toggle-read toggle unactive" data-mark="read">Read</div>
+            </div>
             <div id="answers"></div>
+            <div id="m-answers"></div>
         </div>
-        <div id="search" class="main">ｻｧﾝ</div>
+        <div id="search" class="main">ｻｧﾝ<br><br>ここ要らない気がしてきた<br>blackjackとか作る？ww</div>
         <div id="profile" class="main">4</div>
     </div>
     <div id="tabs">
@@ -516,20 +706,26 @@
             let diffMin = Math.floor(diffMs / (1000 * 60));
             let diffHour = Math.floor(diffMs / (1000 * 60 * 60));
             let diffDay = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            let diffMonths = (asnow.getFullYear() - asfrom.getFullYear()) * 12 + asnow.getMonth() - asfrom.getMonth(); // 月差分計算
-            let diffYears = asnow.getFullYear() - asfrom.getFullYear();
+            let diffMonth = (asnow.getFullYear() - asfrom.getFullYear()) * 12 + asnow.getMonth() - asfrom.getMonth(); // 月差分計算
+            let diffYear = asnow.getFullYear() - asfrom.getFullYear();
 
             if(diffMin < 60){
                 return `${diffMin}分前`;
-            }else if(diffHours < 24){
+            }else if(diffHour < 24){
                 return `${diffHour}時間前`;
-            }else if(diffDays < 30){ // 30日未満なら「日」
+            }else if(diffDay < 30){ // 30日未満なら「日」
                 return `${diffDay}日前`;
-            }else if(diffMonths < 12){ // 12ヶ月未満なら「月」
-                return `${diffMonths}ヶ月前`;
+            }else if(diffMonth < 12){ // 12ヶ月未満なら「月」
+                return `${diffMonth}ヶ月前`;
             }else{ // それ以上なら「年」
-                return `${diffYears}年前`;
+                return `${diffYear}年前`;
             }
+        }
+        function save(){
+            myRef.update({
+                level:level,
+                exp:exp
+            })
         }
         //#endregion
         //#region tab-select
@@ -592,6 +788,8 @@
         let myRef = database.ref(`users/${username}/BoxinSeason`);
         let usersRef = database.ref(`users/${username}`);
 
+        let qcurrentRef = myquestionRef;let acurrentRef = myanswerRef;
+
         //#region ログインの動き
         function login(){
             document.getElementById('login').style.display = 'none';
@@ -600,13 +798,46 @@
             answerTab.click();
             nowtab = 'Question';
 
+            usersRef = database.ref('users/'+username);
+            myRef = database.ref(`users/${username}/BoxinSeason`);
+            myquestionRef = database.ref(`users/${username}/BoxinSeason/questions`);
+            myanswerRef = database.ref(`users/${username}/BoxinSeason/answers`);
+
+            myRef.once('value', function(snapshot){
+                if(snapshot.exists()){
+                    const userData = snapshot.val();
+                    level = userData.level;
+                    exp = userData.exp;
+                    maxexp = exp*level+50;
+                    updateUI();
+                }
+            })
+
             myquestionRef.once('value', function(snapshot){
                 if(snapshot.exists()){
                     let data = snapshot.val();
                     let keys = Object.keys(data);
                     keys.forEach(key => {
-                        let questionElement = makeQuestion(data[key],key);
-                        Question.appendChild(questionElement);
+                        if(data[key].mark == false){
+                            let questionElement = makeQuestion(data[key],key);
+                            questionElement.setAttribute('data-dokosan', '最初の読み込み');
+                            let existing = document.querySelector(`#questions .question[data-key="${key}"]`);
+                            if(existing){
+                                console.log("重複してるぜ〜〜〜〜〜乙〜〜〜〜〜〜〜〜〜〜〜〜:", key);
+                                return;
+                            }
+                            Question.appendChild(questionElement);
+                        }else{
+                            let questionElement = mmakeQuestion(data[key],key);
+                            questionElement.setAttribute('data-dokosan', '最初の読み込み');
+                            let existing = document.querySelector(`#m-questions .question[data-key="${key}"]`);
+                            if(existing){
+                                console.log("重複してるぜ。けどこれ既読のやつだぜ:", key);
+                                return;
+                            }
+                            document.getElementById('m-questions').appendChild(questionElement);
+                        }
+
                     })
                 }
             })
@@ -617,10 +848,19 @@
                     let keys = Object.keys(data);
                     keys.forEach(key => {
                         let answerElement = makeAnswer(data[key],key);
+                        answerElement.setAttribute('data-dokosan', '最初の読み込み');
+                        let existing = document.querySelector(`#answers .answer[data-key="${key}"]`);
+                        if(existing){
+                            console.log("重複してるぜ〜〜〜〜〜乙〜〜〜〜〜〜〜〜〜〜〜〜:", key);
+                            return; // 追加をキャンセル
+                        }
                         Answer.appendChild(answerElement);
                     })
                 }
             })
+
+            updateQuestionRef(myquestionRef);
+            updateAnswerRef(myanswerRef);
         }
 
         document.getElementById('login-button').addEventListener('click', () => {
@@ -655,10 +895,6 @@
             username = getLocalStorage("username");
             if(username){
                 console.log("自動ログインしました");
-                usersRef = database.ref('users/'+username);
-                myRef = database.ref(`users/${username}/BoxinSeason`);
-                myquestionRef = database.ref(`users/${username}/BoxinSeason/questions`);
-                myanswerRef = database.ref(`users/${username}/BoxinSeason/answers`);
                 login();
             }else{
                 console.log("ログインしてください");
@@ -666,15 +902,78 @@
         }
         //#endregion
         //#endregion
-        //#region question
-        myquestionRef.on('child_added', function(snapshot){
-            if(snapshot.exists()){
-                let data = snapshot.val();
-                let key = snapshot.key;
-                let questionElement = makeQuestion(data,key);
-                Question.appendChild(questionElement);
+        //#region active-unactive
+        document.addEventListener('click', event =>{
+            if(event.target.classList.contains('toggle')){
+                if(event.target.id == 'q-toggle-read' && event.target.classList.contains('unactive')){
+                    event.target.classList.remove('unactive');
+                    event.target.classList.add('active');
+                    document.getElementById('q-toggle-unread').classList.remove('active');
+                    document.getElementById('q-toggle-unread').classList.add('unactive');
+                    document.getElementById('questions').style.display = 'none';
+                    document.getElementById('m-questions').style.display = 'block';
+                }else if(event.target.id == 'q-toggle-unread' && event.target.classList.contains('unactive')){
+                    event.target.classList.remove('unactive');
+                    event.target.classList.add('active');
+                    document.getElementById('q-toggle-read').classList.remove('active');
+                    document.getElementById('q-toggle-read').classList.add('unactive');
+                    document.getElementById('questions').style.display = 'block';
+                    document.getElementById('m-questions').style.display = 'none';
+                }else if(event.target.id == 'a-toggle-read' && event.target.classList.contains('unactive')){
+                    event.target.classList.remove('unactive');
+                    event.target.classList.add('active');
+                    document.getElementById('a-toggle-unread').classList.remove('active');
+                    document.getElementById('a-toggle-unread').classList.add('unactive');
+                    document.getElementById('answers').style.display = 'none';
+                    document.getElementById('m-answers').style.display = 'block';
+                }else if(event.target.id == 'a-toggle-unread' && event.target.classList.contains('unactive')){
+                    event.target.classList.remove('unactive');
+                    event.target.classList.add('active');
+                    document.getElementById('a-toggle-read').classList.remove('active');
+                    document.getElementById('a-toggle-read').classList.add('unactive');
+                    document.getElementById('answers').style.display = 'block';
+                    document.getElementById('m-answers').style.display = 'none';
+                }
             }
         })
+        //#endregion
+        //#region question
+        let qchildAddedListener;
+        function updateQuestionRef(newRef) {
+            if (qchildAddedListener) {
+                qcurrentRef.off('child_added', qchildAddedListener);
+            }
+
+            qcurrentRef = newRef;
+
+            // 新しいリスナーを設定
+            qchildAddedListener = qcurrentRef.on('child_added', function(snapshot) {
+                if (snapshot.exists()) {
+                    let data = snapshot.val();
+                    let key = snapshot.key;
+                    if(data.mark == false){
+                        let questionElement = makeQuestion(data, key);
+                        questionElement.setAttribute('data-dokosan', '追加された時の読み込み');
+                        let existing = document.querySelector(`#questions .question[data-key="${key}"]`);
+                        if(existing){
+                            console.log("重複してるぜ〜〜〜〜〜乙〜〜〜〜〜〜〜〜〜〜〜〜:", key);
+                            return; // 追加をキャンセル
+                        }
+                        Question.appendChild(questionElement);
+                    }else{
+                        let questionElement = mmakeQuestion(data, key);
+                        questionElement.setAttribute('data-dokosan', '追加された時の読み込み');
+                        let existing = document.querySelector(`#m-questions .question[data-key="${key}"]`);
+                        if(existing){
+                            console.log("重複してるぜ〜〜〜〜〜乙〜〜〜〜〜〜〜〜〜〜〜〜:", key);
+                            return;
+                        }
+                        document.getElementById('m-questions').appendChild(questionElement);
+                    }
+                }
+            }); 
+        }
+
         function makeQuestion(data,key){
             let question = data;
             let questionElement = document.createElement('div');
@@ -694,6 +993,11 @@
             textElement.innerText = data.text
             questionElement.appendChild(textElement);
 
+            let markElement = document.createElement('div');
+            markElement.className = 'q-mark';
+            markElement.textContent = '√';
+            questionElement.appendChild(markElement);
+
             let buttonElement = document.createElement('button');
             buttonElement.className = 'q-answer';
             buttonElement.textContent = 'answer this';
@@ -702,17 +1006,152 @@
             return questionElement
         }
 
+        document.querySelector("#questions").addEventListener("click", function(event) {
+            if(event.target.classList.contains("q-mark")){
+                let question = event.target.parentElement;
+                let dataKey = question.getAttribute("data-key");
+                let textdiv = question.querySelector('.q-text');
+                let timestampdiv = question.querySelector('.q-timestamp');
+                
+                let data = {
+                    from: question.getAttribute("data-from"),
+                    to: username,
+                    timestamp: timestampdiv.innerText,
+                    text: textdiv.innerText,
+                    key: question.getAttribute("data-key"),
+                    time: question.getAttribute("data-time")
+                }
+
+                question.remove(); //divを削除(not firebase)
+                
+                let key = data.key;
+                let questionElement = mmakeQuestion(data, key);
+                questionElement.setAttribute('data-dokosan', '今さっき既読にされたんすよ');
+                let existing = document.querySelector(`#m-questions .question[data-key="${key}"]`);
+                if(existing){
+                    console.log("重複してるぜ〜〜〜〜〜乙〜〜〜〜〜〜〜〜〜〜〜〜:", key);
+                    return; // 追加をキャンセル
+                }
+                document.getElementById('m-questions').appendChild(questionElement);
+
+                firebase.database().ref(`users/${username}/BoxinSeason/questions/${dataKey}`).update({
+                    mark: true
+                })
+            }
+        });
+
+        document.querySelector("#m-questions").addEventListener("click", function(event) {
+            if(event.target.classList.contains("q-mark")){
+                let question = event.target.parentElement;
+                let dataKey = question.getAttribute("data-key");
+                let textdiv = question.querySelector('.q-text');
+                let timestampdiv = question.querySelector('.q-timestamp');
+                
+                let data = {
+                    from: question.getAttribute("data-from"),
+                    to: username,
+                    timestamp: timestampdiv.innerText,
+                    text: textdiv.innerText,
+                    key: question.getAttribute("data-key"),
+                    time: question.getAttribute("data-time")
+                }
+
+                question.remove(); //divを削除(not firebase)
+                
+                let key = data.key;
+                let questionElement = makeQuestion(data, key);
+                questionElement.setAttribute('data-dokosan', '今さっき既読にされたんすよ');
+                let existing = document.querySelector(`#questions .question[data-key="${key}"]`);
+                if(existing){
+                    console.log("重複してるぜ〜〜〜〜〜乙〜〜〜〜〜〜〜〜〜〜〜〜:", key);
+                    return; // 追加をキャンセル
+                }
+                document.getElementById('questions').appendChild(questionElement);
+
+                firebase.database().ref(`users/${username}/BoxinSeason/questions/${dataKey}`).update({
+                    mark: false
+                })
+            }else if(event.target.classList.contains("q-delete")){
+                let question = event.target.parentElement;
+                let dataKey = question.getAttribute("data-key");
+
+                firebase.database().ref(`users/${username}/BoxinSeason/questions/${dataKey}`).remove()
+                .then(() => {
+                    question.remove();
+                })
+            }
+        });
+
+        function mmakeQuestion(data,key){
+            let question = data;
+            let questionElement = document.createElement('div');
+            questionElement.className = 'question';
+            questionElement.setAttribute('data-from', data.from);
+            questionElement.setAttribute('data-time', data.time);
+            questionElement.setAttribute('data-key', key);
+
+            let timestampElement = document.createElement('div');
+            timestampElement.className = 'q-timestamp';
+            timestampElement.textContent = data.timestamp;
+            questionElement.appendChild(timestampElement);
+            
+            let textElement = document.createElement('div');
+            textElement.className = 'q-text';
+            textElement.innerText = data.text
+            questionElement.appendChild(textElement);
+
+            let markElement = document.createElement('div');
+            markElement.className = 'q-mark';
+            markElement.textContent = 'x';
+            questionElement.appendChild(markElement);
+
+            let buttonElement = document.createElement('button');
+            buttonElement.className = 'q-delete';
+            buttonElement.textContent = 'delete this';
+            questionElement.appendChild(buttonElement);
+
+            return questionElement
+        }
+
+
         //#endregion
         //#region answer
-        myanswerRef.on('child_added', function(snapshot){
-            if(snapshot.exists()){
-                let data = snapshot.val();
-                let key = snapshot.key;
-                let answer = data;
-                let answerElement = makeAnswer(answer,key);
-                Answer.appendChild(answerElement);
+        let achildAddedListener;
+        function updateAnswerRef(newRef){
+            if(achildAddedListener){
+                acurrentRef.off('child_added', achildAddedListener);
             }
-        })
+
+            acurrentRef = newRef;
+
+            // 新しいリスナーを設定
+            achildAddedListener = acurrentRef.on('child_added', function(snapshot) {
+                if (snapshot.exists()) {
+                    let data = snapshot.val();
+                    let key = snapshot.key;
+                    if(data.mark == false){
+                        let answerElement = makeAnswer(data, key);
+                        answerElement.setAttribute('data-dokosan', '追加された時の読み込み');
+                        let existing = document.querySelector(`#answers .answer[data-key="${key}"]`);
+                        if(existing){
+                            console.log("重複してるぜ〜〜〜〜〜乙〜〜〜〜〜〜〜〜〜〜〜〜:", key);
+                            return; // 追加をキャンセル
+                        }
+                        Answer.appendChild(answerElement);        
+                    }else{
+                        let answerElement = mmakeAnswer(data, key);
+                        answerElement.setAttribute('data-dokosan', '追加された時の読み込み');
+                        let existing = document.querySelector(`#m-answers .answer[data-key="${key}"]`);
+                        if(existing){
+                            console.log("重複してるぜ〜〜〜〜〜乙〜〜〜〜〜〜〜〜〜〜〜〜:", key);
+                            return;
+                        }
+                        document.getElementById('m-answers').appendChild(answerElement);  
+                    }
+                }
+            })
+        }
+
         function makeAnswer(data,key){
             let answer = data;
             let answerElement = document.createElement('div');
@@ -739,6 +1178,91 @@
 
             return answerElement
         }
+        
+        
+        document.querySelector("#answers").addEventListener("click", function(event) {
+            if (event.target.classList.contains("a-mark")){
+                let answer = event.target.parentElement;
+                let dataKey = answer.getAttribute("data-key");
+
+                let timestampdiv = answer.querySelector(".a-timestamp");
+                let textdiv = answer.querySelector(".a-text");
+                let anchordiv = answer.querySelector(".a-anchor");
+
+                let data = {
+                    from: username,
+                    to: answer.getAttribute("data-from"),
+                    timestamp: timestampdiv.innerText,
+                    text: textdiv.innerText,
+                    anchor: anchordiv.innerText,
+                    key: answer.getAttribute("data-key"),
+                    time: answer.getAttribute("data-time")
+                }
+
+                answer.remove(); //divを削除(not firebase)
+                
+                let key = data.key;
+                let answerElement = mmakeAnswer(data, key);
+                answerElement.setAttribute('data-dokosan', '今さっき既読にされたんすよ');
+                let existing = document.querySelector(`#m-answers .answer[data-key="${key}"]`);
+                if(existing){
+                    console.log("重複してるぜ〜〜〜〜〜乙〜〜〜〜〜〜〜〜〜〜〜〜:", key);
+                    return; // 追加をキャンセル
+                }
+                document.getElementById('m-answers').appendChild(answerElement);
+
+                firebase.database().ref(`users/${username}/BoxinSeason/answers/${dataKey}`).update({
+                    mark: true
+                })
+
+            }
+        });
+
+        document.querySelector("#m-answers").addEventListener("click", function(event) {
+            if (event.target.classList.contains("a-mark")){
+                let answer = event.target.parentElement;
+                let dataKey = question.getAttribute("data-key");
+
+                answer.remove(); //divを削除(not firebase)
+
+                firebase.database().ref(`users/${username}/BoxinSeason/answers/${dataKey}`).remove()
+                .then(() => {
+                    answer.remove();
+                })
+            }
+        });
+
+        function mmakeAnswer(data,key){
+            let answer = data;
+            let answerElement = document.createElement('div');
+            answerElement.className = 'answer';
+            answerElement.setAttribute('data-from', data.from);
+            answerElement.setAttribute('data-time', data.time);
+            answerElement.setAttribute('data-key', key);
+
+            let usernameElement = document.createElement('div');
+            usernameElement.className = 'a-username';
+            usernameElement.textContent = data.from;
+            answerElement.appendChild(usernameElement);
+
+            let timestampElement = document.createElement('div');
+            timestampElement.className = 'a-timestamp';
+            timestampElement.textContent = data.timestamp;
+            answerElement.appendChild(timestampElement);
+            
+            let anchorElement = document.createElement('div');
+            anchorElement.className = 'a-anchor';
+            anchorElement.innerText = data.anchor;
+            answerElement.appendChild(anchorElement);
+
+            let textElement = document.createElement('div');
+            textElement.className = 'a-text';
+            textElement.innerText = data.text
+            answerElement.appendChild(textElement);
+
+            return answerElement
+        }
+
         //#endregion
         //#region write-question
         document.getElementById('letswritequestion').addEventListener('click', () => {
@@ -766,6 +1290,7 @@
                 to: sender,
                 time: time,
                 text: text,
+                mark: false
             }
             let senderRef = database.ref(`users/${sender}/BoxinSeason/questions`);
             senderRef.push(question);
@@ -816,21 +1341,19 @@
         })
         //#endregion
         //#region write-answer
-        document.querySelectorAll('.q-answer').forEach((element) => {
-            element.addEventListener('click', () => {
-                document.getElementById('wq-zone').style.right = '0';
-                document.getElementById('wq-text').value = '';
-                let questionKey = element.parentElement.dataset.key;
-                sender = element.parentElement.dataset.from;
-                let question = element.parentElement.innerText
-                document.getElementById('wq-sender-name-area').style.display = block;
-                document.getElementById('wq-sender-name-area').textContent = sender;
-                let senderRef = database.ref(`users/${sender}/BoxinSeason/answers`);
-                questionRef.once('value').then((snapshot) => {
-                    let question = snapshot.val();
-                    //document.getElementById('wq-text').innerText = `> ${question.text}`;
-                })
-            })
+        document.addEventListener('click', element =>{
+            if(element.target.classList.contains('q-answer')){
+                document.getElementById('wa-zone').style.right = '0';
+                document.getElementById('wa-text').value = '';
+
+                let questionKey = element.target.parentElement.dataset.key;
+                sender = element.target.parentElement.dataset.from;
+                let question = element.target.parentElement.innerText
+                
+                document.getElementById('wa-sender-name-area').textContent = sender;
+                
+                document.getElementById('wa-text').value = question;
+            }
         });
         document.getElementById('wa-cansel').addEventListener('click', () => {
             document.getElementById('wa-text').value = '';
@@ -840,16 +1363,40 @@
             let text = document.getElementById('wa-text').innerText.trim();
             if(!text){document.getElementById('wa-zone').style.right = '-80%';return;}
             let time = Date.now();
+            let anchor = document.getElementById('wa-text').innerText.trim();
             let answer = {
                 from: username,
                 to: sender,
                 time: time,
                 text: text,
+                anchor: anchor,
+                mark: false
             }
             let senderRef = database.ref(`users/${sender}/BoxinSeason/answers`);
             senderRef.push(answer);
             document.getElementById('wa-zone').style.right = '-80%';
         })
+        //#endregion
+        //#region expとか
+        let level = 1;
+        let exp = 0;
+        let maxexp = 50;
+        let expbar = document.getElementById('exp');
+        let exptext = document.getElementById('exptext');
+        function updateUI(){
+            if(exp >= maxexp){
+                exp -= maxexp;
+                level += 1;
+                maxexp += 25;
+            }
+
+            expbar.style.width = `${exp/maxexp}%`;
+            exptext.innerText = `${exp}/${maxexp}`
+            document.getElementById('Username').textContent = username;
+            document.getElementById('Level').textContent = `Lv:${level}`;
+
+            save();
+        }
         //#endregion
 </script>
 </body>

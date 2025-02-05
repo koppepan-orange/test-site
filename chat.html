@@ -816,7 +816,8 @@
             messagesRef.on('child_added', async function(snapshot){
                 let uRef = database.ref(`users/${username}/banned`)
                 uRef.on('value', function(ss) {
-                    uRef = ss.val();
+                    //uRef = ss.val();
+                    uRef = 0; //一旦のやつ
                     if(uRef == 1){ 
                         NicoNicoText('エラーが発生しました。')
                         document.getElementById('username').value = '';
