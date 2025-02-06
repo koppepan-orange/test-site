@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English-Party</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <style>
+        @font-face {font-family: comicsans;src: url(assets/comicsans.ttf);}
+        @font-face {font-family: wingdings;src: url(assets/wingdings.ttf);}
+        @font-face {font-family: genjuu;src: url(assets/genjuu.ttf);}
+        /*こっから雑に扱ってもいい子*/
+        #movabledescription {
+        display: none;
+        position: fixed;  /* 画面上の絶対位置に固定 */
+        pointer-events: none;  /* マウスイベントを通過させる */
+        background-color: rgba(90, 90, 90, 0.9);
+        color: rgb(255, 255, 255);
+        padding: 5px 10px;
+        border-radius: 5px;
+        z-index: 1000;  /* 他の要素の上に表示 */
+        }
+
+        /*こっから全体のやつ*/
+        #body{
+            font-family:genjuu;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            background-color: #f0f8ff;
+        }
+
+        /* こっからログインのやつ */
+        #login{
+            width: 500px;
+            max-width: 100%;
+            margin: 50px auto;
+            background-color: #def0ff;
+            border: 1px solid #b5dcff;
+            border-radius: 5px;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            display: flex;
+        }
+        #login-form {
+            padding: 20px;
+        }
+        #login-form input {
+            width: calc(100% - 20px);
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #c8c8c8;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #login-form button:hover {
+            background-color: #8b8b8b;
+        }
+
+        /*こっから上のUI(upperUI)*/
+        #upperUI{
+            display: none;
+            border-bottom: 3px solid #cfe9ff;
+            background-color: #def0ff;
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 7vh;
+            z-index: 997;
+        }
+        #menuToggle{
+            display: block;
+            width:25px;
+            height:25px;
+            position: absolute;
+            right:25px;
+            top:5px;
+            font-size:35px;
+            cursor: pointer;
+            z-index: 998;
+        }
+        #expbar{
+            position: absolute;
+            width: 50%;
+            height: 30px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 998;
+            background-color: #4473ad;
+            text-align: center;
+        }
+        #exp{
+            position: absolute;
+            width:0%;
+            height: 24px;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #365172;
+            z-index: 999;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        #exptext{
+            position:absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-size: 20px;
+            color: #f0f8ff;
+            display: inline-block;
+            vertical-align: middle;
+            z-index: 1000;
+        }
+
+        /*こっからsideMenu*/
+        #sideMenu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            color: #333344;
+            background-color: #def0ff!important;
+            border-right: 3px solid #cfe9ff;
+            transition: left 0.3s;
+            z-index:999;
+        };
+        hr{
+            background-color: #cfe9ff;
+            border: 2px solid #cfe9ff;
+        }
+        #sideMenu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        };
+        #sideMenu ul li {
+            padding: 3px;
+        };
+        #sideMenu ul li a {
+            color: #000000;
+            text-decoration: none;
+        };
+
+        /*こっからmains*/
+        #mains{
+            margin-top: 7vh+20px;
+        }
+        #search, #post{
+            display: none;
+            width:100%;
+            height: 90vh;
+            background-color: #f0f8ff;
+            padding-top: 10px;
+        }
+
+        /*こっからtab*/
+        #tabs{
+            font-family: wingdings;
+            font-size: 35px;
+            display: none;
+            justify-content: space-between;
+            padding: 10px;
+            padding-left: 40px;
+            padding-right: 40px;
+            background-color: #def0ff;
+            position: fixed;
+            left:0;right:0;
+            bottom:10px;
+            z-index: 998;
+        }
+        .tab{
+            cursor: pointer;
+        }
+
+        #search-area{
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+            width: 90%;
+            height: 20px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        #search-result{
+            margin-top: 10px;
+            display: none;
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+            width: 90%;
+            height: 85vh;
+            padding: 10px;
+        }
+        .search-result-item{
+            display: block;
+            background-color: #cfe9ff;
+            border: 2px solid #b5dcff;
+            width: 90%;
+            max-height: 100px;
+            margin: 0 auto;
+            text-align: left;
+            padding: 5px;
+            margin-bottom: 15px;
+            /* position:relative; */
+        }
+        .search-result-word{
+            font-size: 18px;
+        }
+        .search-result-trans{
+            font-size: 16px;
+        }
+        .search-result-description{
+            font-size: 14px;
+        }
+
+    </style>
+</head>
+<body id="body">
+    <div id="movabledescription"></div>
+    <div id="login">
+        <div id="login-form">
+            <input type="text" id="username" placeholder="username">
+            <input type="password" id="password" placeholder="password">
+            <button id="login-button">Login</button>
+        </div>
+    </div>
+
+    <div id="upperUI">
+        <div id="user">
+            <div id="Username">no name</div>
+            <div id="Level">Lv:1</div>
+        </div>
+        <div id="expbar">
+            <div id="exp"></div>
+            <div id="exptext">0/NaN</div>
+        </div>
+        <div id="menuToggle">☰</div>
+    </div>
+    <div id="sideMenu">
+        <ul>
+            <li><a href="https://koppepan-orange.github.io/test-site/home.html">to home</a></li>
+            <li><a href="https://koppepan-orange.github.io/test-site/memo.html">to memo</a></li>
+            <li><a href="https://koppepan-orange.github.io/test-site/chat.html">to chat</a></li>
+        </ul>
+    </div>
+    <div id="mains">
+        <div id="search">
+            <div id="search-area" contenteditable></div>
+            <div id="search-result"></div>
+        </div>
+        <div id="post"></div>
+    </div>
+    <div id="tabs">
+        <div id="search-tab" class="tab" data-open="1" data-close="0">0</div>
+        <div id="post-tab" class="tab" data-open="?" data-close="!">!</div>
+    </div>
+    <script>
+        //#region documnetの子達
+        const Mains = document.getElementById("mains");
+        const Search = document.getElementById("search");
+        const Post = document.getElementById("post");
+
+        const Tabs = document.getElementById("tabs");
+        const searchTab = document.getElementById("search-tab");
+        const postTab = document.getElementById("post-tab");
+
+        const upperUI = document.getElementById("upperUI");
+        const menuToggle = document.getElementById("menuToggle");
+        const sideMenu = document.getElementById("sideMenu");
+
+        //#endregion
+        //#region 色々雑に扱ってもいい子達
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function copy(obj) {
+            if (obj === null || typeof obj !== 'object') return obj;
+            if (Array.isArray(obj)) return obj.map(copy);
+            const result = {};
+            for (const key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    result[key] = copy(obj[key]);
+                }
+            }
+            return result;
+        }
+
+        function arraySelect(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function arrayShuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function setLocalStorage(name, value) {
+            localStorage.setItem(name, value || ""); // 値が空なら空文字を入れる
+        }
+
+        function getLocalStorage(name){
+            return localStorage.getItem(name); // 値をそのまま返す、ない場合はnull
+        }
+
+
+        document.addEventListener('mousemove', (e) => {
+            const HasDescription = document.getElementById('movabledescription');
+            if (HasDescription) {
+                HasDescription.style.left = `${e.clientX + 10}px`;
+                HasDescription.style.top = `${e.clientY + 10}px`;
+            }
+        });
+
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.classList.contains('hasd')) {
+                const movabledescription = e.target.dataset.description;
+                const descElement = document.getElementById('movabledescription');
+                if (descElement) {
+                    descElement.innerHTML = movabledescription;
+                    descElement.style.display = 'block';
+                }
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.classList.contains('hasd')) {
+                const descElement = document.getElementById('movabledescription');
+                if (descElement) {
+                    descElement.innerHTML = '';
+                    descElement.style.display = 'none';
+                }
+            }
+        });
+
+        async function NicoNicoText(mes) {
+            const newDiv = document.createElement('div');
+            newDiv.textContent = mes;
+            newDiv.style = `
+                position: absolute;
+                top: ${Math.random() * 100}vh;
+                right: 0;
+                background-color: rgba(228, 249, 255, 0.563);
+                color: #000000;
+                font-size: 20px;
+            `;
+            document.body.appendChild(newDiv);
+            let speed = 10;
+            for (let i = 0; window.innerWidth > i * speed; i++) {
+                let val = i * speed;
+                newDiv.style.right = `${val}px`;
+                await delay(50);
+            }
+            newDiv.remove();
+        }
+
+        menuToggle.addEventListener('click', () => {
+            if(sideMenu.style.left === '0px'){
+                sideMenu.style.left = '-250px';
+            }else{
+                sideMenu.style.left = '0px';
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            const HasDescription = document.getElementById('movabledescription');
+            HasDescription.style.left = `${e.clientX + 10}px`;
+            HasDescription.style.top = `${e.clientY + 10}px`;
+        });
+
+        document.addEventListener('mouseover', (e) => {
+            if(e.target.classList.contains('hasd')){
+                const description = e.target.dataset.description;
+                document.getElementById('movabledescription').innerHTML = description;
+                document.getElementById('movabledescription').style.display = 'block';
+            }
+        });
+        document.addEventListener('mouseout', (e) => {
+            if(e.target.classList.contains('hasd')){
+                document.getElementById('movabledescription').innerHTML = '';
+                document.getElementById('movabledescription').style.display = 'none';
+            }
+        });
+
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}/${month}/${day} ${hours}:${minutes}`;
+        }
+        function formatTime(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const time = `${year}${month}${day}${hours}${minutes}`;
+            return +time;
+        }
+        function motonimodore(now){
+            const year = Math.floor(now / 10000000000); // 2025
+            const month = Math.floor((now % 10000000000) / 100000000) - 1; // 1 (0から始まるため、2月は1)
+            const day = Math.floor((now % 100000000) / 1000000); // 5
+            const hours = Math.floor((now % 10000) / 100); // 7
+            const minutes = now % 100; // 33
+
+            // Dateオブジェクトを作成
+            return new Date(year, month, day, hours, minutes);
+        }
+        function getTimestamp(time){
+            let from = formatTime(new Date(time));
+            let now = formatTime(new Date());
+
+            let asfrom = motonimodore(from);
+            let asnow = motonimodore(now);
+
+            let diffMs = asnow - asfrom;
+            let diffMin = Math.floor(diffMs / (1000 * 60));
+            let diffHour = Math.floor(diffMs / (1000 * 60 * 60));
+            let diffDay = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            let diffMonth = (asnow.getFullYear() - asfrom.getFullYear()) * 12 + asnow.getMonth() - asfrom.getMonth(); // 月差分計算
+            let diffYear = asnow.getFullYear() - asfrom.getFullYear();
+
+            if(diffMin < 60){
+                return `${diffMin}分前`;
+            }else if(diffHour < 24){
+                return `${diffHour}時間前`;
+            }else if(diffDay < 30){ // 30日未満なら「日」
+                return `${diffDay}日前`;
+            }else if(diffMonth < 12){ // 12ヶ月未満なら「月」
+                return `${diffMonth}ヶ月前`;
+            }else{ // それ以上なら「年」
+                return `${diffYear}年前`;
+            }
+        }
+        
+        function save(){
+            usersRef.update({
+                level:level,
+                exp:exp
+            })
+        }
+        //#endregion
+        //#region tab-select
+        document.addEventListener('DOMContentLoaded', () => {
+            autoLogin();
+        })
+        
+        document.querySelectorAll('.tab').forEach(ele => {
+            ele.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(tab => {
+                    let id = tab.id.substring(0, tab.id.length - 4);
+                    document.getElementById(id).style.display = 'none';
+                    document.getElementById(`${id}-tab`).textContent = tab.dataset.close;
+                })
+                document.getElementById(ele.id.substring(0,ele.id.length-4)).style.display = 'block';
+                ele.textContent = ele.dataset.open;
+            })
+        })
+        //#endregion
+        //#region firebase-設定とかmoromoro
+        const firebaseConfig = {
+            apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
+            authDomain: "koppepan-orange.firebaseapp.com",
+            databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
+            projectId: "koppepan-orange",
+            storageBucket: "koppepan-orange.appspot.com",
+            messagingSenderId: "730150198097",
+            appId: "1:730150198097:web:076a074a3d406053155170",
+            measurementId: "G-MYKJWD203Z"
+        };
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+
+        let username = 'no name';
+        let myquestionRef = database.ref(`users/${username}/BoxinSeason/questions`);
+        let myanswerRef = database.ref(`users/${username}/BoxinSeason/answers`);
+        let myRef = database.ref(`users/${username}/BoxinSeason`);
+        let usersRef = database.ref(`users/${username}`);
+
+        let qcurrentRef = myquestionRef;let acurrentRef = myanswerRef;
+
+        //#region ログインの動き
+        function login(){
+            document.getElementById('login').style.display = 'none';
+            upperUI.style.display = 'block';
+            Tabs.style.display = 'flex';
+            searchTab.click();
+            nowtab = 'Search';
+
+            usersRef = database.ref('users/'+username);
+
+            usersRef.once('value', function(snapshot){
+                if(snapshot.exists()){
+                    const userData = snapshot.val();
+                    level = userData.level??1;
+                    exp = userData.exp??0;
+                    maxexp = exp*level+50;
+                    updateUI();
+                }
+            })
+        }
+
+        document.getElementById('login-button').addEventListener('click', () => {
+            let username = document.getElementById('username').value;
+            let password = document.getElementById('password').value;
+
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+
+            let kariusersRef = database.ref(`users/${username}`);
+            kariusersRef.once('value', function(snapshot){
+                if(snapshot.exists()){
+                    if(snapshot.val().password == password){
+                        setLocalStorage("username", username)
+                        login();   
+                    }
+                }else{
+                    let usersRef = database.ref(`users/${username}`);
+                    usersRef.update({
+                        password:password,
+                        banned: 0,
+                        blocked: [],
+                    })
+                    NicoNicoText('ようこそ');
+                    setLocalStorage("username", username)
+                    login();
+                }
+            })
+        })
+
+        function autoLogin(){
+            username = getLocalStorage("username");
+            if(username){
+                console.log("自動ログインしました");
+                login();
+            }else{
+                console.log("ログインしてください");
+            }
+        }
+        //#endregion
+        //#endregion
+        //#region expとか
+        let level = 1;
+        let exp = 0;
+        let maxexp = 50;
+        let expbar = document.getElementById('exp');
+        let exptext = document.getElementById('exptext');
+        function updateUI(){
+            if(exp >= maxexp){
+                exp -= maxexp;
+                level += 1;
+                maxexp += 25;
+            }
+
+            expbar.style.width = `${exp/maxexp}%`;
+            exptext.innerText = `${exp}/${maxexp}`
+            document.getElementById('Username').textContent = username;
+            document.getElementById('Level').textContent = `Lv:${level}`;
+
+            save();
+        }
+        //#endregion
+
+
+        document.getElementById('search-area').addEventListener('keydown', (event) => {
+            if(event.key !== 'Enter')return;
+            event.preventDefault(); // フォームのリロードを防ぐ
+
+            let englishsearch = document.getElementById('search-area').innerText.trim().toLowerCase();
+            if(!englishsearch){return};
+
+            let englishsRef = database.ref('english');
+
+           englishsRef.orderByChild('word').startAt(englishsearch).endAt(englishsearch + "\uf8ff").once('value', (snapshot) => {
+                let results = snapshot.val();
+                let resultList = document.getElementById('search-result');
+                resultList.innerHTML = ''; // 検索結果をクリア
+                resultList.style.display = 'block';
+
+                if(results){
+                    Object.keys(results).forEach(key => {
+                        let user = results[key];
+                        let listItem = document.createElement('div');
+                        listItem.className = 'search-result-item';
+                        listItem.setAttribute('data-key', key);
+                        listItem.setAttribute('data-sender', user.sender);
+                        listItem.innerHTML = `
+                        <div class="search-result-word">${user.word}</div>
+                        <div class="search-result-trans">${user.trans}</div>
+                        `;
+                        if(user.description){
+                            listItem.innerHTML += `<div class="search-result-description">${user.description}</div>`
+                        }
+                        resultList.appendChild(listItem);
+                    });
+                } else {
+                    resultList.innerText = '該当なし';
+                }
+            });
+        });
+ 
+
+        function forceAdd(word, trans, sender, description){
+            let englishsRef = database.ref('english');
+            englishsRef.push({
+                word:word,
+                trans:trans,
+                sender:sender,
+                description:description
+            })
+        }
+    </script>
+</body>
+</html>
