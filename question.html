@@ -292,12 +292,12 @@
             border: 1px solid #b5dcff;
             background-color: #cfe9ff;
             width:85%;
-            max-height: 80px;
+            max-height: 140px;
             overflow-x: hidden;
             overflow-y: scroll;
             padding: 10px;
             padding-bottom: 30px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             position: relative;
         }
         .a-timestamp{
@@ -314,7 +314,7 @@
             margin: 0 auto;
             text-align: left;
             padding:3px;
-            background-color: #fcfeff;
+            background-color: #def0ff;
         }
         .a-text{
             margin: 0 auto;
@@ -427,13 +427,16 @@
             top: 0px;
             
         }
-        #wa-anchor{
-            padding-top: 10px;            
+        #wa-key{
+            display: none;
+        }
+        #wa-anchor{          
             border: 2px solid #cfe9ff;
-            height: 23px;
+            max-height: 80px;
+            overflow-x: hidden;
+            overflow-y: scroll
         }
         #wa-text{
-            padding-top: 10px;
             border: 3px solid #cfe9ff;
             height: 75vh;
         }
@@ -472,6 +475,7 @@
                         <div id="wa-sender-name">
                             <div id="wa-sender-name-area"></div>
                         </div>
+                        <div id="wa-key"></div>
                     </div>
                     <div id="wa-anchor"></div>
                     <div id="wa-text" contenteditable="true"></div>
@@ -937,7 +941,7 @@
             }
         })
         //#endregion
-        //#region question
+        //#region question  
         let qchildAddedListener;
         function updateQuestionRef(newRef) {
             if (qchildAddedListener) {
@@ -1146,7 +1150,7 @@
                             console.log("重複してるぜ〜〜〜〜〜乙〜〜〜〜〜〜〜〜〜〜〜〜:", key);
                             return;
                         }
-                        document.getElementById('m-answers').appendChild(answerElement);  
+                        document.getElementById('m-answers').appendChild(answerElement);
                     }
                 }
             })
@@ -1170,6 +1174,11 @@
             timestampElement.className = 'a-timestamp';
             timestampElement.textContent = timestamp;
             answerElement.appendChild(timestampElement);
+
+            let anchorElement = document.createElement('div');
+            anchorElement.className = 'a-anchor';
+            anchorElement.innerText = data.anchor;
+            answerElement.appendChild(anchorElement);
             
             let textElement = document.createElement('div');
             textElement.className = 'a-text';
@@ -1348,11 +1357,12 @@
 
                 let questionKey = element.target.parentElement.dataset.key;
                 sender = element.target.parentElement.dataset.from;
-                let question = element.target.parentElement.innerText
+                let question = element.target.parentElement;
                 
                 document.getElementById('wa-sender-name-area').textContent = sender;
                 
-                document.getElementById('wa-text').value = question;
+                document.getElementById('wa-anchor').innerText = question.querySelector('.q-text').innerText;
+                document.getElementById('wa-key').innerText = question.getAttribute('data-key');
             }
         });
         document.getElementById('wa-cansel').addEventListener('click', () => {
@@ -1363,7 +1373,7 @@
             let text = document.getElementById('wa-text').innerText.trim();
             if(!text){document.getElementById('wa-zone').style.right = '-80%';return;}
             let time = Date.now();
-            let anchor = document.getElementById('wa-text').innerText.trim();
+            let anchor = document.getElementById('wa-anchor').innerText.trim();
             let answer = {
                 from: username,
                 to: sender,
@@ -1375,6 +1385,19 @@
             let senderRef = database.ref(`users/${sender}/BoxinSeason/answers`);
             senderRef.push(answer);
             document.getElementById('wa-zone').style.right = '-80%';
+
+            //questionから削除
+            let key = document.getElementById('wa-key').textContent;
+            let questionRef = database.ref(`users/${username}/BoxinSeason/questions/${key}`);
+            questionRef.remove();
+            
+            let existing = document.querySelector(`#questions .question[data-key="${key}"]`);
+            if(existing){
+                existing.remove();
+            }
+
+            exp += 25;
+            updateUI();
         })
         //#endregion
         //#region expとか

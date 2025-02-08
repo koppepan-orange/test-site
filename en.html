@@ -173,13 +173,11 @@
             font-size: 35px;
             display: none;
             justify-content: space-between;
-            padding: 10px;
-            padding-left: 40px;
-            padding-right: 40px;
+            padding: 10px 25%;
             background-color: #def0ff;
             position: fixed;
             left:0;right:0;
-            bottom:10px;
+            bottom:0px;
             z-index: 998;
         }
         .tab{
@@ -221,8 +219,62 @@
         .search-result-trans{
             font-size: 16px;
         }
+        .search-result-speech{
+            font-size: 16px;
+        }
         .search-result-description{
             font-size: 14px;
+        }
+
+        #post-area{
+            margin: 0 auto;
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+            width: 90%;
+            height: 80vh;
+            padding: 10px;
+        }
+        #post-header{
+            margin: 0 auto;
+            background-color: #eaf5ff;
+            border-bottom: 2px solid #cfe9ff;
+            width: 100%;
+            height: 5%;
+            position: relative;
+        }
+        #post-cancel{
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #post-send{
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #post-body{
+            margin: 0 auto;
+            background-color: #eaf5ff;
+            width: 100%;
+            height: 90%;
+            padding: 10px;
+        }
+        #post-word, #post-trans, #post-speech{
+            width: 100%;
+            height: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #cfe9ff;
+        }
+        .showp:empty:before{
+            content: attr(placeholder);
+            color: #8f8f8f;
+        }
+        #post-description{
+            width: 100%;
+            height: 75px;
+            border: 1px solid #cfe9ff;
         }
 
     </style>
@@ -260,7 +312,20 @@
             <div id="search-area" contenteditable></div>
             <div id="search-result"></div>
         </div>
-        <div id="post"></div>
+        <div id="post">
+            <div id="post-area">
+                <div id="post-header">
+                    <div id="post-cancel">リセット</div>
+                    <div id="post-send">送信</div>
+                </div>
+                <div id="post-body">
+                    <div id="post-word" class="hasp" placeholder='write here a "word" 例:apple' contenteditable></div>
+                    <div id="post-trans" class="hasp" placeholder='write here a "translation" 例:りんご' contenteditable></div>
+                    <div id="post-speech" class="hasp" placeholder='write here a "speech" 例:名詞' contenteditable></div>
+                    <div id="post-description" class="hasp" placeholder='write here a "description" 例:何よりも美味しい果物。' contenteditable></div>
+                </div>
+            </div>
+        </div>
     </div>
     <div id="tabs">
         <div id="search-tab" class="tab" data-open="1" data-close="0">0</div>
@@ -578,8 +643,18 @@
             save();
         }
         //#endregion
-
-
+        //#region placeholder
+        document.querySelectorAll('.hasp').forEach(ele => {
+            ele.classList.add('showp');
+            ele.addEventListener('focus', () => ele.classList.remove('showp'));
+            ele.addEventListener('blur', () => {
+                if (!ele.textContent.trim()) {
+                    ele.classList.add('showp');
+                }
+            });
+        })
+        //#endregion
+        //#region 検索
         document.getElementById('search-area').addEventListener('keydown', (event) => {
             if(event.key !== 'Enter')return;
             event.preventDefault(); // フォームのリロードを防ぐ
@@ -603,7 +678,7 @@
                         listItem.setAttribute('data-key', key);
                         listItem.setAttribute('data-sender', user.sender);
                         listItem.innerHTML = `
-                        <div class="search-result-word">${user.word}</div>
+                        <span class="search-result-word">${user.word}</span>   <span class="search-result-speech">[${user.speech}]</span>
                         <div class="search-result-trans">${user.trans}</div>
                         `;
                         if(user.description){
@@ -616,17 +691,64 @@
                 }
             });
         });
+        //#endregion
+        //#region 投稿
+        document.getElementById('post-send').addEventListener('click', (event) => {
+            event.preventDefault(); // フォームのリロードを防ぐ
+
+
+            let word = document.getElementById('post-word').innerText.trim();
+            let trans = document.getElementById('post-trans').innerText.trim();
+            let speech = document.getElementById('post-speech').innerText.trim();
+            let description = document.getElementById('post-description').innerText.trim();
+
+            if(!word || !trans || !speech || !description){
+                NicoNicoText('要素が足りません');
+                return;
+            };
+
+            let englishsRef = database.ref('english');
+
+            englishsRef.orderByChild('word').equalTo(word).once('value', snapshot => {
+                if(!snapshot.exists()){
+                    englishsRef.push({
+                        word:word,
+                        trans:trans,
+                        speech:speech,
+                        sender:username,
+                        description:description
+                    })
+                    document.getElementById('post-cancel').click();
+                    NicoNicoText('Nice Job!!');
+                    exp += 10;
+                    updateUI();
+                }else{
+                    NicoNicoText('その単語はすでに存在します');
+                    return;
+                }
+            })
+        });
+        document.getElementById('post-cancel').addEventListener('click', (event) => {
+            event.preventDefault();
+            document.getElementById('post-word').innerText = '';
+            document.getElementById('post-trans').innerText = '';
+            document.getElementById('post-speech').innerText = '';
+            document.getElementById('post-description').innerText = '';
+        })
+        
  
 
-        function forceAdd(word, trans, sender, description){
+        function forceAdd(word, trans, speech, sender, description){
             let englishsRef = database.ref('english');
             englishsRef.push({
                 word:word,
                 trans:trans,
+                speech:speech,
                 sender:sender,
                 description:description
             })
         }
+        //#endregion
     </script>
 </body>
 </html>
