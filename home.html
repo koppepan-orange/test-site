@@ -2,20 +2,51 @@
 <html lang="en-US">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="Icon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <title>test-site</title>
     <style>
         @font-face{font-family:comicsans;src:url('assets/comicsans.ttf');}
         @font-face{font-family:Hangyaku;src:url('assets/Hangyaku.ttf');}
         @font-face{font-family:cube12;src:url('assets/cube12.ttf');}
+        @font-face{font-family:genjuu;src:url('assets/genjuu.ttf');}
         @font-face{font-family:wingdings;src:url('assets/wingdings.ttf');}
+        @font-face{font-family:wingdings2;src:url('assets/wingdings2.ttf');}
+        @font-face{font-family:wingdings3;src:url('assets/wingdings3.ttf');}
+        @font-face{font-family:webdings;src:url('assets/webdings.ttf');}
         @font-face{font-family:kaimetsu;src:url('assets/kaimetsu.otf');}
-        *{
-            background-color: #f0f8ff;
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+        }
+
+        option {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: #def0ff;
+            color: #000000;
+        }
+
+        html{
+            width: 100%;
         }
         #body{
             font-family:comicsans;
+            background-color: #f0f8ff;
+            margin: 0px!important;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            overflow-y: scroll;
         }
 
         #description {
@@ -29,50 +60,120 @@
             z-index: 1000;
         }
 
+        /*こっからupperUI*/
+        #upperUI{
+            display: block;
+            border-bottom: 3px solid #cfe9ff;
+            background-color: #def0ff;
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6vh;
+            padding: 10px;
+            z-index: 997;
+        }
+        #menuToggle{
+            display: block;
+            position: absolute;
+            right:40px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size:40px;
+            cursor: pointer;
+            z-index: 998;
+        }
+        #login-button{
+            display: block;
+            position: absolute;
+            right: 100px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            padding: 3px;
+            border: 2px solid #cfe9ff;
+            cursor: pointer;
+            z-index: 998;
+        }
+        #expbar{
+            display: none;
+            position: absolute;
+            width: 50%;
+            height: 30px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 998;
+            background-color: #4473ad;
+            text-align: center;
+        }
+        #exp{
+            position: absolute;
+            width:0%;
+            height: 24px;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #365172;
+            z-index: 999;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        #exptext{
+            position:absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-size: 20px;
+            color: #f0f8ff;
+            display: inline-block;
+            vertical-align: middle;
+            z-index: 1000;
+        }
+
+        /*こっからsideMenu*/
         #sideMenu {
             position: fixed;
             top: 0;
-            left: -250px;
+            left: -255px;
             width: 250px;
             height: 100%;
             color: #333344;
-            background-color: #cecece;
+            background-color: #def0ff!important;
+            border-right: 3px solid #cfe9ff;
             transition: left 0.3s;
+            padding-left: 5px;
+            z-index:999;
+        };
+        hr{
+            background-color: #cfe9ff;
+            border: 2px solid #cfe9ff;
         }
         #sideMenu ul {
             list-style: none;
             padding: 0;
             margin: 0;
-        }
+            background-color: #def0ff;
+        };
         #sideMenu ul li {
             padding: 3px;
-            background-color: #cecece;
-        }
+        };
         #sideMenu ul li a {
             color: #000000;
-            background-color: #cecece;
             text-decoration: none;
-        }
+        };
         #sideMenu ul li select{
-            background-color: #cecece;
+            background-color: #def0ff;
+            border: 1px solid #cfe9ff;
         }
         #sideMenu button {
-            background-color: #cecece;
+            background-color: #def0ff;
             border: none;
             color: #000000;
             cursor: pointer;
             text-decoration: none;
             padding: 0;
-        }
-        #menuToggle {
-            display: block;
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            color: #000000;
-            border: none;
-            font-size: 26px;
-            cursor: pointer;
         }
 
         #cpopup{
@@ -142,41 +243,158 @@
             font-family: wingdings;
         }
 
+        /*ログインのやつ*/
+        #login{
+            display: block;
+            width: 75%;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #def0ff;
+            border: 1px solid #b5dcff;
+            border-radius: 5px;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease; 
+            z-index: 1234;
+        }
+        #login input {
+            width: calc(100% - 20px);
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #b5dcff;
+        }
+        #login button {
+            width: 100%;
+            padding: 10px;
+            background-color: #cfe9ff;
+            border: 2px solid #b5dcff;
+            color: #000000;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #login button:hover {
+            background-color: #cfe9ff;
+        }
+
+        /*タブ切り替えるやつ 実装は未定*/
+        #tabs{
+            display: block;
+            font-size: 35px;
+            justify-content: space-between;
+            padding: 10px 0;
+            background-color: #def0ff;
+            position: fixed;
+            left:0;
+            right:0;
+            bottom:0px;
+            z-index: 998;
+        }
+        .tab{
+            cursor: pointer;
+        }
+        #home-tab{
+            font-family: webdings;
+        }
+
+        /*こっからhome*/
+        #home{
+            display: block;
+            width:100%;
+            height: 90vh;
+            background-color: #f0f8ff;
+            padding-top: 10px;
+        }
+
         #links{
+            margin-top: 10px;
             max-height: 300px;
             overflow-y: scroll;
             overflow-x: hidden;
-            border: 1px solid #cecece;
+            border: 2px solid #cfecff;
+            background-color: #f0f8ff;
+            margin-bottom: 20px;
         }
 
         #memos{
             max-height: 400px;
             overflow-y: scroll;
             overflow-x: hidden;
-            border: 1px solid #cecece;
+            border: 2px solid #cfecff;
+            background-color: #f0f8ff;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .memo{
+            width: 400px;
+            border: 2px solid #cfe9ff;
+            background-color: #f0f8ff;
+            margin-bottom: 25px;
+            position: relative;
         }
         .m-title{
-            width: 300px;
-            height: 20px;
-            background-color: #f0f8ff;
+            width: 400px;
+            height: 23px;
+            resize: horizontal;
+            border-bottom: 2px solid #cfe9ff;
         }
-        .m-textarea{
-            width: 300px;
-            height: 150px;
-            background-color: #f0f8ff
+        .m-text{
+            width: 400px;
+            height: 160px;
+            resize: both;
+        }
+        .m-delete{
+            position: absolute;
+            top: 1.3px;
+            right: 0px;
+            cursor: pointer;
+            font-family: wingdings; 
+            border: 1px solid #cfe9ff;
+        }
+        .m-delete:hover{
+            color: red;
+        }
+        .m-add{
+            width: 400px;
+            height: 23px;
+            cursor: pointer;
+            font-size: 22px;
+            text-align: center;
+            border: 2px solid #cfe9ff;
         }
 
         #iframes{
             max-height: 1200px;
             overflow-y: scroll;
             overflow-x: hidden;
-            border: 1px solid #cecece;
+            border: 2px solid #cfe9ff;
+            margin-bottom: 20px;
+        }
+        .iframe-frame{
+            width: 100%;
+            height: 100vh;
+            border: 2px solid #cfe9ff;
         }
     </style>
 </head>
 <body id="body">
-    <!--サイドメニュー..-->
-    <div class="menuToggle" id="menuToggle">☰</div>
+
+    <div id="upperUI">
+        <div id="user">
+            <div id="Username">no name</div>
+            <div id="Level">Lv:#ERROR!</div>
+        </div>
+        <div id="expbar">
+            <div id="exp"></div>
+            <div id="exptext">0/NaN</div>
+        </div>
+        <div id="login-button">login</div>
+        
+        <div id="menuToggle">☰</div>
+    </div>
     <nav id="sideMenu">
         <hr noshade="true">
         <ul>
@@ -201,70 +419,61 @@
             <li><a href="memo.html">to memo</a></li>
             <li><a href="https://koppepan-orange.github.io/game-site/welcome.html">to game</a></li>
             <li><a href="tools.html">to tools</a></li>
-            <li><a href="books.html">to books</a>←new!!!</li>
-            <li><a href="hidden.html">to hidden</a>←new!!!</li>
+            <li><a href="books.html">to books</a></li>
+            <li><a href="hidden.html">to hidden</a></li>
+            <li><a href="question.html">to question</a></li>
+            <li><a href="en.html">to english-party</a></li>
             <li class="wd"><a href="home-ura.html">to ura</a></li>
         </ul>
         <hr noshade="true">
         <ul>
             <li class="hastxt" data-name="chara+">chara+</li>
             <li class="hastxt" data-name="enemies+">enemies+</li>
-            <li class="hastxt" data-name="recomend">好きなアプリ発表ドラゴン</li>
         </ul>
         <hr noshade="true">
         <ul>
             <li><span id="wdcheck">HELLO</spanid></li>
         </ul>
     </nav>
-    <div id="cpopup"></div>
-    <h2><p align="center">Koppepan Orange's site</p></h2>
-    <p align="center">ここは何でもあるサイトです！ <i>ゆっくりしていってね！！</i></p>
-    <hr noshade="true">
 
+    <div id="login">
+        <div id="login-form">
+            <input type="text" id="username" placeholder="username">
+            <input type="password" id="password" placeholder="password">
+            <button id="login-login">Login</button>
+        </div>
+    </div>
+
+    <div id="cpopup"></div>
     <iframe id="iframe"></iframe>
     <div id="description"></div>
-    <div id="links"></div>
-    <br>
-    <div id="memos">
-        <input class="m-title" type="text"><br>
-        <textarea class="m-textarea" data-name="1"></textarea>
-        <br><br>
-        <input class="m-title" type="text"><br>
-        <textarea class="m-textarea" data-name="2"></textarea>
-        <br><br>
-        <input class="m-title" type="text"><br>
-        <textarea class="m-textarea" data-name="3"></textarea>
-        <br><br>
-        <input class="m-title" type="text"><br>
-        <textarea class="m-textarea" data-name="4"></textarea>
+
+    <div id="home">
+        <div id="links"></div>
+        <div id="memos"></div>
+        <div id="iframes"><span align="center">調べれたりするところ</span>
+            <details><summary>link site</summary>
+                <input type="text" id="LinkInput" placeholder="write link here">
+                <button class="iframe-button" onclick="LinkframeGo()">Go</button>
+                <select id="LinkSelect" class="iframe-button">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+                <button class="iframe-button">full</button><br>
+                <iframe id="Linkframe1" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+                <iframe id="Linkframe2" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+                <iframe id="Linkframe3" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+                <iframe id="Linkframe4" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+            </details>
+        </div>
     </div>
-    <br>
-    <div id="iframes"><span align="center">調べれたりするところ</span>
-       <details><summary>bing.com</summary><button class="iframe-button" data-id="Iframe-bing">full</button><br>
-            <iframe id="Iframe-bing" width="100%" height="1000" src="https://www.bing.com/search?q=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae%e6%af%8d%e3%82%82%e6%88%91%e3%82%92%e5%be%85%e3%81%a4%e3%82%89%e3%82%80%e3%81%9d&qs=RQ&pq=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae&sc=4-18&cvid=BDF68943856B40AC93BF5E6E4207F06D&FORM=QBRE&sp=1&ghc=1&lq=0"></iframe>
-        </details>
-        <details><summary>bing-trans</summary><button class="iframe-button" data-id="Iframe-bing-trans">full</button><br>
-            <iframe id="Iframe-bing-trans" width="100%" height="1000" src="https://www.bing.com/translator?from=&to=ja&setlang=ja"></iframe>
-        </details>
-        <details><summary>AI Chat</summary><button  class="iframe-button" data-id="Iframe-AI">full</button><br>
-            <iframe id="IframeAI" width="100%" height="1000" src="https://deepai.org/chat"></iframe>
-        </details>
-        <details><summary>link site</summary>
-            <input type="text" id="LinkInput" placeholder="write link here">
-            <button class="iframe-button" onclick="LinkframeGo()">Go</button>
-            <select id="LinkSelect" class="iframe-button">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
-            <button class="iframe-button">full</button><br>
-            <iframe id="Linkframe1" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
-            <iframe id="Linkframe2" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
-            <iframe id="Linkframe3" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
-            <iframe id="Linkframe4" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
-        </details>
+
+    <div id="tabs">
+        <div id="home-tab" class="tab">H</div>
     </div>
+
     <script>
         //#region 扱いやすい子達
         function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
@@ -298,6 +507,13 @@
                 NicoNicoText(`キー: ${key}, 値: ${value}`);
             }
         }
+
+        function setLocalStorage(name, value){
+            localStorage.setItem(name, value || ""); // 値が空なら空文字を入れる
+        }
+        function getLocalStorage(name){
+            return localStorage.getItem(name);
+        }
         
         document.addEventListener('mousemove', (e) => {
         const HasDescription = document.getElementById('description');
@@ -322,8 +538,8 @@
         //#region リンクたちの動き
         const Links = {
         'memo':{
-            'memos': {
-            id: 'memos',
+            'memosi': {
+            id: 'memosi',
             name: 'memo-site',
             href: 'https://koppepan-orange.github.io/test-site/memo.html',
             iframable:1,
@@ -680,7 +896,7 @@
         const sideMenu = document.getElementById('sideMenu');
         menuToggle.addEventListener('click', () => {
             if(sideMenu.style.left === '0px'){
-                sideMenu.style.left = '-250px';
+                sideMenu.style.left = '-255px';
             }else{
                 sideMenu.style.left = '0px';
             }
@@ -727,7 +943,6 @@
         //toggle
         document.querySelectorAll('.toggles').forEach((element) => {
             element.addEventListener('change', (event) => {
-                console.log(event.target.getAttribute('data-name'))
                 if(event.target.checked){
                     document.getElementById(event.target.getAttribute('data-name')).style.display = 'block';
                 }else{
@@ -754,37 +969,254 @@
         })
         //#endregion
         //#region iframeのお話
+        let Iframes = {
+            'bing':{
+                id:'bing',
+                name:'bing.com',
+                src:'https://www.bing.com/search?q=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae%e6%af%8d%e3%82%82%e6%88%91%e3%82%92%e5%be%85%e3%81%a4%e3%82%89%e3%82%80%e3%81%9d&qs=RQ&pq=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae&sc=4-18&cvid=BDF68943856B40AC93BF5E6E4207F06D&FORM=QBRE&sp=1&ghc=1&lq=0',
+            },
+            'bing_trans':{
+                id:'bing_trans',
+                name:'bing-trans',
+                src:'https://www.bing.com/translator?from=&to=ja&setlang=ja',
+            },
+            'deepAI':{
+                id:'deepAI',
+                name:'deep.ai',
+                src:'https://deepai.org/chat',
+            },
+            
+        }
         let NowLinkframe = 1;
         function LinkframeGo(){
             document.getElementById(`Linkframe${NowLinkframe}`).setAttribute('data-src', document.getElementById("LinkInput").value);
             document.getElementById(`Linkframe${NowLinkframe}`).src = document.getElementById("LinkInput").value;
             NicoNicoText('うぇいとふぉあな〜う'); //好きな言葉ランキング上位"wait for now"
         }
-        document.getElementById('LinkSelect').addEventListener('change', event    =>{
+        document.getElementById('LinkSelect').addEventListener('change', event =>{
             let Link = `Linkframe${event.target.value}`;
+
             document.getElementById('Linkframe1').style.display = 'none';
             document.getElementById('Linkframe2').style.display = 'none';
             document.getElementById('Linkframe3').style.display = 'none';
             document.getElementById('Linkframe4').style.display = 'none';
+
             document.getElementById(Link).style.display = 'block';
+
             document.getElementById('LinkInput').value = document.getElementById(`Linkframe${event.target.value}`).getAttribute('data-src');
         })
         //#endregion
-        //#region memos-保存するよ
+        //#region DOMContentLoaded -- memos, iframes
+        let numberOfMemo = 4;
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.m-textarea').forEach(element => {
-                element.value = localStorage.getItem(element.getAttribute('data-name')) || '';
+            
+            numberOfMemo = +getLocalStorage("numberOfMemo")??4;
+            console.log(`メモの数は${numberOfMemo}個やで`);
+            for(let i = 1; i <= numberOfMemo; i++){
+                let memo = getLocalStorage(`memo${i}`);
+                let memoElement = memoCreate(memo, i);
+                document.getElementById('memos').appendChild(memoElement);
+            }
+            let memoAdd = memoAddCreate();
+            document.getElementById('memos').appendChild(memoAdd);
 
-                element.addEventListener('change', () => {
-                    console.log('変わったね');
-                    localStorage.setItem(element.getAttribute('data-name'), element.value);
-                });
-            });
+
+            const iframes = getLocalStorage("iframes")??['bing', 'bing_trans', 'deepAI'];
+            iframes.forEach(iframe => {
+                const details = document.createElement("details");
+
+                const summary = document.createElement("summary");
+                summary.textContent = Iframes[iframe].name;
+
+                const button = document.createElement("button");
+                button.className = "iframe-button";
+                button.dataset.id = `Iframe-${iframe}`;
+                button.textContent = "full";
+
+                const br = document.createElement("br");
+
+                const iframeElement = document.createElement("iframe");
+                iframeElement.dataset.id = `Iframe-${iframe}`;
+                iframeElement.className = "iframe-frame";
+                iframeElement.src = Iframes[iframe].src;
+
+                details.appendChild(summary);
+                details.appendChild(button);
+                details.appendChild(br);
+                details.appendChild(iframeElement);
+
+                document.getElementById("iframes").appendChild(details); // 追加したい要素に変更して
+            })
+
+
+            autoLogin();
         });
+
+        function memoCreate(memo,i){
+            let memoElement = document.createElement('div');
+            memoElement.className = 'memo';
+            memoElement.id = `memo${i}`;
+            memoElement.setAttribute('data-num', i);
+
+            let title = document.createElement('div');
+            title.className = 'm-title';
+            title.innerText = `memo${i}`;
+            title.setAttribute('contenteditable', 'true');
+            memoElement.appendChild(title);
+
+            let text = document.createElement('div');
+            text.className = 'm-text';
+            text.innerText = memo??'';
+            text.setAttribute('contenteditable', 'true');
+            memoElement.appendChild(text);
+
+            let deleteButton = document.createElement('div');
+            deleteButton.className = 'm-delete';
+            deleteButton.innerText = 'M';
+            deleteButton.addEventListener('click', () => {
+                localStorage.removeItem(`memo${i}`);
+                memoElement.remove();
+
+                document.querySelectorAll('.memo').forEach(memo => {
+                    let memoNum = +memo.getAttribute('data-num')
+                    if(memoNum > i){
+                        memo.setAttribute('data-num', memoNum - 1);
+                        memo.querySelector('.m-title').innerText = `memo${memoNum-1}`;
+                        memo.querySelector('.m-text').innerText = getLocalStorage(`memo${memoNum}`);
+                        setLocalStorage(`memo${memoNum-1}`, getLocalStorage(`memo${memoNum}`));
+                    }
+                });
+                
+                numberOfMemo = +numberOfMemo - 1;
+                setLocalStorage("numberOfMemo", +numberOfMemo);
+            });
+            memoElement.appendChild(deleteButton);
+
+            memoElement.addEventListener('input', ele => {
+                setLocalStorage(`memo${i}`, document.getElementById(`memo${i}`).querySelector('.m-text').innerText);
+            });
+
+            return memoElement;
+        }
+        function memoAddCreate(){
+            const memoAdd = document.createElement('div');
+            memoAdd.className = 'm-add';
+            memoAdd.id = 'memoAdd';
+            memoAdd.innerText = '+';
+            memoAdd.addEventListener('click', () => {
+                memoAdd.remove();
+                numberOfMemo = +numberOfMemo + 1;
+                setLocalStorage("numberOfMemo", +numberOfMemo);
+                let memoElement = memoCreate('', numberOfMemo);
+                document.getElementById('memos').appendChild(memoElement);  
+                let memoAdd2 = memoAddCreate();
+                document.getElementById('memos').appendChild(memoAdd2);
+            })
+            return memoAdd;
+        }
+        //#endregion    
+
+
+        //#region firebaseのいざこざ
+        const firebaseConfig = {
+            apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
+            authDomain: "k  oppepan-orange.firebaseapp.com",
+            databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
+            projectId: "koppepan-orange",
+            storageBucket: "koppepan-orange.appspot.com",
+            messagingSenderId: "730150198097",
+            appId: "1:730150198097:web:076a074a3d406053155170",
+            measurementId: "G-MYKJWD203Z"
+        };
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+        let username = 'no name';
+        let usersRef = null;
+
         //#endregion
+        //#region ログイン機構
+        document.getElementById('login-button').addEventListener('click', () => {
+            if(document.getElementById('login').style.opacity == 0){
+                document.getElementById('login').style.opacity = 1;
+            }else{
+                document.getElementById('login').style.opacity = 0;
+            }
+        })
+        function login(){
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('login-button').style.display = 'none';
+            document.getElementById('expbar').style.display = 'block';
 
+            // document.getElementById('tabs').style.display = 'flex';
+            // searchTab.click();
+            // nowtab = 'Search';
 
-        
+            usersRef = database.ref('users/'+username);
+
+            usersRef.once('value', function(snapshot){
+                if(snapshot.exists()){
+                    const userData = snapshot.val();
+                    level = userData.level??1;
+                    exp = userData.exp??0;
+                    maxexp = exp*level+50;
+                    updateUI();
+                }
+            })
+        }
+
+        document.getElementById('login-login').addEventListener('click', () => {
+            username = document.getElementById('username').value;
+            let password = document.getElementById('password').value;
+
+            let kariusersRef = database.ref(`users/${username}`);
+            kariusersRef.once('value', function(snapshot){
+                if(snapshot.exists()){
+                    if(snapshot.val().password == password){
+                        setLocalStorage("username", username)
+                        login();
+                    }
+                }else{
+                    let usersRef = database.ref(`users/${username}`);
+                    usersRef.update({
+                        password:password,
+                        banned: 0,
+                        blocked: [],
+                    })
+                    NicoNicoText('ようこそ');
+                    setLocalStorage("username", username)
+                    login();
+                }
+            })
+        })
+
+        function autoLogin(){
+            username = getLocalStorage("username");
+            if(username){
+                console.log("自動ログインしました");
+                login();
+            }else{
+                console.log("ログインしてください");
+            }
+        }
+        //#endregion
+        //#region expとか
+        let exp = 0;
+        let level = 1;
+        let maxexp = 50;
+        let expbar = document.getElementById('exp');
+        let exptext = document.getElementById('exptext');
+        function updateUI(){
+            if(exp >= maxexp){
+                exp -= maxexp;
+                level += 1;
+                maxexp += 25;
+            }
+            expbar.style.width = `${exp/maxexp*100}%`;
+            exptext.innerText = `${exp}/${maxexp}`
+            document.getElementById('Username').textContent = username;
+            document.getElementById('Level').textContent = `Lv:${level}`;
+        }
+        //#endregion
     </script>
 </body>
 </html>
