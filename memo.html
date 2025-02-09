@@ -270,13 +270,13 @@
 
 
     const menuToggle = document.getElementById('menuToggle');
-      const sideMenu = document.getElementById('sideMenu');
-      menuToggle.addEventListener('click', () => {
-        if(sideMenu.style.left === '0px'){
-            sideMenu.style.left = '-250px';
-        }else{
-            sideMenu.style.left = '0px';
-        }
+    const sideMenu = document.getElementById('sideMenu');
+    menuToggle.addEventListener('click', () => {
+      if(sideMenu.style.left === '0px'){
+        sideMenu.style.left = '-250px';
+      }else{
+        sideMenu.style.left = '0px';
+      }
     });
 
     const bodyTextarea = document.querySelector('textarea#body');

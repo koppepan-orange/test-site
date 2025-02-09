@@ -2,94 +2,58 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Simple Memo Site</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>展開式アイコンメニュー</title>
     <style>
         body {
             margin: 0;
-            padding: 20px;
-            font-family: Arial, sans-serif;
+            height: 100vh;
+            background-color: #f0f0f0;
         }
-        .container {
+        .smart-menu{
+            position: fixed;
+            right: 0px;
+            bottom: 0px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            margin-bottom: 10px;
-        }
-        select {
-            margin-right: 10px;
-            padding: 5px;
-        }
-        textarea {
-            width: 100%;
-            height: 85vh;
-            font-size: 16px;
             padding: 10px;
-            box-sizing: border-box;
-            resize: none;
+        }
+        .smart-icon{
+            width: 50px;
+            height: 50px;
+            background-color: #333;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin: 5px 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 80%, 80% 100%, 0% 100%);
+        }
+        .smart-icon.hidden{
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .smart-phone{
+            background-color: #4473ad;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <select id="memoSlot">
-            <option value="1">メモ 1</option>
-            <option value="2">メモ 2</option>
-            <option value="3">メモ 3</option>
-            <option value="4">メモ 4</option>
-            <option value="5">メモ 5</option>
-        </select>
+    <div class="smart-menu">
+        <div class="smart-icon hidden">A</div>
+        <div class="smart-icon hidden">B</div>
+        <div class="smart-icon hidden">C</div>
+        <div class="smart-icon smart-phone">☰</div>
     </div>
-    <textarea id="memo" placeholder="write here your memo..."></textarea>
-
     <script>
-        const memoArea = document.getElementById('memo');
-        const memoSlot = document.getElementById('memoSlot');
-
-        let memoslot = 1;
-
-        function delay(ms){return new Promise(resolve => setTimeout(resolve, ms));}
-
-        // ページ読み込み時に保存されたメモを復元
-        window.addEventListener('load', () => {
-            // 最後に選択されていたスロットを復元
-            const lastSelectedSlot = localStorage.getItem('lastSelectedSlot');
-            if(lastSelectedSlot){
-                memoslot = lastSelectedSlot??1;
-                memoSlot.value = memoslot;
-            }
-
-            // 選択中のスロットのメモを復元
-            const savedMemo = localStorage.getItem(`savedMemo_${memoSlot.value}`);
-            if(savedMemo){
-                memoArea.value = savedMemo;
-            }
-        });
-        // スロット選択時の処理
-        memoSlot.addEventListener('change',async function(){
-            // 選択されたスロットのメモを保存
-            localStorage.setItem(`savedMemo_${memoslot}`, memoArea.value);
-            memoArea.value = 'wait for now...';
-            await delay(200);
-            
-            // 最後に選択されたスロットを記憶
-            localStorage.setItem('lastSelectedSlot', memoslot);
-            await delay(200);
-
-            // 新しいスロットのメモを復元
-            const savedMemo = localStorage.getItem(`savedMemo_${memoSlot.value}`);
-            await delay(200);
-            memoArea.value = savedMemo??'';
-            memoslot = memoSlot.value;
-        });
-
-        // メモの内容が変更されたら保存
-        memoArea.addEventListener('input', () => {
-            localStorage.setItem(`savedMemo_${memoSlot.value}`, memoArea.value);
-        });
-
-        // ページを閉じる前に保存
-        window.addEventListener('beforeunload', () => {
-            localStorage.setItem(`savedMemo_${memoSlot.value}`, memoArea.value);
-            localStorage.setItem('lastSelectedSlot', memoSlot.value);
+        document.querySelector(".smart-phone").addEventListener("click", function () {
+            document.querySelectorAll(".smart-icon:not(.smart-phone)").forEach(icon => {
+                icon.classList.toggle("hidden");
+            });
         });
     </script>
 </body>

@@ -11,9 +11,11 @@
     <title>test-site</title>
     <style>
         @font-face{font-family:comicsans;src:url('assets/comicsans.ttf');}
+        @font-face{font-family:papyrus;src:url('assets/papyrus.ttf');}
         @font-face{font-family:Hangyaku;src:url('assets/Hangyaku.ttf');}
         @font-face{font-family:cube12;src:url('assets/cube12.ttf');}
         @font-face{font-family:genjuu;src:url('assets/genjuu.ttf');}
+        @font-face{font-family:hackgen;src:url('assets/hackgen.ttf');}
         @font-face{font-family:wingdings;src:url('assets/wingdings.ttf');}
         @font-face{font-family:wingdings2;src:url('assets/wingdings2.ttf');}
         @font-face{font-family:wingdings3;src:url('assets/wingdings3.ttf');}
@@ -43,8 +45,10 @@
             font-family:comicsans;
             background-color: #f0f8ff;
             margin: 0px!important;
+            font-size: 18px;
             width: 100%;
             max-width: 100%;
+            padding-bottom: 65px;
             overflow-x: hidden;
             overflow-y: scroll;
         }
@@ -68,7 +72,6 @@
             position: relative;
             top: 0;
             left: 0;
-            width: 100%;
             height: 6vh;
             padding: 10px;
             z-index: 997;
@@ -76,7 +79,7 @@
         #menuToggle{
             display: block;
             position: absolute;
-            right:40px;
+            right:30px;
             top: 50%;
             transform: translateY(-50%);
             font-size:40px;
@@ -176,6 +179,40 @@
             padding: 0;
         }
 
+        /*こっからsmart-phone*/
+        .smart-menu{
+            position: fixed;
+            right: 0px;
+            bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .smart-icon{
+            width: 50px;
+            height: 50px;
+            background-color: #333;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-family: webdings;
+            margin: 5px 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 80%, 80% 100%, 0% 100%);
+        }
+        .smart-icon.hidden{
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .smart-phone{
+            font-family: wingdings;
+            background-color: #4473ad;
+        }
+
         #cpopup{
             display: none;
             position: fixed;
@@ -243,6 +280,11 @@
             font-family: wingdings;
         }
 
+        .row{
+            display: flex;
+            flex-direction: row;
+        }
+
         /*ログインのやつ*/
         #login{
             display: block;
@@ -279,26 +321,30 @@
         #login button:hover {
             background-color: #cfe9ff;
         }
+        #logout{
+            cursor: pointer;
+        }
 
         /*タブ切り替えるやつ 実装は未定*/
-        #tabs{
-            display: block;
+        .tabs{
+            display: flex;
+            height:45px;
             font-size: 35px;
             justify-content: space-between;
-            padding: 10px 0;
+            padding: 10px 25%;
             background-color: #def0ff;
             position: fixed;
-            left:0;
-            right:0;
+            left:0;right:0;
             bottom:0px;
             z-index: 998;
         }
         .tab{
             cursor: pointer;
         }
-        #home-tab{
-            font-family: webdings;
-        }
+        #home-tab{font-family: webdings;}
+        #memo-tab{font-family: wingdings;}
+
+        /*こっからHome*/
 
         /*こっからhome*/
         #home{
@@ -345,6 +391,7 @@
             width: 400px;
             height: 160px;
             resize: both;
+            font-size: 16px;
         }
         .m-delete{
             position: absolute;
@@ -378,6 +425,39 @@
             height: 100vh;
             border: 2px solid #cfe9ff;
         }
+
+        /*こっからmemo*/
+        #memo{
+            display: none;
+        }
+        #memo-title{
+            display: block;
+            border: 2px solid #cfe9ff;
+            background-color: #f0f8ff;
+            padding: 5px;
+            width: 100px;
+            height: 20px;
+        }
+        #memo-text{
+            margin-top: 10px;
+            display: block;
+            border: 2px solid #cfe9ff;
+            background-color: #f0f8ff;
+            padding: 5px;
+            width: 100%;
+            height: 90vh;
+            font-size: 16px;
+        }
+
+        /*こっからCommu*/
+        #Commu{
+            display: none;
+        }
+
+        /*こっからQuestion*/
+        #Question{
+            display: none;
+        }
     </style>
 </head>
 <body id="body">
@@ -407,16 +487,20 @@
         <li>
             <select id="font-select" onchange="changeFont()">
                 <option value="comicsans">comicsans</option>
+                <option value="papyrus">papyrus</option>
                 <option value="Hangyaku">Hangyaku</option>
                 <option value="cube12">cube12</option>
+                <option value="genjuu">genjuu</option>
+                <option value="hackgen">hackgen</option>
+                <option class="wd" value="webdings">webdings</option>
                 <option class="wd" value="wingdings">wingdings</option>
+                <option class="wd" value="wingdings2">wingdings2</option>
+                <option class="wd" value="wingdings3">wingdings3</option>
             </select>
         </li>
         </ul>
         <hr noshade="true">
         <ul>
-            <li><a href="home.html">to home</a></li>
-            <li><a href="memo.html">to memo</a></li>
             <li><a href="https://koppepan-orange.github.io/game-site/welcome.html">to game</a></li>
             <li><a href="tools.html">to tools</a></li>
             <li><a href="books.html">to books</a></li>
@@ -432,9 +516,18 @@
         </ul>
         <hr noshade="true">
         <ul>
+            <li><span id="logout">Logout</span></li>
             <li><span id="wdcheck">HELLO</spanid></li>
         </ul>
     </nav>
+
+    <div class="smart-menu">
+        <div class="smart-icon hidden" data-name="news-icon">V</div>
+        <div class="smart-icon hidden" data-name="daily-icon">e</div>
+        <div class="smart-icon hidden" data-name="home-icon">H</div>
+        <div class="smart-icon hidden" data-name="commu-icon">^</div>
+        <div class="smart-icon smart-phone">:</div>
+    </div>
 
     <div id="login">
         <div id="login-form">
@@ -448,31 +541,49 @@
     <iframe id="iframe"></iframe>
     <div id="description"></div>
 
-    <div id="home">
-        <div id="links"></div>
-        <div id="memos"></div>
-        <div id="iframes"><span align="center">調べれたりするところ</span>
-            <details><summary>link site</summary>
-                <input type="text" id="LinkInput" placeholder="write link here">
-                <button class="iframe-button" onclick="LinkframeGo()">Go</button>
-                <select id="LinkSelect" class="iframe-button">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                </select>
-                <button class="iframe-button">full</button><br>
-                <iframe id="Linkframe1" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
-                <iframe id="Linkframe2" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
-                <iframe id="Linkframe3" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
-                <iframe id="Linkframe4" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
-            </details>
+    <div id="Home">
+        <div id="home">
+            <div id="links"></div>
+            <div id="memos"></div>
+            <div id="iframes"><span align="center">調べれたりするところ</span>
+                <details><summary>link site</summary>
+                    <input type="text" id="LinkInput" placeholder="write link here">
+                    <button class="iframe-button" onclick="LinkframeGo()">Go</button>
+                    <select id="LinkSelect" class="iframe-button">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                    <button class="iframe-button">full</button><br>
+                    <iframe id="Linkframe1" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+                    <iframe id="Linkframe2" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+                    <iframe id="Linkframe3" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+                    <iframe id="Linkframe4" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+                </details>
+            </div>
         </div>
+
+        <div id="memo">
+            <div class="row">
+                <div type="text" id="memo-title" contenteditable></div>
+                <button id="memo-search">search</button>
+            </div>
+            <div id="memo-text" contenteditable></div>
+        </div>
+
+        <div class="tabs"></div>
     </div>
 
-    <div id="tabs">
-        <div id="home-tab" class="tab">H</div>
+    <div id="Commu">
+        <div class="tabs"></div>
     </div>
+
+    <div id="Question">
+        <div class="tabs"></div>
+    </div>
+
+
 
     <script>
         //#region 扱いやすい子達
@@ -509,10 +620,13 @@
         }
 
         function setLocalStorage(name, value){
-            localStorage.setItem(name, value || ""); // 値が空なら空文字を入れる
+            localStorage.setItem(name, value || ""); // 値が空なら空文字を←歌詞みたい
         }
         function getLocalStorage(name){
             return localStorage.getItem(name);
+        }
+        function removeLocalStorage(name){
+            localStorage.removeItem(name);
         }
         
         document.addEventListener('mousemove', (e) => {
@@ -535,6 +649,386 @@
         }
         });
         //#endregion
+        //#region DOMContentLoaded -- memos, iframes
+        let numberOfMemo = 4;
+        document.addEventListener('DOMContentLoaded', () => {
+            Object.keys(Tabs).forEach(doko => {
+                Object.keys(Tabs[doko]).forEach(tab => {
+                    const tabElement = document.createElement("div");
+                    tabElement.className = "tab";
+                    tabElement.id = `${tab}-tab`;
+                    if(Tabs[doko][tab].initial == 1){
+                        tabElement.textContent = Tabs[doko][tab].open;   
+                    }else{
+                        tabElement.textContent = Tabs[doko][tab].close;
+                    }
+                    tabElement.dataset.doko = doko;
+                    tabElement.dataset.name = Tabs[doko][tab].name;
+                    document.querySelector(`#${doko} .tabs`).appendChild(tabElement);
+                })
+            })
+
+            //#region memo
+            numberOfMemo = +getLocalStorage("numberOfMemo")??4;
+            console.log(`メモの数は${numberOfMemo}個やで`);
+            for(let i = 1; i <= numberOfMemo; i++){
+                let memo = getLocalStorage(`memo${i}`);
+                let memoElement = memoCreate(memo, i);
+                document.getElementById('memos').appendChild(memoElement);
+            }
+            let memoAdd = memoAddCreate();
+            document.getElementById('memos').appendChild(memoAdd);
+            //#endregion
+
+            const iframes = getLocalStorage("iframes")??['bing', 'bing_trans', 'deepAI'];
+            iframes.forEach(iframe => {
+                const details = document.createElement("details");
+
+                const summary = document.createElement("summary");
+                summary.textContent = Iframes[iframe].name;
+
+                const button = document.createElement("button");
+                button.className = "iframe-button";
+                button.dataset.id = `Iframe-${iframe}`;
+                button.textContent = "full";
+
+                const br = document.createElement("br");
+
+                const iframeElement = document.createElement("iframe");
+                iframeElement.dataset.id = `Iframe-${iframe}`;
+                iframeElement.className = "iframe-frame";
+                iframeElement.src = Iframes[iframe].src;
+
+                details.appendChild(summary);
+                details.appendChild(button);
+                details.appendChild(br);
+                details.appendChild(iframeElement);
+
+                document.getElementById("iframes").appendChild(details); // 追加したい要素に変更して
+            })
+
+            autoLogin();   
+        });
+
+        function memoCreate(memo,i){
+            let memoElement = document.createElement('div');
+            memoElement.className = 'memo';
+            memoElement.id = `memo${i}`;
+            memoElement.setAttribute('data-num', i);
+
+            let title = document.createElement('div');
+            title.className = 'm-title';
+            title.innerText = `memo${i}`;
+            title.setAttribute('contenteditable', 'true');
+            memoElement.appendChild(title);
+
+            let text = document.createElement('div');
+            text.className = 'm-text';
+            text.innerText = memo??'';
+            text.setAttribute('contenteditable', 'true');
+            memoElement.appendChild(text);
+
+            let deleteButton = document.createElement('div');
+            deleteButton.className = 'm-delete';
+            deleteButton.innerText = 'M';
+            deleteButton.addEventListener('click', () => {
+                localStorage.removeItem(`memo${i}`);
+                memoElement.remove();
+
+                document.querySelectorAll('.memo').forEach(memo => {
+                    let memoNum = +memo.getAttribute('data-num')
+                    if(memoNum > i){
+                        memo.setAttribute('data-num', memoNum - 1);
+                        memo.querySelector('.m-title').innerText = `memo${memoNum-1}`;
+                        memo.querySelector('.m-text').innerText = getLocalStorage(`memo${memoNum}`);
+                        setLocalStorage(`memo${memoNum-1}`, getLocalStorage(`memo${memoNum}`));
+                    }
+                });
+                
+                numberOfMemo = +numberOfMemo - 1;
+                setLocalStorage("numberOfMemo", +numberOfMemo);
+            });
+            memoElement.appendChild(deleteButton);
+
+            memoElement.addEventListener('input', ele => {
+                setLocalStorage(`memo${i}`, document.getElementById(`memo${i}`).querySelector('.m-text').innerText);
+            });
+
+            return memoElement;
+        }
+        function memoAddCreate(){
+            const memoAdd = document.createElement('div');
+            memoAdd.className = 'm-add';
+            memoAdd.id = 'memoAdd';
+            memoAdd.innerText = '+';
+            memoAdd.addEventListener('click', () => {
+                memoAdd.remove();
+                numberOfMemo = +numberOfMemo + 1;
+                setLocalStorage("numberOfMemo", +numberOfMemo);
+                let memoElement = memoCreate('', numberOfMemo);
+                document.getElementById('memos').appendChild(memoElement);  
+                let memoAdd2 = memoAddCreate();
+                document.getElementById('memos').appendChild(memoAdd2);
+            })
+            return memoAdd;
+        }
+        //#endregion    
+
+        //こまごめピペット
+        //#region upperUIとsideMenu
+        const upperUI = document.getElementById('upperUI');
+
+        const menuToggle = document.getElementById('menuToggle');
+        const sideMenu = document.getElementById('sideMenu');
+        menuToggle.addEventListener('click', () => {
+            if(sideMenu.style.left === '0px'){
+                sideMenu.style.left = '-255px';
+            }else{
+                sideMenu.style.left = '0px';
+            }
+        });
+
+        document.querySelector(".smart-phone").addEventListener("click", function () {
+            document.querySelectorAll(".smart-icon:not(.smart-phone)").forEach(icon => {
+                icon.classList.toggle("hidden");
+            });
+        });
+
+
+        let cpopup = document.getElementById('cpopup');
+        let cpopupNow = 0;
+        document.querySelectorAll('.hastxt').forEach((element) => {
+            addEventListener('click', (event) => {
+                element.addEventListener('click', (event) => {
+                    if(cpopupNow == 0){
+                        let name = event.target.getAttribute('data-name');
+                        console.log(name+'が発動しましたぜぇい')
+                        fetch(`assets/txts/${name}.txt`)
+                        .then(response => response.text())
+                        .then(data => {cpopup.innerText = data;})
+                        .catch(error => console.error('Error:', error));
+                        cpopup.style.display = 'block';
+                        cpopupNow = 1;
+                    }else{
+                        cpopup.innerHTML = '';
+                        cpopup.style.display = 'none';
+                        cpopupNow = 0;
+                    }
+                })
+            })
+        })
+
+        //change-font
+        function changeFont(){
+            document.getElementById('body').style.fontFamily = document.getElementById('font-select').value;
+        }
+
+        //toggle
+        document.querySelectorAll('.toggles').forEach((element) => {
+            element.addEventListener('change', (event) => {
+                if(event.target.checked){
+                    document.getElementById(event.target.getAttribute('data-name')).style.display = 'block';
+                }else{
+                    document.getElementById(event.target.getAttribute('data-name')).style.display = 'none';
+                }
+            })
+        })
+
+        //#endregion
+        //#region tabs
+        const Tabs = {
+            'Home':{
+                'home':{
+                    name:'home',
+                    initial:1,
+                    open:'H',
+                    close:'H'
+                },
+                'memo':{
+                    name:'memo',
+                    initial:0,
+                    open:'2',
+                    close:'2'
+                },
+            },
+
+            'Commu':{
+                'nanj':{
+                    name:'nanj',
+                    initial:1,
+                    open:"\\",
+                    close:'\\'
+                },
+                'twitter2':{
+                    name:'twitter2',
+                    initial:0,
+                    open:'}',
+                    close:'}'
+                },
+                'jine':{
+                    name:'jine',
+                    initial:0,
+                    open:'~',
+                    close:'~'
+                }
+            },
+
+            'Question':{
+                'answer':{
+                    name:'answer',//以下通知あるよver 使用未定
+                    initial:1,
+                    open:'.',// /
+                    close:'-'// ,
+                },
+                'question':{
+                    name:'question',
+                    initial:0,
+                    open:'?',
+                    close:'!'
+                },
+            }
+        }
+
+        document.addEventListener('click', ele => {
+            if(ele.target.classList.contains('tab')){
+                let doko = Tabs[ele.target.dataset.doko]
+                let key = ele.target.dataset.name
+                Object.keys(doko).forEach(tab => {
+                    document.getElementById(tab).style.display = 'none';
+                    document.getElementById(`${tab}-tab`).textContent = doko[tab].close;
+                })
+                document.getElementById(ele.target.dataset.name).style.display = 'block';
+                ele.textContent = doko[key].open;
+            }
+        })
+        
+        //#endregion
+        //#region wingdings特殊機構のお話
+        let wdnow = 0;
+        document.getElementById('wdcheck').addEventListener('click', () => {
+        if(wdnow == 0){
+        wdnow = 1;
+        document.querySelectorAll('.wd').forEach(element => {
+        element.style.display = 'inline';
+        })
+        }else{
+        wdnow = 0;
+        document.querySelectorAll('.wd').forEach(element => {
+        element.style.display = 'none';
+        })
+        }
+        })
+        //#endregion
+        //#region firebaseのいざこざ
+        const firebaseConfig = {
+            apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
+            authDomain: "koppepan-orange.firebaseapp.com",
+            databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
+            projectId: "koppepan-orange",
+            storageBucket: "koppepan-orange.appspot.com",
+            messagingSenderId: "730150198097",
+            appId: "1:730150198097:web:076a074a3d406053155170",
+            measurementId: "G-MYKJWD203Z"
+        };
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+        let username = 'no name';
+        let usersRef = null;
+
+        //#endregion
+        //#region ログイン機構
+        document.getElementById('login-button').addEventListener('click', () => {
+            if(document.getElementById('login').style.opacity == 0){
+                document.getElementById('login').style.opacity = 1;
+            }else{
+                document.getElementById('login').style.opacity = 0;
+            }
+        })
+        function login(){
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('login-button').style.display = 'none';
+            document.getElementById('expbar').style.display = 'block';
+
+            usersRef = database.ref('users/'+username);
+
+            usersRef.once('value', function(snapshot){
+                if(snapshot.exists()){
+                    const userData = snapshot.val();
+                    level = userData.level??1;
+                    exp = userData.exp??0;
+                    maxexp = exp*level+50;
+                    updateUI();
+                }
+            })
+        }
+
+        document.getElementById('login-login').addEventListener('click', () => {
+            username = document.getElementById('username').value;
+            let password = document.getElementById('password').value;
+
+            let kariusersRef = database.ref(`users/${username}`);
+            kariusersRef.once('value', function(snapshot){
+                if(snapshot.exists()){
+                    if(snapshot.val().password == password){
+                        setLocalStorage("username", username)
+                        login();
+                    }
+                }else{
+                    let usersRef = database.ref(`users/${username}`);
+                    usersRef.update({
+                        password:password,
+                        banned: 0,
+                        blocked: [],
+                    })
+                    NicoNicoText('ようこそ');
+                    setLocalStorage("username", username)
+                    login();
+                }
+            })
+        })
+
+        function autoLogin(){
+            username = getLocalStorage("username")??'no name';
+            if(username){
+                console.log("自動ログインしました");
+                login();
+            }else{
+                console.log("ログインしてください");
+            }
+        }
+        
+        document.getElementById('logout').addEventListener('click', () => {
+            username = 'no name';removeLocalStorage("username");
+            document.getElementById('Username').textContent = username;
+            document.getElementById('Level').textContent = `Lv:${level}`;
+            document.getElementById('expbar').style.display = 'none';
+            sideMenu.style.left = '-255px';
+
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        })
+        //#endregion
+        //#region expとか
+        let exp = 0;
+        let level = 1;
+        let maxexp = 50;
+        let expbar = document.getElementById('exp');
+        let exptext = document.getElementById('exptext');
+        function updateUI(){
+            if(exp >= maxexp){
+                exp -= maxexp;
+                level += 1;
+                maxexp += 25;
+            }
+            expbar.style.width = `${exp/maxexp*100}%`;
+            exptext.innerText = `${exp}/${maxexp}`
+            document.getElementById('Username').textContent = username;
+            document.getElementById('Level').textContent = `Lv:${level}`;
+        }
+        //#endregion
+        
+        //#region Home
+        //home
         //#region リンクたちの動き
         const Links = {
         'memo':{
@@ -853,119 +1347,41 @@
         };
         let iframenow = 0;
         Object.keys(Links).forEach(type => {
-        const details = document.createElement('details');
-        const summary = document.createElement('summary');
-        summary.textContent = type;
-        details.appendChild(summary);
-        details.id = type;
-        document.getElementById('links').appendChild(details);
+            const details = document.createElement('details');
+            const summary = document.createElement('summary');
+            summary.textContent = type;
+            details.appendChild(summary);
+            details.id = `${type}tachi`;
+            document.getElementById('links').appendChild(details);
 
-        Object.keys(Links[type]).forEach(key => {
-        const link = Links[type][key];
-        const a = document.createElement('a');
-        a.href = link.href;
-        a.textContent = link.name;
-        a.id = link.id;
-        a.className = 'hasd';
-        a.target = '_blank';
-        a.setAttribute('data-description', link.description);
+            Object.keys(Links[type]).forEach(key => {
+                const link = Links[type][key];
+                const a = document.createElement('a');
+                a.href = link.href;
+                a.textContent = link.name;
+                a.className = 'hasd';
+                a.target = '_blank';
+                a.setAttribute('data-description', link.description);
 
-        if(link.iframable == 1){
-        a.addEventListener('contextmenu', (event) => {
-        event.preventDefault();
-        if(iframenow == 0){
-        iframenow = 1;//なぜか反応してない。Links['memos']の形にするべき？
-        const iframe = document.getElementById('iframe');
-        iframe.style.display = 'block';
-        iframe.src = link.href;
-        }else{
-        iframenow = 0;
-        const iframe = document.getElementById('iframe');
-        iframe.style.display = 'none';
-        }
-        })
-        }
-        document.getElementById(type).appendChild(a);
-        document.getElementById(type).appendChild(document.createElement('br'));
-        });
-        document.getElementById(type).appendChild(document.createElement('br'));
-        })
-        //#endregion
-        //#region sideMenu
-        const menuToggle = document.getElementById('menuToggle');
-        const sideMenu = document.getElementById('sideMenu');
-        menuToggle.addEventListener('click', () => {
-            if(sideMenu.style.left === '0px'){
-                sideMenu.style.left = '-255px';
-            }else{
-                sideMenu.style.left = '0px';
-            }
-        });
-
-
-        let cpopup = document.getElementById('cpopup');
-        let cpopupNow = 0;
-        document.querySelectorAll('.hastxt').forEach((element) => {
-            addEventListener('click', (event) => {
-                element.addEventListener('click', (event) => {
-                    if(cpopupNow == 0){
-                        let name = event.target.getAttribute('data-name');
-                        console.log(name+'が発動しましたぜぇい')
-                        fetch(`assets/txts/${name}.txt`)
-                        .then(response => response.text())
-                        .then(data => {cpopup.innerText = data;})
-                        .catch(error => console.error('Error:', error));
-                        cpopup.style.display = 'block';
-                        cpopupNow = 1;
-                    }else{
-                        cpopup.innerHTML = '';
-                        cpopup.style.display = 'none';
-                        cpopupNow = 0;
-                    }
-                })
-            })
-        })
-
-        //change-font
-        function changeFont(){
-        document.getElementById('body').style.fontFamily = document.getElementById('font-select').value;
-        // if(document.getElementById('font-select').value == 'Hangyaku'){
-        //     document.getElementById('body').style.fontSize = '23px';
-        // }else{
-        //     document.getElementById('body').style.fontSize = '17px';
-        // }
-        if(document.getElementById('font-select').value == 'wingdings'){
-        document.getElementById('wdtextarea').style.fontFamily = 'wingdings, kaimetsu';
-
-        }
-        }
-
-        //toggle
-        document.querySelectorAll('.toggles').forEach((element) => {
-            element.addEventListener('change', (event) => {
-                if(event.target.checked){
-                    document.getElementById(event.target.getAttribute('data-name')).style.display = 'block';
-                }else{
-                    document.getElementById(event.target.getAttribute('data-name')).style.display = 'none';
+                if(link.iframable == 1){
+                    a.addEventListener('contextmenu', (event) => {
+                        event.preventDefault();
+                        if(iframenow == 0){
+                            iframenow = 1;//なぜか反応してない。Links['memos']の形にするべき？
+                            const iframe = document.getElementById('iframe');
+                            iframe.style.display = 'block';
+                            iframe.src = link.href;
+                        }else{
+                            iframenow = 0;
+                            const iframe = document.getElementById('iframe');
+                            iframe.style.display = 'none';
+                        }
+                    })
                 }
-            })
-        })
-
-        //#endregion
-        //#region wingdings特殊機構のお話
-        let wdnow = 0;
-        document.getElementById('wdcheck').addEventListener('click', () => {
-        if(wdnow == 0){
-        wdnow = 1;
-        document.querySelectorAll('.wd').forEach(element => {
-        element.style.display = 'inline';
-        })
-        }else{
-        wdnow = 0;
-        document.querySelectorAll('.wd').forEach(element => {
-        element.style.display = 'none';
-        })
-        }
+                document.getElementById(`${type}tachi`).appendChild(a);
+                document.getElementById(`${type}tachi`).appendChild(document.createElement('br'));
+            });
+            document.getElementById(`${type}tachi`).appendChild(document.createElement('br'));
         })
         //#endregion
         //#region iframeのお話
@@ -973,17 +1389,20 @@
             'bing':{
                 id:'bing',
                 name:'bing.com',
-                src:'https://www.bing.com/search?q=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae%e6%af%8d%e3%82%82%e6%88%91%e3%82%92%e5%be%85%e3%81%a4%e3%82%89%e3%82%80%e3%81%9d&qs=RQ&pq=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae&sc=4-18&cvid=BDF68943856B40AC93BF5E6E4207F06D&FORM=QBRE&sp=1&ghc=1&lq=0',
+                //src:'https://www.bing.com/search?q=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae%e6%af%8d%e3%82%82%e6%88%91%e3%82%92%e5%be%85%e3%81%a4%e3%82%89%e3%82%80%e3%81%9d&qs=RQ&pq=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae&sc=4-18&cvid=BDF68943856B40AC93BF5E6E4207F06D&FORM=QBRE&sp=1&ghc=1&lq=0',
+                src:'about:blank',
             },
             'bing_trans':{
                 id:'bing_trans',
                 name:'bing-trans',
-                src:'https://www.bing.com/translator?from=&to=ja&setlang=ja',
+                //src:'https://www.bing.com/translator?from=&to=ja&setlang=ja',
+                src:'about:blank',
             },
             'deepAI':{
                 id:'deepAI',
                 name:'deep.ai',
-                src:'https://deepai.org/chat',
+                //src:'https://deepai.org/chat',
+                src:'about:blank',
             },
             
         }
@@ -1006,217 +1425,34 @@
             document.getElementById('LinkInput').value = document.getElementById(`Linkframe${event.target.value}`).getAttribute('data-src');
         })
         //#endregion
-        //#region DOMContentLoaded -- memos, iframes
-        let numberOfMemo = 4;
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            numberOfMemo = +getLocalStorage("numberOfMemo")??4;
-            console.log(`メモの数は${numberOfMemo}個やで`);
-            for(let i = 1; i <= numberOfMemo; i++){
-                let memo = getLocalStorage(`memo${i}`);
-                let memoElement = memoCreate(memo, i);
-                document.getElementById('memos').appendChild(memoElement);
+        
+        //memo
+        //#region memo
+        const bodyTextarea = document.getElementById('memo-text');
+        const titleInput = document.getElementById('memo-title');
+        const searchButton = document.getElementById('memo-search');
+
+        bodyTextarea.addEventListener('input', () => {
+            if(username !== 'no name'){
+                const title = titleInput.innerText.trim();
+                const body = bodyTextarea.innerText;
+                database.ref(`users/${username}/memo/${title}`).update({body:body});
             }
-            let memoAdd = memoAddCreate();
-            document.getElementById('memos').appendChild(memoAdd);
-
-
-            const iframes = getLocalStorage("iframes")??['bing', 'bing_trans', 'deepAI'];
-            iframes.forEach(iframe => {
-                const details = document.createElement("details");
-
-                const summary = document.createElement("summary");
-                summary.textContent = Iframes[iframe].name;
-
-                const button = document.createElement("button");
-                button.className = "iframe-button";
-                button.dataset.id = `Iframe-${iframe}`;
-                button.textContent = "full";
-
-                const br = document.createElement("br");
-
-                const iframeElement = document.createElement("iframe");
-                iframeElement.dataset.id = `Iframe-${iframe}`;
-                iframeElement.className = "iframe-frame";
-                iframeElement.src = Iframes[iframe].src;
-
-                details.appendChild(summary);
-                details.appendChild(button);
-                details.appendChild(br);
-                details.appendChild(iframeElement);
-
-                document.getElementById("iframes").appendChild(details); // 追加したい要素に変更して
-            })
-
-
-            autoLogin();
         });
 
-        function memoCreate(memo,i){
-            let memoElement = document.createElement('div');
-            memoElement.className = 'memo';
-            memoElement.id = `memo${i}`;
-            memoElement.setAttribute('data-num', i);
-
-            let title = document.createElement('div');
-            title.className = 'm-title';
-            title.innerText = `memo${i}`;
-            title.setAttribute('contenteditable', 'true');
-            memoElement.appendChild(title);
-
-            let text = document.createElement('div');
-            text.className = 'm-text';
-            text.innerText = memo??'';
-            text.setAttribute('contenteditable', 'true');
-            memoElement.appendChild(text);
-
-            let deleteButton = document.createElement('div');
-            deleteButton.className = 'm-delete';
-            deleteButton.innerText = 'M';
-            deleteButton.addEventListener('click', () => {
-                localStorage.removeItem(`memo${i}`);
-                memoElement.remove();
-
-                document.querySelectorAll('.memo').forEach(memo => {
-                    let memoNum = +memo.getAttribute('data-num')
-                    if(memoNum > i){
-                        memo.setAttribute('data-num', memoNum - 1);
-                        memo.querySelector('.m-title').innerText = `memo${memoNum-1}`;
-                        memo.querySelector('.m-text').innerText = getLocalStorage(`memo${memoNum}`);
-                        setLocalStorage(`memo${memoNum-1}`, getLocalStorage(`memo${memoNum}`));
-                    }
+        searchButton.addEventListener('click', () => {
+            if(username !== 'no name'){
+                const title = titleInput.innerText;
+                database.ref(`users/${username}/memo/${title}`).once('value').then((snapshot) => {
+                    bodyTextarea.innerText = snapshot.val()?.body || '';
                 });
-                
-                numberOfMemo = +numberOfMemo - 1;
-                setLocalStorage("numberOfMemo", +numberOfMemo);
-            });
-            memoElement.appendChild(deleteButton);
-
-            memoElement.addEventListener('input', ele => {
-                setLocalStorage(`memo${i}`, document.getElementById(`memo${i}`).querySelector('.m-text').innerText);
-            });
-
-            return memoElement;
-        }
-        function memoAddCreate(){
-            const memoAdd = document.createElement('div');
-            memoAdd.className = 'm-add';
-            memoAdd.id = 'memoAdd';
-            memoAdd.innerText = '+';
-            memoAdd.addEventListener('click', () => {
-                memoAdd.remove();
-                numberOfMemo = +numberOfMemo + 1;
-                setLocalStorage("numberOfMemo", +numberOfMemo);
-                let memoElement = memoCreate('', numberOfMemo);
-                document.getElementById('memos').appendChild(memoElement);  
-                let memoAdd2 = memoAddCreate();
-                document.getElementById('memos').appendChild(memoAdd2);
-            })
-            return memoAdd;
-        }
-        //#endregion    
-
-
-        //#region firebaseのいざこざ
-        const firebaseConfig = {
-            apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
-            authDomain: "k  oppepan-orange.firebaseapp.com",
-            databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
-            projectId: "koppepan-orange",
-            storageBucket: "koppepan-orange.appspot.com",
-            messagingSenderId: "730150198097",
-            appId: "1:730150198097:web:076a074a3d406053155170",
-            measurementId: "G-MYKJWD203Z"
-        };
-        firebase.initializeApp(firebaseConfig);
-        var database = firebase.database();
-        let username = 'no name';
-        let usersRef = null;
-
-        //#endregion
-        //#region ログイン機構
-        document.getElementById('login-button').addEventListener('click', () => {
-            if(document.getElementById('login').style.opacity == 0){
-                document.getElementById('login').style.opacity = 1;
             }else{
-                document.getElementById('login').style.opacity = 0;
+                bodyTextarea.innerText = 'ログインしてね！！  話はそれからだよ☆'
             }
-        })
-        function login(){
-            document.getElementById('login').style.display = 'none';
-            document.getElementById('login-button').style.display = 'none';
-            document.getElementById('expbar').style.display = 'block';
-
-            // document.getElementById('tabs').style.display = 'flex';
-            // searchTab.click();
-            // nowtab = 'Search';
-
-            usersRef = database.ref('users/'+username);
-
-            usersRef.once('value', function(snapshot){
-                if(snapshot.exists()){
-                    const userData = snapshot.val();
-                    level = userData.level??1;
-                    exp = userData.exp??0;
-                    maxexp = exp*level+50;
-                    updateUI();
-                }
-            })
-        }
-
-        document.getElementById('login-login').addEventListener('click', () => {
-            username = document.getElementById('username').value;
-            let password = document.getElementById('password').value;
-
-            let kariusersRef = database.ref(`users/${username}`);
-            kariusersRef.once('value', function(snapshot){
-                if(snapshot.exists()){
-                    if(snapshot.val().password == password){
-                        setLocalStorage("username", username)
-                        login();
-                    }
-                }else{
-                    let usersRef = database.ref(`users/${username}`);
-                    usersRef.update({
-                        password:password,
-                        banned: 0,
-                        blocked: [],
-                    })
-                    NicoNicoText('ようこそ');
-                    setLocalStorage("username", username)
-                    login();
-                }
-            })
-        })
-
-        function autoLogin(){
-            username = getLocalStorage("username");
-            if(username){
-                console.log("自動ログインしました");
-                login();
-            }else{
-                console.log("ログインしてください");
-            }
-        }
+        });
         //#endregion
-        //#region expとか
-        let exp = 0;
-        let level = 1;
-        let maxexp = 50;
-        let expbar = document.getElementById('exp');
-        let exptext = document.getElementById('exptext');
-        function updateUI(){
-            if(exp >= maxexp){
-                exp -= maxexp;
-                level += 1;
-                maxexp += 25;
-            }
-            expbar.style.width = `${exp/maxexp*100}%`;
-            exptext.innerText = `${exp}/${maxexp}`
-            document.getElementById('Username').textContent = username;
-            document.getElementById('Level').textContent = `Lv:${level}`;
-        }
         //#endregion
+
     </script>
 </body>
 </html>
