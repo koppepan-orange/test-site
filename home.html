@@ -40,6 +40,7 @@
 
         html{
             width: 100%;
+            overflow: hidden;
         }
         #body{
             font-family:comicsans;
@@ -48,6 +49,7 @@
             font-size: 18px;
             width: 100%;
             max-width: 100%;
+            height: 95vh;
             padding-bottom: 150px;
             overflow-x: hidden;
             overflow-y: scroll;
@@ -328,10 +330,10 @@
         /*タブ切り替えるやつ 実装は未定*/
         .tabs{
             display: flex;
-            height:45px;
-            font-size: 35px;
+            height:5vh;
+            font-size: 4vh;
             justify-content: space-between;
-            padding: 10px 25%;
+            padding: 0.5vh 25%;
             background-color: #def0ff;
             position: fixed;
             left:0;right:0;
@@ -344,20 +346,24 @@
         #home-tab{font-family: webdings;}
         #memo-tab{font-family: wingdings;}
 
+        /*一旦全体にエンチャ*/
+        #Home,#Commu,#Question{
+            background-color: #f0f8ff;
+        }
+
         /*こっからHome*/
 
         /*こっからhome*/
         #home{
             display: block;
-            width:100%;
-            height: 90vh;
             background-color: #f0f8ff;
             padding-top: 10px;
+            height: 89vh;
         }
 
         #links{
             margin-top: 10px;
-            max-height: 300px;
+            max-height: 20%;
             overflow-y: scroll;
             overflow-x: hidden;
             border: 2px solid #cfecff;
@@ -366,7 +372,7 @@
         }
 
         #memos{
-            max-height: 400px;
+            max-height: 60%;
             overflow-y: scroll;
             overflow-x: hidden;
             border: 2px solid #cfecff;
@@ -414,6 +420,7 @@
         }
 
         #iframes{
+            height: 20%;
             max-height: 1200px;
             overflow-y: scroll;
             overflow-x: hidden;
@@ -446,7 +453,12 @@
             padding: 5px;
             width: 100%;
             height: 90vh;
+            max-height: 90vh;
             font-size: 16px;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
         /*こっからCommu*/
@@ -956,7 +968,7 @@
                     const userData = snapshot.val();
                     level = userData.level??1;
                     exp = userData.exp??0;
-                    maxexp = exp*level+50;
+                    maxexp = level*25+50;
                     updateUI();
                 }
             })
@@ -988,12 +1000,13 @@
         })
 
         function autoLogin(){
-            username = getLocalStorage("username")??'no name';
+            username = getLocalStorage("username");
             if(username){
                 console.log("自動ログインしました");
                 login();
             }else{
                 console.log("ログインしてください");
+                username = 'no name';
             }
         }
         
