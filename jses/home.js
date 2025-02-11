@@ -407,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('memos').appendChild(memoAdd);
 
 
-    /**
+    
     const iframes = getLocalStorage("iframes")??['bing', 'bing_trans', 'deepAI'];
     iframes.forEach(iframe => {
         const details = document.createElement("details");
@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById("iframes").appendChild(details); // 追加したい要素に変更して
     })
-    */
+    
     
 
 });
