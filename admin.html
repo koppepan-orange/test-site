@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="Icon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <title>test-site</title>
+    <style>
+        @font-face{font-family:comicsans;src:url('assets/comicsans.ttf');}
+        @font-face{font-family:papyrus;src:url('assets/papyrus.ttf');}
+        @font-face{font-family:Hangyaku;src:url('assets/Hangyaku.ttf');}
+        @font-face{font-family:cube12;src:url('assets/cube12.ttf');}
+        @font-face{font-family:genjuu;src:url('assets/genjuu.ttf');}
+        @font-face{font-family:hackgen;src:url('assets/hackgen.ttf');}
+        @font-face{font-family:wingdings;src:url('assets/wingdings.ttf');}
+        @font-face{font-family:wingdings2;src:url('assets/wingdings2.ttf');}
+        @font-face{font-family:wingdings3;src:url('assets/wingdings3.ttf');}
+        @font-face{font-family:webdings;src:url('assets/webdings.ttf');}
+        @font-face{font-family:kaimetsu;src:url('assets/kaimetsu.otf');}
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+        }
+
+        option {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: #def0ff;
+            color: #000000;
+        }
+
+        html{
+            width: 100%;
+        }
+        #body{
+            font-family:comicsans;
+            background-color: #f0f8ff;
+            margin: 0px!important;
+            font-size: 18px;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
+
+        #description {
+            display: none;
+            position: fixed;
+            pointer-events: none;
+            background-color: rgba(90, 90, 90, 0.9);
+            color: rgb(255, 255, 255);
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+        /*こっからupperUI*/
+        #upperUI{
+            display: block;
+            border-bottom: 3px solid #cfe9ff;
+            background-color: #def0ff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            padding: 10px;
+            z-index: 997;
+        }
+        #menuToggle{
+            display: block;
+            position: absolute;
+            right:30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size:40px;
+            cursor: pointer;
+            z-index: 998;
+        }
+        #login-button{
+            display: block;
+            position: absolute;
+            right: 100px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            padding: 3px;
+            border: 2px solid #cfe9ff;
+            cursor: pointer;
+            z-index: 998;
+        }
+
+        /*こっからsideMenu*/
+        #sideMenu {
+            position: fixed;
+            top: 0;
+            left: -255px;
+            width: 250px;
+            height: 100%;
+            color: #333344;
+            background-color: #def0ff!important;
+            border-right: 3px solid #cfe9ff;
+            transition: left 0.3s;
+            padding-left: 5px;
+            z-index:999;
+        };
+        hr{
+            background-color: #cfe9ff;
+            border: 2px solid #cfe9ff;
+        }
+        #sideMenu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            background-color: #def0ff;
+        };
+        #sideMenu ul li {
+            padding: 3px;
+        };
+        #sideMenu ul li a {
+            color: #000000;
+            text-decoration: none;
+        };
+        #sideMenu ul li select{
+            background-color: #def0ff;
+            border: 1px solid #cfe9ff;
+        }
+        #sideMenu button {
+            background-color: #def0ff;
+            border: none;
+            color: #000000;
+            cursor: pointer;
+            text-decoration: none;
+            padding: 0;
+        }
+
+        #cpopup{
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            max-height: 600px;
+            background-color: #eeeeee;
+            color:#2b2b2b;
+            border: 2px solid #b2b2b2;
+            z-index: 999;
+            overflow: auto;
+        }
+        #cpopup ul{
+            background-color: #eeeeee;
+        }
+        #cpopup ul li{
+            background-color: #eeeeee;
+        }
+
+        #iframe{
+            display: none;
+            width: 70%;
+            height: 80%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            border: 2px solid #ffbb00;
+            border-radius: 5px;
+            background-color: #f0f8ff;
+            overflow: scroll;
+            padding:2px;
+        }
+        #Linkframe2,#Linkframe3,#Linkframe4{
+            display: none;
+        }
+        .iframe-button{
+            width: 30px;
+            height: 20px;
+            border: 1px solid #b2b2b2;
+            background-color: #e5ecf2;
+            text-align: center;
+            appearance: none;
+        }
+
+        .toggle{
+            width:50px;
+            height:20px;
+            border: 1px solid #b2b2b2;
+            background-color: #e5ecf2;
+        }
+
+        .wd{
+            display: none;
+        }
+        #wdcheck{
+            cursor: pointer;
+            font-size:4px;
+            font-family: wingdings!important;
+            background-color: #cecece;
+        }
+        #wdtextarea{
+            font-family: wingdings;
+        }
+
+        .row{
+            display: flex;
+            flex-direction: row;
+        }
+
+        /*ログインのやつ*/
+        #login{
+            display: block;
+            width: 75%;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #def0ff;
+            border: 1px solid #b5dcff;
+            border-radius: 5px;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease; 
+            z-index: 1234;
+        }
+        #login input {
+            width: calc(100% - 20px);
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #b5dcff;
+        }
+        #login button {
+            width: 100%;
+            padding: 10px;
+            background-color: #cfe9ff;
+            border: 2px solid #b5dcff;
+            color: #000000;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #login button:hover {
+            background-color: #cfe9ff;
+        }
+        #logout{
+            cursor: pointer;
+        }
+
+        /*タブ切り替えるやつ 実装は未定*/
+        #tabs {
+            display: flex;
+            height: 65px;
+            font-size: 45px;
+            justify-content: center;
+            gap: 20%;
+            padding: 5px 5%;
+            background-color: #def0ff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 998;
+        }
+
+        .tab {
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        #home-tab{font-family: webdings;}
+
+
+        /*一旦全体にエンチャ*/
+        #Null{
+            margin-top: 95px;
+            background-color: #f0f8ff;
+            overflow-y: scroll;
+            margin-bottom: 80px;
+        }
+
+        #fireDatas{
+            width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /*こっからHome*/
+    </style>
+</head>
+<body id="body">
+
+    <div id="upperUI">
+        <div id="user">
+            <div id="Username">蜷咲┌縺</div>
+            <div id="Level">繝ｬ繝吶Ν:繧ｨ繝ｩ繝ｼ</div>
+        </div>
+        <div id="expbar">
+            <div id="exp"></div>
+            <div id="exptext">荳肴?縺ｪ謨ｰ蛟､</div>
+        </div>
+        <div id="login-button">繝ｭ繧ｰ繧､繝ｳ</div>
+        
+        <div id="menuToggle">☰</div>
+    </div>
+    <nav id="sideMenu">
+        <hr noshade="true">
+        <ul>
+            <li><a href="home.html">縺吶＄縺ｫ縺代○</a></li>
+        </ul>
+    </nav>
+
+    <div id="login">
+        <div id="login-form">
+            <input type="text" id="username" placeholder="username" value="admin" readonly>
+            <input type="text" id="password" placeholder="password">
+            <button id="login-login">Login</button>
+        </div>
+    </div>
+
+    <div id="cpopup"></div><iframe id="iframe"></iframe><div id="description"></div>
+
+    <div id="Null">
+        <div id="fireDatas"></div>
+    </div>
+
+
+
+    <div id="tabs"></div>
+    <script>
+        //#region 扱いやすい子達
+        function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+        async function NicoNicoText(mes){
+            const newDiv = document.createElement('div');
+            newDiv.textContent = mes;
+            newDiv.style = `
+            position: absolute;
+            top: ${Math.random()*100}vh;
+            right: 0;
+            background-color: rgba(228, 249, 255, 0.563);
+            color: #000000;
+            font-size: 20px;
+            `
+            document.getElementById('body').appendChild(newDiv);
+            //let speed = Math.random()*100+1;
+            let speed = mes.toString().length*2 
+            for(let i = 0; window.innerWidth > i*speed; i++){
+                let val = i*speed;
+                newDiv.style.right = `${val}px`
+                await delay(50);
+            }
+            newDiv.remove();
+        }
+
+        function displayLocalStorage() {
+            const itemCount = localStorage.length;
+            for (let i = 0; i < itemCount; i++) {
+                const key = localStorage.key(i); // キーを取得
+                const value = localStorage.getItem(key); // 値を取得
+                NicoNicoText(`キー: ${key}, 値: ${value}`);
+            }
+        }
+
+        function setLocalStorage(name, value){
+            localStorage.setItem(name, value || ""); // 値が空なら空文字を←歌詞みたい
+        }
+        function getLocalStorage(name){
+            return localStorage.getItem(name);
+        }
+        function removeLocalStorage(name){
+            localStorage.removeItem(name);
+        }
+        
+        document.addEventListener('mousemove', (e) => {
+        const HasDescription = document.getElementById('description');
+        HasDescription.style.left = `${e.clientX + 10}px`;
+        HasDescription.style.top = `${e.clientY + 10}px`;
+        });
+
+        document.addEventListener('mouseover', (e) => {
+        if(e.target.classList.contains('hasd')){
+        const description = e.target.dataset.description;
+        document.getElementById('description').innerHTML = description;
+        document.getElementById('description').style.display = 'block';
+        }
+        });
+        document.addEventListener('mouseout', (e) => {
+        if(e.target.classList.contains('hasd')){
+        document.getElementById('description').innerHTML = '';
+        document.getElementById('description').style.display = 'none';
+        }
+        });
+
+
+        document.addEventListener("paste", event => {
+            event.preventDefault(); // デフォルトのペーストを防ぐ
+            let text = (event.clipboardData || window.clipboardData).getData("Text"); // プレーンテキスト取得
+            document.execCommand("insertText", false, text); // プレーンテキストを挿入
+        });
+        //#endregion
+        //#region firebaseのやつ
+        const firebaseConfig = {
+            apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
+            authDomain: "koppepan-orange.firebaseapp.com",
+            databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
+            projectId: "koppepan-orange",
+            storageBucket: "koppepan-orange.appspot.com",
+            messagingSenderId: "730150198097",
+            appId: "1:730150198097:web:076a074a3d406053155170",
+            measurementId: "G-MYKJWD203Z"
+        };
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+        //#endregion
+        //#region login
+        document.getElementById('login-button').addEventListener('click', () => {
+            if(document.getElementById('login').style.opacity == 0){
+                document.getElementById('login').style.opacity = 1;
+            }else{
+                document.getElementById('login').style.opacity = 0;
+            }
+        })
+        let password = 'いいえ私はさそり座の女'
+        let wrongpasserif = 'ごめんなさ〜い、最下位はおうし座のあなた〜'
+        function login(){
+            document.getElementById('login').style.opacity = 0;
+            document.getElementById('login-button').style.display = 'none';
+
+
+            database.ref().once('value').then(snapshot => {
+                const data = snapshot.val();
+                const tree = document.createElement('ul');
+                tree.className = 'fireData';
+                buildTree(data, tree);
+                document.getElementById('fireDatas').appendChild(tree);
+            });
+        }
+
+        document.getElementById('login-login').addEventListener('click', () => {
+            username = document.getElementById('username').value; //定数:admin
+
+            if(document.getElementById('password').value == password){
+                login();
+            }else{
+                NicoNicoText(wrongpasserif)
+            }
+        })
+        //#endregion
+
+        let doko = null;
+        
+        //#region upperUIとsideMenu
+        const upperUI = document.getElementById('upperUI');
+
+        const menuToggle = document.getElementById('menuToggle');
+        const sideMenu = document.getElementById('sideMenu');
+        menuToggle.addEventListener('click', () => {
+            if(sideMenu.style.left === '0px'){
+                sideMenu.style.left = '-255px';
+            }else{
+                sideMenu.style.left = '0px';
+            }
+        });
+
+
+        let cpopup = document.getElementById('cpopup');
+        let cpopupNow = 0;
+        document.querySelectorAll('.hastxt').forEach((element) => {
+            addEventListener('click', (event) => {
+                element.addEventListener('click', (event) => {
+                    if(cpopupNow == 0){
+                        let name = event.target.getAttribute('data-name');
+                        console.log(name+'が発動しましたぜぇい')
+                        fetch(`assets/txts/${name}.txt`)
+                        .then(response => response.text())
+                        .then(data => {cpopup.innerText = data;})
+                        .catch(error => console.error('Error:', error));
+                        cpopup.style.display = 'block';
+                        cpopupNow = 1;
+                    }else{
+                        cpopup.innerHTML = '';
+                        cpopup.style.display = 'none';
+                        cpopupNow = 0;
+                    }
+                })
+            })
+        })
+
+
+        //#endregion
+        //#region tabs
+        const Tabs = {
+            'Null':{
+                'home':{
+                    name:'home',
+                    initial:1,
+                    open:'H',
+                    close:'H'
+                },
+            },
+        }
+
+        document.addEventListener('click', ele => {
+            if(ele.target.classList.contains('tab')){
+                let doko = Tabs[ele.target.dataset.doko]
+                let key = ele.target.dataset.name
+                Object.keys(doko).forEach(tab => {
+                    document.getElementById(tab).style.display = 'none';
+                    document.getElementById(`${tab}-tab`).textContent = doko[tab].close;
+                })
+                document.getElementById(ele.target.dataset.name).style.display = 'block';
+                ele.textContent = doko[key].open;
+            }
+        })
+
+        //#endregion
+
+
+
+        function buildTree(data, parent) {
+            for (let key in data) {
+                const li = document.createElement('li');
+                li.textContent = key;
+                
+                if (typeof data[key] === 'object' && data[key] !== null) {
+                    const childUl = document.createElement('ul');
+                    buildTree(data[key], childUl);
+                    li.appendChild(childUl);
+                } else {
+                    li.textContent += `: ${data[key]}`;
+                }
+
+                parent.appendChild(li);
+            }
+        }
+        
+    </script>
+
+</body>
+</html>

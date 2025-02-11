@@ -40,7 +40,6 @@
 
         html{
             width: 100%;
-            overflow: hidden;
         }
         #body{
             font-family:comicsans;
@@ -49,8 +48,6 @@
             font-size: 18px;
             width: 100%;
             max-width: 100%;
-            height: 95vh;
-            padding-bottom: 150px;
             overflow-x: hidden;
             overflow-y: scroll;
         }
@@ -71,10 +68,11 @@
             display: block;
             border-bottom: 3px solid #cfe9ff;
             background-color: #def0ff;
-            position: relative;
+            position: fixed;
             top: 0;
             left: 0;
-            height: 6vh;
+            width: 100%;
+            height: 65px;
             padding: 10px;
             z-index: 997;
         }
@@ -328,27 +326,43 @@
         }
 
         /*タブ切り替えるやつ 実装は未定*/
-        .tabs{
+        #tabs {
             display: flex;
-            height:5vh;
-            font-size: 4vh;
-            justify-content: space-between;
-            padding: 0.5vh 25%;
+            height: 65px;
+            font-size: 45px;
+            justify-content: center;
+            gap: 20%;
+            padding: 5px 5%;
             background-color: #def0ff;
             position: fixed;
-            left:0;right:0;
-            bottom:0px;
+            bottom: 0;
+            width: 100%;
+            box-sizing: border-box;
             z-index: 998;
         }
-        .tab{
+
+        .tab {
             cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
         }
         #home-tab{font-family: webdings;}
         #memo-tab{font-family: wingdings;}
+        #tools-tab{font-family: webdings;}
+        #nanj-tab{font-family: webdings;}
+        #twitter2-tab{font-family: webdings;}
+        #jine-tab{font-family: webdings;}
+        #answer-tab{font-family: wingdings;}
+        #question-tab{font-family: wingdings;}
+
 
         /*一旦全体にエンチャ*/
-        #Home,#Commu,#Question{
+        #Home,#Commu,#Anonymous{
+            margin-top: 95px;
             background-color: #f0f8ff;
+            overflow-y: scroll;
+            margin-bottom: 80px;
         }
 
         /*こっからHome*/
@@ -357,8 +371,6 @@
         #home{
             display: block;
             background-color: #f0f8ff;
-            padding-top: 10px;
-            height: 89vh;
         }
 
         #links{
@@ -382,22 +394,38 @@
         }
         .memo{
             width: 400px;
+            min-width: 50px;
+            max-width: 99%;
+            height: 180px;
             border: 2px solid #cfe9ff;
             background-color: #f0f8ff;
             margin-bottom: 25px;
             position: relative;
+            resize: both;
+            overflow: hidden;
         }
         .m-title{
-            width: 400px;
+            width: 100%;
+            min-width: 50px;
             height: 23px;
-            resize: horizontal;
             border-bottom: 2px solid #cfe9ff;
+            overflow-x: scroll;
+            white-space: nowrap;
+            scrollbar-width: none;
         }
         .m-text{
-            width: 400px;
-            height: 160px;
-            resize: both;
+            width: 100%;
+            min-width: 50px;
             font-size: 16px;
+            height: calc(100% - 23px); 
+            overflow-x: hidden;
+            overflow-y: scroll;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            scrollbar-width: none;
+        }
+        #title::-webkit-scrollbar,#text::-webkit-scrollbar {
+        display: none; /* Chrome, Edge, Safariでスクロールバーを非表示 */
         }
         .m-delete{
             position: absolute;
@@ -425,7 +453,6 @@
             overflow-y: scroll;
             overflow-x: hidden;
             border: 2px solid #cfe9ff;
-            margin-bottom: 20px;
         }
         .iframe-frame{
             width: 100%;
@@ -451,7 +478,7 @@
             border: 2px solid #cfe9ff;
             background-color: #f0f8ff;
             padding: 5px;
-            width: 100%;
+            min-width: 50px;
             height: 90vh;
             max-height: 90vh;
             font-size: 16px;
@@ -466,8 +493,8 @@
             display: none;
         }
 
-        /*こっからQuestion*/
-        #Question{
+        /*こっからAnonymous*/
+        #Anonymous{
             display: none;
         }
     </style>
@@ -536,8 +563,9 @@
     <div class="smart-menu">
         <div class="smart-icon hidden" data-name="news-icon">V</div>
         <div class="smart-icon hidden" data-name="daily-icon">e</div>
-        <div class="smart-icon hidden" data-name="home-icon">H</div>
-        <div class="smart-icon hidden" data-name="commu-icon">^</div>
+        <div class="smart-icon c-dimension hidden" data-name="home-icon" data-doko="Home">H</div>
+        <div class="smart-icon c-dimension hidden" data-name="commu-icon" data-doko="Commu">^</div>
+        <div class="smart-icon c-dimension hidden" data-name="memo-icon" data-doko="Anonymous">Q</div>
         <div class="smart-icon smart-phone">:</div>
     </div>
 
@@ -584,19 +612,65 @@
             <div id="memo-text" contenteditable></div>
         </div>
 
-        <div class="tabs"></div>
+        <div id="tools">
+            <!-- こちら偏差値計算機です！！！！ -->
+            <p align="center">偏差値計算機<br>
+                <input id="HENPoint" type="text" placeholder="write 得点" size="20" style="width:80px;"></input>　
+                <input id="HENAve" type="text" placeholder="write 平均" size="20" style="width:80px;"><br>   
+                <button onclick="HENsum()">go</button>
+                <br><span id="HENAnswer"></span>
+            </p>
+            <p align="center">
+            <input type="text" id="Input" size="3" maxlength="2" placeholder="num"><button id="ToggleButton" onclick="Toggle()">less</button><button onclick="Activate()">Go!</button><br>
+            <span id="OutPut"></span>
+            </p>
+            <!-- まりぱのげーむをちょっとだけいれようかな〜と -->
+            <details style="margin:0 auto;"><summary>Game-Center</summary>
+            <p align="center">Count Game Desu
+                <br><span id="COUNTGameBar"></span>
+                <br><br><span id="COUNTButton"><button onclick="COUNTGameStart()">start</button></span>
+                <br><br><span id="COUNTLog"></span>
+            </p>
+            <p align="center">Race Game(Just Look)
+                <div id="RACEoutput-one"></div>
+                <div id="RACEoutput-two"></div>
+                <div id="RACEoutput-three"></div>
+                <div id="RACEoutput-four"></div>
+                <span id="RACElog"></span>
+                <br><button onclick="RACEgamestart()">はじめます</button>
+            </p>
+            <p align="center">Renda Game Desu<br>
+                <button id="start-btn">スタート</button>
+                <div id="result"></div>
+                <button id="RENDABUTTON1000" onclick="RENDAchange(1000)">1s</button><button id="RENDABUTTON3000" onclick="RENDAchange(3000)">3s</button><button id="RENDABUTTON5000" onclick="RENDAchange(5000)" style="color:#23aa23;">5s</button><button id="RENDABUTTON10000" onclick="RENDAchange(10000)">10s</button><button id="RENDABUTTON30000" onclick="RENDAchange(30000)">30s</button>
+            </p>
+            <p align="center">Cooking Game<br>
+                <button id="CookingGameStart" onclick="Start()">start</button><br>
+                <div id="CookingGameArea">
+                <div id="CookingGameList"></div>
+                <button id="CookingGameChoose-1" onclick="CookingGameChoeese('1')">1</button>
+                <button id="CookingGameChoose-2" onclick="CookingGameChoeese('2')">2</button>
+                <button id="CookingGameChoose-3" onclick="CookingGameChoeese('3')">3</button>
+                <button id="CookingGameChoose-4" onclick="CookingGameChoeese('4')">4</button>
+                <button id="CookingGameChoose-5" onclick="CookingGameChoeese('5')">5</button>
+                <button id="CookingGameChoose-6" onclick="CookingGameChoeese('6')">6</button><br>
+                <span id="CookingGameLog">logやで</span>
+                </div>
+            </p>
+            </details>
+        </div>
+
+        
     </div>
 
     <div id="Commu">
-        <div class="tabs"></div>
     </div>
 
-    <div id="Question">
-        <div class="tabs"></div>
+    <div id="Anonymous">
     </div>
 
 
-
+    <div id="tabs"></div>
     <script>
         //#region 扱いやすい子達
         function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
@@ -660,812 +734,23 @@
         document.getElementById('description').style.display = 'none';
         }
         });
+
+
+        document.addEventListener("paste", event => {
+            event.preventDefault(); // デフォルトのペーストを防ぐ
+            let text = (event.clipboardData || window.clipboardData).getData("Text"); // プレーンテキスト取得
+            document.execCommand("insertText", false, text); // プレーンテキストを挿入
+        });
         //#endregion
-        //#region DOMContentLoaded -- memos, iframes
-        let numberOfMemo = 4;
-        document.addEventListener('DOMContentLoaded', () => {
-            Object.keys(Tabs).forEach(doko => {
-                Object.keys(Tabs[doko]).forEach(tab => {
-                    const tabElement = document.createElement("div");
-                    tabElement.className = "tab";
-                    tabElement.id = `${tab}-tab`;
-                    if(Tabs[doko][tab].initial == 1){
-                        tabElement.textContent = Tabs[doko][tab].open;   
-                    }else{
-                        tabElement.textContent = Tabs[doko][tab].close;
-                    }
-                    tabElement.dataset.doko = doko;
-                    tabElement.dataset.name = Tabs[doko][tab].name;
-                    document.querySelector(`#${doko} .tabs`).appendChild(tabElement);
-                })
-            })
 
-            //#region memo
-            numberOfMemo = +getLocalStorage("numberOfMemo")??4;
-            console.log(`メモの数は${numberOfMemo}個やで`);
-            for(let i = 1; i <= numberOfMemo; i++){
-                let memo = getLocalStorage(`memo${i}`);
-                let memoElement = memoCreate(memo, i);
-                document.getElementById('memos').appendChild(memoElement);
-            }
-            let memoAdd = memoAddCreate();
-            document.getElementById('memos').appendChild(memoAdd);
-            //#endregion
-
-            const iframes = getLocalStorage("iframes")??['bing', 'bing_trans', 'deepAI'];
-            iframes.forEach(iframe => {
-                const details = document.createElement("details");
-
-                const summary = document.createElement("summary");
-                summary.textContent = Iframes[iframe].name;
-
-                const button = document.createElement("button");
-                button.className = "iframe-button";
-                button.dataset.id = `Iframe-${iframe}`;
-                button.textContent = "full";
-
-                const br = document.createElement("br");
-
-                const iframeElement = document.createElement("iframe");
-                iframeElement.dataset.id = `Iframe-${iframe}`;
-                iframeElement.className = "iframe-frame";
-                iframeElement.src = Iframes[iframe].src;
-
-                details.appendChild(summary);
-                details.appendChild(button);
-                details.appendChild(br);
-                details.appendChild(iframeElement);
-
-                document.getElementById("iframes").appendChild(details); // 追加したい要素に変更して
-            })
-
-            autoLogin();   
-        });
-
-        function memoCreate(memo,i){
-            let memoElement = document.createElement('div');
-            memoElement.className = 'memo';
-            memoElement.id = `memo${i}`;
-            memoElement.setAttribute('data-num', i);
-
-            let title = document.createElement('div');
-            title.className = 'm-title';
-            title.innerText = `memo${i}`;
-            title.setAttribute('contenteditable', 'true');
-            memoElement.appendChild(title);
-
-            let text = document.createElement('div');
-            text.className = 'm-text';
-            text.innerText = memo??'';
-            text.setAttribute('contenteditable', 'true');
-            memoElement.appendChild(text);
-
-            let deleteButton = document.createElement('div');
-            deleteButton.className = 'm-delete';
-            deleteButton.innerText = 'M';
-            deleteButton.addEventListener('click', () => {
-                localStorage.removeItem(`memo${i}`);
-                memoElement.remove();
-
-                document.querySelectorAll('.memo').forEach(memo => {
-                    let memoNum = +memo.getAttribute('data-num')
-                    if(memoNum > i){
-                        memo.setAttribute('data-num', memoNum - 1);
-                        memo.querySelector('.m-title').innerText = `memo${memoNum-1}`;
-                        memo.querySelector('.m-text').innerText = getLocalStorage(`memo${memoNum}`);
-                        setLocalStorage(`memo${memoNum-1}`, getLocalStorage(`memo${memoNum}`));
-                    }
-                });
-                
-                numberOfMemo = +numberOfMemo - 1;
-                setLocalStorage("numberOfMemo", +numberOfMemo);
-            });
-            memoElement.appendChild(deleteButton);
-
-            memoElement.addEventListener('input', ele => {
-                setLocalStorage(`memo${i}`, document.getElementById(`memo${i}`).querySelector('.m-text').innerText);
-            });
-
-            return memoElement;
-        }
-        function memoAddCreate(){
-            const memoAdd = document.createElement('div');
-            memoAdd.className = 'm-add';
-            memoAdd.id = 'memoAdd';
-            memoAdd.innerText = '+';
-            memoAdd.addEventListener('click', () => {
-                memoAdd.remove();
-                numberOfMemo = +numberOfMemo + 1;
-                setLocalStorage("numberOfMemo", +numberOfMemo);
-                let memoElement = memoCreate('', numberOfMemo);
-                document.getElementById('memos').appendChild(memoElement);  
-                let memoAdd2 = memoAddCreate();
-                document.getElementById('memos').appendChild(memoAdd2);
-            })
-            return memoAdd;
-        }
-        //#endregion    
-
-        //こまごめピペット
-        //#region upperUIとsideMenu
-        const upperUI = document.getElementById('upperUI');
-
-        const menuToggle = document.getElementById('menuToggle');
-        const sideMenu = document.getElementById('sideMenu');
-        menuToggle.addEventListener('click', () => {
-            if(sideMenu.style.left === '0px'){
-                sideMenu.style.left = '-255px';
-            }else{
-                sideMenu.style.left = '0px';
-            }
-        });
-
-        document.querySelector(".smart-phone").addEventListener("click", function () {
-            document.querySelectorAll(".smart-icon:not(.smart-phone)").forEach(icon => {
-                icon.classList.toggle("hidden");
-            });
-        });
+        let doko = 'Home'
 
 
-        let cpopup = document.getElementById('cpopup');
-        let cpopupNow = 0;
-        document.querySelectorAll('.hastxt').forEach((element) => {
-            addEventListener('click', (event) => {
-                element.addEventListener('click', (event) => {
-                    if(cpopupNow == 0){
-                        let name = event.target.getAttribute('data-name');
-                        console.log(name+'が発動しましたぜぇい')
-                        fetch(`assets/txts/${name}.txt`)
-                        .then(response => response.text())
-                        .then(data => {cpopup.innerText = data;})
-                        .catch(error => console.error('Error:', error));
-                        cpopup.style.display = 'block';
-                        cpopupNow = 1;
-                    }else{
-                        cpopup.innerHTML = '';
-                        cpopup.style.display = 'none';
-                        cpopupNow = 0;
-                    }
-                })
-            })
-        })
-
-        //change-font
-        function changeFont(){
-            document.getElementById('body').style.fontFamily = document.getElementById('font-select').value;
-        }
-
-        //toggle
-        document.querySelectorAll('.toggles').forEach((element) => {
-            element.addEventListener('change', (event) => {
-                if(event.target.checked){
-                    document.getElementById(event.target.getAttribute('data-name')).style.display = 'block';
-                }else{
-                    document.getElementById(event.target.getAttribute('data-name')).style.display = 'none';
-                }
-            })
-        })
-
-        //#endregion
-        //#region tabs
-        const Tabs = {
-            'Home':{
-                'home':{
-                    name:'home',
-                    initial:1,
-                    open:'H',
-                    close:'H'
-                },
-                'memo':{
-                    name:'memo',
-                    initial:0,
-                    open:'2',
-                    close:'2'
-                },
-            },
-
-            'Commu':{
-                'nanj':{
-                    name:'nanj',
-                    initial:1,
-                    open:"\\",
-                    close:'\\'
-                },
-                'twitter2':{
-                    name:'twitter2',
-                    initial:0,
-                    open:'}',
-                    close:'}'
-                },
-                'jine':{
-                    name:'jine',
-                    initial:0,
-                    open:'~',
-                    close:'~'
-                }
-            },
-
-            'Question':{
-                'answer':{
-                    name:'answer',//以下通知あるよver 使用未定
-                    initial:1,
-                    open:'.',// /
-                    close:'-'// ,
-                },
-                'question':{
-                    name:'question',
-                    initial:0,
-                    open:'?',
-                    close:'!'
-                },
-            }
-        }
-
-        document.addEventListener('click', ele => {
-            if(ele.target.classList.contains('tab')){
-                let doko = Tabs[ele.target.dataset.doko]
-                let key = ele.target.dataset.name
-                Object.keys(doko).forEach(tab => {
-                    document.getElementById(tab).style.display = 'none';
-                    document.getElementById(`${tab}-tab`).textContent = doko[tab].close;
-                })
-                document.getElementById(ele.target.dataset.name).style.display = 'block';
-                ele.textContent = doko[key].open;
-            }
-        })
         
-        //#endregion
-        //#region wingdings特殊機構のお話
-        let wdnow = 0;
-        document.getElementById('wdcheck').addEventListener('click', () => {
-        if(wdnow == 0){
-        wdnow = 1;
-        document.querySelectorAll('.wd').forEach(element => {
-        element.style.display = 'inline';
-        })
-        }else{
-        wdnow = 0;
-        document.querySelectorAll('.wd').forEach(element => {
-        element.style.display = 'none';
-        })
-        }
-        })
-        //#endregion
-        //#region firebaseのいざこざ
-        const firebaseConfig = {
-            apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
-            authDomain: "koppepan-orange.firebaseapp.com",
-            databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
-            projectId: "koppepan-orange",
-            storageBucket: "koppepan-orange.appspot.com",
-            messagingSenderId: "730150198097",
-            appId: "1:730150198097:web:076a074a3d406053155170",
-            measurementId: "G-MYKJWD203Z"
-        };
-        firebase.initializeApp(firebaseConfig);
-        var database = firebase.database();
-        let username = 'no name';
-        let usersRef = null;
-
-        //#endregion
-        //#region ログイン機構
-        document.getElementById('login-button').addEventListener('click', () => {
-            if(document.getElementById('login').style.opacity == 0){
-                document.getElementById('login').style.opacity = 1;
-            }else{
-                document.getElementById('login').style.opacity = 0;
-            }
-        })
-        function login(){
-            document.getElementById('login').style.display = 'none';
-            document.getElementById('login-button').style.display = 'none';
-            document.getElementById('expbar').style.display = 'block';
-
-            usersRef = database.ref('users/'+username);
-
-            usersRef.once('value', function(snapshot){
-                if(snapshot.exists()){
-                    const userData = snapshot.val();
-                    level = userData.level??1;
-                    exp = userData.exp??0;
-                    maxexp = level*25+50;
-                    updateUI();
-                }
-            })
-        }
-
-        document.getElementById('login-login').addEventListener('click', () => {
-            username = document.getElementById('username').value;
-            let password = document.getElementById('password').value;
-
-            let kariusersRef = database.ref(`users/${username}`);
-            kariusersRef.once('value', function(snapshot){
-                if(snapshot.exists()){
-                    if(snapshot.val().password == password){
-                        setLocalStorage("username", username)
-                        login();
-                    }
-                }else{
-                    let usersRef = database.ref(`users/${username}`);
-                    usersRef.update({
-                        password:password,
-                        banned: 0,
-                        blocked: [],
-                    })
-                    NicoNicoText('ようこそ');
-                    setLocalStorage("username", username)
-                    login();
-                }
-            })
-        })
-
-        function autoLogin(){
-            username = getLocalStorage("username");
-            if(username){
-                console.log("自動ログインしました");
-                login();
-            }else{
-                console.log("ログインしてください");
-                username = 'no name';
-            }
-        }
-        
-        document.getElementById('logout').addEventListener('click', () => {
-            username = 'no name';removeLocalStorage("username");
-            document.getElementById('Username').textContent = username;
-            document.getElementById('Level').textContent = `Lv:${level}`;
-            document.getElementById('expbar').style.display = 'none';
-            sideMenu.style.left = '-255px';
-
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-        })
-        //#endregion
-        //#region expとか
-        let exp = 0;
-        let level = 1;
-        let maxexp = 50;
-        let expbar = document.getElementById('exp');
-        let exptext = document.getElementById('exptext');
-        function updateUI(){
-            if(exp >= maxexp){
-                exp -= maxexp;
-                level += 1;
-                maxexp += 25;
-            }
-            expbar.style.width = `${exp/maxexp*100}%`;
-            exptext.innerText = `${exp}/${maxexp}`
-            document.getElementById('Username').textContent = username;
-            document.getElementById('Level').textContent = `Lv:${level}`;
-        }
-        //#endregion
-        
-        //#region Home
-        //home
-        //#region リンクたちの動き
-        const Links = {
-        'memo':{
-            'memosi': {
-            id: 'memosi',
-            name: 'memo-site',
-            href: 'https://koppepan-orange.github.io/test-site/memo.html',
-            iframable:1,
-            description: 'メモができるサイト。まじで有能<br>ずっと開いてたほうが楽で良き<br>私はゲーム制作の案メモにしてます'
-            },
-            'files':{
-            id: 'files',
-            name: 'file-site',
-            href: 'https://forest-inlet.github.io/tools/fileTransfer?forestinlet ',
-            iframable:1,
-            description: 'ファイルを送受信できるサイトです！！<br>まじですごいと思う<br>あ友達作です'
-            },
-            'browserMemo': {
-            id: 'browserMemo',
-            name: 'ブラウザメモ帳',
-            href: 'http://www.drpartners.jp/tools/browser-memocho.html',
-            iframable: 1,
-            description: 'メモができるサイト。保有量が大きい'
-            },
-            'memoWeb': {
-            id: 'memoWeb',
-            name: 'メモweb',
-            href: 'https://memo.onl.jp/?koppepan23',
-            iframable:0,
-            description: '昔使ってたところ。<br>今はmemo.html使ってるけどね'
-            },
-            'fileWeb': {
-            id: 'fileWeb',
-            name: 'ファイルweb',
-            href: 'https://file.onl.jp/?koppepan23',
-            iframable:0,
-            description: 'これは有用ちゃん<br>ファイルを送受信できる<br>そのうち作りたい.....'
-            },
-            'writebox': {
-            id: 'writebox',
-            name: 'writebox',
-            href: 'https://write-box.appspot.com/',
-            iframable:0,
-            description: '簡単にhtmlのテストができるサイト<br>けどjsとcssは無効'
-            },
-        },
-        'tool':{
-            'tools': {
-            id: 'tools',
-            name: 'tool-site',
-            href: 'https://koppepan-orange.github.io/test-site/tools.html',
-            iframable:1,
-            description: 'んー..あんまり実用的じゃない子<br>遊び目的。ほぼ<br>けど偏差値とかも測れるよ'
-            },
-            'books': {
-            id: 'books',
-            name: 'book-site',
-            href: 'https://koppepan-orange.github.io/test-site/books.html',
-            iframable:1,
-            description: '本が読める子<br>作者は匿名なのでhiddenにでも送ってくれたら載せますよ'
-            },
-            'hidden': {
-            id: 'hidden',
-            name: 'hidden-site',
-            href: 'https://koppepan-orange.github.io/test-site/hidden.html',
-            iframable:1,
-            description: '匿名で投稿できるサイト！！！！<br>管理者しか見れないんで<br>定期的にEventは確認して欲しいね'
-            },
-            'dropbox': {
-            id: 'dropbox',
-            name: 'dropbox',
-            href: 'https://www.dropbox.com/home',
-            iframable:0,
-            description: '単純に優秀な子<br>ファイルWebよりも持続性が高い<br>ログイン必須'
-            },
-            'anagram': {
-            id: 'anagram',
-            name: 'アナグラム生成機',
-            href: 'https://anagram.httqs.com/',
-            iframable:1,
-            description: 'アナグラムを生成してくれる子<br>武器とかの名前はこいつに頼ってもいいかも'
-            },
-            'roulette': {
-            id: 'roulette',
-            name: 'ルーレット等生成機',
-            href: 'https://jp.piliapp.com/random/wheel/',
-            iframable:1,
-            description: '名の通り感。<br>他にも乱数とかもいける<br>暇つぶしできるかもね'
-            },
-            'colorSite': {
-            id: 'colorSite',
-            name: 'カラーサイト',
-            href: 'https://www.color-site.com/',
-            iframable:1,
-            description: '色の種類を調べれるサイト<br>まじで優秀<br>rgbにも対応'
-            },
-            'mediaEdit': {
-            id: 'mediaEdit',
-            name: 'mp3、mp4編集サイト',
-            href: 'https://123apps.com/ja/',
-            iframable:1,
-            description: '動画→音ができるサイト<br>いつも愛用させていただいております<br>かんしゃ〜'
-            },
-        },
-        'make':{
-        'scratch': {
-        id: 'scratch',
-        name: 'scratch',
-        href: 'https://scratch.mit.edu/users/koppepan_orange/',
-        iframable:0,
-        description: '言わずもがな<br>前はここで作ってた..っていう名残<br>でもやってほしい'
-        },
-        'flat': {
-        id: 'flat',
-        name: 'flat',
-        href: 'https://flat.io/ja',
-        iframable:0,
-        description: '音楽が比較的簡単に作れるサイト<br>ログイン必須'
-        },
-        'musescore': {
-        id: 'musescore',
-        name: 'musescore',
-        href: 'https://musescore.com/user/41107809',
-        iframable:0,
-        description: '楽譜を調べれるサイト<br>人気な曲はありがちだけど<br>そんなそんなな曲はないことが多い'
-        },
-        'pixnote': {
-        id: 'pixnote',
-        name: 'pixnote',
-        href: 'https://pixnote.net/',
-        iframable:1,
-        description: '簡単にドット絵が描けるサイト<br>まじで良い<br>ほんとに'
-        },
-        'pixlate': {
-        id: 'pixlate',
-        name: 'pixlate',
-        href: 'https://www.pixilart.com/koppepanorange',
-        iframable:0,
-        description: 'ドット絵が描けるサイト2<br>ちょっと複雑だけど自由度は高め'
-        },
-        'thirtyDollar': {
-        id: 'thirtyDollar',
-        name: 'thirty dollar',
-        href: 'https://thirtydollar.website/',
-        iframable:0,
-        description: '効果音で音楽を作れるサイト<br>internet overdoseやってる人もいたね'
-        },
-        },
-        'study':{
-        'meibo': {
-        id: 'meibo',
-        name: 'meibo-site',
-        href: 'https://true-koppepan-orange.github.io/sub_test-site/meibo_site',
-        iframable:1,
-        description: '学校の人の一覧を見れるサイト<br>ぜんーーーぜんいないのは内緒のお話'
-        },
-        'duolingo': {
-        id: 'duolingo',
-        name: 'duolingo',
-        href: 'https://www.duolingo.com/profile/koppepan_orange',
-        iframable:0,
-        description: '言語が学べるサイト<br>ﾁｮｳﾕｰﾒｲ!ﾔﾊﾞｵ'
-        },
-        'sushiDa': {
-        id: 'sushiDa',
-        name: '寿司打',
-        href: 'http://typingx0.net/sushida/',
-        iframable:0,
-        description: 'タイピング競いの定番<br私は苦手です'
-        },
-        'ankey': {
-        id: 'ankey',
-        name: 'ankey',
-        href: 'https://ankey.io/@koppepanorange',
-        iframable:0,
-        description: '歌詞とか色々でタイピングができるサイト<br>楽しい<br>好き'
-        },
-        },
-        'sns':{
-        'chatSite': {
-        id: 'chatSite',
-        name: 'chat-site',
-        href: 'https://koppepan-orange.github.io/test-site/chat.html',
-        iframable:1,
-        description: '人と話せるサイト<br>なんJスタイル<br>サイドバーからtwitter2が見れるよ'
-        },
-        'reddit': {
-        id: 'reddit',
-        name: 'reddit',
-        href: 'https://www.reddit.com/user/koppepan_orange/',
-        iframable:0,
-        description: '外国掲示板定番のやつ<br>英語しかない<br>絵はほとんど転載<br>まあ常時喧嘩してるtwitterよりはマシ'
-        },
-        'github': {
-        id: 'github',
-        name: 'github',
-        href: 'https://github.com/koppepan-orange',
-        iframable:0,
-        description: 'ほんとにいつもありがとね...<br>このサイトもあなたのおかげです'
-        },
-        'discord': {
-        id: 'discord',
-        name: 'discord',
-        href: 'https://discord.com/channels/@me',
-        iframable:0,
-        description: 'いつもありがとな、ほんとに<br>感謝してるぜ👍🏻'
-        },
-        'chatWeb': {
-        id: 'chatWeb',
-        name: 'チャットweb',
-        href: 'https://chat.onl.jp/?koppepan23',
-        iframable:0,
-        description: 'ちゃんと喋れるいいサイト<br>けどchat.htmlの方が良い'
-        },
-        'pixiv': {
-        id: 'pixiv',
-        name: 'pixiv',
-        href: 'https://www.pixiv.net/users/93550041',
-        iframable:0,
-        description: '絵が見れるサイト<br>twitterよりも民度が良い<br>絵師さんの巣窟'
-        },
-        'twitch': {
-        id: 'twitch',
-        name: 'twitch',
-        href: 'https://www.twitch.tv/koppepan_orange',
-        iframable:0,
-        description: '配信が見れるサイト<br>いつかはしてみたいねぇ....'
-        },
-        'instagram': {
-        id: 'instagram',
-        name: 'instagram',
-        href: 'https://www.instagram.com/koppepan_orange/',
-        iframable:0,
-        description: '2番目に好きなSNS<br>けど最近投稿できてない...'
-        },
-        'twitter': {
-        id: 'twitter',
-        name: 'twitter',
-        href: 'https://twitter.com/koppepan_orange',
-        iframable:0,
-        description: '日本で最も人気なSNS<br>色んな界隈が入り混じってて良いけど<br>気抜いたら関係ないやつらが流れ込んでくるのが難点<br>好きだけどね'
-        },
-        'youtube': {
-        id: 'youtube',
-        name: 'youtube',
-        href: 'https://www.youtube.com/channel/UCFvmwWDRrVqM22icC7QLx1w',
-        iframable:0,
-        description: '言わずもがな〜な動画投稿サイト<br>たまーーーに投稿してる<br>のばまんさんはおすすめ'
-        },
-        'litLink': {
-        id: 'litLink',
-        name: 'lit.link',
-        href: 'https://lit.link/koppepanorange',
-        iframable:0,
-        description: '私についてまとめてあるサイト<br>けど多分このサイトだけで事足りる'
-        },
-        'kiite': {
-        id: 'kiite',
-        name: 'kiite',
-        href: 'https://kiite.jp/user/koppapan_orange',
-        iframable:0,
-        description: '音楽が広告なしで見れるサイト<br>ボカロのみ<br>けどニコ動基盤だから学校では無理<br>ガッデム..ってやつ？<br>ベアさんといよわさんはおすすめ'
-        },
-        'magicalDraw': {
-        id: 'magicalDraw',
-        name: 'MagicalDraw',
-        href: 'https://draw.kuku.lu/pchat.php?hash=898857247',
-        iframable:0,
-        description: '俗にいう"絵チャ"<br>友達と合作ができる<br>楽しい'
-        },
-        },
-        'game':{
-        'gameSite': {
-        id: 'gameSite',
-        name: 'game-site',
-        href: 'https://koppepan-orange.github.io/game-site/welcome.html',
-        iframable:1,
-        description: 'ゲームができるサイト<br>まじで楽しい<br>clicker-of-mugenはおすすめ<br>cardは未完成だけど絵見て欲しい'
-        },
-        'musicSite': {
-        id: 'musicSite',
-        name: 'music-site',
-        href: 'https://koppepan-orange.github.io/test-site/music-site.html',
-        iframable:1,
-        description: '全然できてない<br>kiite-cafeみたいなサイト作ろうとしたんだけどむずい'
-        },
-        'cybercode': {
-        id: 'cybercode',
-        name: 'cybercodeonline',
-        href: 'https://cybercodeonline.com',
-        iframable:0,
-        description: '硬派で古き良きMMORPG<br>まじで楽しい..いや人によるかも<br>AFKが充実してて好き'
-        },
-        'browserGame': {
-        id: 'browserGame',
-        name: 'browsergame',
-        href: 'https://sdin.jp/browser/',
-        iframable:0,
-        description: '色んなゲームで遊べるサイト<br>カジノ系列もあるよ<br>確かブロック貫通'
-        },
-        'arealMe': {
-        id: 'arealMe',
-        name: 'ARealMe',
-        href: 'https://www.arealme.com/',
-        iframable:0,
-        description: '色んなテストができるサイト<br>クリック速度とか反射神経とか'
-        },
-        'unityroom': {
-        id: 'unityroom',
-        name: 'unityroom',
-        href: 'https://unityroom.com/new_arrivals',
-        iframable:0,
-        description: '色んな人の作ったゲームで遊べるサイト<br>"ゆめきゃわ"みたいなやつはおすすめ'
-        }
-        },
-        };
-        let iframenow = 0;
-        Object.keys(Links).forEach(type => {
-            const details = document.createElement('details');
-            const summary = document.createElement('summary');
-            summary.textContent = type;
-            details.appendChild(summary);
-            details.id = `${type}tachi`;
-            document.getElementById('links').appendChild(details);
-
-            Object.keys(Links[type]).forEach(key => {
-                const link = Links[type][key];
-                const a = document.createElement('a');
-                a.href = link.href;
-                a.textContent = link.name;
-                a.className = 'hasd';
-                a.target = '_blank';
-                a.setAttribute('data-description', link.description);
-
-                if(link.iframable == 1){
-                    a.addEventListener('contextmenu', (event) => {
-                        event.preventDefault();
-                        if(iframenow == 0){
-                            iframenow = 1;//なぜか反応してない。Links['memos']の形にするべき？
-                            const iframe = document.getElementById('iframe');
-                            iframe.style.display = 'block';
-                            iframe.src = link.href;
-                        }else{
-                            iframenow = 0;
-                            const iframe = document.getElementById('iframe');
-                            iframe.style.display = 'none';
-                        }
-                    })
-                }
-                document.getElementById(`${type}tachi`).appendChild(a);
-                document.getElementById(`${type}tachi`).appendChild(document.createElement('br'));
-            });
-            document.getElementById(`${type}tachi`).appendChild(document.createElement('br'));
-        })
-        //#endregion
-        //#region iframeのお話
-        let Iframes = {
-            'bing':{
-                id:'bing',
-                name:'bing.com',
-                //src:'https://www.bing.com/search?q=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae%e6%af%8d%e3%82%82%e6%88%91%e3%82%92%e5%be%85%e3%81%a4%e3%82%89%e3%82%80%e3%81%9d&qs=RQ&pq=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae&sc=4-18&cvid=BDF68943856B40AC93BF5E6E4207F06D&FORM=QBRE&sp=1&ghc=1&lq=0',
-                src:'about:blank',
-            },
-            'bing_trans':{
-                id:'bing_trans',
-                name:'bing-trans',
-                //src:'https://www.bing.com/translator?from=&to=ja&setlang=ja',
-                src:'about:blank',
-            },
-            'deepAI':{
-                id:'deepAI',
-                name:'deep.ai',
-                //src:'https://deepai.org/chat',
-                src:'about:blank',
-            },
-            
-        }
-        let NowLinkframe = 1;
-        function LinkframeGo(){
-            document.getElementById(`Linkframe${NowLinkframe}`).setAttribute('data-src', document.getElementById("LinkInput").value);
-            document.getElementById(`Linkframe${NowLinkframe}`).src = document.getElementById("LinkInput").value;
-            NicoNicoText('うぇいとふぉあな〜う'); //好きな言葉ランキング上位"wait for now"
-        }
-        document.getElementById('LinkSelect').addEventListener('change', event =>{
-            let Link = `Linkframe${event.target.value}`;
-
-            document.getElementById('Linkframe1').style.display = 'none';
-            document.getElementById('Linkframe2').style.display = 'none';
-            document.getElementById('Linkframe3').style.display = 'none';
-            document.getElementById('Linkframe4').style.display = 'none';
-
-            document.getElementById(Link).style.display = 'block';
-
-            document.getElementById('LinkInput').value = document.getElementById(`Linkframe${event.target.value}`).getAttribute('data-src');
-        })
-        //#endregion
-        
-        //memo
-        //#region memo
-        const bodyTextarea = document.getElementById('memo-text');
-        const titleInput = document.getElementById('memo-title');
-        const searchButton = document.getElementById('memo-search');
-
-        bodyTextarea.addEventListener('input', () => {
-            if(username !== 'no name'){
-                const title = titleInput.innerText.trim();
-                const body = bodyTextarea.innerText;
-                database.ref(`users/${username}/memo/${title}`).update({body:body});
-            }
-        });
-
-        searchButton.addEventListener('click', () => {
-            if(username !== 'no name'){
-                const title = titleInput.innerText;
-                database.ref(`users/${username}/memo/${title}`).once('value').then((snapshot) => {
-                    bodyTextarea.innerText = snapshot.val()?.body || '';
-                });
-            }else{
-                bodyTextarea.innerText = 'ログインしてね！！  話はそれからだよ☆'
-            }
-        });
-        //#endregion
-        //#endregion
 
     </script>
+    <script src="jses/pipette.js" defer></script>
+    <script src="jses/home.js" defer></script>
+
 </body>
 </html>
