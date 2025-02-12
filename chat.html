@@ -57,7 +57,7 @@
         }
         
         /* login */
-        .login-container, .nanj-container{
+        #Login, #nanj{
             width: 500px;
             max-width: 100%;
             margin: 50px auto;
@@ -68,7 +68,7 @@
             display: none;
             flex-direction: column;
         }
-        .login-container {
+        #Login {
             display: flex;
         }
         .login-form {
@@ -93,7 +93,7 @@
         }
 
         /* なんJ */
-        .messages {
+        #messages {
             flex: 1;
             padding: 10px;
             overflow-y: auto;
@@ -159,7 +159,7 @@
         }
 
         /* twitter2 */
-        .twitter-container {
+        #twitter2 {
             width: 500px;
             margin: 50px auto;
             background-color: #fff;
@@ -239,7 +239,7 @@
 </head>
 <body id="body">
     <!-- ログイン画面 -->
-    <div class="login-container" id="login-container">
+    <div id="Login">
         <form class="login-form" id="login-form">
             <input type="text" id="username" placeholder="ユーザー名" required>
             <input type="password" id="password" placeholder="パスワード" required>
@@ -253,7 +253,7 @@
         <hr noshade="true">
         <ul>
             <li><button onclick="GoTo('nanj')">NanJ</button></li>
-            <li><button onclick="GoTo('twitter')">Twitter2</button></li>
+            <li><button onclick="GoTo('twitter2')">Twitter2</button></li>
         </ul>
         <hr noshade="true">
         <ul>
@@ -264,8 +264,10 @@
         <hr noshade="true">
         <button id="logout-button" onclick="logout()">Logout</button>
     </nav>
-    <div class="nanj-container" id="nanj-container">
-        <select id="room-select" name="room-select" onchange="selectRoom()">
+
+
+    <div id="nanj">
+        <select id="room-select" onchange="selectRoom()">
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -275,12 +277,15 @@
             <option value="Anonymous-2">Anonymous-2</option>
             <option value="Anonymous-3">Anonymous-3</option>
         </select>
+
         <div class="make-room-zone">
             <input type="text" id="room-make" size="50" placeholder="write room name"/>
             <input type="password" id="room-make-pass" size="12" placeholder="write room pass"/>
             <button id="room-make-button" onclick="makeRoom()">Make</button>
         </div>
-        <div class="messages" id="messages"></div>
+
+        <div id="messages"></div>
+
         <div id="additional-zone">
             <div class="hover-element">
                 <div class="popup">
@@ -298,7 +303,7 @@
     </div>
 
     <!--twitter2-->
-    <div class="twitter-container" id="twitter-container">
+    <div id="twitter2">
         <select id="t-room-select" name="t-room-select" onchange="selectTweetsroom()">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -331,9 +336,8 @@
 
         //#region ログイン処理
         var loginForm = document.getElementById('login-form');
-        var nanjContainer = document.getElementById('nanj-container');
-        var twitterContainer = document.getElementById('twitter-container');
-        var loginError = document.getElementById('login-error');
+        var Nanj = document.getElementById('nanj');
+        var Twitter2 = document.getElementById('twitter2');
         let room = 1;
         let username = 'no name';
         let realusername = 'no name';
@@ -396,8 +400,8 @@
                 status: 'online'
             });
             menuToggle.style.display = 'block';
-            nanjContainer.style.display = 'flex';
-            document.getElementById('login-container').style.display = 'none';
+            Nanj.style.display = 'flex';
+            document.getElementById('Login').style.display = 'none';
             document.getElementById('room-select').style.display = 'block';
             room = roomSelect.value;
             selectRoom();
@@ -507,9 +511,9 @@
             NicoNicoText("ログアウトしました");
             sideMenu.style.left = '-250px';
             menuToggle.style.display = 'none';
-            nanjContainer.style.display = 'none';
-            twitterContainer.style.display = 'none';
-            document.getElementById('login-container').style.display = 'block';
+            Nanj.style.display = 'none';
+            Twitter2.style.display = 'none';
+            document.getElementById('Login').style.display = 'block';
             document.getElementById('username').value = '';realusername = '';username = 'no name';
             document.getElementById('password').value = '';
         }
@@ -529,14 +533,14 @@
 
         //#region iroiro
         function GoTo(code){
-            nanjContainer.style.display = 'none';
-            twitterContainer.style.display = 'none';
+            Nanj.style.display = 'none';
+            Twitter2.style.display = 'none';
             switch(code){
                 case 'nanj':
-                    nanjContainer.style.display = 'flex';
+                    Nanj.style.display = 'flex';
                     break;
-                case 'twitter':
-                    twitterContainer.style.display = 'flex';
+                case 'twitter2':
+                    Twitter2.style.display = 'flex';
                     selectTweetsroom();
                     break;
             }
@@ -597,19 +601,19 @@
 
         //#region ここからチャットの動き
         var sendButton = document.getElementById('send-button');
-        var messageInput = document.getElementById('message-input');
-        var messagesContainer = document.getElementById('messages');
+        var MessageIn = document.getElementById('message-input');
+        var Messages = document.getElementById('messages');
         var roomSelect = document.getElementById('room-select');
         room = roomSelect.value;
         var messagesRef = database.ref('rooms/' + room + '/messages');
 
-        messageInput.addEventListener('keypress', function(e) {
+        MessageIn.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             if(!e.shiftKey){
                 e.preventDefault();
                 sendButton.click();
             }else{
-                messageInput.value += '<br>'
+                MessageIn.value += '<br>'
             }
         }
         });
@@ -649,10 +653,6 @@
             return +time;
         }
 
-        async function waitanddelete(){
-            await delay(1000);
-            messageInput.value = '';
-        }
         // 部屋変更時の処理
         let MessageSendE;
         function selectRoom(){
@@ -666,7 +666,7 @@
 
             // メッセージ送信
             MessageSendE = sendButton.addEventListener('click', async function(){
-                var message = messageInput.value;
+                var message = MessageIn.value;
                 var Musername = username;
                 if(message.trim() !== ''){
 
@@ -674,7 +674,7 @@
                     if(message === '/save'){
                         load();
                         NicoNicoText('君、もしやデバッガーだね..?')
-                        messageInput.value = '';return;
+                        MessageIn.value = '';return;
                     }
                     if(message === '/clear'){
                         database.ref('rooms/'+room).remove();
@@ -682,7 +682,7 @@
                         NicoNicoText('すべてのメッセージが消去されました。');
                         NicoNicoText('あなたがやったのです。反省しろカス')
                         NicoNicoText('草')
-                        messageInput.value = '';return;
+                        MessageIn.value = '';return;
                     }
                     if(message === '/alloff'){
                         const onlineUsersRef = database.ref('users');
@@ -697,26 +697,26 @@
                     }
                     if(message === '/reload'){
                         window.location.reload();
-                        messageInput.value = '';return;
+                        MessageIn.value = '';return;
                     }
                     if(message === '/online'){
                         usersRef.update({status: 'online'});
                         NicoNicoText('onlineになったぜ')
-                        messageInput.value = '';return;
+                        MessageIn.value = '';return;
                     }
                     if(message === '/offline'){
                         usersRef.update({status: 'offline'});
                         NicoNicoText('offlineになったぜ')
-                        messageInput.value = '';return;
+                        MessageIn.value = '';return;
                     }
                     if(message === '/now'){
                         load();
                         NicoNicoText('now:'+userData.yen+'円');
-                        messageInput.value = '';return;
+                        MessageIn.value = '';return;
                     }
                     if(message == '/showlocal'){
                         displayLocalStorage();
-                        messageInput.value = '';return;
+                        MessageIn.value = '';return;
                     }
                     if(message == '/daily'){
                         const date = new Date();
@@ -728,17 +728,17 @@
                         usersRef.update({yen: x, daily: time});
                         NicoNicoText('ログインボーナス！ now:'+x+'円')
                         load();
-                        messageInput.value = '';
+                        MessageIn.value = '';
                         return;
                         }else{
                         NicoNicoText('受け取り済みです。乙乙乙乙')
-                        messageInput.value = '';
+                        MessageIn.value = '';
                         return;
                         }
                     }
 
                     if(message.startsWith('/give')){
-                        messageInput.value = '';
+                        MessageIn.value = '';
                         let parts = message.split(' ');//parts = '/give, user, amount'
                         let user = parts[1];
                         let amount = parseInt(parts[2]);
@@ -756,20 +756,20 @@
                         ToRef.update({yen: y});
                         load();
                         NicoNicoText(`${amount}円${user}に貢ぎました。`);
-                        messageInput.value = '';
+                        MessageIn.value = '';
                         return;
                     };
                     if(message.startsWith('/nico')){
                         NicoNicoText(message.substring(6))
-                        messageInput.value = '';
+                        MessageIn.value = '';
                         return;
                     }
 
-                    if(message.startsWith('/rename')){username = message.substring(8);messageInput.value = '';return;};
-                    if(message.startsWith('/rerename')){realusername = message.substring(10);username = realusername;messageInput.value = '';return;};
-                    if(message.startsWith('/haidoumominasankonnnitihamikankoppepannnokoppepandesu')){document.getElementById('username').value = message.substring(55);realusername = document.getElementById('username').value;username = realusername;messageInput.value = '';return;}
+                    if(message.startsWith('/rename')){username = message.substring(8);MessageIn.value = '';return;};
+                    if(message.startsWith('/rerename')){realusername = message.substring(10);username = realusername;MessageIn.value = '';return;};
+                    if(message.startsWith('/haidoumominasankonnnitihamikankoppepannnokoppepandesu')){document.getElementById('username').value = message.substring(55);realusername = document.getElementById('username').value;username = realusername;MessageIn.value = '';return;}
                     
-                    if(message.startsWith('/nanj')){AnonymousName = message.substring(6);setLocalStorage("AnonymousName", AnonymousName);messageInput.value = '';return;};
+                    if(message.startsWith('/nanj')){AnonymousName = message.substring(6);setLocalStorage("AnonymousName", AnonymousName);MessageIn.value = '';return;};
 
                     if(message.startsWith('/ban')){
                         let banuser = message.substring(5);
@@ -777,7 +777,7 @@
                             banned:1
                         })
                         NicoNicoText('Nice Job!')
-                        messageInput.value = '';
+                        MessageIn.value = '';
                         return;
                     }
                     if(message.startsWith('/unban')){
@@ -786,7 +786,7 @@
                             banned:0
                         })
                         NicoNicoText('Nice Job!')
-                        messageInput.value = '';
+                        MessageIn.value = '';
                         return;
                     }
 
@@ -801,7 +801,7 @@
                         realusername: realusername,//偽物対策
                         timestamp: formatDate(new Date())
                     });
-                    messageInput.value = '';
+                    MessageIn.value = '';
                 }
                 messagesRef.on('value', function(snapshot) {
                     if (snapshot.numChildren() > 20) {
@@ -823,8 +823,8 @@
                         document.getElementById('username').value = '';
                         document.getElementById('password').value = '';
                         menuToggle.style.display = 'none';
-                        nanjContainer.style.display = 'none';
-                        document.getElementById('login-container').style.display = 'block';
+                        Nanj.style.display = 'none';
+                        document.getElementById('Login').style.display = 'block';
                         document.getElementById('room-select').style.display = 'none';
                     }else{
                         var messageData = snapshot.val();
@@ -866,7 +866,7 @@
                             var editButton = document.createElement('button');
                             editButton.textContent = '✎';
                             let edit = editButton.addEventListener('click', function(){
-                                Mtext = prompt('メッセージを編集', Mtext);//messageInput.value;
+                                Mtext = prompt('メッセージを編集', Mtext);//MessageIn.value;
                                 textElement.innerHTML = Mtext;
                                 const ImadakeRef = database.ref('rooms/'+room+'/messages/'+snapshot.key);
                                 ImadakeRef.update(messageData);
@@ -882,7 +882,7 @@
                         textElement.innerHTML = Mtext;
                         messageElement.appendChild(textElement);
 
-                        messagesContainer.appendChild(messageElement);
+                        Messages.appendChild(messageElement);
 
                         messagesRef.on('value', function(snapshot) {
                             if (snapshot.numChildren() > 20) {
@@ -892,7 +892,7 @@
                         });
 
                         // 最新のメッセージが見えるようにスクロール
-                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        Messages.scrollTop = Messages.scrollHeight;
                     }
                 });
             });
@@ -919,8 +919,8 @@
                             document.getElementById('username').value = '';
                             document.getElementById('password').value = '';
                             menuToggle.style.display = 'none';
-                            nanjContainer.style.display = 'none';
-                            document.getElementById('login-container').style.display = 'block';
+                            Nanj.style.display = 'none';
+                            document.getElementById('Login').style.display = 'block';
                             document.getElementById('room-select').style.display = 'none';
                         }else{
                             var messageData = snapshot.val();
@@ -962,7 +962,7 @@
                                 var editButton = document.createElement('button');
                                 editButton.textContent = '✎';
                                 let edit = editButton.addEventListener('click', function(){
-                                    Mtext = prompt('メッセージを編集', Mtext);//messageInput.value;
+                                    Mtext = prompt('メッセージを編集', Mtext);//MessageIn.value;
                                     textElement.innerHTML = Mtext;
                                     const ImadakeRef = database.ref('rooms/'+room+'/messages/'+snapshot.key);
                                     ImadakeRef.update(messageData);
@@ -978,7 +978,7 @@
                             textElement.innerHTML = Mtext;
                             messageElement.appendChild(textElement);
 
-                            messagesContainer.appendChild(messageElement);
+                            Messages.appendChild(messageElement);
 
                             messagesRef.on('value', function(snapshot) {
                                 if (snapshot.numChildren() > 20) {
@@ -988,7 +988,7 @@
                             });
 
                             // 最新のメッセージが見えるようにスクロール
-                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                            Messages.scrollTop = Messages.scrollHeight;
                         }
                     });
                 });

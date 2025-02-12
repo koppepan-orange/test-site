@@ -301,6 +301,10 @@
             opacity: 0;
             transition: opacity 0.5s ease; 
             z-index: 1234;
+
+
+            user-select: none;
+            pointer-events: none;
         }
         #login input {
             width: calc(100% - 20px);
@@ -308,6 +312,7 @@
             padding: 10px;
             font-size: 16px;
             border: 1px solid #b5dcff;
+            
         }
         #login button {
             width: 100%;
@@ -355,6 +360,8 @@
         #jine-tab{font-family: webdings;}
         #answer-tab{font-family: wingdings;}
         #question-tab{font-family: wingdings;}
+        #en-tab{font-family: webdings;}
+        #tips-tab{font-family: wingdings;}
 
 
         /*一旦全体にエンチャ*/
@@ -496,7 +503,147 @@
         /*こっからCommu*/
         #Commu{
             display: none;
+            overflow: hidden!important;
         }
+
+        /*nanj*/
+
+        /* なんJ */
+        #nanj{
+            display: none;
+            width: 500px;
+            max-width: 100%;
+            margin: 50px auto;
+            background-color: #f0f8ff;
+            border: 2px solid #cfe9ff;
+            border-radius: 5px;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        #messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: scroll;
+            max-height: 60%;
+            border-bottom: 2px solid #cfe9ff;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            background-color: #def0ff;
+            border-radius: 5px;
+            max-width: 80%;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .message.users {
+            background-color: #c7fff0;
+            align-self: flex-end;
+        }
+        #message-input {
+            border: none;
+            padding: 15px;
+            flex: 1;
+            font-size: 16px;
+        }
+        #send-button {
+            border: none;
+            padding: 15px;
+            background-color: #b5dcff;
+            color: #f0f8ff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #send-button:hover {
+            background-color: #cfe9ff;
+        }
+        #room-select {
+            display: block;
+            width: 100%;
+            height: 30px;
+            border-bottom: 2px solid #cfe9ff;
+        }
+
+
+        .hover-element {
+            position: relative;
+            display: inline-block;
+        }
+        .popup {
+            display: none;
+            padding: 10px;
+            background-color: rgba(72, 72, 72, 0.563);
+            color: #fff;
+            border-radius: 5px;
+        }
+        .hover-element:hover .popup {
+            display: block;
+        }
+
+        /*こっからtwitter2*/
+        #twitter2{
+            width: 500px;
+            margin: 50px auto;
+            background-color: #f0f8ff;
+            border: 2px solid #cfe9ff;
+            border-radius: 5px;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            display: none;
+        }
+        .tweets {
+            position: relative;
+            flex: 1;
+            width: 500px;
+            overflow-y: scroll;
+            padding: 10px;
+            max-height: 750px;
+            border-bottom: 1px solid #dedede;
+        }
+        #t-make-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width:80px;
+            border: none;
+            padding: 5px;
+            background-color: #4473ad;
+            color: #f0f8ff;
+            font-size: 32px;
+        }
+        #t-make-zone{
+            display: block;
+            position: absolute;
+            width: 500px;
+            height: 600px;
+            bottom: -600px;
+            background-color: #b5b5b5;
+            color:#000000;   
+            transition: bottom 0.3s;
+        }
+        #t-make-send, #t-make-cancel{
+            border: none;
+            background-color: none;
+            color: #4473ad;
+            font-size: 18px;
+        }
+        #t-make-text{
+            background-color: #def0ff;
+            resize: vertical;
+            height: 590px;
+        }
+        .tweet{
+            margin-bottom: 15px;
+            padding: 8px 12px;
+            background-color: #def0ff;
+            border-radius: 5px;
+            max-width: 80%;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+
 
         /*こっからAnonymous*/
         #Anonymous{
@@ -669,9 +816,61 @@
     </div>
 
     <div id="Commu">
+        <div id="nanj">
+            <select id="room-select" name="room-select" onchange="selectRoom()">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="Anonymous-1">Anonymous-1</option>
+                <option value="Anonymous-2">Anonymous-2</option>
+                <option value="Anonymous-3">Anonymous-3</option>
+            </select>
+    
+            <div id="messages"></div>
+    
+            <div id="additional-zone">
+                <div class="hover-element">
+                    <div class="popup">
+                        <button onclick="sendStamp(1)">OK</button> <button onclick="sendStamp(2)">最高か</button> <button onclick="sendStamp(3)">ぴえん</button> <button onclick="sendStamp(4)">わりどう</button><br>
+                        <button onclick="sendStamp(5)">ごめん</button> <button onclick="sendStamp(6)">無事終了</button> <button onclick="sendStamp(7)">LOVE</button> <button onclick="sendStamp(8)">SORENA</button><br>
+                        <button onclick="sendStamp('hownice')">いいね</button> <button onclick="sendStamp('koresuki')">これすき</button> <button onclick="sendStamp('ohitasi')">おひたし</button> <button onclick="sendStamp('spacecat')">宇宙猫</button><br>
+                        <button onclick="sendStamp('youaresick')">病気ね</button> <button onclick="sendStamp('nasanao')">なさなお</button> <button onclick="sendStamp('4coma1')">外人4コマ-high</button> <button onclick="sendStamp('4coma2')">外人4コマ-low</button><br>
+                        <button onclick="sendStamp('maxwell1')">maxwell-hop</button> <button onclick="sendStamp('maxwell2')">maxwell-spin</button> <button onclick="sendStamp('hello')">こにちゃ</button> <button onclick="sendStamp('gdng')">おやすみ</button><br>
+                    </div>
+                    囧
+                </div>
+            </div>
+
+            <input type="textarea" id="message-input" placeholder="メッセージを書く">
+            <button id="send-button">送信</button>
+        </div>
+
+        <div id="twitter2">
+            <select id="t-room-select" name="t-room-select" onchange="selectTweetsroom()">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+            <div class="tweets" id="tweets"></div>
+            <button id="t-make-button">✎</button>
+            <div id="t-make-zone">
+                <span id="t-make-cancel">キャンセル</span>　<span id="t-make-send">完了</span><br>
+                <textarea id="t-make-text" rows="15" cols="72"></textarea>
+            </div>
+        </div>
+
+        <div id="jine"></div>
     </div>
 
     <div id="Anonymous">
+    </div>
+
+    <div id="Study">
+    </div>
+
+    <div id="Pixelen">
     </div>
 
 
@@ -679,6 +878,9 @@
     <script>
         //#region 扱いやすい子達
         function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+
+        function load(){usersRef.once('value').then(function(snapshot){userData = snapshot.val();});}
+
         async function NicoNicoText(mes){
             const newDiv = document.createElement('div');
             newDiv.textContent = mes;
@@ -746,6 +948,26 @@
             let text = (event.clipboardData || window.clipboardData).getData("Text"); // プレーンテキスト取得
             document.execCommand("insertText", false, text); // プレーンテキストを挿入
         });
+
+        function formatDate(date){ //見る用
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}/${month}/${day} ${hours}:${minutes}`;
+        }
+        function formatTime(date){ //データ保存用
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const time = `${year}${month}${day}${hours}${minutes}`;
+            return +time;
+        }
+
+
         //#endregion
 
         let doko = 'Home'
@@ -756,6 +978,7 @@
     </script>
     <script src="jses/pipette.js" defer></script>
     <script src="jses/home.js" defer></script>
+    <script src="jses/commu.js" defer></script>
 
 </body>
 </html>

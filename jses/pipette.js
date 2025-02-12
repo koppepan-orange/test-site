@@ -122,6 +122,21 @@ const Tabs = {
             open:'?',
             close:'!'
         },
+    },
+
+    'Study':{
+        'en':{
+            name:'en',
+            initial:1,
+            open:'.',//web
+            close:'.'
+        },
+        'tips':{
+            name:'tips',
+            initial:0,
+            open:'&',//wing1
+            close:'&'
+        }
     }
 }
 
@@ -204,15 +219,22 @@ let usersRef = null;
 document.getElementById('login-button').addEventListener('click', () => {
     if(document.getElementById('login').style.opacity == 0){
         document.getElementById('login').style.opacity = 1;
+        document.getElementById('login').style.userSelect = 'auto';
+        document.getElementById('login').style.pointerEvents = 'all';
     }else{
         document.getElementById('login').style.opacity = 0;
+        document.getElementById('login').style.userSelect = 'none';
+        document.getElementById('login').style.pointerEvents = 'none';
     }
 })
+
 function login(){
     document.getElementById('login').style.opacity = 0;
+    document.getElementById('login').style.userSelect = 'none';
     document.getElementById('login-button').style.display = 'none';
     document.getElementById('expbar').style.display = 'block';
 
+    setLocalStorage("banned", 0);
     usersRef = database.ref('users/'+username);
 
     usersRef.once('value', function(snapshot){
@@ -223,7 +245,14 @@ function login(){
             maxexp = level*25+25;
             updateUI();
         }
-    })
+    });
+
+    usersRef.update({
+        status: 'online'
+    });
+
+    window.homeLogin();
+    window.commuLogin();
 }
 
 document.getElementById('login-login').addEventListener('click', () => {
@@ -263,6 +292,7 @@ function autoLogin(){
 }
 
 document.getElementById('logout').addEventListener('click', () => {
+    NicoNicoText("ログアウトしました");
     username = 'no name';removeLocalStorage("username");
     document.getElementById('Username').textContent = username;
     document.getElementById('Level').textContent = `Lv:#ERROR!`;
@@ -272,7 +302,20 @@ document.getElementById('logout').addEventListener('click', () => {
 
     document.getElementById('username').value = '';
     document.getElementById('password').value = '';
+
+    window.homeLogout();
+    window.commuLogout();
 })
+
+window.addEventListener('beforeunload', () => {
+    usersRef.once('value').then(function(snapshot) {
+        if(snapshot.exists()){
+            usersRef.update({
+                status: 'offline'
+            });
+        }
+    })
+});
 //#endregion
 //#region expとか
 let exp = 0;

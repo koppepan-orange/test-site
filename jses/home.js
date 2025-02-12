@@ -1,3 +1,10 @@
+//#region Login
+function homeLogin(){
+    console.log('home「ログインされたで」')
+}
+function homeLogout(){
+    console.log('home「ログアウトされたで」')
+}
 //home
 //#region リンクたちの動き
 const Links = {
@@ -393,7 +400,7 @@ document.getElementById('LinkSelect').addEventListener('change', event =>{
 })
 //#endregion
 
-//#region memo
+
 let numberOfMemo = 4;
 document.addEventListener('DOMContentLoaded', () => {
     numberOfMemo = +getLocalStorage("numberOfMemo")??4;
@@ -436,8 +443,11 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     
     
+    
 
 });
+
+//#region memo
 const bodyTextarea = document.getElementById('memo-text');
 const titleInput = document.getElementById('memo-title');
 const searchButton = document.getElementById('memo-search');
@@ -447,6 +457,7 @@ titleInput.addEventListener('keydown', function(e) {
         e.preventDefault(); // 改行を防ぐ
     }
 })
+
 bodyTextarea.addEventListener('input', () => {
     if(username !== 'no name'){
         const title = titleInput.innerText.trim();
