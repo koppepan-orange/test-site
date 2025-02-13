@@ -71,20 +71,14 @@ const Tabs = {
         'home':{
             name:'home',
             initial:1,
-            open:'H',
-            close:'H'
         },
         'memo':{
             name:'memo',
             initial:0,
-            open:'2',
-            close:'2'
         },
         'tools':{
             name:'tools',
             initial:0,
-            open:'@',
-            close:'@'
         }
     },
 
@@ -92,33 +86,21 @@ const Tabs = {
         'nanj':{
             name:'nanj',
             initial:1,
-            open:"_",
-            close:'_'
         },
         'twitter2':{
             name:'twitter2',
             initial:0,
-            open:')',
-            close:')'
         },
         'jine':{
             name:'jine',
             initial:0,
-            open:'^',
-            close:'^'
         }
     },
 
     'Anonymous':{
-        'answer':{
-            name:'answer',//以下通知あるよver 使用未定
-            initial:1,
-            open:'.',// /
-            close:'-'// ,
-        },
         'question':{
             name:'question',
-            initial:0,
+            initial:1,
             open:'?',
             close:'!'
         },
@@ -146,10 +128,10 @@ document.addEventListener('click', ele => {
         let key = ele.target.dataset.name
         Object.keys(doko).forEach(tab => {
             document.getElementById(tab).style.display = 'none';
-            document.getElementById(`${tab}-tab`).textContent = doko[tab].close;
+            document.getElementById(`${tab}-tab`).src = `assets/icons/${doko[tab].name}2.png`;
         })
         document.getElementById(ele.target.dataset.name).style.display = 'block';
-        ele.textContent = doko[key].open;
+        ele.target.src = `assets/icons/${doko[key].name}1.png`;
     }
 })
 
@@ -167,13 +149,13 @@ function moveAnotherDimension(){
         document.getElementById(d).style.display = 'none';
     })
     Object.keys(Tabs[doko]).forEach(tab => {
-        const tabElement = document.createElement("div");
+        const tabElement = document.createElement("img");
         tabElement.className = "tab";
         tabElement.id = `${tab}-tab`;
         if(Tabs[doko][tab].initial == 1){
-            tabElement.textContent = Tabs[doko][tab].open;   
+            tabElement.src = `assets/icons/${Tabs[doko][tab].name}1.png`
         }else{
-            tabElement.textContent = Tabs[doko][tab].close;
+            tabElement.src = `assets/icons/${Tabs[doko][tab].name}2.png`;
         }
         tabElement.dataset.doko = doko;
         tabElement.dataset.name = Tabs[doko][tab].name;

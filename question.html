@@ -812,7 +812,7 @@
                     const userData = snapshot.val();
                     level = userData.level;
                     exp = userData.exp;
-                    maxexp = exp*level+50;
+                    maxexp = level*25+25;
                     updateUI();
                 }
             })

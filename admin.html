@@ -283,9 +283,20 @@
         /*一旦全体にエンチャ*/
         #Null{
             margin-top: 95px;
+            padding: 5px 10px;
             background-color: #f0f8ff;
             overflow-y: scroll;
             margin-bottom: 80px;
+        }
+
+        #passes{
+            display: none;
+            width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        .pass-input{
+            width: 60%;
         }
 
         #fireDatas{
@@ -330,7 +341,13 @@
     <div id="cpopup"></div><iframe id="iframe"></iframe><div id="description"></div>
 
     <div id="Null">
-        <div id="fireDatas"></div>
+        <div id="home">
+            <div id="passes"></div>
+        </div>
+
+        <div id="fire">
+            <div id="fireDatas"></div>
+        </div>
     </div>
 
 
@@ -420,6 +437,54 @@
         };
         firebase.initializeApp(firebaseConfig);
         var database = firebase.database();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            passRef.once('value').then(snapshot => {
+                const data = snapshot.val();
+                adminpass = data.adminpass;
+                Passes['adminpass'].now = adminpass;
+                adminwrongserif = data.adminwrongserif;
+                Passes['adminwrongserif'].now = adminwrongserif;
+            })
+
+            Object.keys(Passes).forEach(name => {
+                let Element = document.createElement('div');
+                Element.className = 'pass';
+                Element.id = `${name}-pass`;
+                
+                let inputElement = document.createElement('input');
+                inputElement.className = 'pass-input';
+                inputElement.id = `${name}-input`;
+                inputElement.placeholder = `now: ${Passes[name].now}`;
+                Element.appendChild(inputElement);
+
+                let changeElement = document.createElement('button');
+                changeElement.className = 'pass-change';
+                changeElement.id = `${name}-change`;
+                changeElement.textContent = 'change';
+                changeElement.addEventListener('click', () => {
+                    if(Passes[name].changable == 1){
+                        passRef.update({
+                            [name]: inputElement.value
+                        });
+                        eval(name) = inputElement.value;
+                        NicoNicoText('changed!!')
+                        console.log(`${Passes[name].now} => ${inputElement.value}`)
+                        Passes[name].now = inputElement.value;
+                        inputElement.placeholder = `now: ${Passes[name].now}`;
+                    }else{
+                        NicoNicoText('すまんね、これは変えれんのよ');
+                        NicoNicoText('すまんね、あー、すまんね、tooth bikini 台上 台上 小さくなってくカリフォル継承 蹴りタイ 蹴りタイ');
+                    }
+                    inputElement.value = '';
+                })
+                Element.appendChild(changeElement);
+
+                document.getElementById('passes').appendChild(Element);
+
+            })
+    
+        })
         //#endregion
         //#region login
         document.getElementById('login-button').addEventListener('click', () => {
@@ -429,14 +494,13 @@
                 document.getElementById('login').style.opacity = 0;
             }
         })
-        // let password = 'いいえ私はさそり座の女'
-        // let wrongpasserif = 'ごめんなさ〜い、最下位はおうし座のあなた〜'
-        let password = '背景この手紙読んで読む手紙'
-        let wrongpasserif = 'ピアノがデカすぎるアンジェラ・アキ'
+        let adminpass = '背景この手紙読んで読む手紙'
+        let adminwrongserif= 'ピアノがデカすぎるアンジェラ・アキ'
         function login(){
             document.getElementById('login').style.opacity = 0;
             document.getElementById('login-button').style.display = 'none';
 
+            document.getElementById('passes').style.display = 'block';
 
             database.ref().once('value').then(snapshot => {
                 const data = snapshot.val();
@@ -450,10 +514,10 @@
         document.getElementById('login-login').addEventListener('click', () => {
             username = document.getElementById('username').value; //定数:admin
 
-            if(document.getElementById('password').value == password){
+            if(document.getElementById('password').value == adminpass){
                 login();
             }else{
-                NicoNicoText(wrongpasserif)
+                NicoNicoText(adminwrongserif)
             }
         })
         //#endregion
@@ -508,6 +572,12 @@
                     open:'H',
                     close:'H'
                 },
+                'fire':{
+                    name:'fire',
+                    initial:0,
+                    open:'F',
+                    close:'F'
+                }
             },
         }
 
@@ -524,6 +594,21 @@
             }
         })
 
+        //#endregion
+        //#region passes
+        let passRef = database.ref('users/admin/passes');
+        let Passes = {
+            'adminpass':{
+                name:'adminpass',
+                now:adminpass,
+                changable:1
+            },
+            'adminwrongserif':{
+                name:'adminwrongserif',
+                now:adminwrongserif,
+                changable:0
+            }
+        }
         //#endregion
 
 
