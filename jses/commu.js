@@ -1,7 +1,7 @@
 //#region document
-const Nanj = document.getElementById('nanj');
-const Twitter2 = document.getElementById('twitter2');
-const roomSelect = document.getElementById('room-select');
+const Nanj = document.querySelector('#nanj');
+const Twitter2 = document.querySelector('#twitter2');
+const roomSelect = document.querySelector('#room-select');
 //#endregion
 //#region Login
 function commuLogin(){
@@ -15,7 +15,6 @@ function commuLogin(){
 function commuLogout(){
     Nanj.style.display = 'none';
     Twitter2.style.display = 'none';
-    document.getElementById('Login').style.display = 'block';
     nickname = '';   
 }
 let room = 1;
@@ -25,9 +24,9 @@ let maxMessage = 30;
 let userData = null;
 //#endregion
 //#region nanj
-let sendButton = document.getElementById('send-button');
-let MessageIn = document.getElementById('message-input');
-let Messages = document.getElementById('messages');
+let sendButton = document.querySelector('#send-button');
+let MessageIn = document.querySelector('#message-input');
+let Messages = document.querySelector('#messages');
 room = roomSelect.value;
 let messagesRef = database.ref('rooms/' + room + '/messages');
 
@@ -163,7 +162,7 @@ function selectRoom(){
     sendButton.removeEventListener('click', MessageSendE);
     room = roomSelect.value;
     messagesRef = database.ref('rooms/' + room + '/messages');
-    document.getElementById('messages').innerHTML = '';
+    document.querySelector('#messages').innerHTML = '';
 
 
     // メッセージ送信
@@ -215,12 +214,12 @@ function selectRoom(){
             uRef = 0; //一旦のやつ
             if(uRef == 1){ 
                 NicoNicoText('エラーが発生しました。')
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
+                document.querySelector('#username').value = '';
+                document.querySelector('#password').value = '';
                 menuToggle.style.display = 'none';
                 nanjContainer.style.display = 'none';
-                document.getElementById('Login').style.display = 'block';
-                document.getElementById('room-select').style.display = 'none';
+                document.querySelector('#Login').style.display = 'block';
+                document.querySelector('#room-select').style.display = 'none';
             }else{
                 let messageData = snapshot.val();
                 let messageElement = makeNanjPost(messageData,snapshot.key);
@@ -249,9 +248,9 @@ function selectRoom(){
     });    
 }
     function displayAllMessages(){
-        var roomSelect = document.getElementById('room-select');
+        let roomSelect = document.querySelector('#room-select');
         room = roomSelect.value;
-        document.getElementById('messages').innerHTML = '';
+        document.querySelector('#messages').innerHTML = '';
 
         // データベースから全てのメッセージを取得
         messagesRef.once('value', function(pealentsnapshot) {
@@ -261,14 +260,14 @@ function selectRoom(){
                     uRef = ss.val();
                     if(uRef == 1){
                         NicoNicoText('エラーが発生しました。')
-                        document.getElementById('username').value = '';
-                        document.getElementById('password').value = '';
+                        document.querySelector('#username').value = '';
+                        document.querySelector('#password').value = '';
                         menuToggle.style.display = 'none';
                         nanjContainer.style.display = 'none';
-                        document.getElementById('Login').style.display = 'block';
-                        document.getElementById('room-select').style.display = 'none';
+                        document.querySelector('#Login').style.display = 'block';
+                        document.querySelector('#room-select').style.display = 'none';
                     }else{
-                        var messageData = snapshot.val();
+                        let messageData = snapshot.val();
                         
                         let messageElement = makeNanjPost(messageData,snapshot.key)
                         messageElement.setAttribute('data-dokosan','最初の読み込み')
@@ -281,7 +280,7 @@ function selectRoom(){
 
                         messagesRef.on('value', function(snapshot) {
                             if (snapshot.numChildren() > maxMessage) {
-                                var firstMessageKey = Object.keys(snapshot.val())[0];
+                                let firstMessageKey = Object.keys(snapshot.val())[0];
                                 messagesRef.child(firstMessageKey).remove();
                             }
                         });
@@ -355,7 +354,7 @@ function selectRoom(){
 
 //#endregion
 //#region twitter2
-const tweets = document.getElementById('tweets');
+const tweets = document.querySelector('#tweets');
 let troom = 1;
 let tweetsRef = database.ref('tweets/1');
 
@@ -363,7 +362,7 @@ let TAdd
 function selectTweetsroom(){
     removeEventListener('child_added', TAdd);
     tweets.innerHTML = '';
-    troom = document.getElementById('t-room-select').value;
+    troom = document.querySelector('#t-room-select').value;
     tweetsRef = database.ref('tweets/'+troom);
     usersRef = database.ref('users/'+username);
     tweetsRef.once('value', function(snapshot){
@@ -372,25 +371,25 @@ function selectTweetsroom(){
 
 
     TAdd = tweetsRef.on('child_added', async function(snapshot){
-        var messageData = snapshot.val();
+        let messageData = snapshot.val();
         let messageElement = makeTwitter2Post(messageData,snapshot.key)
 
         tweets.insertBefore(messageElement, tweets.firstChild);
     });
 }
-document.getElementById('t-make-button').addEventListener('click', () => {//一方通行の色恋にしてもいいかも　
-    const zone = document.getElementById('t-make-zone')
+document.querySelector('#t-make-button').addEventListener('click', () => {//一方通行の色恋にしてもいいかも　
+    const zone = document.querySelector('#t-make-zone')
     if(zone.style.bottom === '0px'){
         zone.style.bottom = '-600px';
     }else{
         zone.style.bottom = '0px';
     }
 });
-document.getElementById('t-make-send').addEventListener('click', () => {
-    const Text = document.getElementById('t-make-text').value;
+document.querySelector('#t-make-send').addEventListener('click', () => {
+    const Text = document.querySelector('#t-make-text').value;
     tweetsRef.push({
         text: Text,
-        username: document.getElementById('username').value,
+        username: document.querySelector('#username').value,
         timestamp: formatDate(new Date()),
         time: formatTime(new Date()),
         heart:{
@@ -408,43 +407,70 @@ document.getElementById('t-make-send').addEventListener('click', () => {
             }
         }
     });
-    document.getElementById('t-make-text').value = '';
-    const zone = document.getElementById('t-make-zone');
+    document.querySelector('#t-make-text').value = '';
+    const zone = document.querySelector('#t-make-zone');
     zone.style.bottom = '-600px';
 })
-document.getElementById('t-make-cancel').addEventListener('click', () => {
-    const zone = document.getElementById('t-make-zone')
+document.querySelector('#t-make-cancel').addEventListener('click', () => {
+    const zone = document.querySelector('#t-make-zone')
     zone.style.bottom = '-600px';
-    document.getElementById('t-make-text').value = '';
+    document.querySelector('#t-make-text').value = '';
 })
 
 
 function makeTwitter2Post(messageData,key){
-    var messageElement = document.createElement('div');
+    let messageElement = document.createElement('div');
     messageElement.className = 'tweet';
     messageElement.setAttribute('data-key', key);
 
-    var usernameElement = document.createElement('span');
+    let userElement = document.createElement('div');
+    userElement.className = 'header';
+
+    let iconElement = document.createElement('img');
+    iconElement.className = 'icon';
+    firebase.database().ref(`users/${messageData.username}/icon`).once("value").then((snapshot) => {
+        if(snapshot.exists()){
+            const base64String = snapshot.val();
+            iconElement.src = snapshot.val();
+        }else{
+            iconElement.src = 'assets/sozais/none.png';
+        }
+    });
+    userElement.appendChild(iconElement);
+
+    messageElement.appendChild(userElement);
+
+    let column = document.createElement('div');
+    column.className = 'column'
+
+    let contentElement = document.createElement('div');
+    contentElement.className = 'content';
+
+    let usernameElement = document.createElement('span');
     usernameElement.className = 'username';
     usernameElement.textContent = messageData.username;//クリックされたらその人のみに〜みたいなのあり
-    messageElement.appendChild(usernameElement);
+    contentElement.appendChild(usernameElement);
 
-    var timestampElement = document.createElement('span');
-    timestampElement.className = 't-timestamp';
+    let timestampElement = document.createElement('span');
+    timestampElement.className = 'timestamp';
     timestampElement.textContent = '　'+timeDifference(messageData.time.toString());
-    messageElement.appendChild(timestampElement);
+    contentElement.appendChild(timestampElement);
 
-    var brElement = document.createElement('br');
-    messageElement.appendChild(brElement);
+    let brElement = document.createElement('br');
+    contentElement.appendChild(brElement);
 
-    var textElement = document.createElement('pre');
-    textElement.textContent = messageData.text;
-    messageElement.appendChild(textElement);
+    let textElement = document.createElement('div');
+    textElement.className = 'text';
+    textElement.innerText = messageData.text;
+    contentElement.appendChild(textElement);
 
-    messageElement.appendChild(brElement);
+    column.appendChild(contentElement);
 
-    var heartElement = document.createElement('span');
-    heartElement.className = 't-heart';
+    let evaluationElement = document.createElement('div');
+    evaluationElement.className = 'evaluation';
+
+    let heartElement = document.createElement('span');
+    heartElement.className = 'heart';
     let count = Object.values(messageData.heart).length;
     count -= 1;//nullの分
     heartElement.textContent = '♡  '+count;
@@ -461,28 +487,32 @@ function makeTwitter2Post(messageData,key){
             heartElement.style.color = 'red';
         }
     })
-    messageElement.appendChild(heartElement);
+    evaluationElement.appendChild(heartElement);
 
-    var replyElement = document.createElement('span');
-    replyElement.className = 't-reply';
+    let replyElement = document.createElement('span');
+    replyElement.className = 'reply';
     replyElement.textContent = '  ↪︎';
     replyElement.addEventListener('click', async function(){
-        document.getElementById('t-make-text').value = messageData.text;
-        const zone = document.getElementById('t-make-zone');
+        document.querySelector('#t-make-text').value = messageData.text;
+        const zone = document.querySelector('#t-make-zone');
         zone.style.bottom = '0px';
     });
-    messageElement.appendChild(replyElement);
+    evaluationElement.appendChild(replyElement);
+
+    column.appendChild(evaluationElement);
+
+    messageElement.appendChild(column);
 
     return messageElement;
 }
 
 function displayAllTweets(){
-    document.getElementById('tweets').innerHTML = '';
+    document.querySelector('#tweets').innerHTML = '';
 
     // データベースから全てのメッセージを取得
     tweetsRef.once('value', function(pealentsnapshot){
         pealentsnapshot.forEach(function(snapshot){
-            var messageData = snapshot.val();
+            let messageData = snapshot.val();
             let messageElement = makeTwitter2Post(messageData,snapshot.key)
             tweets.insertBefore(messageElement, tweets.firstChild);
         });

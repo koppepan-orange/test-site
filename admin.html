@@ -229,7 +229,9 @@
             border-radius: 5px;
             overflow: hidden;
             opacity: 0;
-            transition: opacity 0.5s ease; 
+            transition: opacity 0.5s ease;
+            user-select: none;
+            pointer-events: none;
             z-index: 1234;
         }
         #login input {
@@ -278,6 +280,7 @@
             align-items: center;
         }
         #home-tab{font-family: webdings;}
+        #fire-tab{font-family: wingdings;}
 
 
         /*一旦全体にエンチャ*/
@@ -299,10 +302,29 @@
             width: 60%;
         }
 
+        #fire{
+            display: none;
+        }
         #fireDatas{
             width: 100%;
             word-wrap: break-word;
             overflow-wrap: break-word;
+        }
+
+        #en{
+            display: none;
+        }
+        #en .button{
+            cursor: pointer;
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+        }
+        #english-output{
+            width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
         }
 
         /*こっからHome*/
@@ -348,6 +370,11 @@
         <div id="fire">
             <div id="fireDatas"></div>
         </div>
+
+        <div id='en'>
+            <button class="button" onclick="exportData()">データをエクスポート</button>
+            <textarea id="english-output" style="width: 100%; height: 500px;"></textarea>
+        </div>
     </div>
 
 
@@ -367,9 +394,10 @@
             color: #000000;
             font-size: 20px;
             `
-            document.getElementById('body').appendChild(newDiv);
+            document.querySelector('#body').appendChild(newDiv);
             //let speed = Math.random()*100+1;
-            let speed = mes.toString().length*2 
+            //let speed = mes.toString().length*2 
+            let speed = 20;
             for(let i = 0; window.innerWidth > i*speed; i++){
                 let val = i*speed;
                 newDiv.style.right = `${val}px`
@@ -398,7 +426,7 @@
         }
         
         document.addEventListener('mousemove', (e) => {
-        const HasDescription = document.getElementById('description');
+        const HasDescription = document.querySelector('#description');
         HasDescription.style.left = `${e.clientX + 10}px`;
         HasDescription.style.top = `${e.clientY + 10}px`;
         });
@@ -406,14 +434,14 @@
         document.addEventListener('mouseover', (e) => {
         if(e.target.classList.contains('hasd')){
         const description = e.target.dataset.description;
-        document.getElementById('description').innerHTML = description;
-        document.getElementById('description').style.display = 'block';
+        document.querySelector('#description').innerHTML = description;
+        document.querySelector('#description').style.display = 'block';
         }
         });
         document.addEventListener('mouseout', (e) => {
         if(e.target.classList.contains('hasd')){
-        document.getElementById('description').innerHTML = '';
-        document.getElementById('description').style.display = 'none';
+        document.querySelector('#description').innerHTML = '';
+        document.querySelector('#description').style.display = 'none';
         }
         });
 
@@ -439,12 +467,16 @@
         var database = firebase.database();
 
         document.addEventListener('DOMContentLoaded', () => {
+            moveAnotherDimension();
+
             passRef.once('value').then(snapshot => {
                 const data = snapshot.val();
-                adminpass = data.adminpass;
+                adminpass = data.adminpass??'何かエラーが起きてます(by adminpass)';
                 Passes['adminpass'].now = adminpass;
-                adminwrongserif = data.adminwrongserif;
+                document.querySelector('#adminpass-pass .pass-input').placeholder = `now: ${adminpass}`;
+                adminwrongserif = data.adminwrongserif??'何かエラーが起きてます(by adminwrongserif)';
                 Passes['adminwrongserif'].now = adminwrongserif;
+                document.querySelector('#adminwrongserif-pass .pass-input').placeholder = `now: ${adminwrongserif}`;
             })
 
             Object.keys(Passes).forEach(name => {
@@ -467,7 +499,8 @@
                         passRef.update({
                             [name]: inputElement.value
                         });
-                        eval(name) = inputElement.value;
+                        console.log(name)
+                        window[name] = inputElement.value;
                         NicoNicoText('changed!!')
                         console.log(`${Passes[name].now} => ${inputElement.value}`)
                         Passes[name].now = inputElement.value;
@@ -480,55 +513,65 @@
                 })
                 Element.appendChild(changeElement);
 
-                document.getElementById('passes').appendChild(Element);
-
+                document.querySelector('#passes').appendChild(Element);
             })
     
         })
         //#endregion
         //#region login
-        document.getElementById('login-button').addEventListener('click', () => {
-            if(document.getElementById('login').style.opacity == 0){
-                document.getElementById('login').style.opacity = 1;
+        document.querySelector('#login-button').addEventListener('click', () => {
+            if(document.querySelector('#login').style.opacity == 0){
+                document.querySelector('#login').style.opacity = 1;
+                document.querySelector('#login').style.userSelect = 'auto';
+                document.querySelector('#login').style.pointerEvents = 'all';
             }else{
-                document.getElementById('login').style.opacity = 0;
+                document.querySelector('#login').style.opacity = 0;
+                document.querySelector('#login').style.userSelect = 'none';
+                document.querySelector('#login').style.pointerEvents = 'none';
             }
         })
-        let adminpass = '背景この手紙読んで読む手紙'
-        let adminwrongserif= 'ピアノがデカすぎるアンジェラ・アキ'
+        let adminpass = ''
+        let adminwrongserif= ''
         function login(){
-            document.getElementById('login').style.opacity = 0;
-            document.getElementById('login-button').style.display = 'none';
+            document.querySelector('#login').style.opacity = 0;
+            document.querySelector('#login').style.userSelect = 'none';
+            document.querySelector('#login').style.pointerEvents = 'none';
+            document.querySelector('#login-button').style.display = 'none';
+            
 
-            document.getElementById('passes').style.display = 'block';
+            document.querySelector('#passes').style.display = 'block';
 
             database.ref().once('value').then(snapshot => {
                 const data = snapshot.val();
                 const tree = document.createElement('ul');
                 tree.className = 'fireData';
                 buildTree(data, tree);
-                document.getElementById('fireDatas').appendChild(tree);
+                document.querySelector('#fireDatas').appendChild(tree);
             });
         }
 
-        document.getElementById('login-login').addEventListener('click', () => {
-            username = document.getElementById('username').value; //定数:admin
-
-            if(document.getElementById('password').value == adminpass){
+        document.querySelector('#login-login').addEventListener('click', () => {
+            username = document.querySelector('#username').value;
+            console.log(`入力:${document.querySelector('#password').value}, 答え:${adminpass}`)
+            if(document.querySelector('#password').value == adminpass){
                 login();
+                document.querySelector('#password').value = '';
             }else{
                 NicoNicoText(adminwrongserif)
+                document.querySelector('#login').style.opacity = 0;
+                document.querySelector('#login').style.userSelect = 'none';
+                document.querySelector('#login').style.pointerEvents = 'none';
+                document.querySelector('#password').value = '';
             }
         })
         //#endregion
 
-        let doko = null;
         
         //#region upperUIとsideMenu
-        const upperUI = document.getElementById('upperUI');
+        const upperUI = document.querySelector('#upperUI');
 
-        const menuToggle = document.getElementById('menuToggle');
-        const sideMenu = document.getElementById('sideMenu');
+        const menuToggle = document.querySelector('#menuToggle');
+        const sideMenu = document.querySelector('#sideMenu');
         menuToggle.addEventListener('click', () => {
             if(sideMenu.style.left === '0px'){
                 sideMenu.style.left = '-255px';
@@ -538,7 +581,7 @@
         });
 
 
-        let cpopup = document.getElementById('cpopup');
+        let cpopup = document.querySelector('#cpopup');
         let cpopupNow = 0;
         document.querySelectorAll('.hastxt').forEach((element) => {
             addEventListener('click', (event) => {
@@ -569,30 +612,59 @@
                 'home':{
                     name:'home',
                     initial:1,
-                    open:'H',
-                    close:'H'
                 },
                 'fire':{
                     name:'fire',
                     initial:0,
-                    open:'F',
-                    close:'F'
+                },
+                'en':{
+                    name:'en',
+                    initial:0,
                 }
             },
         }
 
+        let doko = 'Null'
         document.addEventListener('click', ele => {
             if(ele.target.classList.contains('tab')){
                 let doko = Tabs[ele.target.dataset.doko]
                 let key = ele.target.dataset.name
                 Object.keys(doko).forEach(tab => {
                     document.getElementById(tab).style.display = 'none';
-                    document.getElementById(`${tab}-tab`).textContent = doko[tab].close;
+                    document.getElementById(`${tab}-tab`).src = `assets/icons/${doko[tab].name}2.png`;
                 })
                 document.getElementById(ele.target.dataset.name).style.display = 'block';
-                ele.textContent = doko[key].open;
+                ele.target.src = `assets/icons/${doko[key].name}1.png`;
             }
         })
+
+
+        document.querySelectorAll('.c-dimension').forEach(ele => {
+            ele.addEventListener('click', () => {
+                doko = ele.dataset.doko;
+                document.querySelectorAll('.tab').forEach(tab => {tab.remove()})
+                moveAnotherDimension();
+            })
+        })
+        function moveAnotherDimension(){
+            Object.keys(Tabs).forEach(d => {
+                document.getElementById(d).style.display = 'none';
+            })
+            Object.keys(Tabs[doko]).forEach(tab => {
+                const tabElement = document.createElement("img");
+                tabElement.className = "tab";
+                tabElement.id = `${tab}-tab`;
+                if(Tabs[doko][tab].initial == 1){
+                    tabElement.src = `assets/icons/${Tabs[doko][tab].name}1.png`
+                }else{
+                    tabElement.src = `assets/icons/${Tabs[doko][tab].name}2.png`;
+                }
+                tabElement.dataset.doko = doko;
+                tabElement.dataset.name = Tabs[doko][tab].name;
+                document.getElementById("tabs").appendChild(tabElement);
+            })
+            document.getElementById(doko).style.display = 'block';
+        }        
 
         //#endregion
         //#region passes
@@ -606,13 +678,12 @@
             'adminwrongserif':{
                 name:'adminwrongserif',
                 now:adminwrongserif,
-                changable:0
+                changable:1
             }
         }
         //#endregion
 
-
-
+        //#region fire
         function buildTree(data, parent) {
             for (let key in data) {
                 const li = document.createElement('li');
@@ -629,7 +700,26 @@
                 parent.appendChild(li);
             }
         }
-        
+        //#endregion
+        //#region en
+        async function exportData() {
+            const dataRef = database.ref('english'); // データが格納されているパス
+            dataRef.once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const formattedData = Object.fromEntries(
+                        Object.entries(data).map(([key, value]) => [key, value])
+                    ); // オブジェクトを配列に変換
+
+                    
+                    // テキストエリアに出力してコピーしやすくする
+                    document.getElementById("english-output").value = `export const wordData = ${JSON.stringify(formattedData, null, 2)};`;
+                } else {
+                    console.log("データが見つかりません");
+                }
+            });
+        }
+        //#endregion
     </script>
 
 </body>

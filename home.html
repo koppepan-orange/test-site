@@ -8,6 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+
     <title>test-site</title>
     <style>
         @font-face{font-family:comicsans;src:url('assets/comicsans.ttf');}
@@ -54,6 +55,17 @@
             overflow-y: scroll;
         }
 
+        /*汎用？凡庸？神出鬼没？*/
+        .row{
+            display: flex;
+            flex-direction: row;
+        }
+        .column{
+            display: flex;
+            flex-direction: column;
+        }
+
+        /*こまごめピペット*/
         #description {
             display: none;
             position: fixed;
@@ -265,7 +277,7 @@
         .toggle{
             width:50px;
             height:20px;
-            border: 1px solid #b2b2b2;
+            border: 1px solid #cfe9ff;
             background-color: #e5ecf2;
         }
 
@@ -503,6 +515,23 @@
             display: none;
         }
 
+        /*こっからprofile*/
+        #profile{
+            display: none;
+        }
+        #profile .icon{
+            display: block;
+            margin: 0 auto;
+            border-radius: 50%;
+            overflow: hidden;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        #profile .fileInput{
+            display: none;
+        }
+        
+
         /*こっからCommu*/
         #Commu{
             display: none;
@@ -510,8 +539,6 @@
         }
 
         /*nanj*/
-
-        /* なんJ */
         #nanj{
             display: none;
             width: 500px;
@@ -638,33 +665,89 @@
             resize: vertical;
             height: 590px;
         }
+        
         .tweet{
             margin-bottom: 15px;
-            padding: 8px 12px;
-            background-color: #eaf5ff;
+            padding: 8px 5px;
+            background-color: #def0ff;
             border: 2px solid #cfe9ff;
             border-radius: 5px;
-            width: calc(100% - 20px);
+            width: calc(100% - 28px);
+            max-width: 100%;
+            max-height: 400px;
+            overflow: hidden;
+            /* overflow-y: auto; */
+            display: flex;
+            flex-direction: row;
+            scrollbar-width: none;
+        }/* これ、左にアイコン、右上にtextがあって、その下に評価というかハートとかそーゆうのがある形にする？いわゆるreddit風だね*/
+        .tweet .header{
+            display: block;
+            width: 60px;
+            height: 100%;
+            padding-right: 10px;
+        }
+        .tweet .header .icon{
+            margin: 0 auto;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            object-fit: cover;
+            background-color: #f0f8ff;
+            border: 1px solid #cfe9ff;
+        }
+        .tweet .column {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+            min-height: 50px;
+        }
+        .tweet .content{
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .tweet .content .text{
+            padding: 3px 0px;
+            width: 100%;
             max-height: 250px;
             overflow-y: auto;
-            position: relative;
-        }/* これ、ハートとか右に表示するようにして、まあつまりはreddit風ってことでお願い ぶくまもじっそうして　できればファイリングも*/
-        .tweet.text{
-            background-color: #def0ff;
-            width: 80%;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            border: 1px solid #cfe9ff;
+            scrollbar-width: none;
         }
-        .tweet.heart{
-            width: 30px;
+        .tweet .evaluation{
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+        }
+        .tweet .evaluation .heart{
+            width: 50px;
             height: 30px;
-            position: absolute;
-            right: 5px;
-            top: 5px;
             cursor: pointer;
         }
 
 
         /*こっからAnonymous*/
         #Anonymous{
+            display: none;
+        }
+
+        /*こっからStudy*/
+        #Study{
+            display: none;
+        }
+
+        /* こっからen */
+
+
+        /*こっからPixelen*/
+        #Pixelen{
             display: none;
         }
     </style>
@@ -735,7 +818,9 @@
         <div class="smart-icon hidden" data-name="daily-icon">e</div>
         <div class="smart-icon c-dimension hidden" data-name="home-icon" data-doko="Home">H</div>
         <div class="smart-icon c-dimension hidden" data-name="commu-icon" data-doko="Commu">^</div>
-        <div class="smart-icon c-dimension hidden" data-name="memo-icon" data-doko="Anonymous">Q</div>
+        <div class="smart-icon c-dimension hidden" data-name="anonymous-icon" data-doko="Anonymous">A</div>
+        <div class="smart-icon c-dimension hidden" data-name="study-icon" data-doko="Study">S</div>
+        <div class="smart-icon c-dimension hidden" data-name="pixelen-icon" data-doko="Pixelen">P</div>
         <div class="smart-icon smart-phone">:</div>
     </div>
 
@@ -756,8 +841,8 @@
             <div id="links"></div>
             <div id="memos"></div>
             <div id="iframes"><span align="center">調べれたりするところ</span>
-                <details><summary>link site</summary>
-                    <input type="text" id="LinkInput" placeholder="write link here">
+                <details id="linkSite"><summary>link site</summary>
+                    <input type="text" id="LinkInput" placeholder="write link here" value="about:blank">
                     <button class="iframe-button" onclick="LinkframeGo()">Go</button>
                     <select id="LinkSelect" class="iframe-button">
                         <option value="1">1</option>
@@ -765,7 +850,7 @@
                         <option value="3">3</option>
                         <option value="4">4</option>
                     </select>
-                    <button class="iframe-button">full</button><br>
+                    <button class="iframe-button iframe-full">full</button><br>
                     <iframe id="Linkframe1" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
                     <iframe id="Linkframe2" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
                     <iframe id="Linkframe3" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
@@ -830,6 +915,10 @@
             </details>
         </div>
 
+        <div id="profile">
+            <img class="icon" src="assets/sozais/none.png" alt="アイコン" width="150" height="150">
+            <input type="file" class="fileInput" accept="image/*">
+        </div>
         
     </div>
 
@@ -883,9 +972,31 @@
     </div>
 
     <div id="Anonymous">
+        <div id="question">
+        </div>
     </div>
 
     <div id="Study">
+        <div id="en">
+            <div id="search">
+                <div id="search-area" contenteditable></div>
+                <div id="search-result"></div>
+            </div>
+            <div id="post">
+                <div id="post-area">
+                    <div id="post-header">
+                        <div id="post-cancel">リセット</div>
+                        <div id="post-send">送信</div>
+                    </div>
+                    <div id="post-body">
+                        <div id="post-word" class="hasp" placeholder='write here a "word" 例:apple' contenteditable></div>
+                        <div id="post-trans" class="hasp" placeholder='write here a "translation" 例:りんご' contenteditable></div>
+                        <div id="post-speech" class="hasp" placeholder='write here a "speech" 例:名詞' contenteditable></div>
+                        <div id="post-description" class="hasp" placeholder='write here a "description" 例:何よりも美味しい果物。' contenteditable></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="Pixelen">
@@ -910,7 +1021,7 @@
             color: #000000;
             font-size: 20px;
             `
-            document.getElementById('body').appendChild(newDiv);
+            document.querySelector('#body').appendChild(newDiv);
             //let speed = Math.random()*100+1;
             let speed = mes.toString().length*2 
             for(let i = 0; window.innerWidth > i*speed; i++){
@@ -953,7 +1064,7 @@
         }
         
         document.addEventListener('mousemove', (e) => {
-        const HasDescription = document.getElementById('description');
+        const HasDescription = document.querySelector('#description');
         HasDescription.style.left = `${e.clientX + 10}px`;
         HasDescription.style.top = `${e.clientY + 10}px`;
         });
@@ -961,14 +1072,14 @@
         document.addEventListener('mouseover', (e) => {
         if(e.target.classList.contains('hasd')){
         const description = e.target.dataset.description;
-        document.getElementById('description').innerHTML = description;
-        document.getElementById('description').style.display = 'block';
+        document.querySelector('#description').innerHTML = description;
+        document.querySelector('#description').style.display = 'block';
         }
         });
         document.addEventListener('mouseout', (e) => {
         if(e.target.classList.contains('hasd')){
-        document.getElementById('description').innerHTML = '';
-        document.getElementById('description').style.display = 'none';
+        document.querySelector('#description').innerHTML = '';
+        document.querySelector('#description').style.display = 'none';
         }
         });
 
@@ -1006,6 +1117,7 @@
         
 
     </script>
+    <script src="jses/data.js" defer></script>
     <script src="jses/pipette.js" defer></script>
     <script src="jses/home.js" defer></script>
     <script src="jses/commu.js" defer></script>

@@ -1,4 +1,7 @@
 //こまごめピペット
+//#region dataのyomikomi
+console.log(wordData);
+//#endregion
 //#region DOM
 document.addEventListener('DOMContentLoaded', () => {
     moveAnotherDimension();
@@ -6,10 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 //#endregion
 //#region upperUIとsideMenu
-const upperUI = document.getElementById('upperUI');
+const upperUI = document.querySelector('#upperUI');
 
-const menuToggle = document.getElementById('menuToggle');
-const sideMenu = document.getElementById('sideMenu');
+const menuToggle = document.querySelector('#menuToggle');
+const sideMenu = document.querySelector('#sideMenu');
 menuToggle.addEventListener('click', () => {
     if(sideMenu.style.left === '0px'){
         sideMenu.style.left = '-255px';
@@ -25,7 +28,7 @@ document.querySelector(".smart-phone").addEventListener("click", function () {
 });
 
 
-let cpopup = document.getElementById('cpopup');
+let cpopup = document.querySelector('#cpopup');
 let cpopupNow = 0;
 document.querySelectorAll('.hastxt').forEach((element) => {
     addEventListener('click', (event) => {
@@ -50,7 +53,7 @@ document.querySelectorAll('.hastxt').forEach((element) => {
 
 //change-font
 function changeFont(){
-    document.getElementById('body').style.fontFamily = document.getElementById('font-select').value;
+    document.querySelector('#body').style.fontFamily = document.querySelector('#font-select').value;
 }
 
 //toggle
@@ -78,6 +81,10 @@ const Tabs = {
         },
         'tools':{
             name:'tools',
+            initial:0,
+        },
+        'profile':{
+            name:'profile',
             initial:0,
         }
     },
@@ -166,7 +173,7 @@ function moveAnotherDimension(){
 //#endregion
 //#region wingdings特殊機構のお話
 let wdnow = 0;
-document.getElementById('wdcheck').addEventListener('click', () => {
+document.querySelector('#wdcheck').addEventListener('click', () => {
 if(wdnow == 0){
 wdnow = 1;
 document.querySelectorAll('.wd').forEach(element => {
@@ -198,23 +205,23 @@ let usersRef = null;
 
 //#endregion
 //#region ログイン機構
-document.getElementById('login-button').addEventListener('click', () => {
-    if(document.getElementById('login').style.opacity == 0){
-        document.getElementById('login').style.opacity = 1;
-        document.getElementById('login').style.userSelect = 'auto';
-        document.getElementById('login').style.pointerEvents = 'all';
+document.querySelector('#login-button').addEventListener('click', () => {
+    if(document.querySelector('#login').style.opacity == 0){
+        document.querySelector('#login').style.opacity = 1;
+        document.querySelector('#login').style.userSelect = 'auto';
+        document.querySelector('#login').style.pointerEvents = 'all';
     }else{
-        document.getElementById('login').style.opacity = 0;
-        document.getElementById('login').style.userSelect = 'none';
-        document.getElementById('login').style.pointerEvents = 'none';
+        document.querySelector('#login').style.opacity = 0;
+        document.querySelector('#login').style.userSelect = 'none';
+        document.querySelector('#login').style.pointerEvents = 'none';
     }
 })
 
 function login(){
-    document.getElementById('login').style.opacity = 0;
-    document.getElementById('login').style.userSelect = 'none';
-    document.getElementById('login-button').style.display = 'none';
-    document.getElementById('expbar').style.display = 'block';
+    document.querySelector('#login').style.opacity = 0;
+    document.querySelector('#login').style.userSelect = 'none';
+    document.querySelector('#login-button').style.display = 'none';
+    document.querySelector('#expbar').style.display = 'block';
 
     setLocalStorage("banned", 0);
     usersRef = database.ref('users/'+username);
@@ -237,9 +244,9 @@ function login(){
     window.commuLogin();
 }
 
-document.getElementById('login-login').addEventListener('click', () => {
-    username = document.getElementById('username').value;
-    let password = document.getElementById('password').value;
+document.querySelector('#login-login').addEventListener('click', () => {
+    username = document.querySelector('#username').value;
+    let password = document.querySelector('#password').value;
 
     let kariusersRef = database.ref(`users/${username}`);
     kariusersRef.once('value', function(snapshot){
@@ -273,17 +280,17 @@ function autoLogin(){
     }
 }
 
-document.getElementById('logout').addEventListener('click', () => {
+document.querySelector('#logout').addEventListener('click', () => {
     NicoNicoText("ログアウトしました");
     username = 'no name';removeLocalStorage("username");
-    document.getElementById('Username').textContent = username;
-    document.getElementById('Level').textContent = `Lv:#ERROR!`;
-    document.getElementById('expbar').style.display = 'none';
-    document.getElementById('login-button').style.display = 'block';
+    document.querySelector('#Username').textContent = username;
+    document.querySelector('#Level').textContent = `Lv:#ERROR!`;
+    document.querySelector('#expbar').style.display = 'none';
+    document.querySelector('#login-button').style.display = 'block';
     sideMenu.style.left = '-255px';
 
-    document.getElementById('username').value = '';
-    document.getElementById('password').value = '';
+    document.querySelector('#username').value = '';
+    document.querySelector('#password').value = '';
 
     window.homeLogout();
     window.commuLogout();
@@ -303,8 +310,8 @@ window.addEventListener('beforeunload', () => {
 let exp = 0;
 let level = 1;
 let maxexp = 50;
-let expbar = document.getElementById('exp');
-let exptext = document.getElementById('exptext');
+let expbar = document.querySelector('#exp');
+let exptext = document.querySelector('#exptext');
 function updateUI(){
     if(exp >= maxexp){
         exp -= maxexp;
@@ -313,7 +320,7 @@ function updateUI(){
     }
     expbar.style.width = `${exp/maxexp*100}%`;
     exptext.innerText = `${exp}/${maxexp}`
-    document.getElementById('Username').textContent = username;
-    document.getElementById('Level').textContent = `Lv:${level}`;
+    document.querySelector('#Username').textContent = username;
+    document.querySelector('#Level').textContent = `Lv:${level}`;
 }
 //#endregion

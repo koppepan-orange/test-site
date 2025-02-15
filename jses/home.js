@@ -1,9 +1,19 @@
 //#region Login
 function homeLogin(){
     console.log('home「ログインされたで」')
+    firebase.database().ref(`users/${username}/icon`).once("value").then((snapshot) => {
+        const img = document.querySelector('#profile .icon');
+        if(snapshot.exists()){
+            const base64String = snapshot.val();
+            img.src = snapshot.val();
+        }else{
+            img.src = 'assets/sozais/none.png';
+        }
+    })
 }
 function homeLogout(){
     console.log('home「ログアウトされたで」')
+    document.querySelector('#profile .icon').src = 'assets/sozais/none.png';
 }
 //home
 //#region リンクたちの動き
@@ -329,7 +339,7 @@ Object.keys(Links).forEach(type => {
     summary.textContent = type;
     details.appendChild(summary);
     details.id = `${type}tachi`;
-    document.getElementById('links').appendChild(details);
+    document.querySelector('#links').appendChild(details);
 
     Object.keys(Links[type]).forEach(key => {
         const link = Links[type][key];
@@ -345,12 +355,12 @@ Object.keys(Links).forEach(type => {
                 event.preventDefault();
                 if(iframenow == 0){
                     iframenow = 1;//なぜか反応してない。Links['memos']の形にするべき？
-                    const iframe = document.getElementById('iframe');
+                    const iframe = document.querySelector('#iframe');
                     iframe.style.display = 'block';
                     iframe.src = link.href;
                 }else{
                     iframenow = 0;
-                    const iframe = document.getElementById('iframe');
+                    const iframe = document.querySelector('#iframe');
                     iframe.style.display = 'none';
                 }
             })
@@ -386,17 +396,25 @@ function LinkframeGo(){
     document.getElementById(`Linkframe${NowLinkframe}`).src = document.getElementById("LinkInput").value;
     NicoNicoText('うぇいとふぉあな〜う'); //好きな言葉ランキング上位"wait for now"
 }
-document.getElementById('LinkSelect').addEventListener('change', event =>{
-    let Link = `Linkframe${event.target.value}`;
+document.querySelector('#LinkSelect').addEventListener('change', event =>{
+    NowLinkframe = event.target.value;
+    let Link = `Linkframe${NowLinkframe}`;
 
-    document.getElementById('Linkframe1').style.display = 'none';
-    document.getElementById('Linkframe2').style.display = 'none';
-    document.getElementById('Linkframe3').style.display = 'none';
-    document.getElementById('Linkframe4').style.display = 'none';
+    document.querySelector('#Linkframe1').style.display = 'none';
+    document.querySelector('#Linkframe2').style.display = 'none';
+    document.querySelector('#Linkframe3').style.display = 'none';
+    document.querySelector('#Linkframe4').style.display = 'none';
 
     document.getElementById(Link).style.display = 'block';
 
-    document.getElementById('LinkInput').value = document.getElementById(`Linkframe${event.target.value}`).getAttribute('data-src');
+    document.querySelector('#LinkInput').value = document.getElementById(`Linkframe${NowLinkframe}`).getAttribute('data-src');
+})
+
+document.querySelector('#linkSite .iframe-full').addEventListener('click', event => {
+    event.preventDefault();
+    console.log('clicked~~~'+NowLinkframe);
+    document.querySelector(`#Linkframe${NowLinkframe}`).requestFullscreen();
+    //iframe.webkitRequestFullscreen();
 })
 //#endregion
 
@@ -408,13 +426,13 @@ document.addEventListener('DOMContentLoaded', () => {
     for(let i = 1; i <= numberOfMemo; i++){
         let memo = getLocalStorage(`memo${i}`);
         let memoElement = memoCreate(memo, i);
-        document.getElementById('memos').appendChild(memoElement);
+        document.querySelector('#memos').appendChild(memoElement);
     }
     let memoAdd = memoAddCreate();
-    document.getElementById('memos').appendChild(memoAdd);
+    document.querySelector('#memos').appendChild(memoAdd);
 
 
-    
+    /**
     const iframes = getLocalStorage("iframes")??['bing', 'bing_trans', 'deepAI'];
     iframes.forEach(iframe => {
         const details = document.createElement("details");
@@ -441,6 +459,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById("iframes").appendChild(details); // 追加したい要素に変更して
     })
+    */
     
     
     
@@ -448,9 +467,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 //#region memo
-const bodyTextarea = document.getElementById('memo-text');
-const titleInput = document.getElementById('memo-title');
-const searchButton = document.getElementById('memo-search');
+const bodyTextarea = document.querySelector('#memo-text');
+const titleInput = document.querySelector('#memo-title');
+const searchButton = document.querySelector('#memo-search');
 
 titleInput.addEventListener('keydown', function(e) {
     if (e.key === "Enter") {
@@ -534,9 +553,9 @@ function memoAddCreate(){
         numberOfMemo = +numberOfMemo + 1;
         setLocalStorage("numberOfMemo", +numberOfMemo);
         let memoElement = memoCreate('', numberOfMemo);
-        document.getElementById('memos').appendChild(memoElement);  
+        document.querySelector('#memos').appendChild(memoElement);  
         let memoAdd2 = memoAddCreate();
-        document.getElementById('memos').appendChild(memoAdd2);
+        document.querySelector('#memos').appendChild(memoAdd2);
     })
     return memoAdd;
 }
@@ -546,28 +565,28 @@ function memoAddCreate(){
 let input
 let words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ']
 function Toggle(){
-    switch(document.getElementById('ToggleButton').textContent){
+    switch(document.querySelector('#ToggleButton').textContent){
         case 'more':
-            document.getElementById('ToggleButton').textContent = 'less'
+            document.querySelector('#ToggleButton').textContent = 'less'
             words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ'];
             break
         case 'less':
-            document.getElementById('ToggleButton').textContent = 'more'
+            document.querySelector('#ToggleButton').textContent = 'more'
             words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ','ァ','ィ','ゥ','ェ','ォ','ッ','ャ','ュ','ョ','ー'];
             break
     }
 }
 function Activate(){
-    input = document.getElementById('Input').value
-    if(input == ''||input <= 0){document.getElementById('OutPut').textContent = '死ね'}
+    input = document.querySelector('#Input').value
+    if(input == ''||input <= 0){document.querySelector('#OutPut').textContent = '死ね'}
     else{
     let output = [];
-    document.getElementById('OutPut').innerHTML = ''
+    document.querySelector('#OutPut').innerHTML = ''
     for(let i = 0; i < 10; i++){
         for(let i = 0; i < input; i++){
             output.push(words[Math.floor(Math.random() * words.length)])
         }
-        document.getElementById('OutPut').innerHTML += output.join('')+'<br>';
+        document.querySelector('#OutPut').innerHTML += output.join('')+'<br>';
         output = [];
     }
     }
@@ -701,10 +720,10 @@ let RACEstanother = {
 function delay(ms) {return new Promise(resolve => setTimeout(resolve, ms));}//awaitのやつ
 
 function RACEtekiou(){
-    document.getElementById('RACEoutput-one').textContent   = RACEgamebar['one'].join('');
-    document.getElementById('RACEoutput-two').textContent   = RACEgamebar['two'].join('');
-    document.getElementById('RACEoutput-three').textContent = RACEgamebar['three'].join('');
-    document.getElementById('RACEoutput-four').textContent  = RACEgamebar['four'].join('');
+    document.querySelector('#RACEoutput-one').textContent   = RACEgamebar['one'].join('');
+    document.querySelector('#RACEoutput-two').textContent   = RACEgamebar['two'].join('');
+    document.querySelector('#RACEoutput-three').textContent = RACEgamebar['three'].join('');
+    document.querySelector('#RACEoutput-four').textContent  = RACEgamebar['four'].join('');
 }
 function RACEmove(num, code) {
     switch (code) {
@@ -737,7 +756,7 @@ function RACEbarup(num, angle) {
     RACEtekiou();            
     if (RACEgamebar[num].indexOf('@') == RACEgamebar[num].length - 1) {
         RACEgamenow = 0;
-        document.getElementById('RACElog').textContent = num + 'の勝利！！わーー！！！';
+        document.querySelector('#RACElog').textContent = num + 'の勝利！！わーー！！！';
     }
 }
 
@@ -745,19 +764,19 @@ async function RACEgamestart() {
     RACEgamenow = 1;
     RACEbarup('one', 0); RACEbarup('two', 0); RACEbarup('three', 0); RACEbarup('four', 0);
     RACEtimer = 3;
-    document.getElementById('RACElog').textContent = RACEtimer;
+    document.querySelector('#RACElog').textContent = RACEtimer;
     await delay(300);
     RACEtimer = 2;
-    document.getElementById('RACElog').textContent = RACEtimer;
+    document.querySelector('#RACElog').textContent = RACEtimer;
     await delay(300);
     RACEtimer = 1;
-    document.getElementById('RACElog').textContent = RACEtimer;
+    document.querySelector('#RACElog').textContent = RACEtimer;
     await delay(300);
     RACEtimer = 'Start!';
-    document.getElementById('RACElog').textContent = RACEtimer;
+    document.querySelector('#RACElog').textContent = RACEtimer;
     await delay(300);
     RACEtimer = 0;
-    document.getElementById('RACElog').textContent = '';
+    document.querySelector('#RACElog').textContent = '';
     RACELoopct = setInterval(RACEchangerandom, 100); // ゲーム終了時に処理を止める用
     await delay(500);
     RACEgameloop('one'); RACEgameloop('two'); RACEgameloop('three'); RACEgameloop('four');
@@ -808,12 +827,12 @@ async function RACEstanOthers(num) {
     RACEstanother[others[0]] = 1;
     RACEstanother[others[1]] = 1;
     RACEstanother[others[2]] = 1;
-    document.getElementById('RACElog').textContent = 'スタンしています！';
+    document.querySelector('#RACElog').textContent = 'スタンしています！';
     await delay(1500);
     RACEstanother[others[0]] = 0;
     RACEstanother[others[1]] = 0;
     RACEstanother[others[2]] = 0;
-    document.getElementById('RACElog').textContent = '';
+    document.querySelector('#RACElog').textContent = '';
     RACEgameloop(others[0]);
     RACEgameloop(others[1]);
     RACEgameloop(others[2]);
@@ -822,16 +841,16 @@ async function RACEstanOthers(num) {
 let count = 0;
 let startTime;
 let duration = 5000;
-document.getElementById('start-btn').addEventListener('click', () => {
+document.querySelector('#start-btn').addEventListener('click', () => {
     count = 0;
     startTime = Date.now();
-    document.getElementById('result').textContent = 'pless Enter(nandomo)';
-    document.getElementById('start-btn').style.display = 'none';
+    document.querySelector('#result').textContent = 'pless Enter(nandomo)';
+    document.querySelector('#start-btn').style.display = 'none';
     document.addEventListener('keyup', countRensha);
     setTimeout(() => {
         document.removeEventListener('keyup', countRensha);
-        document.getElementById('result').textContent = `結果: ${count} 回`;
-        document.getElementById('start-btn').style.display = 'block';
+        document.querySelector('#result').textContent = `結果: ${count} 回`;
+        document.querySelector('#start-btn').style.display = 'block';
     }, duration);
 });
 function countRensha(event) {if (event.key === 'Enter') {count++;}}
@@ -844,10 +863,10 @@ function RENDAchange(time) {
 let CGx = 0;
 let CGy = 0;
 let CGAllow = 0;
-let CGArea = document.getElementById('CookingGameArea');
-let CGList = document.getElementById('CookingGameList');
-let CGLog = document.getElementById('CookingGameLog');
-let CGStart = document.getElementById('CookingGameStart');
+let CGArea = document.querySelector('#CookingGameArea');
+let CGList = document.querySelector('#CookingGameList');
+let CGLog = document.querySelector('#CookingGameLog');
+let CGStart = document.querySelector('#CookingGameStart');
 let CGListArray = [];
 let CGListArrayAppear = [];
 let CGListArrays = [
@@ -873,9 +892,9 @@ async function Start(){
     CGx = 0;CGy = 0;
     CGLog.textContent = '色付いたやつを覚えてね〜？';
     for(nanka of CGListArray){
-        document.getElementById('CookingGameChoose-' + nanka).style.backgroundColor = 'yellow';
+        document.querySelector('#CookingGameChoose-' + nanka).style.backgroundColor = 'yellow';
         await delay(800);
-        document.getElementById('CookingGameChoose-' + nanka).style.backgroundColor = 'aliceblue';
+        document.querySelector('#CookingGameChoose-' + nanka).style.backgroundColor = 'aliceblue';
     }
     CGLog.textContent = 'じゃ〜〜〜ど〜ぞ！';
     CGAllow = 1
@@ -897,4 +916,37 @@ function CookingGameChoeese(num){
     }
     }
 }
+//#endregion
+//#region profile
+document.querySelector('#profile .icon').addEventListener("click", () => {
+    document.querySelector('#profile .fileInput').click();
+});
+document.querySelector('#profile .fileInput').addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    if (!file){return;}
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+        const img = new Image();
+        img.src = reader.result;
+        img.onload = async () => {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const size = 100;
+            canvas.width = size;
+            canvas.height = size;
+            ctx.drawImage(img, 0, 0, size, size);
+
+            // Base64エンコード（PNG形式）
+            const base64String = canvas.toDataURL("image/png");
+
+            // Realtime Databaseに保存
+            firebase.database().ref(`users/${username}/icon`).set(base64String);
+
+            document.querySelector('#profile .icon').src = base64String;
+        };
+    };
+});
+
 //#endregion
