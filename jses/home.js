@@ -4,7 +4,6 @@ function homeLogin(){
     firebase.database().ref(`users/${username}/icon`).once("value").then((snapshot) => {
         const img = document.querySelector('#profile .icon');
         if(snapshot.exists()){
-            const base64String = snapshot.val();
             img.src = snapshot.val();
         }else{
             img.src = 'assets/sozais/none.png';
@@ -432,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#memos').appendChild(memoAdd);
 
 
-    /**
+    
     const iframes = getLocalStorage("iframes")??['bing', 'bing_trans', 'deepAI'];
     iframes.forEach(iframe => {
         const details = document.createElement("details");
@@ -459,7 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById("iframes").appendChild(details); // 追加したい要素に変更して
     })
-    */
+    
     
     
     

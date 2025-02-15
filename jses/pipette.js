@@ -1,7 +1,4 @@
 //こまごめピペット
-//#region dataのyomikomi
-console.log(wordData);
-//#endregion
 //#region DOM
 document.addEventListener('DOMContentLoaded', () => {
     moveAnotherDimension();
@@ -108,8 +105,6 @@ const Tabs = {
         'question':{
             name:'question',
             initial:1,
-            open:'?',
-            close:'!'
         },
     },
 
@@ -117,14 +112,17 @@ const Tabs = {
         'en':{
             name:'en',
             initial:1,
-            open:'.',//web
-            close:'.'
         },
-        'tips':{
-            name:'tips',
-            initial:0,
-            open:'&',//wing1
-            close:'&'
+        // 'tips':{
+        //     name:'tips',
+        //     initial:0,
+        // }
+    },
+
+    'Pixelen':{
+        'books':{
+            name:'books',
+            initial:1,
         }
     }
 }
@@ -169,7 +167,28 @@ function moveAnotherDimension(){
         document.getElementById("tabs").appendChild(tabElement);
     })
     document.getElementById(doko).style.display = 'block';
-}        
+}
+
+document.querySelectorAll('.contenteditable').forEach(element => {
+    element.addEventListener('keydown', function (event) {
+    if(event.key === 'Enter'){
+        const initialHeight = element.scrollHeight;
+
+        // 改行を追加    
+        document.execCommand('insertHTML', false, '<br><br>');
+
+
+        // 改行後の高さを取得
+        const newHeight = element.scrollHeight;
+
+        // max-heightを超えた場合、最後の改行を取り消す
+        if (newHeight > parseInt(getComputedStyle(element).maxHeight)) {
+            event.preventDefault(); // デフォルトの改行をキャンセル
+            element.innerHTML = element.innerHTML.slice(0, -8); // 最後の<br><br>を削除
+        }
+    }
+    });
+})
 //#endregion
 //#region wingdings特殊機構のお話
 let wdnow = 0;
@@ -242,6 +261,7 @@ function login(){
 
     window.homeLogin();
     window.commuLogin();
+    window.studyLogin();
 }
 
 document.querySelector('#login-login').addEventListener('click', () => {

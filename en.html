@@ -233,10 +233,6 @@
             height: 80vh;
             padding: 10px;
             position: fixed;
-            right: -90%;
-            top: 0;
-            transition: right 0.3s;
-            z-index: 998;
         }
         #post-header{
             margin: 0 auto;
@@ -317,16 +313,18 @@
             <div id="search-result"></div>
         </div>
 
-        <div id="post-area">
-            <div id="post-header">
-                <div id="post-cancel">リセット</div>
-                <div id="post-send">送信</div>
-            </div>
-            <div id="post-body">
-                <div id="post-word" class="hasp" placeholder='write here a "word" 例:apple' contenteditable></div>
-                <div id="post-trans" class="hasp" placeholder='write here a "translation" 例:りんご' contenteditable></div>
-                <div id="post-speech" class="hasp" placeholder='write here a "speech" 例:名詞' contenteditable></div>
-                <div id="post-description" class="hasp" placeholder='write here a "description" 例:何よりも美味しい果物。' contenteditable></div>
+        <div id="post">
+            <div id="post-area">
+                <div id="post-header">
+                    <div id="post-cancel">リセット</div>
+                    <div id="post-send">送信</div>
+                </div>
+                <div id="post-body">
+                    <div id="post-word" class="hasp" placeholder='write here a "word" 例:apple' contenteditable></div>
+                    <div id="post-trans" class="hasp" placeholder='write here a "translation" 例:りんご' contenteditable></div>
+                    <div id="post-speech" class="hasp" placeholder='write here a "speech" 例:名詞' contenteditable></div>
+                    <div id="post-description" class="hasp" placeholder='write here a "description" 例:何よりも美味しい果物。' contenteditable></div>
+                </div>
             </div>
         </div>
     </div>

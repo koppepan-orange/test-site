@@ -39,6 +39,12 @@
             color: #000000;
         }
 
+        textarea{
+            font-size: 16px;
+            background-color: #f0f8ff;
+            font-family: comicsans;
+        }
+
         html{
             width: 100%;
             overflow: hidden;
@@ -288,7 +294,7 @@
             cursor: pointer;
             font-size:4px;
             font-family: wingdings!important;
-            background-color: #cecece;
+            background-color: #bebebe;
         }
         #wdtextarea{
             font-family: wingdings;
@@ -379,7 +385,7 @@
 
 
         /*一旦全体にエンチャ*/
-        #Home,#Commu,#Anonymous{
+        #Home,#Commu,#Anonymous,#Study,#Pixelen{
             margin-top: 95px;
             background-color: #f0f8ff;
             overflow-y: scroll;
@@ -744,7 +750,142 @@
         }
 
         /* こっからen */
+        #en{
+            width: 90%;
+            margin: 0 auto;
+            background-color: #f0f8ff;
+            border: 2px solid #cfe9ff;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        #search-area{
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+            height: 24px;
+            text-align: left;
+        }
+        #search-result{
+            display: none;
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+            padding: 15px;
+        }
+        .search-result-item{
+            display: block;
+            background-color: #cfe9ff;
+            border: 2px solid #b5dcff;
+            max-height: 200px;
+            overflow-y: scroll;
+            margin: 0 auto;
+            text-align: left;
+            padding: 5px;
+            margin-bottom: 15px;
+            /* position:relative; */
+        }
+        .search-result-en{
+            font-size: 18px;
+        }
+        .search-result-ja{
+            font-size: 16px;
+        }
+        .search-result-speech{
+            font-size: 16px;
+        }
+        .search-result-attribute{
+            font-size: 16px;
+        }
+        .search-result-description{
+            font-size: 14px;
+        }
 
+        #post-make-button{
+            position: absolute;
+            bottom: 75px;
+            right: 73px;
+            width:80px;
+            border: none;
+            padding: 5px;
+            background-color: #4473ad;
+            color: #f0f8ff;
+            font-size: 32px;
+        }
+        #post-area{
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+            width: 90%;
+            height: calc(100vh - 110px);
+            padding: 10px;
+            padding: 10px;
+            position: fixed;
+            right: calc(-90% - 34px);
+            bottom: 0px;
+            transition: right 0.3s;
+            z-index: 998;
+        }
+        #post-header{
+            margin: 0 auto;
+            background-color: #eaf5ff;
+            border-bottom: 2px solid #cfe9ff;
+            width: 100%;
+            height: 5%;
+            position: relative;
+        }
+        #post-cancel{
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #post-send{
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #post-body{
+            margin: 0 auto;
+            background-color: #eaf5ff;
+            width: 100%;
+            height: 90%;
+            padding: 10px;
+        }
+        #post-en textarea, #post-ja textarea, #post-speech textarea, #post-attribute textarea{
+            width: 98%;
+            height: 25px;
+            max-height: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #cfe9ff;
+            background-color: #f0f8ff;
+            resize: vertical;
+        }
+        #post-description textarea{
+            width: 98%;
+            height: 25px;
+            max-height: 150px;
+            border: 1px solid #cfe9ff;
+            background-color: #f0f8ff;
+            resize: vertical;
+        }
+        #post-checkboxes {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #222233;
+        }
+
+        .checkbox-label input {
+            margin-right: 5px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
 
         /*こっからPixelen*/
         #Pixelen{
@@ -978,21 +1119,45 @@
 
     <div id="Study">
         <div id="en">
-            <div id="search">
-                <div id="search-area" contenteditable></div>
-                <div id="search-result"></div>
-            </div>
-            <div id="post">
-                <div id="post-area">
-                    <div id="post-header">
-                        <div id="post-cancel">リセット</div>
-                        <div id="post-send">送信</div>
+            <div id="search-area" contenteditable></div>
+            <div id="search-result"></div>
+
+            <button id="post-make-button">✎</button>
+            <div id="post-area">
+                <div id="post-header">
+                    <div id="post-cancel">リセット</div>
+                    <div id="post-send">送信</div>
+                </div>
+                <div id="post-body">
+                    <div id="post-en">
+                        <span>en <font color="#bebebe">例:apple</font></span>
+                        <textarea></textarea>
                     </div>
-                    <div id="post-body">
-                        <div id="post-word" class="hasp" placeholder='write here a "word" 例:apple' contenteditable></div>
-                        <div id="post-trans" class="hasp" placeholder='write here a "translation" 例:りんご' contenteditable></div>
-                        <div id="post-speech" class="hasp" placeholder='write here a "speech" 例:名詞' contenteditable></div>
-                        <div id="post-description" class="hasp" placeholder='write here a "description" 例:何よりも美味しい果物。' contenteditable></div>
+                    <div id="post-ja" >
+                        <span>ja <font color="#bebebe">例:りんご</font></span>
+                        <textarea></textarea>
+                    </div>
+                    <div id="post-speech">
+                        <span>speech <font color="#bebebe">例:名詞</font></span>
+                        <textarea></textarea>
+                    </div>
+                    <div id="post-attribute">
+                        <span>attribute <font color="#bebebe">例:food fruit</font></span>
+                        <textarea></textarea>
+                    </div>
+                    <div id="post-description">
+                        <span>description <font color="#bebebe">例:何よりも美味しい果物。</font></span>
+                        <textarea></textarea>
+                    </div>
+                    <div id="post-checkboxes">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="post-slang">
+                            <span>スラング</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="post-word">
+                            <span>単語</span>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -1108,6 +1273,15 @@
             return +time;
         }
 
+        document.querySelectorAll('.hasp').forEach(ele => {
+            ele.classList.add('showp');
+            ele.addEventListener('focus', () => ele.classList.remove('showp'));
+            ele.addEventListener('blur', () => {
+                if (!ele.textContent.trim()) {
+                    ele.classList.add('showp');
+                }
+            });
+        })
 
         //#endregion
 
@@ -1121,6 +1295,7 @@
     <script src="jses/pipette.js" defer></script>
     <script src="jses/home.js" defer></script>
     <script src="jses/commu.js" defer></script>
+    <script src="jses/study.js" defer></script>
 
 </body>
 </html>

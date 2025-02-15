@@ -72,7 +72,7 @@ const wordData = [
     {
         slang: false,
         word: true,
-        attribute: "collocation",
+        attribute: "back",
         description: "stealが\"盗む\"なので\nbackをつけると逆的な感じなのかもしれない。",
         sender: "koppepan_orange",
         speech: "動詞",
