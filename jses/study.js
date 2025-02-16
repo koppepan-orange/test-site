@@ -77,6 +77,8 @@ document.querySelector('#search-area').addEventListener('keydown', async (event)
 
             resultList.appendChild(listItem);
         });
+
+        updateNarrowOptions(combinedResults);
     } else {
         resultList.innerText = '該当なし';
     }
@@ -139,7 +141,82 @@ function forceAdd(word, trans, speech, sender, description){
         description:description
     })
 }
+
+
+//#region narrow
+const searchNarrow = document.querySelector('#search-narrow');
+const narrowApplyButton = document.querySelector('#narrow-apply');
+
+let selectedAttributes = new Set();
+
+// Narrow オプション生成
+function updateNarrowOptions(results) {
+    searchNarrow.style.display = 'flex';
+    let uniqueAttributes = new Set();
+
+    results.forEach(entry => {
+        if (entry.attribute) {
+            entry.attribute.split(' ').forEach(attr => uniqueAttributes.add(attr));
+        }
+    });
+
+    let narrowOptionsContainer = document.querySelector('#narrow-options');
+    narrowOptionsContainer.innerHTML = '';
+
+    uniqueAttributes.forEach(attr => {
+        let button = document.createElement('button');
+        button.className = 'narrow-option';
+        button.innerText = attr;
+        button.addEventListener('click', () => {
+            button.classList.toggle('active');
+        });
+        narrowOptionsContainer.appendChild(button);
+    });
+
+    if(uniqueAttributes.size == 0){
+        searchNarrow.style.display = 'none';
+    }
+}
+
+// 絞り込み処理
+document.querySelector('#narrow-apply').addEventListener('click', () => {
+    let selectedAttributes = Array.from(document.querySelectorAll('.narrow-option.active')).map(btn => btn.innerText);
+
+    let allResults = document.querySelectorAll('.search-result-item');
+
+    if (selectedAttributes.length === 0) {
+        allResults.forEach(item => {
+            item.style.display = 'block';
+        });
+        return;
+    }
+
+    //console.log('selectedAttributes:', selectedAttributes);
+    //console.log(allResults);
+
+    allResults.forEach(item => {
+        let attributeText = item.querySelector('.search-result-attribute')?.innerText || '';
+        let hasMatchingAttribute = selectedAttributes.some(attr => attributeText.includes(attr));
+        item.style.display = hasMatchingAttribute ? 'block' : 'none';
+    });
+
+    /**
+    allResults.forEach(item => {
+        let attributeText = item.querySelector('.search-result-attribute')?.innerText.trim() || '';
+        let attributesArray = attributeText ? attributeText.split(/\s+/).map(attr => attr.trim()).filter(attr => attr) : [];
+
+        // **完全マッチチェック**
+        let matchesAllAttributes = selectedAttributes.length === 0 || selectedAttributes.every(attr => attributesArray.includes(attr));
+
+        item.style.display = matchesAllAttributes ? 'block' : 'none';
+    });
+    */
+});
+//#endregion
 //#endregion
 
+
+//#endregion
+//#region tips
 
 //#endregion
