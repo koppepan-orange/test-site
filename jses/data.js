@@ -1,7 +1,7 @@
 const wordData = [
     {
         slang: false,
-        word: true,
+        sentence: false,
         attribute: "food fruit",
         description: "何よりも美味しい果物。\n異論は認めない。",
         sender: "koppepan_orange",
@@ -11,7 +11,7 @@ const wordData = [
     },
     {
         slang: false,
-        word: true,
+        sentence: false,
         attribute: "song",
         description: "アブソリュート←おすすめ",
         sender: "koppepan_orange",
@@ -21,7 +21,7 @@ const wordData = [
     },
     {
         slang: false,
-        word: true,
+        sentence: false,
         attribute: "",
         description: "酷い有様やね...みたいな",
         sender: "koppepan_orange",
@@ -31,7 +31,7 @@ const wordData = [
     },
     {
         slang: false,
-        word: true,
+        sentence: false,
         attribute: "",
         description: "釣り竿によく使われるやつ\n\"惹きつける\"とは違うのぜ",
         sender: "koppepan_orange",
@@ -41,7 +41,7 @@ const wordData = [
     },
     {
         slang: false,
-        word: true,
+        sentence: false,
         attribute: "",
         description: "あの猫は人々を惹きつける〜みたいな感じ\nattoractionで\"アトラクション\"\n\n\"引きつける\"とは違うのぜ",
         sender: "koppepan_orange",
@@ -51,7 +51,7 @@ const wordData = [
     },
     {
         slang: true,
-        word: true,
+        sentence: false,
         attribute: "cute",
         description: "\"甘えん坊な\",\"かわいい\"とも訳される",
         sender: "koppepan_orange",
@@ -61,7 +61,7 @@ const wordData = [
     },
     {
         slang: false,
-        word: true,
+        sentence: false,
         attribute: "",
         description: "でんでんで伝説が始まる...",
         sender: "koppepan_orange",
@@ -71,7 +71,7 @@ const wordData = [
     },
     {
         slang: false,
-        word: true,
+        sentence: false,
         attribute: "back",
         description: "stealが\"盗む\"なので\nbackをつけると逆的な感じなのかもしれない。",
         sender: "koppepan_orange",
@@ -81,7 +81,7 @@ const wordData = [
     },
     {
         slang: false,
-        word: true,
+        sentence: false,
         attribute: "",
         description: "\"の\"はいらないです\nguessと似てるのは偶然",
         sender: "koppepan_orange",
@@ -91,7 +91,7 @@ const wordData = [
     },
     {
         slang: true,
-        word: false,
+        sentence: true,
         attribute: "daily",
         description: "使いやすい文\nワティフアイライキｪット？",
         sender: "koppepan_orange",
@@ -101,7 +101,7 @@ const wordData = [
     },
     {
         slang: false,
-        word: true,
+        sentence: false,
         attribute: "tomas",
         description: "トーマスとかチャーリーとか",
         sender: "koppepan_orange",
@@ -111,7 +111,7 @@ const wordData = [
     },
     {
         slang: false,
-        word: true,
+        sentence: false,
         attribute: "",
         description: "\"代替案\"的な用法も可",
         sender: "koppepan_orange",
@@ -121,7 +121,7 @@ const wordData = [
     },
     {
         slang: false,
-        word: true,
+        sentence: false,
         attribute: "koyuki",
         description: "無作為に、同様に等しいとする確率で、ともいう\n私はこれが大好きです",
         sender: "koppepan_orange",
@@ -131,12 +131,23 @@ const wordData = [
     },
     {
         slang: false,
-        word: true,
+        sentence: false,
         attribute: "",
         description: "解雇された\"状態\" というのを表す",
         sender: "koppepan_orange",
         speech: "形容詞",
         ja: "解雇された",
         en: "fired"
+    }
+]
+
+const bookData = [
+    {
+        title: "test",
+        sender: "koppepan_orange",
+        description: "内容？ないよ？",
+        body: "誰も見れんしょこれ",
+        usedAI: false,
+        yokunai: false
     }
 ]

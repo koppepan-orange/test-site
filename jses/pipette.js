@@ -113,10 +113,10 @@ const Tabs = {
             name:'en',
             initial:1,
         },
-        // 'tips':{
-        //     name:'tips',
-        //     initial:0,
-        // }
+        'tips':{
+            name:'tips',
+            initial:0,
+        }
     },
 
     'Pixelen':{
@@ -168,27 +168,6 @@ function moveAnotherDimension(){
     })
     document.getElementById(doko).style.display = 'block';
 }
-
-document.querySelectorAll('.contenteditable').forEach(element => {
-    element.addEventListener('keydown', function (event) {
-    if(event.key === 'Enter'){
-        const initialHeight = element.scrollHeight;
-
-        // 改行を追加    
-        document.execCommand('insertHTML', false, '<br><br>');
-
-
-        // 改行後の高さを取得
-        const newHeight = element.scrollHeight;
-
-        // max-heightを超えた場合、最後の改行を取り消す
-        if (newHeight > parseInt(getComputedStyle(element).maxHeight)) {
-            event.preventDefault(); // デフォルトの改行をキャンセル
-            element.innerHTML = element.innerHTML.slice(0, -8); // 最後の<br><br>を削除
-        }
-    }
-    });
-})
 //#endregion
 //#region wingdings特殊機構のお話
 let wdnow = 0;
@@ -261,7 +240,9 @@ function login(){
 
     window.homeLogin();
     window.commuLogin();
+    window.anonymousLogin();
     window.studyLogin();
+    window.pixelenLogin();
 }
 
 document.querySelector('#login-login').addEventListener('click', () => {

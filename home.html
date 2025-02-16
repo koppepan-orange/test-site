@@ -48,6 +48,7 @@
         html{
             width: 100%;
             overflow: hidden;
+            background-color: #f0f8ff;
         }
         #body{
             font-family:comicsans;
@@ -758,19 +759,19 @@
             overflow: hidden;
             flex-direction: column;
         }
-        #search-area{
+        #en #search-area{
             background-color: #def0ff;
             border: 2px solid #cfe9ff;
             height: 24px;
             text-align: left;
         }
-        #search-result{
+        #en #search-result{
             display: none;
             background-color: #def0ff;
             border-top: 2px solid #cfe9ff;
             padding: 15px;
         }
-        .search-result-item{
+        #en .search-result-item{
             display: block;
             background-color: #cfe9ff;
             border: 2px solid #b5dcff;
@@ -782,23 +783,23 @@
             margin-bottom: 15px;
             /* position:relative; */
         }
-        .search-result-en{
+        #en .search-result-en{
             font-size: 18px;
         }
-        .search-result-ja{
+        #en .search-result-ja{
             font-size: 16px;
         }
-        .search-result-speech{
+        #en .search-result-speech{
             font-size: 16px;
         }
-        .search-result-attribute{
+        #en .search-result-attribute{
             font-size: 16px;
         }
-        .search-result-description{
+        #en .search-result-description{
             font-size: 14px;
         }
 
-        #search-narrow {
+        #en #search-narrow {
             display: none;
             flex-wrap: wrap;
             gap: 8px;
@@ -811,11 +812,11 @@
             overflow: hidden;
         }
 
-        #search-narrow.expanded {
+        #en #search-narrow.expanded {
             max-height: 200px;
         }
 
-        .narrow-option {
+        #en .narrow-option {
             padding: 6px 12px;
             border: 1px solid #cfe9ff;
             background: #f0f8ff;
@@ -824,12 +825,12 @@
             transition: background 0.2s;
         }
 
-        .narrow-option.active {
+        #en .narrow-option.active {
             background: #5278a5;
             color: #f0f8ff;
         }
 
-        #narrow-apply {
+        #en #narrow-apply {
             padding: 6px 12px;
             border: none;
             background: #4473ad;
@@ -839,11 +840,11 @@
             transition: background 0.2s;
         }
 
-        #narrow-apply:hover {
+        #en #narrow-apply:hover {
             background: #315f97;
         }
 
-        #post-make-button{
+        #en #post-make-button{
             position: absolute;
             bottom: 75px;
             right: 73px;
@@ -854,7 +855,7 @@
             color: #f0f8ff;
             font-size: 32px;
         }
-        #post-area{
+        #en #post-area{
             background-color: #def0ff;
             border: 2px solid #cfe9ff;
             width: 90%;
@@ -867,7 +868,7 @@
             transition: right 0.3s;
             z-index: 998;
         }
-        #post-header{
+        #en #post-header{
             margin: 0 auto;
             background-color: #eaf5ff;
             border-bottom: 2px solid #cfe9ff;
@@ -875,26 +876,26 @@
             height: 5%;
             position: relative;
         }
-        #post-cancel{
+        #en #post-cancel{
             position: absolute;
             left: 30px;
             top: 50%;
             transform: translateY(-50%);
         }
-        #post-send{
+        #en #post-send{
             position: absolute;
             right: 30px;
             top: 50%;
             transform: translateY(-50%);
         }
-        #post-body{
+        #en #post-body{
             margin: 0 auto;
             background-color: #eaf5ff;
             width: 100%;
             height: 90%;
             padding: 10px;
         }
-        #post-en textarea, #post-ja textarea, #post-speech textarea, #post-attribute textarea{
+        #en #post-en textarea, #en #post-ja textarea, #en #post-speech textarea, #en #post-attribute textarea{
             width: 98%;
             height: 25px;
             max-height: 25px;
@@ -903,7 +904,7 @@
             background-color: #f0f8ff;
             resize: vertical;
         }
-        #post-description textarea{
+        #en #post-description textarea{
             width: 98%;
             height: 25px;
             max-height: 150px;
@@ -911,19 +912,19 @@
             background-color: #f0f8ff;
             resize: vertical;
         }
-        #post-checkboxes {
+        #en #post-checkboxes {
             display: flex;
             justify-content: space-around;
             margin-top: 10px;
         }
-        .checkbox-label {
+        #en .checkbox-label {
             display: flex;
             align-items: center;
             cursor: pointer;
             font-size: 14px;
             color: #222233;
         }
-        .checkbox-label input {
+        #en .checkbox-label input {
             margin-right: 5px;
             width: 16px;
             height: 16px;
@@ -933,6 +934,187 @@
         /*こっからPixelen*/
         #Pixelen{
             display: none;
+        }
+
+        /*こっからBooks*/
+        #books{
+            width: 90%;
+            margin: 0 auto;
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        #books #search-area{
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+            height: 24px;
+            text-align: left;
+        }
+        #books #search-result{
+            display: none;
+            background-color: #def0ff;
+            border-top: 2px solid #cfe9ff;
+            padding: 15px;
+        }
+        #books .search-result-item{
+            display: block;
+            background-color: #cfe9ff;
+            border: 2px solid #b5dcff;
+            max-height: 200px;
+            overflow-y: scroll;
+            margin: 0 auto;
+            text-align: left;
+            padding: 5px;
+            margin-bottom: 15px;
+            /* position:relative; */
+        }
+        #books .search-result-books{
+            font-size: 18px;
+        }
+        #books .search-result-ja{
+            font-size: 16px;
+        }
+        #books .search-result-speech{
+            font-size: 16px;
+        }
+        #books .search-result-attribute{
+            font-size: 16px;
+        }
+        #books .search-result-description{
+            font-size: 14px;
+        }
+
+        #books #search-narrow {
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px;
+            background: #def0ff;
+            border-radius: 8px;
+            margin-top: 8px;
+            transition: all 0.3s ease-in-out;
+            max-height: 40px;
+            overflow: hidden;
+        }
+
+        #books #search-narrow.expanded {
+            max-height: 200px;
+        }
+
+        #books .narrow-option {
+            padding: 6px 12px;
+            border: 1px solid #cfe9ff;
+            background: #f0f8ff;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        #books .narrow-option.active {
+            background: #5278a5;
+            color: #f0f8ff;
+        }
+
+        #books #narrow-apply {
+            padding: 6px 12px;
+            border: none;
+            background: #4473ad;
+            color: #f0f8ff;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        #books #narrow-apply:hover {
+            background: #315f97;
+        }
+
+        #books #post-make-button{
+            position: absolute;
+            bottom: 75px;
+            right: 73px;
+            width:80px;
+            border: none;
+            padding: 5px;
+            background-color: #4473ad;
+            color: #f0f8ff;
+            font-size: 32px;
+        }
+        #books #post-area{
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+            width: 90%;
+            height: calc(100vh - 110px);
+            padding: 10px;
+            padding: 10px;
+            position: fixed;
+            right: calc(-90% - 34px);
+            bottom: 0px;
+            transition: right 0.3s;
+            z-index: 998;
+        }
+        #books #post-header{
+            margin: 0 auto;
+            background-color: #eaf5ff;
+            border-bottom: 2px solid #cfe9ff;
+            width: 100%;
+            height: 5%;
+            position: relative;
+        }
+        #books #post-cancel{
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #books #post-send{
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #books #post-body{
+            margin: 0 auto;
+            background-color: #eaf5ff;
+            width: 100%;
+            height: 90%;
+            padding: 10px;
+        }
+        #books #post-title textarea, #books #post-attribute textarea{
+            width: 98%;
+            height: 25px;
+            max-height: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #cfe9ff;
+            background-color: #f0f8ff;
+            resize: vertical;
+        }
+        #books #post-body textarea, #books #post-description textarea{
+            width: 98%;
+            height: 25px;
+            max-height: 150px;
+            border: 1px solid #cfe9ff;
+            background-color: #f0f8ff;
+            resize: vertical;
+        }
+        #books #post-checkboxes {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+        #books .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #222233;
+        }
+        #books .checkbox-label input {
+            margin-right: 5px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -1209,9 +1391,52 @@
                 </div>
             </div>
         </div>
+
+        <div id="tips">
+        </div>
     </div>
 
     <div id="Pixelen">
+        <div id="books">
+            <div id="search-area" contenteditable></div>
+            <div id="search-narrow">
+                <div id="narrow-options"></div>
+                <button id="narrow-apply">絞り込む</button>
+            </div>
+            <div id="search-result"></div>
+
+            <button id="post-make-button">✎</button>
+            <div id="post-area">
+                <div id="post-header">
+                    <div id="post-cancel">リセット</div>
+                    <div id="post-send">送信</div>
+                </div>
+                <div id="post-body">
+                    <div id="post-title">
+                        <span>title <font color="#bebebe">例:</font></span>
+                        <textarea></textarea>
+                    </div>  
+                    <div id="post-description">
+                        <span>description <font color="#bebebe">例:何よりも美味しい果物。</font></span>
+                        <textarea></textarea>
+                    </div>
+                    <div id="post-attribute">
+                        <span>attribute <font color="#bebebe">例:food fruit</font></span>
+                        <textarea></textarea>
+                    </div>
+                    <div id="post-checkboxes">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="post-slang">
+                            <span>スラング</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="post-word">
+                            <span>単語</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -1342,7 +1567,10 @@
     <script src="jses/pipette.js" defer></script>
     <script src="jses/home.js" defer></script>
     <script src="jses/commu.js" defer></script>
+    <script src="jses/anonymous.js" defer></script>
     <script src="jses/study.js" defer></script>
+    <script src="jses/pixelen.js" defer></script>
+    
 
 </body>
 </html>
