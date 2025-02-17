@@ -28,7 +28,7 @@ const Links = {
         'files':{
             id: 'files',
             name: 'file-site',
-            href: 'https://forest-inlet.github.io/tools/fileTransfer?forestinlet ',
+            href: 'https://forest-inlet.github.io/tools/fileTransfer?koppepanorange',
             iframable:1,
             description: 'ファイルを送受信できるサイトです！！<br>まじですごいと思う<br>あ友達作です'
         },
@@ -458,6 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById("iframes").appendChild(details); // 追加したい要素に変更して
     })
+    
     
     
     

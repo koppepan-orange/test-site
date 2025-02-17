@@ -109,7 +109,7 @@ document.querySelector('#en #post-send').addEventListener('click', (event) => {
         return;
     };
 
-    let englishsRef = database.ref('english');
+    let englishsRef = database.ref('kari/english');
 
     englishsRef.orderByChild('en').equalTo(en).once('value', snapshot => {
         if(!snapshot.exists()){
@@ -237,6 +237,7 @@ function updateNarrowOptions(results) {
     uniqueAttributes.forEach(attr => {
         let button = document.createElement('button');
         button.className = 'narrow-option';
+        button.setAttribute('data-type', 'attribute');
         button.innerText = attr;
         button.addEventListener('click', () => {
             button.classList.toggle('active');
@@ -247,6 +248,7 @@ function updateNarrowOptions(results) {
     uniqueSpeeches.forEach(attr => {
         let button = document.createElement('button');
         button.className = 'narrow-option';
+        button.setAttribute('data-type', 'speech');
         button.innerText = attr;
         button.addEventListener('click', () => {
             button.classList.toggle('active');
@@ -261,38 +263,32 @@ function updateNarrowOptions(results) {
 
 // 絞り込み処理
 document.querySelector('#en #narrow-apply').addEventListener('click', () => {
-    let selectedAttributes = Array.from(document.querySelectorAll('#en .narrow-option.active')).map(btn => btn.innerText);
+    let selectedAttributes = Array.from(document.querySelectorAll('#en .narrow-option.active')).map(btn => {
+        let type = btn.getAttribute('data-type');
+        let narrow = btn.innerText;
+        let matomete = {
+            type: type,
+            narrow: narrow
+        }
+        return matomete;
+    });
 
     let allResults = document.querySelectorAll('#en .search-result-item');
 
-    if (selectedAttributes.length === 0) {
-        allResults.forEach(item => {
-            item.style.display = 'block';
-        });
+    allResults.forEach(item => {
+        item.style.display = 'block';
+    });
+
+    if(selectedAttributes.length === 0){
         return;
     }
 
     //console.log('selectedAttributes:', selectedAttributes);
     //console.log(allResults);
 
-    /**
-    allResults.forEach(item => {
-        let attributeText = item.querySelector('#en .search-result-attribute')?.innerText || '';
-        let hasMatchingAttribute = selectedAttributes.some(attr => attributeText.includes(attr));
-        item.style.display = hasMatchingAttribute ? 'block' : 'none';
-    });
-    */
-
-    allResults.forEach(item => {
-        item.style.display = 'block';
-    });
-
-    selectedAttributes.forEach(narrow => {
-        let type = Narrows[narrow]?.type??'!';
-
-        if(type == '!'){
-            alert(`${narrow} は存在しません！！管理者さ〜〜ん？？？？`);
-        }
+    selectedAttributes.forEach(iroiro => {
+        let type = iroiro.type;
+        let narrow = iroiro.narrow;
 
         allResults.forEach(item => {
             let hasattribute = item.getAttribute('data-attribute');
@@ -308,7 +304,8 @@ document.querySelector('#en #narrow-apply').addEventListener('click', () => {
                 hasspeech:${hasspeech}
                 slang:${slang}
                 sentence:${sentence}
-            `*/
+            `);
+            */
 
             if(type == 'attribute'){
                 if(!hasattribute.includes(narrow)){

@@ -647,6 +647,8 @@
             bottom: 75px;
             right: 73px;
             width:80px;
+            height: 50px;
+            cursor: pointer;
             border: none;
             padding: 5px;
             background-color: #4473ad;
@@ -659,20 +661,47 @@
             width: 500px;
             height: 600px;
             bottom: -600px;
-            background-color: #b5b5b5;
+            background-color: #eaf5ff;
             color:#000000;   
             transition: bottom 0.3s;
         }
-        #t-make-send, #t-make-cancel{
-            border: none;
-            background-color: none;
+        #t-make-header{
+            margin: 0 auto;
+            background-color: #eaf5ff;
+            border-bottom: 2px solid #cfe9ff;
+            width: 100%;
+            height: 5%;
+            position: relative;
+        }
+        #t-make-send{
             color: #4473ad;
             font-size: 18px;
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #t-make-cancel{
+            color: #4473ad;
+            font-size: 18px;
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #t-make-body{
+            margin: 0 auto;
+            background-color: #def0ff;
+            width: 100%;
+            height: 95%;
+            position: relative;
         }
         #t-make-text{
-            background-color: #def0ff;
-            resize: vertical;
-            height: 590px;
+            height: 100%;
+            border: 1px solid #def0ff;
+            padding: 5px;
+            /* resize: both; */
+            overflow-y: auto;
         }
         
         .tweet{
@@ -735,9 +764,16 @@
             width: 100%;
             height: 100%;
         }
-        .tweet .evaluation .heart{
-            width: 50px;
+        .tweet .evaluation .eval{
+            width: 70px;
             height: 30px;
+            cursor: pointer;
+            margin-right: 5px;
+            background-color: #cfe9ff;
+            border: 2px solid #b5dcff;
+            border-radius: 5px;
+            color: #000000;
+            font-size: 16px;
             cursor: pointer;
         }
 
@@ -1037,6 +1073,7 @@
             bottom: 75px;
             right: 73px;
             width:80px;
+            height: 50px;
             border: none;
             padding: 5px;
             background-color: #4473ad;
@@ -1323,16 +1360,16 @@
         </div>
 
         <div id="twitter2">
-            <select id="t-room-select" name="t-room-select" onchange="selectTweetsroom()">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-            </select>
             <div class="tweets" id="tweets"></div>
             <button id="t-make-button">✎</button>
             <div id="t-make-zone">
-                <span id="t-make-cancel">キャンセル</span>　<span id="t-make-send">完了</span><br>
-                <textarea id="t-make-text" rows="15" cols="72"></textarea>
+                <div id="t-make-header">
+                    <div id="t-make-cancel">キャンセル</div>
+                    <div id="t-make-send">完了</div>
+                </div>
+                <div id="t-make-body">
+                    <div id="t-make-text" contenteditable></div>
+                </div>
             </div>
         </div>
 
