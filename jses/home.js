@@ -382,11 +382,16 @@ let Iframes = {
         name:'bing-trans',
         src:'https://www.bing.com/translator?from=&to=ja&setlang=ja',
     },
-    'deepAI':{
-        id:'deepAI',
-        name:'deep.ai',
-        src:'https://deepai.org/chat',
-    },
+    // 'deepAI':{
+    //     id:'deepAI',
+    //     name:'deep.ai',
+    //     src:'https://deepai.org/chat',
+    // },
+    'talkAI':{
+        id:'talkAI',
+        name:'talk.ai',
+        src:'https://talkai.info/ja/chat/',
+    }
     
 }
 let NowLinkframe = 1;
@@ -458,6 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById("iframes").appendChild(details); // 追加したい要素に変更して
     })
+    
     
     
     

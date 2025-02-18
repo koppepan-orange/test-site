@@ -20,7 +20,7 @@ function commuLogout(){
 let room = 1;
 let nickname = 'no name';
 let AnonymousName = "/nanj 名前 で変えられるよ!!!!";
-let maxMessage = 30;
+let maxMessage = 20;
 let userData = null;
 //#endregion
 //#region nanj
@@ -440,11 +440,36 @@ function makeTwitter2Post(messageData,key){
     messageElement.appendChild(userElement);
 
     let column = document.createElement('div');
-    column.className = 'column'
+    column.className = 'column';
 
     let contentElement = document.createElement('div');
     contentElement.className = 'content';
+    contentElement.addEventListener('click', contentClicked);
+    function contentClicked(){
+        let newTweetroom = document.createElement('div');
+        newTweetroom.className = 'tweets-2';
 
+        let back = document.createElement('div');
+        back.className = 't-tweet-back';
+        back.innerText = '←'
+        back.addEventListener('click', () => {
+            newTweetroom.style.opacity = 0;
+            document.querySelector('#twitter2').removeChild(newTweetroom);
+        });
+        newTweetroom.appendChild(back);
+
+        let motono = document.createElement('div');
+        motono.className = 't-tweet-motono';
+
+        // let copiedTweet = messageElement.cloneNode(true); //コピーするやつ
+        // copiedTweet.removeEventListener('click', contentClicked);
+        // motono.appendChild(copiedTweet);
+        motono.innerHTML = messageElement.outerHTML;
+
+        newTweetroom.appendChild(motono);
+        document.querySelector('#twitter2').appendChild(newTweetroom);
+        newTweetroom.style.opacity = 1;
+    }
     let usernameElement = document.createElement('span');
     usernameElement.className = 'username';
     usernameElement.textContent = messageData.username;//クリックされたらその人のみに〜みたいなのあり
@@ -468,48 +493,36 @@ function makeTwitter2Post(messageData,key){
     let evaluationElement = document.createElement('div');
     evaluationElement.className = 'evaluation';
 
-    let heartElement = document.createElement('span');
+    let heartElement = document.createElement('div');
     heartElement.className = 'eval heart';
 
-    let count = Object.values(messageData.heart).length - 1; // nullの分を引く
-    heartElement.textContent = '♡ ' + count;
-
-    if (username in (messageData.heart ?? {})) {
-        heartElement.style.color = 'red';
-    }
-
+    // カウントを取得
+    let updateHeartDisplay = (snapshot) => {
+        let heartData = snapshot.val() || {}; 
+        let count = Object.values(heartData).length - 1; // null分を引く
+        heartElement.textContent = '♡ ' + Math.max(0, count);
+        heartElement.style.color = (username in heartData) ? 'red' : 'black';
+    };
     let heartRef = database.ref(`tweets/${troom}/${key}/heart`);
-
+    heartRef.on('value', updateHeartDisplay);
     heartElement.addEventListener('click', async function () {
-        console.log(username, messageData.heart);
-
-        if (username in (messageData.heart ?? {})) {
-            heartRef.child(username).remove().then(() => {
-                heartRef.once('value', function (snapshot) {
-                    let newCount = snapshot.exists() ? Object.values(snapshot.val()).length - 1 : 0;
-                    heartElement.textContent = '♡ ' + newCount;
-                    heartElement.style.color = 'black';
-                });
-            });
-        } else {
-            heartRef.child(username).set(true).then(() => {
-                heartRef.once('value', function (snapshot) {
-                    let newCount = snapshot.exists() ? Object.values(snapshot.val()).length - 1 : 0;
-                    heartElement.textContent = '♡ ' + newCount;
-                    heartElement.style.color = 'red';
-                });
-            });
-        }
+        heartRef.once('value', function(snapshot) {
+            let heartData = snapshot.val() || {};
+            if (username in heartData) {
+                heartRef.child(username).remove();
+            } else {
+                heartRef.child(username).set(true);
+            }
+        });
     });
-
     evaluationElement.appendChild(heartElement);
-
 
     let replyElement = document.createElement('span');
     replyElement.className = 'eval reply';
-    replyElement.textContent = '  ↪︎';
+    replyElement.textContent = '→';
     replyElement.addEventListener('click', async function(){
-        document.querySelector('#t-make-text').value = messageData.text;
+        messageElement.click();
+        document.querySelector('#t-make-text').innerText = '';
         const zone = document.querySelector('#t-make-zone');
         zone.style.bottom = '0px';
     });
