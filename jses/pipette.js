@@ -215,11 +215,7 @@ document.querySelector('#login-button').addEventListener('click', () => {
     }
 })
 
-function login(){
-    document.querySelector('#login').style.opacity = 0;
-    document.querySelector('#login').style.userSelect = 'none';
-    document.querySelector('#login-button').style.display = 'none';
-    document.querySelector('#expbar').style.display = 'block';
+async function login(){
 
     setLocalStorage("banned", 0);
     usersRef = database.ref('users/'+username);
@@ -233,6 +229,13 @@ function login(){
             updateUI();
         }
     });
+
+    await delay(500);
+    document.querySelector('#login').style.opacity = 0;
+    document.querySelector('#login').style.userSelect = 'none';
+    document.querySelector('#login-button').style.display = 'none';
+    document.querySelector('#expbar').style.display = 'block';
+    updateUI();
 
     usersRef.update({
         status: 'online'
@@ -323,5 +326,11 @@ function updateUI(){
     exptext.innerText = `${exp}/${maxexp}`
     document.querySelector('#Username').textContent = username;
     document.querySelector('#Level').textContent = `Lv:${level}`;
+}
+function save(){
+    usersRef.update({
+        level:level,
+        exp:exp
+    })
 }
 //#endregion

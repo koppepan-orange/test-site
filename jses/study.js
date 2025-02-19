@@ -127,6 +127,7 @@ document.querySelector('#en #post-send').addEventListener('click', (event) => {
             NicoNicoText('Nice Job!!');
             exp += 10;
             updateUI();
+            save();
         }else{
             NicoNicoText('その単語はすでに存在します');
             return;
