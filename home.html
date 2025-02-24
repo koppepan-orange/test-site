@@ -72,6 +72,26 @@
             flex-direction: column;
         }
 
+        @keyframes swayX {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(10px); } /* 右に10px */
+            100% { transform: translateX(0); }
+        }
+        .yurayura-x {
+            animation: swayX 1s infinite ease-in-out;
+        }
+
+        @keyframes vibX {
+            0%{transform: translateX(5px);}
+           25%{transform: translateX(-5px)}
+           50%{transform: translateX(5px);}
+           75%{transform: translateX(-5px)}
+          100%{transform: translateX(0)}
+        }
+        .vibable {
+            animation: vibX 0.5s;
+        }
+
         /*こまごめピペット*/
         #description {
             display: none;
@@ -81,7 +101,7 @@
             color: rgb(255, 255, 255);
             padding: 5px 10px;
             border-radius: 5px;
-            z-index: 1000;
+            z-index: 2000;
         }
 
         /*こっからupperUI*/
@@ -232,6 +252,71 @@
         .smart-phone{
             font-family: wingdings;
             background-color: #4473ad;
+        }
+        
+        /* notceのやつ */
+        #notice{
+            display: none;
+            position: fixed;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            height: 700px;
+            background-color: #def0ff;
+            color:#2b2b2b;
+            border: 2px solid #cfe9ff;
+            z-index: 1020;
+            overflow-y: scroll;
+        }
+        #notice .x{
+            position: absolute;
+            right: 8px;
+            top: 0;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1019;
+        }
+        #notice .list{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            padding-top: 20px;
+        }
+        #notice .list .item{
+            margin-top: 5px;
+            border: 1px solid #b5dcff;
+            padding: 2px 6px;
+            cursor: pointer;
+        }
+        #notice .show{
+            display: none;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            word-wrap: break-word;
+        }
+        #notice .show .back{
+            text-align: left;
+            font-size: 20px;
+            padding: 6px 3px;
+            cursor: pointer;
+            border-bottom: 2px solid #cfe9ff;
+        }
+        #notice .show .title{
+            text-align: center;
+            font-size: 24px;
+            padding: 6px 3px;
+            border-bottom: 2px solid #cfe9ff;
+        }
+        #notice .show .body{
+            text-align: left;
+            font-size: 18px;
+            padding: 6px 3px;
         }
 
         #cpopup{
@@ -389,6 +474,7 @@
         /*一旦全体にエンチャ*/
         #Home,#Commu,#Anonymous,#Study,#Pixelen{
             margin-top: 95px;
+            height: 100%;
             background-color: #f0f8ff;
             overflow-y: scroll;
             margin-bottom: 80px;
@@ -455,7 +541,7 @@
             scrollbar-width: none;
         }
         #title::-webkit-scrollbar,#text::-webkit-scrollbar {
-        display: none; /* Chrome, Edge, Safariでスクロールバーを非表示 */
+            display: none; /* Chrome, Edge, Safariでスクロールバーを非表示 */
         }
         .m-delete{
             position: absolute;
@@ -625,7 +711,8 @@
         #twitter2{
             display: none;
             width: 500px;
-            margin: 0 auto;
+            height: 100%;
+            margin: 10px auto;
             background-color: #f0f8ff;
             border: 2px solid #cfe9ff;
             border-radius: 5px;
@@ -641,8 +728,7 @@
             overflow-y: scroll;
             padding: 10px;
             max-height: 73vh;
-            border-bottom: 2px solid #cfe9ff;
-            z-index: 1000;
+            z-index: 100;
         }
 
         #twitter2 .tweets-2{
@@ -656,6 +742,7 @@
             z-index: 1001;
             opacity: 0;
             transition: opacity 0.3s;
+            z-index: 102;
         }
         #twitter2 .t-tweet-motono{
             padding: 5px;
@@ -664,19 +751,20 @@
         #twitter2 .t-tweet-motono .tweet{
             width: calc(100% - 14px) !important;
         }
-
-        @keyframes swayX {
-            0% { transform: translateX(0); }
-            50% { transform: translateX(10px); } /* 右に10px */
-            100% { transform: translateX(0); }
+        #twitter2 .tweets-2 .t-tweet-replies{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
         }
 
-        .yurayura-x {
-            animation: swayX 1s infinite ease-in-out;
+        .motono{
+            margin-bottom: 5px!important;
         }
 
         #t-make-button {
-            position: absolute;
+            position: fixed;
             bottom: 75px;
             right: 73px;
             width:80px;
@@ -690,13 +778,14 @@
         }
         #t-make-zone{
             display: block;
-            position: absolute;
+            position: fixed;
             width: 500px;
             height: 600px;
             bottom: -600px;
             background-color: #eaf5ff;
             color:#000000;   
             transition: bottom 0.3s;
+            z-index: 200;
         }
         #t-make-header{
             margin: 0 auto;
@@ -751,6 +840,7 @@
             display: flex;
             flex-direction: row;
             scrollbar-width: none;
+            z-index: 101;
         }/* これ、左にアイコン、右上にtextがあって、その下に評価というかハートとかそーゆうのがある形にする？いわゆるreddit風だね*/
         .tweet .header{
             display: block;
@@ -813,9 +903,6 @@
             justify-content: left;
             align-items: center;
             padding-left: 5px;
-        }
-        .tweet .evaluation .reply{
-            width: 60px;
         }
 
 
@@ -1044,20 +1131,15 @@
             margin-bottom: 15px;
             /* position:relative; */
         }
-        #books .search-result-books{
+        #books .search-result-title{
             font-size: 18px;
-        }
-        #books .search-result-ja{
-            font-size: 16px;
-        }
-        #books .search-result-speech{
-            font-size: 16px;
         }
         #books .search-result-attribute{
             font-size: 16px;
         }
         #books .search-result-description{
             font-size: 14px;
+            color: #3c3c3c;
         }
 
         #books #search-narrow {
@@ -1151,6 +1233,7 @@
             width: 100%;
             height: 90%;
             padding: 10px;
+            overflow-y: scroll;
         }
         #books #post-title textarea, #books #post-attribute textarea{
             width: 98%;
@@ -1161,10 +1244,17 @@
             background-color: #f0f8ff;
             resize: vertical;
         }
-        #books #post-body textarea, #books #post-description textarea{
+        #books #post-description textarea{
             width: 98%;
-            height: 25px;
+            height: 50px;
             max-height: 150px;
+            border: 1px solid #cfe9ff;
+            background-color: #f0f8ff;
+            resize: vertical;
+        }
+        #books #post-bodies textarea{
+            width: 98%;
+            height: 100px;
             border: 1px solid #cfe9ff;
             background-color: #f0f8ff;
             resize: vertical;
@@ -1187,6 +1277,40 @@
             height: 16px;
             cursor: pointer;
         }
+
+        #books #show-area{
+            display: none;
+            width: 100%;
+            max-height: 80vh;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            word-wrap: break-word;
+        }
+        #books #show-area .back{
+            text-align: left;
+            font-size: 20px;
+            padding: 6px 3px;
+            cursor: pointer;
+            border-bottom: 2px solid #cfe9ff;
+        }
+        #books #show-area .title{
+            text-align: center;
+            font-size: 24px;
+            padding: 6px 3px;
+            border-bottom: 2px solid #cfe9ff;
+        }
+        #books #show-area .description{
+            text-align: left;
+            font-size: 18px;
+            color: #4c4c4c;
+            padding: 6px 3px;
+            border-bottom: 2px solid #cfe9ff;
+        }
+        #books #show-area .body{
+            text-align: left;
+            font-size: 18px;
+            padding: 6px 3px;
+        }
     </style>
 </head>
 <body id="body">
@@ -1195,6 +1319,7 @@
         <div id="user">
             <div id="Username">no name</div>
             <div id="Level">Lv:#ERROR!</div>
+            <div id="Yen">0¥</div>
         </div>
         <div id="expbar">
             <div id="exp"></div>
@@ -1234,8 +1359,6 @@
             <li><a href="tools.html">to tools</a></li>
             <li><a href="books.html">to books</a></li>
             <li><a href="hidden.html">to hidden</a></li>
-            <li><a href="question.html">to question</a></li>
-            <li><a href="en.html">to english-party</a></li>
             <li class="wd"><a href="home-ura.html">to ura</a></li>
         </ul>
         <hr noshade="true">
@@ -1253,14 +1376,28 @@
     </nav>
 
     <div class="smart-menu">
-        <div class="smart-icon hidden" data-name="news-icon">V</div>
-        <div class="smart-icon hidden" data-name="daily-icon">e</div>
+        <div class="smart-icon hidden" id="notice-button" data-name="notice-icon">V</div>
+        <div class="smart-icon hidden" id="login-bonus" data-name="daily-icon">e</div>
         <div class="smart-icon c-dimension hidden" data-name="home-icon" data-doko="Home">H</div>
         <div class="smart-icon c-dimension hidden" data-name="commu-icon" data-doko="Commu">^</div>
         <div class="smart-icon c-dimension hidden" data-name="anonymous-icon" data-doko="Anonymous">A</div>
         <div class="smart-icon c-dimension hidden" data-name="study-icon" data-doko="Study">S</div>
         <div class="smart-icon c-dimension hidden" data-name="pixelen-icon" data-doko="Pixelen">P</div>
         <div class="smart-icon smart-phone">:</div>
+    </div>
+
+    <div id="notice">
+        <div class="x">x</div>
+
+        <div class="list">
+
+        </div>
+
+        <div class="show">
+            <div class="back">←</div>
+            <div class="title"></div>
+            <div class="body"></div>
+        </div>
     </div>
 
     <div id="login">
@@ -1407,7 +1544,8 @@
             </div>
         </div>
 
-        <div id="jine"></div>
+        <div id="jine">
+        </div>
     </div>
 
     <div id="Anonymous">
@@ -1471,12 +1609,21 @@
 
     <div id="Pixelen">
         <div id="books">
-            <div id="search-area" contenteditable></div>
-            <div id="search-narrow">
-                <div id="narrow-options"></div>
-                <button id="narrow-apply">絞り込む</button>
+            <div id="search-zone">
+                <div id="search-area" contenteditable></div>
+                <div id="search-narrow">
+                    <div id="narrow-options"></div>
+                    <button id="narrow-apply">絞り込む</button>
+                </div>
+                <div id="search-result"></div>
             </div>
-            <div id="search-result"></div>
+
+            <div id="show-area">
+                <div class="back">←</div>
+                <div class="title"></div>
+                <div class="description"></div>
+                <div class="body"></div>
+            </div>
 
             <button id="post-make-button">✎</button>
             <div id="post-area">
@@ -1486,29 +1633,36 @@
                 </div>
                 <div id="post-body">
                     <div id="post-title">
-                        <span>title <font color="#bebebe">例:</font></span>
+                        <span>title <font color="#bebebe">例:転生したら最弱の水魔法使いだったのでとりあえず極めてみようと思います</font></span>
                         <textarea></textarea>
                     </div>  
                     <div id="post-description">
-                        <span>description <font color="#bebebe">例:何よりも美味しい果物。</font></span>
+                        <span>description <font color="#bebebe">例:とりあえず流行りに乗ってみたやつです 水が一番強いんですよ</font></span>
                         <textarea></textarea>
                     </div>
                     <div id="post-attribute">
-                        <span>attribute <font color="#bebebe">例:food fruit</font></span>
+                        <span>attribute <font color="#bebebe">例:なろう系 魔法 ファンタジー</font></span>
                         <textarea></textarea>
                     </div>
                     <div id="post-checkboxes">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="post-slang">
-                            <span>スラング</span>
+                            <input type="checkbox" id="post-usedAI">
+                            <span>AI使用</span>
                         </label>
                         <label class="checkbox-label">
-                            <input type="checkbox" id="post-word">
-                            <span>単語</span>
+                            <input type="checkbox" id="post-yokunai">
+                            <span>よくない</span>
                         </label>
                     </div>
+                    <div id="post-bodies">
+                        <span>body <font color="#bebebe">目が覚めた。記憶がない。昨日飲みすぎたか？などと考えながら起き上がる。</font></span>
+                        <textarea></textarea>
+                    </div>
+
+                    (この例の話は書いてないので作ってもらえると喜びます)
                 </div>
             </div>
+
         </div>
     </div>
 

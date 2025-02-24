@@ -327,7 +327,190 @@
             border: 2px solid #cfe9ff;
         }
 
-        /*こっからHome*/
+        /*こっからnotice*/
+        #notice{
+            display: none;
+        }
+        #notice #search-button{
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+            height: 24px;
+            text-align: center;
+            cursor: pointer;
+        }
+        #notice #search-result{
+            display: none;
+            background-color: #def0ff;
+            border-top: 2px solid #cfe9ff;
+            padding: 15px;
+        }
+        #notice .search-result-item{
+            display: block;
+            background-color: #cfe9ff;
+            border: 2px solid #b5dcff;
+            max-height: 200px;
+            overflow-y: scroll;
+            margin: 0 auto;
+            text-align: left;
+            padding: 5px;
+            margin-bottom: 15px;
+            /* position:relative; */
+        }
+        #notice .search-result-notice{
+            font-size: 18px;
+        }
+        #notice .search-result-ja{
+            font-size: 16px;
+        }
+        #notice .search-result-speech{
+            font-size: 16px;
+        }
+        #notice .search-result-attribute{
+            font-size: 16px;
+        }
+        #notice .search-result-description{
+            font-size: 14px;
+        }
+        
+        #notice #show{
+            display: none;
+            width: calc(100% - 24px);
+            max-height: 700px;
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+            padding: 0 10px;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            z-index: 200;
+        }
+        #notice .show *{
+            word-wrap: break-word;
+            padding: 2px;
+        }
+        #notice .show-back{
+            display: flex;
+            height: 26px;
+            font-size: 22px;
+            text-align: left;
+            align-items: center;
+            padding-left: 2px;
+            cursor: pointer;
+            border-bottom: 2px solid #cfe9ff;
+        }
+        #notice .show-title{
+            display: flex;
+            height: 35px;
+            font-size: 22px;
+            text-align: left;
+            align-items: center;
+            border-bottom: 2px solid #cfe9ff;
+        }
+        #notice .show-description{
+            display: flex;
+            max-height: 80px;
+            font-size: 18px;
+            color: #5d5d5d;
+            text-align: left;
+            border-bottom: 2px solid #cfe9ff;
+        }
+        #notice .show-body{
+            display: flex;
+            font-size: 18px;
+            color: #2b2b2b;
+            text-align: left;
+            border-bottom: 2px solid #cfe9ff;
+        }
+
+        #notice #post-make-button{
+            position: absolute;
+            bottom: 75px;
+            right: 73px;
+            width:80px;
+            height: 50px;
+            border: none;
+            padding: 5px;
+            background-color: #4473ad;
+            color: #f0f8ff;
+            font-size: 32px;
+        }
+        #notice #post-area{
+            background-color: #def0ff;
+            border: 2px solid #cfe9ff;
+            width: 90%;
+            height: calc(100vh - 110px);
+            padding: 10px;
+            padding: 10px;
+            position: fixed;
+            right: calc(-90% - 34px);
+            bottom: 0px;
+            transition: right 0.3s;
+            z-index: 998;
+        }
+        #notice #post-header{
+            margin: 0 auto;
+            background-color: #eaf5ff;
+            border-bottom: 2px solid #cfe9ff;
+            width: 100%;
+            height: 5%;
+            position: relative;
+        }
+        #notice #post-cancel{
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #notice #post-send{
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #notice #post-body{
+            margin: 0 auto;
+            background-color: #eaf5ff;
+            width: 100%;
+            height: 90%;
+            padding: 10px;
+        }
+        #notice #post-area textarea{
+            font-size: 16px;    
+        }
+        #notice #post-title textarea, #notice #post-attribute textarea{
+            width: 98%;
+            height: 25px;
+            max-height: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #cfe9ff;
+            background-color: #f0f8ff;
+            resize: vertical;
+        }
+        #notice #post-bodies textarea, #notice #post-description textarea{
+            width: 98%;
+            height: 40px;
+            max-height: 150px;
+            border: 1px solid #cfe9ff;
+            background-color: #f0f8ff;
+            resize: vertical;
+        }
+        #notice #post-checkboxes {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+        #notice .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #222233;
+        }
+        #notice .checkbox-label input {
+            margin-right: 5px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body id="body">
@@ -373,14 +556,55 @@
 
         <div id='en'>
             <button class="button" onclick="exportData()">データをエクスポート</button>
+            <select id="name">
+                <option value="english">english</option>
+                <option value="books">books</option>
+            </select>
             <textarea id="english-output" style="width: 100%; height: 500px;"></textarea>
+        </div>
+
+        <div id="notice">
+            <div id="search">
+                <div id="search-button">search</div>
+                <div id="search-result"></div>
+            </div>
+            <div id="show">
+                <div class="show-back">←</div>
+                <div class="show-title"></div>
+                <div class="show-description"></div>
+                <div class="show-body"></div>
+            </div>
+            
+            <button id="post-make-button">✎</button>
+            <div id="post-area">
+                <div id="post-header">
+                    <div id="post-cancel">リセット</div>
+                    <div id="post-send">送信</div>
+                </div>
+                <div id="post-body">
+                    <div id="post-title">
+                        <span>title</span>
+                        <textarea></textarea>
+                    </div>  
+                    <div id="post-description">
+                        <span>description</span>
+                        <textarea></textarea>
+                    </div>
+                    <div id="post-bodies">
+                        <span>body</span>
+                        <textarea></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
 
 
     <div id="tabs"></div>
-    <script>
+
+    <script src="jses/data.js" defer></script>
+    <script defer>
         //#region 扱いやすい子達
         function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
         async function NicoNicoText(mes){
@@ -607,7 +831,7 @@
 
         //#endregion
         //#region tabs
-        const Tabs = {
+        let Tabs = {
             'Null':{
                 'home':{
                     name:'home',
@@ -619,6 +843,10 @@
                 },
                 'en':{
                     name:'en',
+                    initial:0,
+                },
+                'notice':{
+                    name:'notice',
                     initial:0,
                 }
             },
@@ -664,7 +892,7 @@
                 document.getElementById("tabs").appendChild(tabElement);
             })
             document.getElementById(doko).style.display = 'block';
-        }        
+        }
 
         //#endregion
         //#region passes
@@ -702,8 +930,9 @@
         }
         //#endregion
         //#region en
-        async function exportData() {
-            const dataRef = database.ref('english'); // データが格納されているパス
+        async function exportData(){
+            let name = document.querySelector('#en #name').value
+            const dataRef = database.ref(`kari/${name}`); // データが格納されているパス
             dataRef.once('value', (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
@@ -720,6 +949,108 @@
             });
         }
         //#endregion
+        //#region notice
+        document.querySelector('#notice #post-make-button').addEventListener('click', () => {
+            document.querySelector('#notice #post-area').style.right = '0px';
+        });
+        document.querySelector('#notice #post-cancel').addEventListener('click', (event) => {
+            event.preventDefault();
+            document.querySelector('#notice #post-area').style.right = 'calc(-90% - 24px)';
+            document.querySelector('#notice #post-title textarea').value = '';
+            document.querySelector('#notice #post-bodies textarea').value = '';
+            document.querySelector('#notice #post-description textarea').value = '';
+        })
+
+        document.querySelector('#notice #search-button').addEventListener('click', async (event) => {
+            event.preventDefault(); // フォームのリロードを防ぐ
+
+            let noticesRef = database.ref('kari/notices');
+
+            // Firebase からデータ取得
+            let firebaseData = await noticesRef.once('value');
+            let firebaseResults = firebaseData.exists() ? Object.values(firebaseData.val()) : [];
+
+            // data.js の `noticeData` を検索
+            let localResults = noticeData;
+
+            // Firebase + data.js のデータを結合
+            let combinedResults = [...firebaseResults, ...localResults];
+
+            let resultList = document.querySelector('#notice #search-result');
+            resultList.innerHTML = ''; // 検索結果をクリア
+            resultList.style.display = 'block';
+
+            if (combinedResults.length > 0) {
+                combinedResults.forEach(user => {
+                    let listItem = document.createElement('div');
+                    listItem.className = 'search-result-item';
+                    listItem.innerHTML = `
+                        <span class="search-result-title">${user.title}</span><br>
+                        <div class="search-result-description">${user.description}</div>
+                    `;
+                    listItem.setAttribute('data-key', user.key);
+
+                    listItem.addEventListener('click', () =>{
+                        let Show = document.querySelector('#notice #show')
+
+                        Show.style.display = 'block';
+                        document.querySelector('#notice #search').style.display = 'none';
+
+                        Show.querySelector('.show-title').textContent = user.title;
+                        Show.querySelector('.show-description').innerText = user.description;
+                        Show.querySelector('.show-body').innerText = user.body;
+                        Show.setAttribute('data-key', user.key);
+                    })
+
+                    resultList.appendChild(listItem);
+                });
+            }else{
+                resultList.innerText = '該当なし';
+            }
+        });
+
+        document.querySelector('#show .show-back').addEventListener('click', () => {
+            document.querySelector('#notice #show').style.display = 'none';
+            document.querySelector('#notice #search').style.display = 'block';
+        })
+
+
+        document.querySelector('#notice #post-send').addEventListener('click', (event) => {
+            event.preventDefault();
+
+            let title = document.querySelector('#notice #post-title textarea').value.trim();
+            let body = document.querySelector('#notice #post-bodies textarea').value.trim();
+            let description = document.querySelector('#notice #post-description textarea').value.trim();
+
+            if(!title || !body || !description){
+                NicoNicoText('要素が足りません');
+                return;
+            };
+
+            let noticeRef = database.ref('kari/notices');
+
+            noticeRef.orderByChild('title').equalTo(title).once('value', snapshot => {
+                if(!snapshot.exists()){
+                    let newPush = noticeRef.push({
+                        title:title,
+                        body:body,
+                        description:description
+                    })
+                    let key = newPush.key
+                    newPush.update({
+                        key:key
+                    })
+
+                    document.querySelector('#notice #post-cancel').click();
+                    NicoNicoText('Good notice!!');
+                }else{
+                    NicoNicoText('そのタイトル、すでにあるってよ');
+                    return;
+                }
+            })
+        });
+        //#endregion
+
     </script>
 
 </body>

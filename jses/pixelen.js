@@ -14,11 +14,12 @@ document.querySelector('#books #post-make-button').addEventListener('click', () 
 document.querySelector('#books #post-cancel').addEventListener('click', (event) => {
     event.preventDefault();
     document.querySelector('#books #post-area').style.right = 'calc(-90% - 24px)';
-    document.querySelector('#books #post-books textarea').value = '';
-    document.querySelector('#books #post-ja textarea').value = '';
-    document.querySelector('#books #post-speech textarea').value = '';
+    document.querySelector('#books #post-title textarea').value = '';
+    document.querySelector('#books #post-bodies textarea').value = '';
     document.querySelector('#books #post-attribute textarea').value = '';
     document.querySelector('#books #post-description textarea').value = '';
+    document.querySelector('#books #post-usedAI').checked = false;
+    document.querySelector('#books #post-yokunai').checked = false;
 })
 
 
@@ -28,16 +29,26 @@ document.querySelector('#books #search-area').addEventListener('keydown', async 
     event.preventDefault(); // フォームのリロードを防ぐ
 
     let booksearch = document.querySelector('#books #search-area').innerText.trim().toLowerCase();
-    if (!booksearch) return;
+    
 
     let booksRef = database.ref('kari/books');
 
-    // Firebase からデータ取得
-    let firebaseData = await booksRef.orderByChild('books').startAt(booksearch).endAt(booksearch + "\uf8ff").once('value');
-    let firebaseResults = firebaseData.exists() ? Object.values(firebaseData.val()) : [];
+    let firebaseData
+    let firebaseResults
+    let localResults
+    if(!booksearch == ''){
+        // Firebase からデータ取得
+        firebaseData = await booksRef.orderByChild('books').startAt(booksearch).endAt(booksearch + "\uf8ff").once('value');
+        firebaseResults = firebaseData.exists() ? Object.values(firebaseData.val()) : [];
 
-    // data.js の `bookData` を検索
-    let localResults = bookData.filter(word => word.title.toLowerCase().startsWith(booksearch));
+        // data.js の `bookData` を検索
+        localResults = bookData.filter(word => word.title.toLowerCase().startsWith(booksearch));
+    }else{
+        //ぜんぶ
+        firebaseData = await booksRef.once('value');
+        firebaseResults = firebaseData.exists() ? Object.values(firebaseData.val()) : [];
+        localResults = bookData;
+    }
 
     // Firebase + data.js のデータを結合
     let combinedResults = [...firebaseResults, ...localResults];
@@ -52,13 +63,25 @@ document.querySelector('#books #search-area').addEventListener('keydown', async 
             listItem.className = 'search-result-item';
             let attribute = user.attribute ? `(${user.attribute})` : '';
             listItem.innerHTML = `
-                <span class="search-result-title">${user.title}</span> <span class="search-result-attribute">(${attribute})</span><br>
-                <span class="search-result-body">${user.description}</span>
+                <span class="search-result-title">${user.title}</span> <span class="search-result-attribute">${attribute}</span><br>
+                <div class="search-result-description">${user.description}</div>
             `;
-
             listItem.setAttribute('data-attribute', user.attribute);
             listItem.setAttribute('data-usedAI', user.usedAI);
             listItem.setAttribute('data-yokunai', user.yokunai);
+            //listItem.setAttribute('data-key', user.key);
+
+            listItem.addEventListener('click', () => {
+                document.querySelector('#books #search-zone').style.display = 'none';
+                document.querySelector('#books #show-area').style.display = 'block';
+                document.querySelector('#books #show-area .title').innerText = user.title;
+                document.querySelector('#books #show-area .body').innerText = user.body;
+                document.querySelector('#books #show-area .description').innerText = user.description;
+            })
+
+            if(user.yokunai || user.usedAI){
+                listItem.style.display = 'none';
+            }//俺用まである
 
             resultList.appendChild(listItem);
         });
@@ -68,6 +91,13 @@ document.querySelector('#books #search-area').addEventListener('keydown', async 
         resultList.innerText = '該当なし';
     }
 });
+document.querySelector('#books #show-area .back').addEventListener('click', () => {
+    document.querySelector('#books #search-zone').style.display = 'block';
+    document.querySelector('#books #show-area').style.display = 'none';
+    document.querySelector('#books #show-area .title').innerText = '';
+    document.querySelector('#books #show-area .body').innerText = '';
+    document.querySelector('#books #show-area .description').innerText = '';
+})
 
 
 //#booksdregion
@@ -77,12 +107,14 @@ document.querySelector('#books #post-send').addEventListener('click', (event) =>
     event.preventDefault();
 
     let title = document.querySelector('#books #post-title textarea').value.trim();
-    let body = document.querySelector('#books #post-body textarea').value.trim();
+    let body = document.querySelector('#books #post-bodies textarea').value.trim();
+    let description = document.querySelector('#books #post-description textarea').value.trim();
+    let attribute = document.querySelector('#books #post-attribute textarea').value.trim();
     let usedAI = document.querySelector('#books #post-usedAI').checked;
     let yokunai = document.querySelector('#books #post-yokunai').checked; //よくない の方ね
 
 
-    if(!title || !body || !usedAI || !yokunai){
+    if(!title || !body || !description || !attribute){
         NicoNicoText('要素が足りません');
         return;
     };
@@ -91,14 +123,22 @@ document.querySelector('#books #post-send').addEventListener('click', (event) =>
 
     bookRef.orderByChild('title').equalTo(title).once('value', snapshot => {
         if(!snapshot.exists()){
-            bookRef.push({
+            let newPush = bookRef.push({
+                sender:username,
                 title:title,
                 body:body,
-                sender:username
+                description:description,
+                attribute:attribute,
+                usedAI:usedAI,
+                yokunai:yokunai,
+            })
+            let key = newPush.key
+            newPush.update({
+                key:key
             })
             document.querySelector('#books #post-cancel').click();
             NicoNicoText('Good book!!');
-            exp += 20;
+            exp += 50;
             updateUI();
         }else{
             NicoNicoText('そのタイトルはすでに使用されています');
@@ -167,6 +207,9 @@ document.querySelector('#books #narrow-apply').addEventListener('click', () => {
     if(selectedAttributes.length === 0){
         allResults.forEach(item => {
             item.style.display = 'block';
+            if(item.dataset.yokunai == "true" || item.dataset.usedAI == "true"){
+                item.style.display = 'none';
+            }
         });
         return;
     }
@@ -187,16 +230,8 @@ document.querySelector('#books #narrow-apply').addEventListener('click', () => {
             let hasattribute = item.getAttribute('data-attribute');
             let usedAI = item.getAttribute('data-usedAI');
             let yokunai = item.getAttribute('data-yokunai');
-            
-            /**
-            console.log(`
-                narrow:${narrow}
-                type:${type}
-                hasattribute:${hasattribute}
-                hasspeech:${hasspeech}
-                usedAI:${usedAI}
-                yokunai:${yokunai}
-            `*/
+
+            console.log(narrow)
 
             if(type == 'attribute'){
                 if(!hasattribute.includes(narrow)){
@@ -204,7 +239,11 @@ document.querySelector('#books #narrow-apply').addEventListener('click', () => {
                 }
             }else if(narrow == 'usedAI' && usedAI == "false"){
                 item.style.display = 'none';
+            }else if(narrow != 'usedAI' && usedAI == "true"){
+                item.style.display = 'none';
             }else if(narrow == 'yokunai' && yokunai == "false"){
+                item.style.display = 'none';
+            }else if(narrow != 'yokunai' && yokunai == "true"){
                 item.style.display = 'none';
             }
         });

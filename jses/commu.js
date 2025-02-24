@@ -1,6 +1,7 @@
 //#region document
 const Nanj = document.querySelector('#nanj');
 const Twitter2 = document.querySelector('#twitter2');
+const Jine = document.querySelector('#jine');
 const roomSelect = document.querySelector('#room-select');
 //#endregion
 //#region Login
@@ -15,6 +16,8 @@ function commuLogin(){
 function commuLogout(){
     Nanj.style.display = 'none';
     Twitter2.style.display = 'none';
+    Jine.style.display = 'none';
+    room = 1;
     nickname = '';   
 }
 let room = 1;
@@ -354,8 +357,10 @@ function selectRoom(){
 //#endregion
 //#region twitter2
 const tweets = document.querySelector('#tweets');
-let troom = 1;
+let troom = 'home';
 let tweetsRef = database.ref('tweets/1');
+let treplyRef = database.ref('tweets');
+let treplyMode = 0;
 
 let TAdd
 function selectTweetsroom(){
@@ -371,7 +376,7 @@ function selectTweetsroom(){
 
     TAdd = tweetsRef.on('child_added', async function(snapshot){
         let messageData = snapshot.val();
-        let messageElement = makeTwitter2Post(messageData,snapshot.key)
+        let messageElement = makeTwitter2Post(messageData,snapshot.key, 1)
 
         tweets.insertBefore(messageElement, tweets.firstChild);
     });
@@ -386,40 +391,80 @@ document.querySelector('#t-make-button').addEventListener('click', () => {//一�
 });
 document.querySelector('#t-make-send').addEventListener('click', () => {
     const Text = document.querySelector('#t-make-text').innerText;
-    tweetsRef.push({
-        text: Text,
-        username: username,
-        timestamp: formatDate(new Date()),
-        time: formatTime(new Date()),
-        heart:{
-            'null':true
-        },
-        reply:{
-            '-KorE8NUl1DeSU4':{
-                text:'null',
-                username:'null',
-                timestamp:'2009/07/04 17:34:00',
-                time:20090704173400,
-                heart:{
-                    'null':true,
+    if(treplyMode == 0){
+        let newPush = tweetsRef.push({
+            text: Text,
+            username: username,
+            timestamp: formatDate(new Date()),
+            time: formatTime(new Date()),
+            layer: 1,
+            heart:{
+                'null':true
+            },
+            reply:{
+                '-KorE8NUl1DeSU4':{
+                    text:'null',
+                    username:'null',
+                    timestamp:'2009/09/22 00:00:00',
+                    time:20090922000000,
+                    heart:{
+                        'null':true,
+                    }
                 }
             }
-        }
-    });
+        });
+        let key = newPush.key;
+        newPush.update({
+            key: key
+        })
+    }else{
+        let newPush = treplyRef.push({
+            text: Text,
+            username: username,
+            timestamp: formatDate(new Date()),
+            time: formatTime(new Date()),
+            prevkey: keepKey,
+            layer: 2,
+            heart:{
+                'null':true
+            },
+            reply:{
+                '-KorE8NUl1DeSU4':{
+                    text:'null',
+                    username:'null',
+                    timestamp:'2009/09/22 00:00:00',
+                    time:20090922000000,
+                    heart:{
+                        'null':true,
+                    }
+                }
+            }
+        });
+        let key = newPush.key;
+        newPush.update({
+            key: key
+        })
+    }
     document.querySelector('#t-make-text').value = '';
     const zone = document.querySelector('#t-make-zone');
     zone.style.bottom = '-600px';
+    treplyMode = 0;
 })
 document.querySelector('#t-make-cancel').addEventListener('click', () => {
     const zone = document.querySelector('#t-make-zone')
     zone.style.bottom = '-600px';
     document.querySelector('#t-make-text').value = '';
+    treplyMode = 0;
 })
 
-
-function makeTwitter2Post(messageData,key){
+let keepKey = null;
+let keepLayer = null;
+function makeTwitter2Post(messageData, key, layer){
     let messageElement = document.createElement('div');
     messageElement.className = 'tweet';
+    if(layer == 2){
+        messageElement.className += ' reply';
+    }
     messageElement.setAttribute('data-key', key);
 
     let userElement = document.createElement('div');
@@ -429,7 +474,6 @@ function makeTwitter2Post(messageData,key){
     iconElement.className = 'icon';
     firebase.database().ref(`users/${messageData.username}/icon`).once("value").then((snapshot) => {
         if(snapshot.exists()){
-            const base64String = snapshot.val();
             iconElement.src = snapshot.val();
         }else{
             iconElement.src = 'assets/sozais/none.png';
@@ -444,32 +488,60 @@ function makeTwitter2Post(messageData,key){
 
     let contentElement = document.createElement('div');
     contentElement.className = 'content';
-    contentElement.addEventListener('click', contentClicked);
-    function contentClicked(){
-        let newTweetroom = document.createElement('div');
-        newTweetroom.className = 'tweets-2';
+    if(layer == 1){
+        contentElement.addEventListener('click', contentClicked);
+        function contentClicked(){
+            keepKey = key;
+            
+            let newTweetroom = document.createElement('div');
+            newTweetroom.className = 'tweets-2';
 
-        let back = document.createElement('div');
-        back.className = 't-tweet-back';
-        back.innerText = '←'
-        back.addEventListener('click', () => {
-            newTweetroom.style.opacity = 0;
-            document.querySelector('#twitter2').removeChild(newTweetroom);
-        });
-        newTweetroom.appendChild(back);
+            let back = document.createElement('div');
+            back.className = 't-tweet-back';
+            back.innerText = '←'
+            back.addEventListener('click', () => {
+                newTweetroom.style.opacity = 0;
+                document.querySelector('#twitter2').removeChild(newTweetroom);
+            });
+            newTweetroom.appendChild(back);
 
-        let motono = document.createElement('div');
-        motono.className = 't-tweet-motono';
+            let motono = document.createElement('div');
+            motono.className = 't-tweet-motono';
 
-        // let copiedTweet = messageElement.cloneNode(true); //コピーするやつ
-        // copiedTweet.removeEventListener('click', contentClicked);
-        // motono.appendChild(copiedTweet);
-        motono.innerHTML = messageElement.outerHTML;
+            // let copiedTweet = messageElement.cloneNode(true); //コピーするやつ
+            // copiedTweet.removeEventListener('click', contentClicked);
+            // motono.appendChild(copiedTweet);
+            motono.innerHTML = messageElement.outerHTML;
+            motono.querySelector('.tweet').classList.add('motono');
 
-        newTweetroom.appendChild(motono);
-        document.querySelector('#twitter2').appendChild(newTweetroom);
-        newTweetroom.style.opacity = 1;
+            newTweetroom.appendChild(motono);
+
+            let replies = document.createElement('div');
+            replies.className = 't-tweet-replies';
+            
+            database.ref(`tweets/${troom}/${key}/reply`).once("value").then((snapshot) => {
+                if(snapshot.exists()){
+                    snapshot.forEach((snapshoten) => {
+                        let reply = snapshoten.val();
+                        if(reply.key != '-KorE8NUl1DeSU4' && reply.username != 'null'){
+                            let replyElement = makeTwitter2Post(reply, snapshoten.key, 2);
+                            replies.appendChild(replyElement);   
+                        }else{
+                            console.log('てか、ただのnullじゃないですか！', snapshoten.val().key);
+                        }
+                    });
+                }
+            });
+
+            // if(replies.children.length > 0){
+                newTweetroom.appendChild(replies);
+            // }
+
+            document.querySelector('#twitter2').appendChild(newTweetroom);
+            newTweetroom.style.opacity = 1;
+        }
     }
+
     let usernameElement = document.createElement('span');
     usernameElement.className = 'username';
     usernameElement.textContent = messageData.username;//クリックされたらその人のみに〜みたいなのあり
@@ -504,6 +576,9 @@ function makeTwitter2Post(messageData,key){
         heartElement.style.color = (username in heartData) ? 'red' : 'black';
     };
     let heartRef = database.ref(`tweets/${troom}/${key}/heart`);
+    if(layer == 2){
+        heartRef = database.ref(`tweets/${troom}/${keepKey}/reply/${key}/heart`);
+    }
     heartRef.on('value', updateHeartDisplay);
     heartElement.addEventListener('click', async function () {
         heartRef.once('value', function(snapshot) {
@@ -517,16 +592,33 @@ function makeTwitter2Post(messageData,key){
     });
     evaluationElement.appendChild(heartElement);
 
-    let replyElement = document.createElement('span');
-    replyElement.className = 'eval reply';
-    replyElement.textContent = '→';
-    replyElement.addEventListener('click', async function(){
-        messageElement.click();
-        document.querySelector('#t-make-text').innerText = '';
-        const zone = document.querySelector('#t-make-zone');
-        zone.style.bottom = '0px';
-    });
-    evaluationElement.appendChild(replyElement);
+    if(layer == 1){
+        let replyElement = document.createElement('span');
+        replyElement.className = 'eval reply';
+        replyElement.textContent = '→';
+        replyElement.addEventListener('click', async function(){
+            treplyRef = database.ref(`tweets/${troom}/${key}/reply`);
+            treplyMode = 1;
+            // keepLayer = 2;
+            messageElement.click();
+            document.querySelector('#t-make-text').innerText = '';
+            const zone = document.querySelector('#t-make-zone');
+            zone.style.bottom = '0px';
+        });
+        evaluationElement.appendChild(replyElement);
+    }
+
+    if(layer == 2){
+        let mentionElement = document.createElement('span');
+        mentionElement.className = 'eval mention';
+        mentionElement.textContent = '→';
+        mentionElement.addEventListener('click', async function(){
+            document.querySelector('#t-make-text').innerText = `@${messageData.username}`;
+            const zone = document.querySelector('#t-make-zone');
+            zone.style.bottom = '0px';
+        });
+        evaluationElement.appendChild(mentionElement);
+    }
 
     column.appendChild(evaluationElement);
 
@@ -542,7 +634,7 @@ function displayAllTweets(){
     tweetsRef.once('value', function(pealentsnapshot){
         pealentsnapshot.forEach(function(snapshot){
             let messageData = snapshot.val();
-            let messageElement = makeTwitter2Post(messageData,snapshot.key)
+            let messageElement = makeTwitter2Post(messageData,snapshot.key, 1)
             tweets.insertBefore(messageElement, tweets.firstChild);
         });
     });
@@ -580,5 +672,8 @@ function timeDifference(pastTimestamp) {
     }
 }
 
+
+//#endregion
+//#region jine
 
 //#endregion

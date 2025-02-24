@@ -15,6 +15,12 @@
             "request": "launch",
             "name": "Open admin.html",
             "file": "/Users/koppepanorange/orange_bread/test-site/admin.html"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open test.html",
+            "file": "/Users/koppepanorange/orange_bread/test-site/test.html"
         }
     ]
 }

@@ -1,9 +1,43 @@
 //こまごめピペット
 //#region DOM
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async() => {
     moveAnotherDimension();
-    autoLogin();   
+    autoLogin();
+
+    
+    let noticesRef = database.ref('kari/notices');
+    let firebaseData = await noticesRef.once('value');
+    let firebaseResults = firebaseData.exists() ? Object.values(firebaseData.val()) : [];
+    let localResults = noticeData;
+    let combinedResults = [...firebaseResults, ...localResults];
+
+    NList.innerHTML = '';
+    combinedResults.forEach(noti => {
+        let item = makeNotice(noti);
+        NList.appendChild(item);
+    });
+
+    noticesRef.on('child_added', (snapshot) => {
+        let noti = snapshot.val();
+        let item = makeNotice(noti);
+        let existing = document.querySelector(`#notice .list .item[data-key="${snapshot.key}"]`);
+        if(existing){
+            console.log("重複を確認");
+            return;
+        }
+        NList.appendChild(item);
+    });     
+
 });
+//#endregion
+//#region animation?
+function vibrate(element) {
+    element.classList.add('vibable');
+
+    setTimeout(() => {
+        element.classList.remove('vibable');
+    }, 500);
+}
 //#endregion
 //#region upperUIとsideMenu
 const upperUI = document.querySelector('#upperUI');
@@ -134,9 +168,11 @@ document.addEventListener('click', ele => {
         Object.keys(doko).forEach(tab => {
             document.getElementById(tab).style.display = 'none';
             document.getElementById(`${tab}-tab`).src = `assets/icons/${doko[tab].name}2.png`;
+            Tabs[ele.target.dataset.doko][tab].initial = 0;
         })
         document.getElementById(ele.target.dataset.name).style.display = 'block';
-        ele.target.src = `assets/icons/${doko[key].name}1.png`;
+        ele.target.src = `assets/icons/${key}1.png`;
+        Tabs[ele.target.dataset.doko][key].initial = 1;
     }
 })
 
@@ -225,6 +261,7 @@ async function login(){
             const userData = snapshot.val();
             level = userData.level??1;
             exp = userData.exp??0;
+            yen = userData.yen??0;
             maxexp = level*25+25;
             updateUI();
         }
@@ -289,6 +326,7 @@ document.querySelector('#logout').addEventListener('click', () => {
     username = 'no name';removeLocalStorage("username");
     document.querySelector('#Username').textContent = username;
     document.querySelector('#Level').textContent = `Lv:#ERROR!`;
+    document.querySelector('#Yen').textContent = '0¥'
     document.querySelector('#expbar').style.display = 'none';
     document.querySelector('#login-button').style.display = 'block';
     sideMenu.style.left = '-255px';
@@ -314,6 +352,7 @@ window.addEventListener('beforeunload', () => {
 let exp = 0;
 let level = 1;
 let maxexp = 50;
+let yen = 0;
 let expbar = document.querySelector('#exp');
 let exptext = document.querySelector('#exptext');
 function updateUI(){
@@ -326,11 +365,101 @@ function updateUI(){
     exptext.innerText = `${exp}/${maxexp}`
     document.querySelector('#Username').textContent = username;
     document.querySelector('#Level').textContent = `Lv:${level}`;
+    document.querySelector('#Yen').textContent = `${yen}¥`;
 }
 function save(){
     usersRef.update({
         level:level,
-        exp:exp
+        exp:exp,
+        yen:yen
     })
 }
+//#endregion
+//#region login-bonus
+document.querySelector('#login-bonus').addEventListener('click', () => {
+    let now = new Date();
+    let day = String(now.getDate()).padStart(2, '0');
+
+    usersRef.once('value', snapshot => {
+        let data = snapshot.val();
+        console.log(`今までのログイン[${data.logined??'何もないよ（笑)'}]に${day}は入ってるかな〜？`); //ラッキースターは誰かな〜？
+        
+        if(!data.logined || day == 1){
+            usersRef.update({
+                logined: [day],
+                continued: 1
+            })
+            console.log('今月初のログインらしい')
+            loginBonus(1);
+        }else{
+            if(!data.logined.includes(day)){
+                let last = data.logined.slice(-1)[0];
+                if(last == day - 1){
+                    data.continued += 1;
+                }else{
+                    data.continued = 1;
+                }
+                data.logined.push(day);
+                usersRef.update({
+                    logined: data.logined,
+                    continued: data.continued
+                })   
+                console.log('受け取れたね、めでたいね')
+                loginBonus(data.continued);
+            }else{
+                NicoNicoText(`受取済みやで！！`);
+            }
+        }
+    })
+})
+const LoginBonuses = [50,80,100,150,200,250,300]
+function loginBonus(continued){
+    let bonus
+    if(continued < 7){
+        bonus = LoginBonuses[continued-1];
+    }else{
+        bonus = LoginBonuses[6];
+    }
+    yen += bonus;
+    NicoNicoText(`連続ログイン${continued}回目`)
+    NicoNicoText(`ログインボーナス！${bonus}¥をゲットだぜ！！！`);
+    updateUI();
+    save();
+}
+//#endregion
+//#region notice
+const Notice = document.querySelector('#notice');
+const NList = document.querySelector('#notice .list');
+const NShow = document.querySelector('#notice .show');
+const NX = document.querySelector('#notice .x');
+function makeNotice(noti){
+    let item = document.createElement('div');
+    item.className = 'item';
+    item.innerText = noti.title;
+    item.setAttribute('data-key', noti.key);
+    item.addEventListener('click', () => {
+        NList.style.display = 'none';
+        NShow.style.display = 'block';
+        NShow.querySelector('.title').innerText = noti.title;
+        NShow.querySelector('.body').innerText = noti.body;
+    });
+    return item;
+}
+document.querySelector('#notice-button').addEventListener('click', () => {
+    Notice.style.display = 'block';
+    NList.style.display = 'block';
+    NShow.style.display = 'none';
+    NX.style.display = 'block';
+})
+document.querySelector('#notice .x').addEventListener('click', () => {
+    Notice.style.display = 'none';
+    NList.style.display = 'block';
+    NShow.style.display = 'none';
+    NX.style.display = 'none';
+})
+document.querySelector('#notice .show .back').addEventListener('click', () => {
+    NList.style.display = 'block';
+    NShow.style.display = 'none';
+    NX.style.display = 'block';
+})
 //#endregion

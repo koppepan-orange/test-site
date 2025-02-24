@@ -347,7 +347,17 @@ const bookData = [
         sender: "koppepan_orange",
         description: "内容？ないよ？",
         body: "誰も見れんしょこれ",
+        attribute: 'test',
         usedAI: false,
         yokunai: false
     }
+]
+
+const noticeData = [
+  {
+    title: 'お知らせ機能、追加！',
+    description: "お知らせ機能、つまりはこれの説明\n誰もみないような気がしますけど",
+    body: "お知らせ機能が追加されました！！！！\nっていってもあんま言うことないと思う\n定期的に言うつもりではある\n追加も楽にしたんでね\n今後は口語じゃなくて書き言葉にしようかな\n\nお知らせ機能の通知機能とかも作りたすぎる\n頑張ります...っていっても\n皆さんはもうほぼ見れないのかな....?"
+    
+  }
 ]

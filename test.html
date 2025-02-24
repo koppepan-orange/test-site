@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <title>Test</title>
+    <style>
+        @font-face{font-family:comicsans;src:url('assets/comicsans.ttf');}
+        @font-face{font-family:papyrus;src:url('assets/papyrus.ttf');}
+        
+
+    </style>
+</head>
+<body>
+    <div id="daily-bonus">
+        <span id="button" style="cursor: pointer;">押しなよ</span>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
+            authDomain: "koppepan-orange.firebaseapp.com",
+            databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
+            projectId: "koppepan-orange",
+            storageBucket: "koppepan-orange.appspot.com",
+            messagingSenderId: "730150198097",
+            appId: "1:730150198097:web:076a074a3d406053155170",
+            measurementId: "G-MYKJWD203Z"
+        };
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+        
+        let username = 'koppepan_orange';
+        let usersRef = database.ref(`users/${username}`);
+
+        let doller = 0;
+
+        document.querySelector('#button').addEventListener('click', event => {
+            let now = new Date();
+            let year = now.getFullYear();
+            let month = String(now.getMonth() + 1).padStart(2, '0');
+            let day = String(now.getDate()).padStart(2, '0');
+
+            let lastDay = new Date(year, month + 1, 0).getDate(); //28, 30, 31とかそーゆうの
+
+            usersRef.once('value', snapshot => {
+                let data = snapshot.val();
+                console.log(`今までのログイン[${data.logined??'空です'}]に${day}は入ってるかな〜？`); //ラッキースターは誰かな〜？
+                
+                if(!data.logined || day == 1){
+                    usersRef.update({
+                        logined: [day],
+                        continued: 1
+                    })
+                    console.log('今月初のログインらしい')
+                    loginBonus(1);
+                }else{
+                    if(!data.logined.includes(day)){
+                        let last = data.logined.slice(-1)[0];
+                        if(last == day - 1){
+                            data.continued += 1;
+                        }else{
+                            data.continued = 1;
+                        }
+                        data.logined.push(day);
+                        usersRef.update({
+                            logined: data.logined,
+                            continued: data.continued
+                        })   
+                        console.log('受け取れたね、めでたいね')
+                        loginBonus(data.continued);
+                    }else{
+                        console.log('受け取れなかったね。残念だったね')
+                    }
+                }
+            })
+        })
+        const LoginBonuses = [50,80,100,150,200,250,300]
+        function loginBonus(continued){
+            let bonus
+            if(continued < 7){
+                bonus = LoginBonuses[continued-1];
+            }else{
+                bonus = LoginBonuses[6];
+            }
+            doller += bonus;
+        }
+
+</script>    
+</body>
+</html>
