@@ -436,34 +436,34 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#memos').appendChild(memoAdd);
 
 
-    /**
+    
     const iframes = getLocalStorage("iframes")??['bing', 'bing_trans', 'deepAI'];
     iframes.forEach(iframe => {
-    //     const details = document.createElement("details");
+        const details = document.createElement("details");
 
-    //     const summary = document.createElement("summary");
-    //     summary.textContent = Iframes[iframe].name;
+        const summary = document.createElement("summary");
+        summary.textContent = Iframes[iframe].name;
 
-    //     const button = document.createElement("button");
-    //     button.className = "iframe-button";
-    //     button.dataset.id = `Iframe-${iframe}`;
-    //     button.textContent = "full";
+        const button = document.createElement("button");
+        button.className = "iframe-button";
+        button.dataset.id = `Iframe-${iframe}`;
+        button.textContent = "full";
 
-    //     const br = document.createElement("br");
+        const br = document.createElement("br");
 
-    //     const iframeElement = document.createElement("iframe");
-    //     iframeElement.dataset.id = `Iframe-${iframe}`;
-    //     iframeElement.className = "iframe-frame";
-    //     iframeElement.src = Iframes[iframe].src;
+        const iframeElement = document.createElement("iframe");
+        iframeElement.dataset.id = `Iframe-${iframe}`;
+        iframeElement.className = "iframe-frame";
+        iframeElement.src = Iframes[iframe].src;
 
-    //     details.appendChild(summary);
-    //     details.appendChild(button);
-    //     details.appendChild(br);
-    //     details.appendChild(iframeElement);
+        details.appendChild(summary);
+        details.appendChild(button);
+        details.appendChild(br);
+        details.appendChild(iframeElement);
 
-    //     document.getElementById("iframes").appendChild(details); // 追加したい要素に変更して
+        document.getElementById("iframes").appendChild(details); // 追加したい要素に変更して
     })
-    */
+    
     
     
     

@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-    <title>test-site</title>
+    <title>admin-site</title>
     <style>
         @font-face{font-family:comicsans;src:url('assets/comicsans.ttf');}
         @font-face{font-family:papyrus;src:url('assets/papyrus.ttf');}
@@ -577,6 +577,11 @@
             
             <button id="post-make-button">✎</button>
             <div id="post-area">
+                <select id="post-select">
+                    <option value="notices">notices(home.html)</option>
+                    <option value="forrpg/clicker-of-mugen/notices">notices(clicker-of-mugen)</option>
+                    <option value="forrpg/rogue-cardgame/notices">notices(rogue-cardgame)</option>
+                </select>
                 <div id="post-header">
                     <div id="post-cancel">リセット</div>
                     <div id="post-send">送信</div>
@@ -960,11 +965,11 @@
             document.querySelector('#notice #post-bodies textarea').value = '';
             document.querySelector('#notice #post-description textarea').value = '';
         })
-
+        const NPSelect = document.querySelector('#notice #post-select');
         document.querySelector('#notice #search-button').addEventListener('click', async (event) => {
             event.preventDefault(); // フォームのリロードを防ぐ
 
-            let noticesRef = database.ref('kari/notices');
+            let noticesRef = database.ref(`kari/${NPSelect.value}`);
 
             // Firebase からデータ取得
             let firebaseData = await noticesRef.once('value');
@@ -1027,7 +1032,7 @@
                 return;
             };
 
-            let noticeRef = database.ref('kari/notices');
+            let noticeRef = database.ref(`kari/${NPSelect.value}`);
 
             noticeRef.orderByChild('title').equalTo(title).once('value', snapshot => {
                 if(!snapshot.exists()){
