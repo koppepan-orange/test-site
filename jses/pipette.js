@@ -261,7 +261,7 @@ async function login(){
             const userData = snapshot.val();
             level = userData.level??1;
             exp = userData.exp??0;
-            yen = userData.yen??0;
+            euro = userData.euro??0;
             maxexp = level*25+25;
             updateUI();
         }
@@ -326,7 +326,7 @@ document.querySelector('#logout').addEventListener('click', () => {
     username = 'no name';removeLocalStorage("username");
     document.querySelector('#Username').textContent = username;
     document.querySelector('#Level').textContent = `Lv:#ERROR!`;
-    document.querySelector('#Yen').textContent = '0¥'
+    document.querySelector('#Euro').textContent = '0€'
     document.querySelector('#expbar').style.display = 'none';
     document.querySelector('#login-button').style.display = 'block';
     sideMenu.style.left = '-255px';
@@ -352,7 +352,7 @@ window.addEventListener('beforeunload', () => {
 let exp = 0;
 let level = 1;
 let maxexp = 50;
-let yen = 0;
+let euro = 0;
 let expbar = document.querySelector('#exp');
 let exptext = document.querySelector('#exptext');
 function updateUI(){
@@ -365,13 +365,13 @@ function updateUI(){
     exptext.innerText = `${exp}/${maxexp}`
     document.querySelector('#Username').textContent = username;
     document.querySelector('#Level').textContent = `Lv:${level}`;
-    document.querySelector('#Yen').textContent = `${yen}¥`;
+    document.querySelector('#Euro').textContent = `${euro}€`;
 }
 function save(){
     usersRef.update({
         level:level,
         exp:exp,
-        yen:yen
+        euro:euro
     })
 }
 //#endregion
@@ -420,9 +420,9 @@ function loginBonus(continued){
     }else{
         bonus = LoginBonuses[6];
     }
-    yen += bonus;
+    euro += bonus;
     NicoNicoText(`連続ログイン${continued}回目`)
-    NicoNicoText(`ログインボーナス！${bonus}¥をゲットだぜ！！！`);
+    NicoNicoText(`ログインボーナス！${bonus}€をゲットだぜ！！！`);
     updateUI();
     save();
 }

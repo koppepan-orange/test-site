@@ -370,7 +370,71 @@ Object.keys(Links).forEach(type => {
     document.getElementById(`${type}tachi`).appendChild(document.createElement('br'));
 })
 //#endregion
+//#region home-memoのお話
+function memoCreate(memo,i){
+    let memoElement = document.createElement('div');
+    memoElement.className = 'memo';
+    memoElement.id = `memo${i}`;
+    memoElement.setAttribute('data-num', i);
+
+    let title = document.createElement('div');
+    title.className = 'm-title';
+    title.innerText = `memo${i}`;
+    title.setAttribute('contenteditable', 'true');
+    memoElement.appendChild(title);
+
+    let text = document.createElement('div');
+    text.className = 'm-text';
+    text.innerText = memo??'';
+    text.setAttribute('contenteditable', 'true');
+    memoElement.appendChild(text);
+
+    let deleteButton = document.createElement('div');
+    deleteButton.className = 'm-delete';
+    deleteButton.innerText = 'M';
+    deleteButton.addEventListener('click', () => {
+        localStorage.removeItem(`memo${i}`);
+        memoElement.remove();
+
+        document.querySelectorAll('.memo').forEach(memo => {
+            let memoNum = +memo.getAttribute('data-num')
+            if(memoNum > i){
+                memo.setAttribute('data-num', memoNum - 1);
+                memo.querySelector('.m-title').innerText = `memo${memoNum-1}`;
+                memo.querySelector('.m-text').innerText = getLocalStorage(`memo${memoNum}`);
+                setLocalStorage(`memo${memoNum-1}`, getLocalStorage(`memo${memoNum}`));
+            }
+        });
+        
+        numberOfMemo = +numberOfMemo - 1;
+        setLocalStorage("numberOfMemo", +numberOfMemo);
+    });
+    memoElement.appendChild(deleteButton);
+
+    memoElement.addEventListener('input', ele => {
+        setLocalStorage(`memo${i}`, document.getElementById(`memo${i}`).querySelector('.m-text').innerText);
+    });
+
+    return memoElement;
+}
+function memoAddCreate(){
+    const memoAdd = document.createElement('div');
+    memoAdd.className = 'm-add';
+    memoAdd.id = 'memoAdd';
+    memoAdd.innerText = '+';
+    memoAdd.addEventListener('click', () => {
+        memoAdd.remove();
+        numberOfMemo = +numberOfMemo + 1;
+        setLocalStorage("numberOfMemo", +numberOfMemo);
+        let memoElement = memoCreate('', numberOfMemo);
+        document.querySelector('#memos').appendChild(memoElement);  
+        let memoAdd2 = memoAddCreate();
+        document.querySelector('#memos').appendChild(memoAdd2);
+    })
+    return memoAdd;
+}
 //#region iframeのお話
+
 let Iframes = {
     'bing':{
         id:'bing',
@@ -437,8 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     
-    const iframes = getLocalStorage("iframes")??['bing', 'bing_trans', 'deepAI'];
-    iframes.forEach(iframe => {
+    Object.keys(Iframes).forEach(iframe => {
         const details = document.createElement("details");
 
         const summary = document.createElement("summary");
@@ -473,9 +536,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 //#region memo
-const bodyTextarea = document.querySelector('#memo-text');
-const titleInput = document.querySelector('#memo-title');
-const searchButton = document.querySelector('#memo-search');
+const bodyTextarea = document.querySelector('#memo .text');
+const titleInput = document.querySelector('#memo .title');
+const searchButton = document.querySelector('#memo .search');
 
 titleInput.addEventListener('keydown', function(e) {
     if (e.key === "Enter") {
@@ -503,68 +566,6 @@ searchButton.addEventListener('click', () => {
 });
 
 
-function memoCreate(memo,i){
-    let memoElement = document.createElement('div');
-    memoElement.className = 'memo';
-    memoElement.id = `memo${i}`;
-    memoElement.setAttribute('data-num', i);
-
-    let title = document.createElement('div');
-    title.className = 'm-title';
-    title.innerText = `memo${i}`;
-    title.setAttribute('contenteditable', 'true');
-    memoElement.appendChild(title);
-
-    let text = document.createElement('div');
-    text.className = 'm-text';
-    text.innerText = memo??'';
-    text.setAttribute('contenteditable', 'true');
-    memoElement.appendChild(text);
-
-    let deleteButton = document.createElement('div');
-    deleteButton.className = 'm-delete';
-    deleteButton.innerText = 'M';
-    deleteButton.addEventListener('click', () => {
-        localStorage.removeItem(`memo${i}`);
-        memoElement.remove();
-
-        document.querySelectorAll('.memo').forEach(memo => {
-            let memoNum = +memo.getAttribute('data-num')
-            if(memoNum > i){
-                memo.setAttribute('data-num', memoNum - 1);
-                memo.querySelector('.m-title').innerText = `memo${memoNum-1}`;
-                memo.querySelector('.m-text').innerText = getLocalStorage(`memo${memoNum}`);
-                setLocalStorage(`memo${memoNum-1}`, getLocalStorage(`memo${memoNum}`));
-            }
-        });
-        
-        numberOfMemo = +numberOfMemo - 1;
-        setLocalStorage("numberOfMemo", +numberOfMemo);
-    });
-    memoElement.appendChild(deleteButton);
-
-    memoElement.addEventListener('input', ele => {
-        setLocalStorage(`memo${i}`, document.getElementById(`memo${i}`).querySelector('.m-text').innerText);
-    });
-
-    return memoElement;
-}
-function memoAddCreate(){
-    const memoAdd = document.createElement('div');
-    memoAdd.className = 'm-add';
-    memoAdd.id = 'memoAdd';
-    memoAdd.innerText = '+';
-    memoAdd.addEventListener('click', () => {
-        memoAdd.remove();
-        numberOfMemo = +numberOfMemo + 1;
-        setLocalStorage("numberOfMemo", +numberOfMemo);
-        let memoElement = memoCreate('', numberOfMemo);
-        document.querySelector('#memos').appendChild(memoElement);  
-        let memoAdd2 = memoAddCreate();
-        document.querySelector('#memos').appendChild(memoAdd2);
-    })
-    return memoAdd;
-}
 
 //#endregion
 //#region tools

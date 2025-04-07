@@ -112,7 +112,7 @@ const Commands = {
         name:'balance',
         process:function(message){
             load();
-            NicoNicoText(`now: ${userData.yen}$`)
+            NicoNicoText(`now: ${userData.euro}$`)
             return null;
         }
     },
