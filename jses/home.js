@@ -1,5 +1,5 @@
 //#region Login
-function homeLogin(){
+async function homeLogin(){
     console.log('home「ログインされたで」')
     firebase.database().ref(`users/${username}/icon`).once("value").then((snapshot) => {
         const img = document.querySelector('#profile .icon');
@@ -9,7 +9,11 @@ function homeLogin(){
             img.src = 'assets/sozais/none.png';
         }
     })
+    if(username == 'koppepan_orange'){
+        meiboMake();
+    }
 }
+
 function homeLogout(){
     console.log('home「ログアウトされたで」')
     document.querySelector('#profile .icon').src = 'assets/sozais/none.png';
@@ -433,6 +437,7 @@ function memoAddCreate(){
     })
     return memoAdd;
 }
+//#endregion
 //#region iframeのお話
 
 let Iframes = {
@@ -569,6 +574,8 @@ searchButton.addEventListener('click', () => {
 
 //#endregion
 //#region tools
+
+//#region まだ初心者だったころの。要改善
 let input
 let words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ']
 function Toggle(){
@@ -923,6 +930,95 @@ function CookingGameChoeese(num){
     }
     }
 }
+//#endregion
+//#region 名電の名簿。自作用。koppepan_orange専用
+let a;
+
+async function meiboMake(){
+    let meiboToggle = document.querySelector('#tools .meiboToggle');
+    let meiboContainer = document.querySelector('#tools .meibo .list');
+    let meiboShowtime = document.querySelector('#tools .meibo .show');
+    
+    let meibosRef = database.ref('kari/meibos');
+
+    let firebaseData
+    let firebaseResults
+    let localResults
+
+    //ぜんぶ
+    firebaseData = await meibosRef.once('value');
+    firebaseResults = firebaseData.exists() ? Object.values(firebaseData.val()) : [];
+    localResults = meiboData;
+
+    // Firebase + data.js のデータを結合
+    let combinedResults = [...firebaseResults, ...localResults];
+
+
+    meiboContainer.innerHTML = ''; // 検索結果をクリア
+    meiboContainer.style.display = 'block';
+
+    if (combinedResults.length > 0) {
+        combinedResults.forEach(user => {
+            let listItem = document.createElement('div');
+            listItem.className = 'item';
+
+            let attribute = '';
+            if (user.boy) {
+                attribute = 'AI';
+            }else if(user.girl) {
+                attribute = '女子';
+            }else{
+                attribute = 'その他';
+            }
+            listItem.innerHTML = `
+                <ruby class="name" contenteditable>${user.name}<rt class="ruby" contenteditable style="letter-spacing: 0.1em;">${user.ruby}</rt></ruby> <span class="attribute" contenteditable>${attribute}</span><br>
+                <div class="description" contenteditable>${description}</div>
+            `;
+            listItem.setAttribute('男子', user.boy);
+            listItem.setAttribute('女子', user.girl);
+            listItem.setAttribute('その他', user.else);
+            //listItem.setAttribute('data-key', user.key);
+
+            if(user.girl || user.boy || user.else){
+                listItem.style.display = 'none';
+            }//俺用まである
+
+            meiboContainer.appendChild(listItem);
+        });
+
+        updateNarrowOptionsMeibos(combinedResults);
+    } else {
+        meiboContainer.innerText = '該当なし';
+    }
+}
+function updateNarrowOptionsMeibos(results) {
+    searchNarrowmeibo.style.display = 'flex';
+    let uniqueAttributes = new Set();
+
+    //常設
+    uniqueAttributes.add('男子');
+    uniqueAttributes.add('女子');
+
+    let narrowOptionsContainer = document.querySelector('#tools .meibo #narrow-options');
+    narrowOptionsContainer.innerHTML = '';
+
+    uniqueAttributes.forEach(attr => {
+        let button = document.createElement('button');
+        button.className = 'narrow-option';
+        button.innerText = attr;
+        button.addEventListener('click', () => {
+            button.classList.toggle('active');
+        });
+        narrowOptionsContainer.appendChild(button);
+    });
+
+
+    if(uniqueAttributes.size == 0){
+        searchNarrowmeibo.style.display = 'none';
+    }
+}
+//#endregion
+
 //#endregion
 //#region profile
 document.querySelector('#profile .icon').addEventListener("click", () => {
