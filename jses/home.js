@@ -46,14 +46,14 @@ const Links = {
         'memoWeb': {
             id: 'memoWeb',
             name: 'メモweb',
-            href: 'https://memo.onl.jp/?koppepan23',
+            href: 'https://memo.onl.jp/?Koppepan23',
             iframable:0,
             description: '昔使ってたところ。<br>今はmemo.html使ってるけどね'
         },
         'fileWeb': {
             id: 'fileWeb',
             name: 'ファイルweb',
-            href: 'https://file.onl.jp/?koppepan23',
+            href: 'https://file.onl.jp/?Koppepan23',
             iframable:0,
             description: 'これは有用ちゃん<br>ファイルを送受信できる<br>そのうち作りたい.....'
         },
