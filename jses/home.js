@@ -294,14 +294,14 @@ const Links = {
         'gameSite': {
             id: 'gameSite',
             name: 'game-site',
-            href: 'https://koppepan-orange.github.io/game-site/welcome.html',
+            href: 'https://koppepan-orange.github.io/game-site/home.html',
             iframable:1,
             description: 'ゲームができるサイト<br>まじで楽しい<br>clicker-of-mugenはおすすめ<br>cardは未完成だけど絵見て欲しい'
         },
         'musicSite': {
             id: 'musicSite',
             name: 'music-site',
-            href: 'https://koppepan-orange.github.io/test-site/music-site.html',
+            href: 'https://koppepan-orange.github.io/test-site/music.html',
             iframable:1,
             description: '全然できてない<br>kiite-cafeみたいなサイト作ろうとしたんだけどむずい'
         },

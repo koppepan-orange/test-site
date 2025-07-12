@@ -7,20 +7,20 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Open home.html",
-            "file": "/Users/koppepanorange/orange_bread/test-site/home.html"
+            "name": "from now on",
+            "file": "${file}"
         },
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Open admin.html",
-            "file": "/Users/koppepanorange/orange_bread/test-site/admin.html"
+            "name": "main",
+            "file": "home.html"
         },
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Open test.html",
-            "file": "/Users/koppepanorange/orange_bread/test-site/test.html"
-        }
+            "name": "admin",
+            "file": "admin.html"
+        },
     ]
 }
