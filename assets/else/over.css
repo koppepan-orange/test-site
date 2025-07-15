@@ -1,0 +1,312 @@
+html{
+    margin: -8px;
+    padding: -8px;
+}
+body{
+    scrollbar-width: none;
+    user-select: none;
+}
+*::-webkit-scrollbar {
+    display: none;
+}
+
+.row{
+    display: flex;
+    flex-direction: row;
+}
+
+#pages{
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
+}
+.page{
+    width: 100vw;
+    height: 100%;
+    position: fixed;
+    transition: right 0.5s ease, left 0.5s ease;
+}
+
+/*こっからhome*/
+#home{
+    display: block;
+    background-color: #f0f8ff;
+    opacity: 1;
+}
+
+#home .links{
+    margin-top: 10px;
+    max-height: 20%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 2px solid #cfecff;
+    background-color: #f0f8ff;
+    margin-bottom: 20px;
+}
+
+#home .memos{
+    max-height: 60%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 2px solid #cfecff;
+    background-color: #f0f8ff;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+#home .memos .memo{
+    width: 400px;
+    min-width: 50px;
+    max-width: 99%;
+    height: 180px;
+    border: 2px solid #cfe9ff;
+    background-color: #f0f8ff;
+    margin-bottom: 25px;
+    position: relative;
+    resize: both;
+    overflow: hidden;
+}
+#home .memos .title{
+    width: 100%;
+    min-width: 50px;
+    height: 23px;
+    border-bottom: 2px solid #cfe9ff;
+    overflow-x: scroll;
+    white-space: nowrap;
+    scrollbar-width: none;
+}
+#home .memos .text{
+    width: 100%;
+    min-width: 50px;
+    padding: 0px 3px;
+    font-size: 16px;
+    height: calc(100% - 23px); 
+    overflow-x: hidden;
+    overflow-y: scroll;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+#home .memos .title::-webkit-scrollbar,#text::-webkit-scrollbar {
+    display: none; /* Chrome, Edge, Safariでスクロールバーを非表示 */
+}
+#home .memos .delete{
+    position: absolute;
+    top: 1.3px;
+    right: 0px;
+    cursor: pointer;
+    font-family: wingdings; 
+    border: 1px solid #cfe9ff;
+}
+#home .memos .delete:hover{
+    color: red;
+}
+#home .memos .add{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    height: 23px;
+    cursor: pointer;
+    font-size: 22px;
+    color: #00272c;
+    border: 2px solid #cfe9ff;
+}
+#home .memos .add:hover{
+    background-color: #b5dcff;
+}
+
+#home .iframes{
+    height: 20%;
+    max-height: 1200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 2px solid #cfe9ff;
+}
+#home .iframes .iframe-frame{
+    width: 100%;
+    height: 100vh;
+    border: 2px solid #cfe9ff;
+}
+
+/*こっからmemo*/
+#memo{
+    display: block;
+    opacity: 0;
+}
+#memo .title{
+    margin-left: 5px;
+    display: block;
+    border: 2px solid #cfe9ff;
+    background-color: #f0f8ff;
+    padding: 5px;
+    width: 100px;
+    height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    overflow-x: scroll;
+    scrollbar-width: none;
+}
+#memo .search{
+    margin-left: 2px;
+    background-color: #f0f8ff;
+    border: solid 2px #cfe9ff;
+}
+#memo .search:hover{
+    background-color: #def0ff;
+}
+#memo .text{
+    margin-top: 10px;
+    display: block;
+    border: 2px solid #cfe9ff;
+    background-color: #f0f8ff;
+    padding: 5px;
+    min-width: 50px;
+    height: 90vh;
+    max-height: 90vh;
+    font-size: 16px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    scrollbar-width: none;
+}
+#memo .title:focus, #memo-text:focus{
+    background-color: #def0ff;
+}
+
+/*こっからtools*/
+#tool{
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+}
+
+/*こっからlogin*/
+#login{
+    display: block;
+    opacity: 0;
+    background-color: #def0ff;
+    border: 1px solid #b5dcff;
+}
+#login .form{
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#login .form input {
+    width: calc(100% - 20px);
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #b5dcff;
+}
+#login .form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #cfe9ff;
+    border: 2px solid #b5dcff;
+    color: #000000;
+    font-size: 16px;
+    cursor: pointer;
+}
+#login .form button:hover {
+    background-color: #cfe9ff;
+}
+#logout{
+    cursor: pointer;
+}
+
+
+/*こっからchat*/
+#chat{
+    display: flex;
+    opacity: 0;
+    margin: 0 auto;
+    border: 2px solid #cfe9ff;
+    border-radius: 5px;
+    overflow: hidden;
+    flex-direction: column;
+}
+#room-select {
+    background-color: #eaf5ff;
+}
+#messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: scroll;
+    max-height: 60vh;
+    border-bottom: 2px solid #cfe9ff;
+    background-color: #eaf5ff;
+}
+.message {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background-color: #def0ff;
+    border-radius: 5px;
+    max-width: 80%;
+    max-height: 150px;
+    overflow-y: auto;
+}
+.message.users {
+    background-color: #c7fff0;
+    align-self: flex-end;
+}
+#message-input {
+    /* flex: 1; */
+    width: 100%;
+    height: 46px;
+    padding: 0px 3px;
+    font-size: 16px;
+    border: 1px solid #cfe9ff;
+    background-color: #f0f8ff;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    scrollbar-width: none;
+}
+#send-button {
+    border: none;
+    padding: 15px;
+    background-color: #b5dcff;
+    color: #f0f8ff;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+}
+#send-button:hover {
+    background-color: #cfe9ff;
+}
+#room-select {
+    display: block;
+    width: 100%;
+    height: 30px;
+    border-bottom: 2px solid #cfe9ff;
+}
+
+
+.hover-element {
+    position: relative;
+    display: inline-block;
+}
+.popup {
+    display: none;
+    padding: 10px;
+    background-color: rgba(72, 72, 72, 0.563);
+    color: #fff;
+    border-radius: 5px;
+    z-index: 1100;
+}
+.hover-element:hover .popup {
+    display: flex;
+}
+#stamps{
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 30vw;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}

@@ -1,47 +1,300 @@
-//#region Login
-async function homeLogin(){
-    console.log('home「ログインされたで」')
-    firebase.database().ref(`users/${username}/icon`).once("value").then((snapshot) => {
-        const img = document.querySelector('#profile .icon');
-        if(snapshot.exists()){
-            img.src = snapshot.val();
-        }else{
-            img.src = 'assets/sozais/none.png';
+
+//#region komagome
+function delay(ms){
+    return new Promise(resolve=>setTimeout(resolve,ms));
+};
+async function nicoText(mes){
+    const newDiv = document.createElement('div');
+    newDiv.textContent = mes;
+    newDiv.className = 'nicotext';
+    newDiv.style.top = `calc(${random(0, 100)}vh - 20px)`;
+    newDiv.style.right = '0px';
+    document.querySelector('body').appendChild(newDiv);
+
+    requestAnimationFrame(() => {
+        newDiv.style.right = `${window.innerWidth + newDiv.offsetWidth}px`; //なんか電車の問題解いてるみたいだね
+    });
+    
+    await delay(2000); 
+    newDiv.remove();
+};
+function kaijou(num){
+    if(num == 0) return 0;
+    if(num == 1) return 1;
+    return num * kaijou(num - 1);
+}
+function arraySelect(array){
+    let select = Math.floor(Math.random()*array.length);
+    return array[select];
+};
+function arrayShuffle(array) {
+    for(let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+};
+function arraySize(array){
+    let res = new Set(array).size;
+    return res;
+};
+function arrayCount(array){
+    const counts = {};
+    for (let value of array) {
+        counts[value] = (counts[value] || 0) + 1;
+    }
+    return counts;
+}
+function arrayMult(array){
+    return array.reduce((a, v) => a * v, 1);
+}
+function arrayGacha(array,probability){
+    if(array.length !== probability.length){throw new Error("長さがあってないっす！先輩、ちゃんとチェックした方がいいっすよ〜？");}
+    const total = probability.reduce((sum, p) => sum + p, 0);
+    let random = Math.random() * total;
+    for (let i = 0; i < array.length; i++) {
+        if(random < probability[i]){
+        return array[i];
         }
-    })
-    if(username == 'koppepan_orange'){
-        meiboMake();
+        random -= probability[i];
+    }
+};
+function copy(obj){
+    if (obj === null || typeof obj !== 'object') {
+        return obj; // 基本型はそのまま返す
+    }
+    if (Array.isArray(obj)) {
+        return obj.map(copy); // 配列の各要素を再帰コピー
+    }
+    const result = {};
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            result[key] = copy(obj[key]); // オブジェクトのプロパティを再帰コピー
+        }
+    }
+    return result;
+};
+function probability(num){
+    return Math.random()*100 <= num;
+    //例:num == 20 → randomが20以内ならtrue,elseならfalseを返す
+};
+function random(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+function anagramSaySay(text, loop = 10, bet = '<br>'){
+    let menjo = 0;
+    let len = text.length;
+    if(len < 4) menjo = 1, console.log('長さが3以下なんで最大6っす');
+    
+    let optout = text.split('');
+    let optcou = arrayCount(optout);
+    let optvals = [];
+    for(a of Object.keys(optcou)){
+        let b = optcou[a];
+        b = kaijou(b);
+        optvals.push(b);
+    }
+    let optmat = arrayMult(optvals);
+    let cal = (kaijou(len) / optmat) - 1;
+
+    let loopen = loop;
+    console.log(`総数:${cal} 回数:${loopen}`);
+    if(cal < loopen) menjo = 1;
+    
+    let reses = [];
+    while(loopen > 0){
+        loopen -= 1;
+        let res = arrayShuffle(optout).join(''); 
+        if(reses.includes(res)){loopen += 1; continue}
+        
+        if(res == text && !menjo){loopen += 1; continue;}
+
+        if(res == text && menjo && reses.length < cal){loopen += 1; continue}
+        else if(res == text && menjo) res = '[重複エラー]';
+
+        reses.push(res);
+    }
+    
+    return reses.join(bet);
+}
+function setLocalStorage(name, value) {
+    localStorage.setItem(name, value || "");
+}
+function getLocalStorage(name) {
+    return localStorage.getItem(name);
+}
+function removeLocalStorage(name){
+    localStorage.removeItem(name);
+}
+async function error(){
+    addtext('errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
+    await delay(2000);
+    window.open('about:blank', '_self').close();
+}
+//#endregion
+//#region description
+let movableDescription = document.getElementById('movableDescription');
+document.addEventListener('mousemove', (e) => {
+    movableDescription.style.left = `${e.clientX + 10}px`;
+    movableDescription.style.top = `${e.clientY + 10}px`;
+});
+document.addEventListener('mouseover', (e) => {
+    const descTarget = e.target.closest('[data-description]');
+    if (descTarget) {
+        const desc = descTarget.dataset.description;
+        movableDescription.innerHTML = desc;
+        movableDescription.style.display = 'block';
+    }
+});
+document.addEventListener('mouseout', (e) => {
+    const descTarget = e.target.closest('[data-description]');
+    if (descTarget) {
+        movableDescription.innerHTML = '';
+        movableDescription.style.display = 'none';
+    }
+});
+//#endregion
+//#region drag
+document.addEventListener('mousedown', e => {
+    // const descTarget = e.target.closest('[data-description]');
+    let div = e.target;
+    if(!div.classList.contains('draggable')) return;
+    offsetX = e.clientX - div.getBoundingClientRect().left;
+    offsetY = e.clientY - div.getBoundingClientRect().top;
+    
+    function onMouseMove(e) {
+        div.style.left = `${e.clientX - offsetX}px`;
+        div.style.top = `${e.clientY - offsetY}px`;
+    }
+
+    function onMouseUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+});
+//#endregion
+//#region swipe
+let startX, startY, endX, endY;
+document.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+});
+document.addEventListener("touchend", (e) => {
+    endX = e.changedTouches[0].clientX;
+    endY = e.changedTouches[0].clientY;
+
+    const diffX = endX - startX;
+    const diffY = endY - startY;
+
+    if(30 < diffX) swiped(-1); //l
+    if(diffX < -30) swiped(1); //r
+});
+
+// PC用：マウスによるスワイプ対応
+let isMouseDown = false;
+document.addEventListener("mousedown", (e) => {
+    isMouseDown = true;
+    startX = e.clientX;
+    startY = e.clientY;
+});
+document.addEventListener("mouseup", (e) => {
+    if (!isMouseDown) return;
+    isMouseDown = false;
+
+    endX = e.clientX;
+    endY = e.clientY;
+
+    const diffX = endX - startX;
+    const diffY = endY - startY;
+
+    if(Math.abs(diffX) > Math.abs(diffY)){ // 横方向の方が強い
+        if(diffX > 30) swiped(-1); // 左スワイプ相当
+        if(diffX < -30) swiped(1); // 右スワイプ相当
+    }
+});
+
+//#endregion
+
+let page = 'home';
+let pagen = 0;
+let Pages = ['home', 'memo', 'tool', 'login', 'chat'];
+let pagenMax = Pages.length - 1;
+function swiped(code){
+    //-1 = l, 1 = r
+    //console.log(`${pagen} => ${Pages[pagen + code]}`);
+    if(pagen + code < 0) return;
+    if(pagen + code > Pages.length-1) return;
+    pagen += code;
+    console.log(`${page} => ${Pages[pagen]}`);
+    pageChange(code);
+}
+function pageAdd(name, att = null){
+    let n = 0;
+
+    //["mae", code]
+    if(att[0] == 'mae'){
+        n = Pages.indexOf(att[1]);
+        if (n != -1) Pages.splice(n - 1, 0, name);
+    }
+    if(att[0] == 'sel'){
+        n = Pages.indexOf(att[1]);
+        if (n != -1) Pages.splice(n, 0, name);
+    }
+    if(att[0] == 'ato'){
+        n = Pages.indexOf(att[1]);
+        if (n != -1) Pages.splice(n + 1, 0, name);
+    }
+    if(att == null){
+        Pages.push(name);
     }
 }
-
-function homeLogout(){
-    console.log('home「ログアウトされたで」')
-    document.querySelector('#profile .icon').src = 'assets/sozais/none.png';
+function pageDel(name){
+    let n = Pages.indexOf(name);
+    if(n != -1) Pages.splice(n, 1);
 }
-//home
+async function pageChange(code){
+    //-1 = l, 1 = r
+    let moto = page;
+    page = Pages[pagen];
+    let dir = 0;
+    if(code == -1) dir = 'left';
+    if(code == 1) dir = 'right';
+    let ndir = dir == 'left' ? 'right' : 'left';
+
+    let mdiv = document.getElementById(moto);
+    mdiv.style[ndir] = '';
+    let ndiv = document.getElementById(page);
+    ndiv.style[ndir] = '';
+    ndiv.style.opacity = '0';
+    ndiv.style[dir] = '-100vw';
+    ndiv.style.opacity = '1';
+
+    //console.log(`ndir.. m(${mdiv.style.left}, ${mdiv.style.right}) n(${ndiv.style.left}, ${ndiv.style.right})`);
+    
+    requestAnimationFrame(() => {
+        mdiv.style[dir] = '100vw';
+        ndiv.style[dir] = '0px';
+    });    
+
+    await delay(500);
+
+    mdiv.style.opacity = '0';
+}
+
+//#region home
 //#region リンクたちの動き
 const Links = {
     'memo':{
-        'memosi': {
-            id: 'memosi',
-            name: 'memo-site',
-            href: 'https://koppepan-orange.github.io/test-site/memo.html',
-            iframable:1,
-            description: 'メモができるサイト。まじで有能<br>ずっと開いてたほうが楽で良き<br>私はゲーム制作の案メモにしてます'
-        },
         'files':{
             id: 'files',
             name: 'file-site',
             href: 'https://forest-inlet.github.io/tools/fileTransfer?koppepanorange',
             iframable:1,
             description: 'ファイルを送受信できるサイトです！！<br>まじですごいと思う<br>あ友達作です'
-        },
-        'browserMemo': {
-            id: 'browserMemo',
-            name: 'ブラウザメモ帳',
-            href: 'http://www.drpartners.jp/tools/browser-memocho.html',
-            iframable: 1,
-            description: 'メモができるサイト。保有量が大きい'
         },
         'memoWeb': {
             id: 'memoWeb',
@@ -66,40 +319,12 @@ const Links = {
         },
     },
     'tool':{
-        'tools': {
-            id: 'tools',
-            name: 'tool-site',
-            href: 'https://koppepan-orange.github.io/test-site/tools.html',
-            iframable:1,
-            description: 'んー..あんまり実用的じゃない子<br>遊び目的。ほぼ<br>けど偏差値とかも測れるよ'
-        },
-        'books': {
-            id: 'books',
-            name: 'book-site',
-            href: 'https://koppepan-orange.github.io/test-site/books.html',
-            iframable:1,
-            description: '本が読める子<br>作者は匿名なのでhiddenにでも送ってくれたら載せますよ'
-        },
-        'hidden': {
-            id: 'hidden',
-            name: 'hidden-site',
-            href: 'https://koppepan-orange.github.io/test-site/hidden.html',
-            iframable:1,
-            description: '匿名で投稿できるサイト！！！！<br>管理者しか見れないんで<br>定期的にEventは確認して欲しいね'
-        },
         'dropbox': {
             id: 'dropbox',
             name: 'dropbox',
             href: 'https://www.dropbox.com/home',
             iframable:0,
             description: '単純に優秀な子<br>ファイルWebよりも持続性が高い<br>ログイン必須'
-        },
-        'anagram': {
-            id: 'anagram',
-            name: 'アナグラム生成機',
-            href: 'https://anagram.httqs.com/',
-            iframable:1,
-            description: 'アナグラムを生成してくれる子<br>武器とかの名前はこいつに頼ってもいいかも'
         },
         'roulette': {
             id: 'roulette',
@@ -168,13 +393,6 @@ const Links = {
         },
     },
     'study':{
-        'meibo': {
-            id: 'meibo',
-            name: 'meibo-site',
-            href: 'https://true-koppepan-orange.github.io/sub_test-site/meibo_site',
-            iframable:1,
-            description: '学校の人の一覧を見れるサイト<br>ぜんーーーぜんいないのは内緒のお話'
-        },
         'duolingo': {
             id: 'duolingo',
             name: 'duolingo',
@@ -198,13 +416,6 @@ const Links = {
         },
     },
     'sns':{
-        'chatSite': {
-            id: 'chatSite',
-            name: 'chat-site',
-            href: 'https://koppepan-orange.github.io/test-site/chat.html',
-            iframable:1,
-            description: '人と話せるサイト<br>なんJスタイル<br>サイドバーからtwitter2が見れるよ'
-        },
         'reddit': {
             id: 'reddit',
             name: 'reddit',
@@ -291,20 +502,6 @@ const Links = {
         },
     },
     'game':{
-        'gameSite': {
-            id: 'gameSite',
-            name: 'game-site',
-            href: 'https://koppepan-orange.github.io/game-site/home.html',
-            iframable:1,
-            description: 'ゲームができるサイト<br>まじで楽しい<br>clicker-of-mugenはおすすめ<br>cardは未完成だけど絵見て欲しい'
-        },
-        'musicSite': {
-            id: 'musicSite',
-            name: 'music-site',
-            href: 'https://koppepan-orange.github.io/test-site/music.html',
-            iframable:1,
-            description: '全然できてない<br>kiite-cafeみたいなサイト作ろうとしたんだけどむずい'
-        },
         'cybercode': {
             id: 'cybercode',
             name: 'cybercodeonline',
@@ -335,14 +532,14 @@ const Links = {
         }
     },
 };
-let iframenow = 0;
+
 Object.keys(Links).forEach(type => {
     const details = document.createElement('details');
     const summary = document.createElement('summary');
     summary.textContent = type;
     details.appendChild(summary);
     details.id = `${type}tachi`;
-    document.querySelector('#links').appendChild(details);
+    document.querySelector('#home .links').appendChild(details);
 
     Object.keys(Links[type]).forEach(key => {
         const link = Links[type][key];
@@ -353,59 +550,64 @@ Object.keys(Links).forEach(type => {
         a.target = '_blank';
         a.setAttribute('data-description', link.description);
 
-        if(link.iframable == 1){
-            a.addEventListener('contextmenu', (event) => {
-                event.preventDefault();
-                if(iframenow == 0){
-                    iframenow = 1;//なぜか反応してない。Links['memos']の形にするべき？
-                    const iframe = document.querySelector('#iframe');
-                    iframe.style.display = 'block';
-                    iframe.src = link.href;
-                }else{
-                    iframenow = 0;
-                    const iframe = document.querySelector('#iframe');
-                    iframe.style.display = 'none';
-                }
-            })
-        }
+        a.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            //リンクをコピーさせる
+            navigator.clipboard.writeText(link.href);
+            nicoText('リンクをコピーしました');
+        })
+        
         document.getElementById(`${type}tachi`).appendChild(a);
         document.getElementById(`${type}tachi`).appendChild(document.createElement('br'));
     });
     document.getElementById(`${type}tachi`).appendChild(document.createElement('br'));
 })
 //#endregion
-//#region home-memoのお話
+//#region rakuraku-memo
+let numberOfMemo = 4;
+function memoRead(){
+    numberOfMemo = +getLocalStorage("numberOfMemo")??4;
+    console.log(`メモの数は${numberOfMemo}個やで`);
+    for(let i = 1; i <= numberOfMemo; i++){
+        let memo = getLocalStorage(`memo${i}`);
+        let memodiv = memoCreate(memo, i);
+        document.querySelector('#home .memos').appendChild(memodiv);
+    }
+    let memoAdd = memoAddCreate();
+    document.querySelector('#home .memos').appendChild(memoAdd);
+}
 function memoCreate(memo,i){
-    let memoElement = document.createElement('div');
-    memoElement.className = 'memo';
-    memoElement.id = `memo${i}`;
-    memoElement.setAttribute('data-num', i);
+    let div = document.createElement('div');
+    div.className = 'memo';
+    div.id = `memo${i}`;
+    //dataにメモ名も保存..頼んだ
+    div.setAttribute('data-num', i);
 
     let title = document.createElement('div');
-    title.className = 'm-title';
+    title.className = 'title';
     title.innerText = `memo${i}`;
     title.setAttribute('contenteditable', 'true');
-    memoElement.appendChild(title);
+    div.appendChild(title);
 
     let text = document.createElement('div');
-    text.className = 'm-text';
+    text.className = 'text';
     text.innerText = memo??'';
     text.setAttribute('contenteditable', 'true');
-    memoElement.appendChild(text);
+    div.appendChild(text);
 
     let deleteButton = document.createElement('div');
-    deleteButton.className = 'm-delete';
+    deleteButton.className = 'delete';
     deleteButton.innerText = 'M';
     deleteButton.addEventListener('click', () => {
         localStorage.removeItem(`memo${i}`);
-        memoElement.remove();
+        div.remove();
 
         document.querySelectorAll('.memo').forEach(memo => {
             let memoNum = +memo.getAttribute('data-num')
             if(memoNum > i){
                 memo.setAttribute('data-num', memoNum - 1);
-                memo.querySelector('.m-title').innerText = `memo${memoNum-1}`;
-                memo.querySelector('.m-text').innerText = getLocalStorage(`memo${memoNum}`);
+                memo.querySelector('.title').innerText = `memo${memoNum-1}`;
+                memo.querySelector('.text').innerText = getLocalStorage(`memo${memoNum}`);
                 setLocalStorage(`memo${memoNum-1}`, getLocalStorage(`memo${memoNum}`));
             }
         });
@@ -413,61 +615,37 @@ function memoCreate(memo,i){
         numberOfMemo = +numberOfMemo - 1;
         setLocalStorage("numberOfMemo", +numberOfMemo);
     });
-    memoElement.appendChild(deleteButton);
+    div.appendChild(deleteButton);
 
-    memoElement.addEventListener('input', ele => {
-        setLocalStorage(`memo${i}`, document.getElementById(`memo${i}`).querySelector('.m-text').innerText);
+    div.addEventListener('input', e => {
+        setLocalStorage(`memo${i}`, document.getElementById(`memo${i}`).querySelector('.text').innerText);
     });
 
-    return memoElement;
+    return div;
 }
 function memoAddCreate(){
     const memoAdd = document.createElement('div');
-    memoAdd.className = 'm-add';
+    memoAdd.className = 'add';
     memoAdd.id = 'memoAdd';
     memoAdd.innerText = '+';
     memoAdd.addEventListener('click', () => {
         memoAdd.remove();
         numberOfMemo = +numberOfMemo + 1;
         setLocalStorage("numberOfMemo", +numberOfMemo);
-        let memoElement = memoCreate('', numberOfMemo);
-        document.querySelector('#memos').appendChild(memoElement);  
+        let memodiv = memoCreate('', numberOfMemo);
+        document.querySelector('#home .memos').appendChild(memodiv);  
         let memoAdd2 = memoAddCreate();
-        document.querySelector('#memos').appendChild(memoAdd2);
+        document.querySelector('#home .memos').appendChild(memoAdd2);
     })
     return memoAdd;
 }
 //#endregion
 //#region iframeのお話
-
-let Iframes = {
-    'bing':{
-        id:'bing',
-        name:'bing.com',
-        src:'https://www.bing.com/search?q=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae%e6%af%8d%e3%82%82%e6%88%91%e3%82%92%e5%be%85%e3%81%a4%e3%82%89%e3%82%80%e3%81%9d&qs=RQ&pq=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae&sc=4-18&cvid=BDF68943856B40AC93BF5E6E4207F06D&FORM=QBRE&sp=1&ghc=1&lq=0',
-    },
-    'bing_trans':{
-        id:'bing_trans',
-        name:'bing-trans',
-        src:'https://www.bing.com/translator?from=&to=ja&setlang=ja',
-    },
-    // 'deepAI':{
-    //     id:'deepAI',
-    //     name:'deep.ai',
-    //     src:'https://deepai.org/chat',
-    // },
-    'talkAI':{
-        id:'talkAI',
-        name:'talk.ai',
-        src:'https://talkai.info/ja/chat/',
-    }
-    
-}
 let NowLinkframe = 1;
 function LinkframeGo(){
     document.getElementById(`Linkframe${NowLinkframe}`).setAttribute('data-src', document.getElementById("LinkInput").value);
     document.getElementById(`Linkframe${NowLinkframe}`).src = document.getElementById("LinkInput").value;
-    NicoNicoText('うぇいとふぉあな〜う'); //好きな言葉ランキング上位"wait for now"
+    nicoText('うぇいとふぉあな〜う'); //好きな言葉ランキング上位"wait for now"
 }
 document.querySelector('#LinkSelect').addEventListener('change', event =>{
     NowLinkframe = event.target.value;
@@ -487,58 +665,10 @@ document.querySelector('#linkSite .iframe-full').addEventListener('click', event
     event.preventDefault();
     console.log('clicked~~~'+NowLinkframe);
     document.querySelector(`#Linkframe${NowLinkframe}`).requestFullscreen();
-    //iframe.webkitRequestFullscreen();
+    // iframe.webkitRequestFullscreen();
 })
 //#endregion
-
-
-let numberOfMemo = 4;
-document.addEventListener('DOMContentLoaded', () => {
-    numberOfMemo = +getLocalStorage("numberOfMemo")??4;
-    console.log(`メモの数は${numberOfMemo}個やで`);
-    for(let i = 1; i <= numberOfMemo; i++){
-        let memo = getLocalStorage(`memo${i}`);
-        let memoElement = memoCreate(memo, i);
-        document.querySelector('#memos').appendChild(memoElement);
-    }
-    let memoAdd = memoAddCreate();
-    document.querySelector('#memos').appendChild(memoAdd);
-
-
-    
-    Object.keys(Iframes).forEach(iframe => {
-        const details = document.createElement("details");
-
-        const summary = document.createElement("summary");
-        summary.textContent = Iframes[iframe].name;
-
-        const button = document.createElement("button");
-        button.className = "iframe-button";
-        button.dataset.id = `Iframe-${iframe}`;
-        button.textContent = "full";
-
-        const br = document.createElement("br");
-
-        const iframeElement = document.createElement("iframe");
-        iframeElement.dataset.id = `Iframe-${iframe}`;
-        iframeElement.className = "iframe-frame";
-        iframeElement.src = Iframes[iframe].src;
-
-        details.appendChild(summary);
-        details.appendChild(button);
-        details.appendChild(br);
-        details.appendChild(iframeElement);
-
-        document.getElementById("iframes").appendChild(details); // 追加したい要素に変更して
-    })
-    
-    
-    
-    
-    
-    
-
-});
+//#endregion home
 
 //#region memo
 const bodyTextarea = document.querySelector('#memo .text');
@@ -569,14 +699,9 @@ searchButton.addEventListener('click', () => {
         bodyTextarea.innerText = 'ログインしてね！！  話はそれからだよ☆'
     }
 });
+//#endregion memo
 
-
-
-//#endregion
-
-//#region tools
-
-//#region まだ初心者だったころの。要改善
+//#region tool
 let input
 let words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ']
 function Toggle(){
@@ -639,20 +764,20 @@ async function COUNTMove1(){
     COUNTope = 0;
     document.getElementById("COUNTButton").innerHTML = '';
     document.getElementById("COUNTButton").innerHTML = '<button onclick="COUNTMove1()">1</button>   <button onclick="COUNTMove2()">2</button>';
-    if (COUNTgamebar.length == 1){
-    COUNTGameOver();
-    COUNTope = 0;
-    } else {
-        COUNTgamebar = COUNTgamebar.slice( 1 );
-        document.getElementById("COUNTGameBar").textContent = COUNTgamebar;
-        COUNTx -= 1;
-        document.getElementById("COUNTLog").textContent = '1が取り除かれ,残りは' + COUNTx + '個になりました!';
-        await new Promise(COUNTresolve => setTimeout(COUNTresolve, 300));
-        COUNTope = 1;
-        document.getElementById("COUNTButton").innerHTML = '<button onclick="COUNTMove1()">1</button>   <button onclick="COUNTMove2()">2</button>';
+        if (COUNTgamebar.length == 1){
+        COUNTGameOver();
+        COUNTope = 0;
+        } else {
+            COUNTgamebar = COUNTgamebar.slice( 1 );
+            document.getElementById("COUNTGameBar").textContent = COUNTgamebar;
+            COUNTx -= 1;
+            document.getElementById("COUNTLog").textContent = '1が取り除かれ,残りは' + COUNTx + '個になりました!';
+            await new Promise(COUNTresolve => setTimeout(COUNTresolve, 300));
+            COUNTope = 1;
+            document.getElementById("COUNTButton").innerHTML = '<button onclick="COUNTMove1()">1</button>   <button onclick="COUNTMove2()">2</button>';
     }
     }
-    }
+}
 async function COUNTMove2(){
     if(COUNTope == 1){
     COUNTope = 0;
@@ -731,8 +856,6 @@ let RACEstanother = {
     three: 0,
     four: 0
 };
-
-function delay(ms) {return new Promise(resolve => setTimeout(resolve, ms));}//awaitのやつ
 
 function RACEtekiou(){
     document.querySelector('#RACEoutput-one').textContent   = RACEgamebar['one'].join('');
@@ -931,126 +1054,517 @@ function CookingGameChoeese(num){
     }
     }
 }
-//#endregion
-//#region 名電の名簿。自作用。koppepan_orange専用
-let a;
+//#endregion tool
 
-async function meiboMake(){
-    let meiboToggle = document.querySelector('#tools .meiboToggle');
-    let meiboContainer = document.querySelector('#tools .meibo .list');
-    let meiboShowtime = document.querySelector('#tools .meibo .show');
+//#region login //ワルシャワログイン機構
+const firebaseConfig = {
+    apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
+    authDomain: "koppepan-orange.firebaseapp.com",
+    databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
+    projectId: "koppepan-orange",
+    storageBucket: "koppepan-orange.appspot.com",
+    messagingSenderId: "730150198097",
+    appId: "1:730150198097:web:076a074a3d406053155170",
+    measurementId: "G-MYKJWD203Z"
+};
+firebase.initializeApp(firebaseConfig);
+var database = firebase.database();
+let username = 'no name';
+let usersRef = null;
+
+let loginD = document.getElementById('login')
+let logF = loginD.querySelector('.form');
+let logUsername = logF.querySelector('.username');
+let logPassword = logF.querySelector('.password');
+let logS = logF.querySelector('.send');
+async function login(){
+    setLocalStorage("banned", 0);
+    usersRef = database.ref(`users/${username}`);
+
+    await delay(500);
+    logF.style.opacity = 0;
+    logF.style.userSelect = 'none';
     
-    let meibosRef = database.ref('kari/meibos');
+    //ここにloginのpage消す処理を
+    loginD.style.display = 'none';
+    pageDel('login');
 
-    let firebaseData
-    let firebaseResults
-    let localResults
+    updateUI();
 
-    //ぜんぶ
-    firebaseData = await meibosRef.once('value');
-    firebaseResults = firebaseData.exists() ? Object.values(firebaseData.val()) : [];
-    localResults = meiboData;
-
-    // Firebase + data.js のデータを結合
-    let combinedResults = [...firebaseResults, ...localResults];
-
-
-    meiboContainer.innerHTML = ''; // 検索結果をクリア
-    meiboContainer.style.display = 'block';
-
-    if (combinedResults.length > 0) {
-        combinedResults.forEach(user => {
-            let listItem = document.createElement('div');
-            listItem.className = 'item';
-
-            let attribute = '';
-            if (user.boy) {
-                attribute = 'AI';
-            }else if(user.girl) {
-                attribute = '女子';
-            }else{
-                attribute = 'その他';
-            }
-            listItem.innerHTML = `
-                <ruby class="name" contenteditable>${user.name}<rt class="ruby" contenteditable style="letter-spacing: 0.1em;">${user.ruby}</rt></ruby> <span class="attribute" contenteditable>${attribute}</span><br>
-                <div class="description" contenteditable>${description}</div>
-            `;
-            listItem.setAttribute('男子', user.boy);
-            listItem.setAttribute('女子', user.girl);
-            listItem.setAttribute('その他', user.else);
-            //listItem.setAttribute('data-key', user.key);
-
-            if(user.girl || user.boy || user.else){
-                listItem.style.display = 'none';
-            }//俺用まである
-
-            meiboContainer.appendChild(listItem);
-        });
-
-        updateNarrowOptionsMeibos(combinedResults);
-    } else {
-        meiboContainer.innerText = '該当なし';
-    }
-}
-function updateNarrowOptionsMeibos(results) {
-    searchNarrowmeibo.style.display = 'flex';
-    let uniqueAttributes = new Set();
-
-    //常設
-    uniqueAttributes.add('男子');
-    uniqueAttributes.add('女子');
-
-    let narrowOptionsContainer = document.querySelector('#tools .meibo #narrow-options');
-    narrowOptionsContainer.innerHTML = '';
-
-    uniqueAttributes.forEach(attr => {
-        let button = document.createElement('button');
-        button.className = 'narrow-option';
-        button.innerText = attr;
-        button.addEventListener('click', () => {
-            button.classList.toggle('active');
-        });
-        narrowOptionsContainer.appendChild(button);
+    usersRef.update({
+        status: 'online'
     });
 
+    selectRoom();
+}
 
-    if(uniqueAttributes.size == 0){
-        searchNarrowmeibo.style.display = 'none';
+logS.addEventListener('click', () => {
+    let kusername = logUsername.value;
+    let kpassword = logPassword.value;
+
+    let kariusersRef = database.ref(`users/${kusername}`);
+    kariusersRef.once('value', function(snapshot){
+        if(snapshot.exists()){
+            if(snapshot.val().password == kpassword){
+                username = kusername
+                setLocalStorage("username", username)
+                login();
+            }
+        }else{
+            username = kusername
+            let usersRef = database.ref(`users/${username}`);
+            usersRef.update({
+                password:kpassword,
+                banned: 0,
+                blocked: [],
+            })
+            nicoText('ようこそ');
+            setLocalStorage("username", username)
+            login();
+        }
+    })
+})
+
+function autoLogin(){
+    username = getLocalStorage("username");
+    if(username){
+        console.log("自動ログインしました");
+        login();
+    }else{
+        console.log("ログインしてください");
+        username = 'no name';
     }
+}
+
+document.querySelector('#logout').addEventListener('click', logout);
+function logout(){
+    nicoText("ログアウトしました");
+    username = 'no name';
+    removeLocalStorage("username");
+    
+    pageAdd('login', ['ato', 'tool']);
+
+    logUsername.value = '';
+    logPassword.value = '';
+}
+
+window.addEventListener('beforeunload', () => {
+    usersRef.once('value').then(function(snapshot) {
+        if(snapshot.exists()){
+            usersRef.update({
+                status: 'offline'
+            });
+        }
+    })
+});
+
+function updateUI(){
+    logUsername.textContent = username;
 }
 //#endregion
 
-//#endregion
-//#region profile
-document.querySelector('#profile .icon').addEventListener("click", () => {
-    document.querySelector('#profile .fileInput').click();
-});
-document.querySelector('#profile .fileInput').addEventListener("change", async (event) => {
-    const file = event.target.files[0];
-    if (!file){return;}
+//#region chat
+let nickname = 'no name';
+let AnonymousName = "はじめまして名無しです";
+let maxMessage = 20;
+let userData = null;
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = async () => {
-        const img = new Image();
-        img.src = reader.result;
-        img.onload = async () => {
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            const size = 100;
-            canvas.width = size;
-            canvas.height = size;
-            ctx.drawImage(img, 0, 0, size, size);
+let sendButton = document.querySelector('#send-button');
+let MessageIn = document.querySelector('#message-input');
+let Messages = document.querySelector('#messages');
+let roomSelect = document.querySelector('#room-select');
+let room = roomSelect.value; //1
+let messagesRef = database.ref(`rooms/${room}/messages`);
 
-            // Base64エンコード（PNG形式）
-            const base64String = canvas.toDataURL("image/png");
-
-            // Realtime Databaseに保存
-            firebase.database().ref(`users/${username}/icon`).set(base64String);
-
-            document.querySelector('#profile .icon').src = base64String;
-        };
-    };
+//rakuraku-memoのeditableを見習って
+MessageIn.addEventListener('keypress', function(e) {
+    if(e.key == 'Enter'){
+        e.preventDefault();
+        if(!e.shiftKey){
+            sendButton.click();
+        }else{
+            MessageIn.value += '<br>';
+        }
+    }
 });
 
+let Stamps = [
+    {
+        name:'1',
+        type:'png',
+    },
+    {
+        name:'2',
+        type:'png',
+    },
+    {
+        name:'3',
+        type:'png',
+    },
+    {
+        name:'4',
+        type:'png',
+    },
+    {
+        name:'5',
+        type:'png',
+    },
+    {
+        name:'6',
+        type:'png',
+    },
+    {
+        name:'7',
+        type:'png',
+    },
+    {
+        name:'8',
+        type:'png',
+    },
+    {
+        name:'hownice',
+        type:'png',
+    },
+    {
+        name:'koresuki',
+        type:'png',
+    },
+    {
+        name:'ohitashi',
+        type:'png',
+    },
+    {
+        name:'spacecat',
+        type:'png',
+    },
+    {
+        name:'youaresick',
+        type:'png',
+    },
+    {
+        name:'nasanao',
+        type:'png',
+    },
+    {
+        name:'4coma1',
+        type:'png',
+    },
+    {
+        name:'4coma2',
+        type:'png',
+    },
+    {
+        name:'maxwell1',
+        type:'gif',
+    },
+    {
+        name:'maxwell2',
+        type:'gif',
+    },
+    {
+        name:'hello',
+        type:'png',
+    },
+    {
+        name:'gdng',
+        type:'png',
+    }
+]
+let stampawait = 0;
+function stampRead(){
+    Stamps.forEach(a => {
+        let name = a.name;
+        let type = a.type;
+        let src = `assets/stamps/${name}.${type}`;
+        let div = document.createElement('div');
+        div.className = 'item';
+        div.addEventListener('click', () => {
+            if(stampawait == 1) return;
+            if(room == 'debug') return;
+            let Musername = username;
+            let Mtext = `<img src='${src}' width="80" height="80"/>`;
+            messagesRef.push({
+                text: Mtext,
+                nickname: nickname,
+                username: Musername,
+                timestamp: formatDate(new Date())
+            });
+            stampawait = 1;
+            window.setTimeout(StampAwait, 100);//10s
+        })
+
+        let img = document.createElement('img');
+        img.src = src;
+        div.appendChild(img);
+        document.getElementById('stamps').appendChild(div);
+    })
+}
+function StampAwait(){stampawait = 0;}
+
+let Commands = {
+    'clear':{
+        name:'clear',
+        process:function(message){
+            database.ref('rooms/'+room).remove();
+            setTimeout(displayAllMessages, 200);
+            nicoText('すべてのメッセージが消去されました。');
+            nicoText('あなたがやったのです。反省してね♡')
+            nicoText('草');nicoText('草');
+            return null;    
+        }
+    },
+    'reload':{
+        name:'reload',
+        process:function(message){
+            window.location.reload();   
+            return null;
+        }
+    },
+    'online':{
+        name:'online',
+        process:function(message){
+            usersRef.update({
+                status: 'online'
+            });
+            return null;
+        }
+    },
+    'offline':{
+        name:'offline',
+        process:function(message){
+            usersRef.update({
+                status:'offline'
+            });
+            return null;
+        }
+    },
+    'nico':{
+        name:'nico',
+        process:function(message){
+            nicoText(message);
+            return null;
+        }
+    },
+    'rename':{
+        name:'rename',
+        process:function(message){
+            nickname = message;
+            return null;
+        }
+    },
+    'nanj':{
+        name:'nanj',
+        process:function(message){
+            AnonymousName = message;
+            return null;
+        }
+    },
+    'ban':{
+        name:'ban',
+        process:function(message){
+            database.ref(`users/${message}`).update({
+                banned:1
+            })
+            nicoText('Nice Job!')
+            return null;
+        }
+    },
+    'unban':{
+        name:'unban',
+        process:function(message){
+            database.ref(`users/${message}`).update({
+                banned:0
+            })
+            nicoText('Good Job!')
+            return null;
+        }
+    }
+};
+
+let MessageSendE;
+function selectRoom(){
+    messagesRef.off();
+    sendButton.removeEventListener('click', MessageSendE);
+    room = roomSelect.value;
+    messagesRef = database.ref(`rooms/${room}/messages`);
+    Messages.innerHTML = '';
+
+    // メッセージ送信
+    MessageSendE = sendButton.addEventListener('click', async function(){
+        let message = MessageIn.value;
+        let Musername = username;
+        if(message.trim() !== ''){
+            //commands
+            if (message.startsWith('/')) {
+                let matched = Object.keys(Commands).some(command => {
+                    if (message.startsWith(`/${command}`)) {
+                        let mes = message.replace(`/${command} `, '');
+                        let result = Commands[command].process(mes);
+                        console.log(result, !result);
+                        if(!result){
+                            MessageIn.value = '';
+                            return true;
+                        }
+                        return true;
+                    }
+                    return false;
+                });
+            
+                if(!matched){
+                    nicoText('多分なんかコマンドミスってるで、君')
+                }else{
+                    return;
+                }
+            }
+
+            messagesRef.push({
+                text: message,
+                nickname: nickname,
+                username: Musername,
+                timestamp: formatDate(new Date())
+            });
+            MessageIn.value = '';   
+        }
+    });
+
+    // 新しいメッセージが追加された時のみ、そのメッセージを追加表示
+    messagesRef.on('child_added', async function(snapshot){
+        let uRef = database.ref(`users/${username}/banned`)
+        uRef.on('value', function(ss) {
+            //uRef = ss.val();
+            uRef = 0; //一旦のやつ
+            if(uRef == 1){ 
+                nicoText('エラーが発生しました。')
+                logout();
+            }else{
+                let messageData = snapshot.val();
+                let messageElement = makeNanjPost(messageData,snapshot.key);
+                messageElement.setAttribute('data-dokosan','追加の読み込み')
+                let existing = Messages.querySelector(`.message[data-key="${snapshot.key}"]`);
+                if(existing){
+                    console.log("重複してますね...このバグ治したい:", snapshot.key);
+                    return;
+                }
+                Messages.appendChild(messageElement);
+
+                messagesRef.on('value', function(snapshot) {
+                    if (snapshot.numChildren() > maxMessage) {
+                        let firstMessageKey = Object.keys(snapshot.val())[0];
+                        messagesRef.child(firstMessageKey).remove();
+                    }
+                });
+
+                Messages.scrollTop = Messages.scrollHeight;
+            }
+        });
+    });
+
+    messagesRef.once('value', function(snapshot) {
+        displayAllMessages();
+    });    
+}
+function displayAllMessages(){
+    room = roomSelect.value;
+    Messages.innerHTML = '';
+
+    // データベースから全てのメッセージを取得
+    messagesRef.once('value', function(pealentsnapshot) {
+        pealentsnapshot.forEach(function(snapshot) {
+            let uRef = database.ref(`users/${username}/banned`)
+            uRef.on('value', function(ss) {
+                uRef = ss.val();
+                if(uRef == 1){
+                    nicoText('エラーが発生しました。')
+                    logout()
+                }else{
+                    let messageData = snapshot.val();
+                    
+                    let messageElement = makeNanjPost(messageData,snapshot.key)
+                    messageElement.setAttribute('data-dokosan','最初の読み込み')
+                    let existing = document.querySelector(`#messages .message[data-key="${snapshot.key}"]`);
+                    if(existing){
+                        console.log("重複してますね...このバグ治したい:");
+                        return;
+                    }
+                    Messages.appendChild(messageElement);
+
+                    messagesRef.on('value', function(snapshot) {
+                        if (snapshot.numChildren() > maxMessage) {
+                            let firstMessageKey = Object.keys(snapshot.val())[0];
+                            messagesRef.child(firstMessageKey).remove();
+                        }
+                    });
+
+                    Messages.scrollTop = Messages.scrollHeight;
+                }
+            });
+        });
+    });
+}
+
+
+function makeNanjPost(messageData,key){
+    let messageElement = document.createElement('div');
+    messageElement.className = 'message';
+    messageElement.setAttribute('data-key', key);
+
+    let Musername = messageData.username;
+    let Mnickname = messageData.nickname;
+    let Mtimestamp = messageData.timestamp;
+    let Mtext = messageData.text;
+
+    if(room == 'Anonymous-1' || room == 'Anonymous-2' || room == 'Anonymous-3'){
+        Mnickname = AnonymousName;
+    }
+
+    let usernameElement = document.createElement('span');
+    usernameElement.className = 'username';
+    usernameElement.textContent = Mnickname
+    usernameElement.addEventListener('contextmenu', event => {
+        event.preventDefault();
+        nicoText(`送信者:${Musername}`);
+    })
+    messageElement.appendChild(usernameElement);
+
+    let timestampElement = document.createElement('span');
+    timestampElement.className = 'timestamp';
+    timestampElement.textContent = '  —' + Mtimestamp;
+    messageElement.appendChild(timestampElement);
+
+    let copyButton = document.createElement('button');
+    copyButton.textContent = '❐';
+    copyButton.addEventListener('click', function(){
+        navigator.clipboard.writeText(Mtext);
+    });
+    messageElement.appendChild(copyButton);
+
+    if(username == messageData.username){
+        let editButton = document.createElement('button');
+        editButton.textContent = '✎';
+        editButton.addEventListener('click', function(){
+            Mtext = prompt('メッセージを編集', Mtext);//MessageIn.value;
+            textElement.innerHTML = Mtext;
+            const ImadakeRef = database.ref('rooms/'+room+'/messages/'+snapshot.key);
+            ImadakeRef.update(messageData);
+            setTimeout(displayAllMessages, 200);
+        });
+        messageElement.appendChild(editButton);
+    }
+
+    let brElement = document.createElement('br');
+    messageElement.appendChild(brElement);
+
+    let textElement = document.createElement('div');
+    textElement.innerHTML = Mtext;
+    messageElement.appendChild(textElement);
+
+    return messageElement;
+}
 //#endregion
+
+//読み込まれ be read
+document.addEventListener('DOMContentLoaded', () => {
+    memoRead();
+    stampRead();
+    autoLogin()
+});

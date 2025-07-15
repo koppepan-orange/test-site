@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /*nicotext*/
+        .nicotext{
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: #f0f8ff80;
+            color: #000000;
+            font-size: 20px;
+            transition: right 2.0s linear;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        /* description */
+        #movableDescription{
+            display: none;
+            position: fixed;
+            pointer-events: none;
+            background-color: #363636e2;
+            color: #f0f8ff;
+            text-align: left;
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 256;
+        }
+    </style>
+    <link rel="stylesheet" href="assets/else/over.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+</head>
+<body>
+    <div id="text"></div>
+    <div id="movableDescription"></div>
+
+    <div id="pages">
+        <div id="home" class="page">
+            <div class="links"></div>
+            <div class="memos"></div>
+            <div class="iframes">
+                <span align="center">調べれたりするところ</span>
+                <details id="linkSite"><summary>link site</summary>
+                    <input type="text" id="LinkInput" placeholder="write link here" value="about:blank">
+                    <button class="iframe-button" onclick="LinkframeGo()">Go</button>
+                    <select id="LinkSelect" class="iframe-button">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                    <button class="iframe-button iframe-full">full</button><br>
+                    <iframe id="Linkframe1" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+                    <iframe id="Linkframe2" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+                    <iframe id="Linkframe3" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+                    <iframe id="Linkframe4" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
+                </details>
+            </div>
+        </div>
+        <div id="memo" class="page" style="right: -100%;">
+            <div class="row">
+                <div type="text" class="title" contenteditable></div>
+                <button class="search">search</button>
+            </div>
+            <div class="text" contenteditable></div>
+        </div>
+        <div id="tool" class="page" style="right: -100%;">
+            <!-- こちら偏差値計算機です！！！！ -->
+            <p align="center">偏差値計算機<br>
+                <input id="HENPoint" type="text" placeholder="write 得点" size="20" style="width:80px;"></input>　
+                <input id="HENAve" type="text" placeholder="write 平均" size="20" style="width:80px;"><br>   
+                <button onclick="HENsum()">go</button>
+                <br><span id="HENAnswer"></span>
+            </p>
+            <p align="center">
+            <input type="text" id="Input" size="3" maxlength="2" placeholder="num"><button id="ToggleButton" onclick="Toggle()">less</button><button onclick="Activate()">Go!</button><br>
+            <span id="OutPut"></span>
+            </p>
+            <!-- まりぱのげーむをちょっとだけいれようかな〜と -->
+            <details style="margin:0 auto;"><summary>Game-Center</summary>
+            <p align="center">Count Game Desu
+                <br><span id="COUNTGameBar"></span>
+                <br><br><span id="COUNTButton"><button onclick="COUNTGameStart()">start</button></span>
+                <br><br><span id="COUNTLog"></span>
+            </p>
+            <p align="center">Race Game(Just Look)
+                <div id="RACEoutput-one"></div>
+                <div id="RACEoutput-two"></div>
+                <div id="RACEoutput-three"></div>
+                <div id="RACEoutput-four"></div>
+                <span id="RACElog"></span>
+                <br><button onclick="RACEgamestart()">はじめます</button>
+            </p>
+            <p align="center">Renda Game Desu<br>
+                <button id="start-btn">スタート</button>
+                <div id="result"></div>
+                <button id="RENDABUTTON1000" onclick="RENDAchange(1000)">1s</button><button id="RENDABUTTON3000" onclick="RENDAchange(3000)">3s</button><button id="RENDABUTTON5000" onclick="RENDAchange(5000)" style="color:#23aa23;">5s</button><button id="RENDABUTTON10000" onclick="RENDAchange(10000)">10s</button><button id="RENDABUTTON30000" onclick="RENDAchange(30000)">30s</button>
+            </p>
+            <p align="center">Cooking Game<br>
+                <button id="CookingGameStart" onclick="Start()">start</button><br>
+                <div id="CookingGameArea">
+                <div id="CookingGameList"></div>
+                <button id="CookingGameChoose-1" onclick="CookingGameChoeese('1')">1</button>
+                <button id="CookingGameChoose-2" onclick="CookingGameChoeese('2')">2</button>
+                <button id="CookingGameChoose-3" onclick="CookingGameChoeese('3')">3</button>
+                <button id="CookingGameChoose-4" onclick="CookingGameChoeese('4')">4</button>
+                <button id="CookingGameChoose-5" onclick="CookingGameChoeese('5')">5</button>
+                <button id="CookingGameChoose-6" onclick="CookingGameChoeese('6')">6</button><br>
+                <span id="CookingGameLog">logやで</span>
+                </div>
+            </p>
+            </details>
+        </div>
+        <div id="login" class="page" style="right: -100%;">
+            <div class="form">
+                <input type="text" name="username" class="username" placeholder="username">
+                <input type="password" name="password" class="password" placeholder="password">
+                <button class="send">Login</button>
+            </div>
+            <div id="logout">Logout</div>
+        </div>
+        <div id="chat" class="page" style="right: -100%;">
+            <select id="room-select" name="room-select" onchange="selectRoom()">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="Anonymous-1">Anonymous-1</option>
+                <option value="Anonymous-2">Anonymous-2</option>
+                <option value="Anonymous-3">Anonymous-3</option>
+            </select>
+
+            <div id="messages"></div>
+
+            <div id="additional-zone">
+                <div class="hover-element">
+                    <div id="stamps" class="popup"></div>
+                    囧
+                </div>
+            </div>
+
+            <input type="textarea" id="message-input" placeholder="メッセージを書く" contenteditable>
+            <button id="send-button">送信</button>
+        </div>
+    </div>
+
+    <script src="assets/else/over.js" defer></script>
+</body>
+</html>

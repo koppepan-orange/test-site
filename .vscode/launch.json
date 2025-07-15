@@ -22,5 +22,11 @@
             "name": "admin",
             "file": "admin.html"
         },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "over",
+            "file": "over.html"
+        },
     ]
 }
