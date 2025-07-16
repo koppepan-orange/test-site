@@ -233,24 +233,29 @@ function swiped(code){
     pageChange(code);
 }
 function pageAdd(name, att = null){
-    let n = 0;
 
     //["mae", code]
+    if(att == null)
     if(att[0] == 'mae'){
-        n = Pages.indexOf(att[1]);
+        n = pageGet(att[1]);
         if (n != -1) Pages.splice(n - 1, 0, name);
     }
     if(att[0] == 'sel'){
-        n = Pages.indexOf(att[1]);
+        n = pageGet(att[1]);
         if (n != -1) Pages.splice(n, 0, name);
     }
     if(att[0] == 'ato'){
-        n = Pages.indexOf(att[1]);
+        n = pageGet(att[1]);
         if (n != -1) Pages.splice(n + 1, 0, name);
     }
     if(att == null){
         Pages.push(name);
     }
+}
+function pageGet(name){
+    let n = Pages.indexOf(name);
+    if(n != -1) return n;
+    else return console.log(`${name}は存在しねぇぜ`);
 }
 function pageDel(name){
     let n = Pages.indexOf(name);
