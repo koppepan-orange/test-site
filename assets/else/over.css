@@ -1,3 +1,7 @@
+@font-face {
+    font-family: genjuu;
+    src: url('../fonts/genjuu.ttf') format('truetype');
+}
 html{
     margin: -8px;
     padding: -8px;
@@ -15,6 +19,32 @@ body{
     flex-direction: row;
 }
 
+/*nicotext*/
+.nicotext{
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: #f0f8ff80;
+    color: #000000;
+    font-size: 20px;
+    transition: right 2.0s linear;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* description */
+#movableDescription{
+    display: none;
+    position: fixed;
+    pointer-events: none;
+    background-color: #363636e2;
+    color: #f0f8ff;
+    text-align: left;
+    padding: 5px 10px;
+    border-radius: 5px;
+    z-index: 256;
+}
+
 #pages{
     display: flex;
     flex-direction: row;
@@ -27,6 +57,12 @@ body{
     height: 100%;
     position: fixed;
     transition: right 0.5s ease, left 0.5s ease;
+    
+    background: linear-gradient(to right, #f0f8ff, #eaf5ff, #def0ff, #cfe9ff, #b5dcff);
+    background: linear-gradient(to right, #f8f6ff, #f5f2ff, #f1edff, #ece8ff, #e9e4ff);
+    background: linear-gradient(to right, #fffaf3, #fff7eb, #fff3e2, #fff0d9, #ffeccf);
+    background: linear-gradient(to right, #f6fff2, #eeffe7, #e6ffdc, #ddffd0, #d4ffc3);
+    background: #ffffff;
 }
 
 /*こっからhome*/
@@ -87,9 +123,6 @@ body{
     white-space: pre-wrap;
     word-wrap: break-word;
 }
-#home .memos .title::-webkit-scrollbar,#text::-webkit-scrollbar {
-    display: none; /* Chrome, Edge, Safariでスクロールバーを非表示 */
-}
 #home .memos .delete{
     position: absolute;
     top: 1.3px;
@@ -99,7 +132,7 @@ body{
     border: 1px solid #cfe9ff;
 }
 #home .memos .delete:hover{
-    color: red;
+    color: #ff4040;
 }
 #home .memos .add{
     display: flex;
@@ -132,38 +165,42 @@ body{
 /*こっからmemo*/
 #memo{
     display: block;
+    background: linear-gradient(to right, #f8f6ff, #f5f2ff, #f1edff, #ece8ff, #e9e4ff);
+    background-color: #f8f6ff;
     opacity: 0;
 }
 #memo .title{
-    margin-left: 5px;
     display: block;
-    border: 2px solid #cfe9ff;
-    background-color: #f0f8ff;
+    width: fit-content;
+    min-width: 100px;
+    max-width: calc(100% - 60px);
+    height: 24px;
     padding: 5px;
-    width: 100px;
-    height: 20px;
+    border: 3px solid #ece8ff;
+    background-color: #f5f2ff;
     white-space: nowrap;
-    overflow: hidden;
     overflow-x: scroll;
-    scrollbar-width: none;
+    overflow-y: hidden;
 }
 #memo .search{
-    margin-left: 2px;
-    background-color: #f0f8ff;
-    border: solid 2px #cfe9ff;
+    margin-left: -3px;
+    box-sizing: border-box;
+    width: 60px;
+    height: 40px;
+    border: solid 3px #ece8ff;
+    background-color: #f5f2ff;
 }
 #memo .search:hover{
-    background-color: #def0ff;
+    background-color: #f1edff;
 }
 #memo .text{
-    margin-top: 10px;
+    margin-top: -3px;
     display: block;
-    border: 2px solid #cfe9ff;
-    background-color: #f0f8ff;
-    padding: 5px;
-    min-width: 50px;
+    border: 3px solid #ece8ff;
+    background-color: #f5f2ff;
+    padding: 6px;
+    width: 100%;
     height: 90vh;
-    max-height: 90vh;
     font-size: 16px;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -172,21 +209,59 @@ body{
     scrollbar-width: none;
 }
 #memo .title:focus, #memo-text:focus{
-    background-color: #def0ff;
+    background-color: #f1edff;
 }
 
 /*こっからtools*/
 #tool{
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    padding: 20px;
+    background-color: #fffaf3;
     opacity: 0;
 }
+#tool .lavel{
+    font-size: 16px;
+    text-align: center;
+}
+#tool .Hen{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100px;
+    padding: 5px 10px;
+    border: 1px solid #fff0d9;
+    background-color: #fffaf3;
+    font-family: genjuu;
+}
+#tool .Hen span.row{
+    font-size: 16px;
+}
+#tool .Hen input{
+    border: none;
+    background-color: #fff7eb;
+    color: #222222;
+    width: 20px;
+}
+
+#tool .TextCount{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100px;
+    padding: 5px 10px;
+    border: 1px solid #fff0d9;
+    background-color: #fffaf3;
+}
+
 
 /*こっからlogin*/
 #login{
     display: block;
     opacity: 0;
-    background-color: #def0ff;
     border: 1px solid #b5dcff;
 }
 #login .form{
@@ -223,12 +298,12 @@ body{
 /*こっからchat*/
 #chat{
     display: flex;
-    opacity: 0;
+    flex-direction: column;
     margin: 0 auto;
     border: 2px solid #cfe9ff;
-    border-radius: 5px;
+    background: linear-gradient(to right, #f6fff2, #eeffe7, #e6ffdc, #ddffd0, #d4ffc3);
+    opacity: 0;
     overflow: hidden;
-    flex-direction: column;
 }
 #room-select {
     background-color: #eaf5ff;

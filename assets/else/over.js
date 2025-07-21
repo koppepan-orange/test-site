@@ -1,4 +1,3 @@
-
 //#region komagome
 function delay(ms){
     return new Promise(resolve=>setTimeout(resolve,ms));
@@ -81,49 +80,35 @@ function probability(num){
 function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
-
-function anagramSaySay(text, loop = 10, bet = '<br>'){
-    let menjo = 0;
-    let len = text.length;
-    if(len < 4) menjo = 1, console.log('長さが3以下なんで最大6っす');
-    
-    let optout = text.split('');
-    let optcou = arrayCount(optout);
-    let optvals = [];
-    for(a of Object.keys(optcou)){
-        let b = optcou[a];
-        b = kaijou(b);
-        optvals.push(b);
+function setLocalStorage(key, value) {
+    // オブジェクトならJSON文字列に変換して保存
+    if (typeof value === 'object') {
+        localStorage.setItem(key, JSON.stringify({
+            __type: 'object',
+            data: value
+        }));
+    } else {
+        // 文字列などはそのまま保存（ただし識別のためラップ）
+        localStorage.setItem(key, JSON.stringify({
+            __type: 'string',
+            data: value
+        }));
     }
-    let optmat = arrayMult(optvals);
-    let cal = (kaijou(len) / optmat) - 1;
+}
 
-    let loopen = loop;
-    console.log(`総数:${cal} 回数:${loopen}`);
-    if(cal < loopen) menjo = 1;
-    
-    let reses = [];
-    while(loopen > 0){
-        loopen -= 1;
-        let res = arrayShuffle(optout).join(''); 
-        if(reses.includes(res)){loopen += 1; continue}
-        
-        if(res == text && !menjo){loopen += 1; continue;}
+function getLocalStorage(key) {
+    const item = localStorage.getItem(key);
+    if (!item) return null;
 
-        if(res == text && menjo && reses.length < cal){loopen += 1; continue}
-        else if(res == text && menjo) res = '[重複エラー]';
-
-        reses.push(res);
+    try {
+        const parsed = JSON.parse(item);
+        return parsed.data;
+    } catch (e) {
+        // JSON解析に失敗した場合（旧形式など）はそのまま返す
+        return item;
     }
-    
-    return reses.join(bet);
 }
-function setLocalStorage(name, value) {
-    localStorage.setItem(name, value || "");
-}
-function getLocalStorage(name) {
-    return localStorage.getItem(name);
-}
+
 function removeLocalStorage(name){
     localStorage.removeItem(name);
 }
@@ -180,10 +165,12 @@ document.addEventListener('mousedown', e => {
 //#region swipe
 let startX, startY, endX, endY;
 document.addEventListener("touchstart", (e) => {
+    if(pMoving) return;
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
 });
 document.addEventListener("touchend", (e) => {
+    if(pMoving) return;
     endX = e.changedTouches[0].clientX;
     endY = e.changedTouches[0].clientY;
 
@@ -194,35 +181,37 @@ document.addEventListener("touchend", (e) => {
     if(diffX < -30) swiped(1); //r
 });
 
+let keys = {};
+document.addEventListener("keydown", (e) => {
+    let key = e.key;
+    if(key == " ") key = "space"; 
+    keys[key] = true;
+});
+document.addEventListener("keyup", (e) => {
+    let key = e.key;
+    if(key == " ") key = "space";
+    keys[key] = false;
+});
+
 // PC用：マウスによるスワイプ対応
-let isMouseDown = false;
-document.addEventListener("mousedown", (e) => {
-    isMouseDown = true;
-    startX = e.clientX;
-    startY = e.clientY;
+document.addEventListener("keydown", e => {
+    if(pMoving) return;
+    let key = e.key;
+    if (!e.shiftKey && (key === "ArrowRight" || key === "ArrowLeft")) return;
+
+    if (key === "ArrowRight") swiped(1);
+    if (key === "ArrowLeft") swiped(-1);
 });
-document.addEventListener("mouseup", (e) => {
-    if (!isMouseDown) return;
-    isMouseDown = false;
 
-    endX = e.clientX;
-    endY = e.clientY;
-
-    const diffX = endX - startX;
-    const diffY = endY - startY;
-
-    if(Math.abs(diffX) > Math.abs(diffY)){ // 横方向の方が強い
-        if(diffX > 30) swiped(-1); // 左スワイプ相当
-        if(diffX < -30) swiped(1); // 右スワイプ相当
-    }
-});
 
 //#endregion
 
+//#region page
 let page = 'home';
 let pagen = 0;
 let Pages = ['home', 'memo', 'tool', 'login', 'chat'];
 let pagenMax = Pages.length - 1;
+let pMoving = 0;
 function swiped(code){
     //-1 = l, 1 = r
     //console.log(`${pagen} => ${Pages[pagen + code]}`);
@@ -233,9 +222,8 @@ function swiped(code){
     pageChange(code);
 }
 function pageAdd(name, att = null){
-
     //["mae", code]
-    if(att == null)
+    if(att == null) att = [null, null]
     if(att[0] == 'mae'){
         n = pageGet(att[1]);
         if (n != -1) Pages.splice(n - 1, 0, name);
@@ -248,7 +236,7 @@ function pageAdd(name, att = null){
         n = pageGet(att[1]);
         if (n != -1) Pages.splice(n + 1, 0, name);
     }
-    if(att == null){
+    if(att[0] == null){
         Pages.push(name);
     }
 }
@@ -263,6 +251,7 @@ function pageDel(name){
 }
 async function pageChange(code){
     //-1 = l, 1 = r
+    pMoving = 1;
     let moto = page;
     page = Pages[pagen];
     let dir = 0;
@@ -288,9 +277,12 @@ async function pageChange(code){
     await delay(500);
 
     mdiv.style.opacity = '0';
+    pMoving = 0;
 }
+//#endregion page
 
 //#region home
+
 //#region リンクたちの動き
 const Links = {
     'memo':{
@@ -568,6 +560,7 @@ Object.keys(Links).forEach(type => {
     document.getElementById(`${type}tachi`).appendChild(document.createElement('br'));
 })
 //#endregion
+
 //#region rakuraku-memo
 let numberOfMemo = 4;
 function memoRead(){
@@ -581,22 +574,28 @@ function memoRead(){
     let memoAdd = memoAddCreate();
     document.querySelector('#home .memos').appendChild(memoAdd);
 }
-function memoCreate(memo,i){
+function memoCreate(memo, i, code = 0){
+    if(code){
+        memo = {
+            title: `untitled`,
+            text: '',
+        }
+    }
     let div = document.createElement('div');
     div.className = 'memo';
     div.id = `memo${i}`;
     //dataにメモ名も保存..頼んだ
-    div.setAttribute('data-num', i);
+    div.dataset.num = i;
 
     let title = document.createElement('div');
     title.className = 'title';
-    title.innerText = `memo${i}`;
+    title.innerText = memo?.title??'error';
     title.setAttribute('contenteditable', 'true');
     div.appendChild(title);
 
     let text = document.createElement('div');
     text.className = 'text';
-    text.innerText = memo??'';
+    text.innerText = memo?.text??'error';
     text.setAttribute('contenteditable', 'true');
     div.appendChild(text);
 
@@ -622,8 +621,12 @@ function memoCreate(memo,i){
     });
     div.appendChild(deleteButton);
 
-    div.addEventListener('input', e => {
-        setLocalStorage(`memo${i}`, document.getElementById(`memo${i}`).querySelector('.text').innerText);
+    div.addEventListener('input', () => {
+        setLocalStorage(`memo${i}`, {
+            num: i,
+            title: document.getElementById(`memo${i}`).querySelector('.title').innerText,
+            text: document.getElementById(`memo${i}`).querySelector('.text').innerText
+        });
     });
 
     return div;
@@ -637,7 +640,7 @@ function memoAddCreate(){
         memoAdd.remove();
         numberOfMemo = +numberOfMemo + 1;
         setLocalStorage("numberOfMemo", +numberOfMemo);
-        let memodiv = memoCreate('', numberOfMemo);
+        let memodiv = memoCreate('', numberOfMemo, 1);
         document.querySelector('#home .memos').appendChild(memodiv);  
         let memoAdd2 = memoAddCreate();
         document.querySelector('#home .memos').appendChild(memoAdd2);
@@ -645,6 +648,7 @@ function memoAddCreate(){
     return memoAdd;
 }
 //#endregion
+
 //#region iframeのお話
 let NowLinkframe = 1;
 function LinkframeGo(){
@@ -673,6 +677,7 @@ document.querySelector('#linkSite .iframe-full').addEventListener('click', event
     // iframe.webkitRequestFullscreen();
 })
 //#endregion
+
 //#endregion home
 
 //#region memo
@@ -707,50 +712,179 @@ searchButton.addEventListener('click', () => {
 //#endregion memo
 
 //#region tool
-let input
-let words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ']
-function Toggle(){
-    switch(document.querySelector('#ToggleButton').textContent){
-        case 'more':
-            document.querySelector('#ToggleButton').textContent = 'less'
-            words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ'];
-            break
-        case 'less':
-            document.querySelector('#ToggleButton').textContent = 'more'
-            words = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ','ァ','ィ','ゥ','ェ','ォ','ッ','ャ','ュ','ョ','ー'];
-            break
-    }
+
+//#region 文字数カウント
+let Cou = {
+    inI: document.querySelector('#tool .TextCount').querySelector('.in'),
+    outD: document.querySelector('#tool .TextCount').querySelector('.out'),
 }
-function Activate(){
-    input = document.querySelector('#Input').value
-    if(input == ''||input <= 0){document.querySelector('#OutPut').textContent = '死ね'}
-    else{
-    let output = [];
-    document.querySelector('#OutPut').innerHTML = ''
-    for(let i = 0; i < 10; i++){
-        for(let i = 0; i < input; i++){
-            output.push(words[Math.floor(Math.random() * words.length)])
+Cou.inI.addEventListener('input', () => {
+    let text = Cou.inI.value;
+    let count = text.length;
+    let size = arraySize(text.split(''))
+    Cou.outD.textContent = `文字数${count} 種類${size}`;
+});
+//#endregion
+
+//#region アナグラム生成器
+let Anag = {
+    inI: document.querySelector('#tool .Anagram .in'),
+    outD: document.querySelector('#tool .Anagram .out'),
+    sendB: document.querySelector('#tool .Anagram .send')
+}
+Anag.sendB.addEventListener('click', () => {
+    let text = Anag.inI.value;
+    let res = anagramSaySay(text, 10, '<br>');
+    Anag.outD.innerHTML = res;
+});
+function anagramSaySay(text, loop = 10, bet = '<br>'){
+    let menjo = 0;
+    let len = text.length;
+    // if(len < 4) menjo = 1, console.log('長さが3以下なんで最大6っす');
+    
+    let optout = text.split('');
+    let optcou = arrayCount(optout);
+    let optvals = [];
+    for(a of Object.keys(optcou)){
+        let b = optcou[a];
+        b = kaijou(b); //bの階乗、b!
+        optvals.push(b);
+    }
+    let optmat = arrayMult(optvals); //階乗したもの同士をそれぞれを掛け合わさせる
+    let cal = (kaijou(len) / optmat) - 1;
+
+    let loopen = loop;
+    console.log(`総数:${cal} 回数:${loopen}`);
+    if(cal < loopen) menjo = 1;
+    
+    let reses = [];
+    while(loopen > 0){
+        loopen -= 1;
+        let res = arrayShuffle(optout).join(''); //continueは{}外せないのじゃ
+        if(reses.includes(res)){loopen += 1; continue} 
+        
+        if(res == text && !menjo){loopen += 1; continue;}
+
+        if(res == text && menjo && reses.length < cal){loopen += 1; continue}
+        else if(res == text && menjo) res = '!--[重複エラー]--';
+
+        //なんか小ネタを仕込むならここ
+        if(text == 'undertale' && res == 'deltarune'){
+            let tex = 'deltarune, undertaleのアナグラム説検証成功！！！';
+            console.log(tex);
+            res = `<span style="color: #;">${tex}</span>`;
         }
-        document.querySelector('#OutPut').innerHTML += output.join('')+'<br>';
-        output = [];
+
+        reses.push(res);
     }
+    
+    return reses.join(bet);
+}
+//#endregion
+
+//#region 偏差値計算するやつ
+let Hen = {
+    valI: document.querySelector('#tool .Hen .input'),
+    aveI: document.querySelector('#tool .Hen .average'),
+    outD: document.querySelector('#tool .Hen .output'),
+    process: function(){
+        let val = +Hen.valI.value;
+        let ave = +Hen.aveI.value;
+        let res = ((val - ave) / 18 * 10) + 50;
+        //18の部分は変更可能。得点分布だから一点集中なら1とかなんじゃないかな
+        res = Math.round(res);
+        Hen.outD.value = res;
     }
+};
+Hen.valI.addEventListener('input', Hen.process);
+Hen.aveI.addEventListener('input', Hen.process);
+//#endregion
+
+//#region カタカナランダム言葉生成器
+let RanKana = {
+    togB: document.querySelector('#tool .RanKana .toggle'),
+    tog: 'stan',
+    togs: [
+        {
+            name: 'stan',
+            color: '#b5d9ff',
+            desc: 'もっともオーソドックス',
+            words: ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ']
+        },
+        {
+            name: 'more',
+            color: '#ffddcc',
+            desc: '切れ音や長音、小文字を含むやつ',
+            words: ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ','ァ','ィ','ゥ','ェ','ォ','ッ','ャ','ュ','ョ','ー'] 
+        },
+    ],
+    actB: document.querySelector('#tool .RanKana .active'),
+    inpI: document.querySelector('#tool .RanKana .input'),
+    outD: document.querySelector('#tool .RanKana .output'),
+    ove: 0,
+    oveB: document.querySelector('#tool .RanKana .over'),
 }
-//HensatiSagasuYatu = HEN
-let HENpoint = 0;
-let HENave = 0;
-let HENx = 0;
-let HENy = 0;
-let HENanswer = 0;
-function  HENsum(){
-    HENpoint = document.getElementById("HENPoint").value;
-    HENave = document.getElementById("HENAve").value;
-    HENx = HENpoint - HENave;
-    HENy = HENx / 18 * 10; //18の部分は変更可能。得点分布だから一点集中なら1とかなんじゃないかな
-    HENanswer = Math.floor(HENy + 50);
-    document.getElementById("HENAnswer").textContent = '偏差値は' + HENanswer + 'です';
-}
-//CountGame = COUNT
+RanKana.togB.addEventListener('click', () => {
+    let val = RanKana.togB.textContent;
+    let arr = RanKana.togs.map(a => a.name);
+    console.log(arr);
+    let valn = arr.indexOf(val);
+    let ele = RanKana.togs[valn];
+    let nexn = (valn + 1) % RanKana.togs.length;
+    let nexele = RanKana.togs[nexn];
+
+    RanKana.tog = nexele.name;
+    RanKana.togB.textContent = nexele.name;
+    RanKana.togB.style.backgroundColor = nexele.color;
+    RanKana.togB.setAttribute('data-description', nexele.desc);
+})
+RanKana.oveB.addEventListener('click', () => {
+    console.log(RanKana.ove)
+    if(RanKana.ove == 0){
+        RanKana.ove = 1;
+        RanKana.oveB.style.backgroundColor = '#a2ffa8';
+    }else{
+        RanKana.ove = 0;
+        RanKana.oveB.style.backgroundColor = '#c4c4c4';
+    }
+})
+RanKana.actB.addEventListener('click', () => {
+    let ele = RanKana.togs.find(a => a.name == RanKana.tog);
+    let words = ele.words;
+    let val = RanKana.inpI.value
+    if(val == '' || val <= 0) return nicoText('死ね');
+
+    let outputs = [];
+    RanKana.outD.innerHTML = '';    
+    for(let i = 0; i < 10; i++){
+        if(RanKana.ove == 0){
+            let res = arrayShuffle(words).slice(0, val);
+            res = res.join('');
+            if(outputs.includes(res)){
+                i -= 1;
+                continue;
+            }
+            outputs.push(res);
+        }   
+        if(RanKana.ove == 1){
+            let res = [];
+            for(let i = 0; i < val; i++){
+                let ares = arraySelect(words);
+                res.push(ares);
+            }
+            res = res.join('');
+            if(outputs.includes(res)){
+                i -= 1;
+                continue;
+            }
+            outputs.push(res);
+        }
+    }
+    RanKana.outD.innerHTML = outputs.join('<br>');
+})
+//#endregion
+
+//#region マリパのハチの巣のやつ
 let COUNTx = 0;
 let COUNTope = 0;
 let COUNTgamebar = 0;
@@ -821,7 +955,9 @@ function COUNTGameReset(){
     document.getElementById("COUNTButton").innerHTML = '<button onclick="COUNTGameStart()">start</button>';
     COUNTx = 0;
     }
-//RaceGame = RACE
+//#endregion
+
+//#region 田中のレースのあれ
 let RACEgamenow = 0;
 let RACEtimer = 0;
 let RACEnumber = ['one', 'two', 'three', 'four'];
@@ -980,7 +1116,9 @@ async function RACEstanOthers(num) {
     RACEgameloop(others[1]);
     RACEgameloop(others[2]);
 }
-//RengaGame = RG
+//#endregion
+
+//#region 連打するやつ
 let count = 0;
 let startTime;
 let duration = 5000;
@@ -1002,7 +1140,9 @@ function RENDAchange(time) {
     document.getElementById(`RENDABUTTON${time}`).style.color = '#23aa23';
     duration = time;
 }
-//CookingGame = CG
+//#endregion
+
+//#region WiiPartyのコックのあれ
 let CGx = 0;
 let CGy = 0;
 let CGAllow = 0;
@@ -1059,6 +1199,8 @@ function CookingGameChoeese(num){
     }
     }
 }
+//#endregion
+
 //#endregion tool
 
 //#region login //ワルシャワログイン機構
@@ -1086,6 +1228,7 @@ async function login(){
     setLocalStorage("banned", 0);
     usersRef = database.ref(`users/${username}`);
 
+    nicoText('ログイン中...')
     await delay(500);
     logF.style.opacity = 0;
     logF.style.userSelect = 'none';

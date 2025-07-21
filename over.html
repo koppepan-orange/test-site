@@ -4,33 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        /*nicotext*/
-        .nicotext{
-            position: fixed;
-            top: 0;
-            right: 0;
-            background-color: #f0f8ff80;
-            color: #000000;
-            font-size: 20px;
-            transition: right 2.0s linear;
-            white-space: nowrap;
-            pointer-events: none;
-        }
-
-        /* description */
-        #movableDescription{
-            display: none;
-            position: fixed;
-            pointer-events: none;
-            background-color: #363636e2;
-            color: #f0f8ff;
-            text-align: left;
-            padding: 5px 10px;
-            border-radius: 5px;
-            z-index: 256;
-        }
-    </style>
     <link rel="stylesheet" href="assets/else/over.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -73,16 +46,30 @@
         </div>
         <div id="tool" class="page" style="right: -100%;">
             <!-- こちら偏差値計算機です！！！！ -->
-            <p align="center">偏差値計算機<br>
-                <input id="HENPoint" type="text" placeholder="write 得点" size="20" style="width:80px;"></input>　
-                <input id="HENAve" type="text" placeholder="write 平均" size="20" style="width:80px;"><br>   
-                <button onclick="HENsum()">go</button>
-                <br><span id="HENAnswer"></span>
-            </p>
-            <p align="center">
-            <input type="text" id="Input" size="3" maxlength="2" placeholder="num"><button id="ToggleButton" onclick="Toggle()">less</button><button onclick="Activate()">Go!</button><br>
-            <span id="OutPut"></span>
-            </p>
+            <div class="Hen">
+                <div class="row">yourtestp: <input class="input" type="text"/></div>
+                <div class="row">averagesp: <input class="average" type="text"/></div>
+                <div class="row">deviation: <input class="output" type="text" readonly value="?"/></div>
+            </div>
+            <div class="TextCount">
+                <div class="label">mozisu-count</div>
+                <input type="text" class="in"/>
+                <div class="out">0</div>
+            </div>
+            <div class="Anagram">
+                <div class="label">anagram-saysay</div>
+                <input type="text" class="in"/>
+                <button class="send">check</button>
+                <div class="out"></div>
+            </div>
+            <div class="RanKana">
+                <input type="text" class="input" maxlength="2" placeholder="num">
+                <button class="toggle">less</button>
+                <button class="over">重複</button>
+                <button class="active">act</button><br>
+                <span class="output"></span>
+            </div>
+            
             <!-- まりぱのげーむをちょっとだけいれようかな〜と -->
             <details style="margin:0 auto;"><summary>Game-Center</summary>
             <p align="center">Count Game Desu
@@ -118,6 +105,7 @@
             </p>
             </details>
         </div>
+
         <div id="login" class="page" style="right: -100%;">
             <div class="form">
                 <input type="text" name="username" class="username" placeholder="username">
