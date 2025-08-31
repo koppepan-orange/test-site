@@ -9,9 +9,6 @@ async function homeLogin(){
             img.src = 'assets/sozais/none.png';
         }
     })
-    if(username == 'koppepan_orange'){
-        meiboMake();
-    }
 }
 
 function homeLogout(){
@@ -467,7 +464,7 @@ let NowLinkframe = 1;
 function LinkframeGo(){
     document.getElementById(`Linkframe${NowLinkframe}`).setAttribute('data-src', document.getElementById("LinkInput").value);
     document.getElementById(`Linkframe${NowLinkframe}`).src = document.getElementById("LinkInput").value;
-    NicoNicoText('うぇいとふぉあな〜う'); //好きな言葉ランキング上位"wait for now"
+    nicoText('うぇいとふぉあな〜う'); //好きな言葉ランキング上位"wait for now"
 }
 document.querySelector('#LinkSelect').addEventListener('change', event =>{
     NowLinkframe = event.target.value;
@@ -932,95 +929,7 @@ function CookingGameChoeese(num){
     }
 }
 //#endregion
-//#region 名電の名簿。自作用。koppepan_orange専用
-let a;
 
-async function meiboMake(){
-    let meiboToggle = document.querySelector('#tools .meiboToggle');
-    let meiboContainer = document.querySelector('#tools .meibo .list');
-    let meiboShowtime = document.querySelector('#tools .meibo .show');
-    
-    let meibosRef = database.ref('kari/meibos');
-
-    let firebaseData
-    let firebaseResults
-    let localResults
-
-    //ぜんぶ
-    firebaseData = await meibosRef.once('value');
-    firebaseResults = firebaseData.exists() ? Object.values(firebaseData.val()) : [];
-    localResults = meiboData;
-
-    // Firebase + data.js のデータを結合
-    let combinedResults = [...firebaseResults, ...localResults];
-
-
-    meiboContainer.innerHTML = ''; // 検索結果をクリア
-    meiboContainer.style.display = 'block';
-
-    if (combinedResults.length > 0) {
-        combinedResults.forEach(user => {
-            let listItem = document.createElement('div');
-            listItem.className = 'item';
-
-            let attribute = '';
-            if (user.boy) {
-                attribute = 'AI';
-            }else if(user.girl) {
-                attribute = '女子';
-            }else{
-                attribute = 'その他';
-            }
-            listItem.innerHTML = `
-                <ruby class="name" contenteditable>${user.name}<rt class="ruby" contenteditable style="letter-spacing: 0.1em;">${user.ruby}</rt></ruby> <span class="attribute" contenteditable>${attribute}</span><br>
-                <div class="description" contenteditable>${description}</div>
-            `;
-            listItem.setAttribute('男子', user.boy);
-            listItem.setAttribute('女子', user.girl);
-            listItem.setAttribute('その他', user.else);
-            //listItem.setAttribute('data-key', user.key);
-
-            if(user.girl || user.boy || user.else){
-                listItem.style.display = 'none';
-            }//俺用まである
-
-            meiboContainer.appendChild(listItem);
-        });
-
-        updateNarrowOptionsMeibos(combinedResults);
-    } else {
-        meiboContainer.innerText = '該当なし';
-    }
-}
-function updateNarrowOptionsMeibos(results) {
-    searchNarrowmeibo.style.display = 'flex';
-    let uniqueAttributes = new Set();
-
-    //常設
-    uniqueAttributes.add('男子');
-    uniqueAttributes.add('女子');
-
-    let narrowOptionsContainer = document.querySelector('#tools .meibo #narrow-options');
-    narrowOptionsContainer.innerHTML = '';
-
-    uniqueAttributes.forEach(attr => {
-        let button = document.createElement('button');
-        button.className = 'narrow-option';
-        button.innerText = attr;
-        button.addEventListener('click', () => {
-            button.classList.toggle('active');
-        });
-        narrowOptionsContainer.appendChild(button);
-    });
-
-
-    if(uniqueAttributes.size == 0){
-        searchNarrowmeibo.style.display = 'none';
-    }
-}
-//#endregion
-
-//#endregion
 //#region profile
 document.querySelector('#profile .icon').addEventListener("click", () => {
     document.querySelector('#profile .fileInput').click();

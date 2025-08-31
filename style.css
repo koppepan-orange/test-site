@@ -1,14 +1,20 @@
-@font-face{font-family:comicsans;src:url('assets/comicsans.ttf');}
-@font-face{font-family:papyrus;src:url('assets/papyrus.ttf');}
-@font-face{font-family:Hangyaku;src:url('assets/Hangyaku.ttf');}
-@font-face{font-family:cube12;src:url('assets/cube12.ttf');}
-@font-face{font-family:genjuu;src:url('assets/genjuu.ttf');}
-@font-face{font-family:hackgen;src:url('assets/hackgen.ttf');}
-@font-face{font-family:wingdings;src:url('assets/wingdings.ttf');}
-@font-face{font-family:wingdings2;src:url('assets/wingdings2.ttf');}
-@font-face{font-family:wingdings3;src:url('assets/wingdings3.ttf');}
-@font-face{font-family:webdings;src:url('assets/webdings.ttf');}
-@font-face{font-family:kaimetsu;src:url('assets/kaimetsu.otf');}
+@font-face{src:url('assets/fonts/comicsans.ttf');font-family:comicsans;}
+@font-face{src:url('assets/fonts/papyrus.ttf');font-family:papyrus;}
+@font-face{src:url('assets/fonts/hangyaku.ttf');font-family:hangyaku;}
+@font-face{src:url('assets/fonts/cube12.ttf');font-family:cube12;}
+@font-face{src:url('assets/fonts/genjuu.ttf');font-family:genjuu;}
+@font-face{src:url('assets/fonts/kaimetsu.otf');font-family:kaimetsu;}
+@font-face{src:url('assets/fonts/hackgen.ttf');font-family:hackgen;}
+@font-face{src:url('assets/fonts/wingdings.ttf');font-family:wingdings;}
+@font-face{src:url('assets/fonts/wingdings2.ttf');font-family:wingdings2;}
+@font-face{src:url('assets/fonts/wingdings3.ttf');font-family:wingdings3;}
+@font-face{src:url('assets/fonts/kurundeco.otf');font-family: kurundeco;}
+@font-face{src:url('assets/fonts/starrysky.otf');font-family: starrysky;}
+@font-face{src:url('assets/fonts/kurobara.ttf');font-family: kurobara;}
+@font-face{src:url('assets/fonts/marukoius.ttf');font-family: marukoius;}
+@font-face{src:url('assets/fonts/novamono.ttf');font-family: novamono;}
+@font-face{src:url('assets/fonts/pricedown.ttf');font-family: pricedown;}
+@font-face{src:url('assets/fonts/corporate.otf');font-family: corporate;}
 
 select {
     -webkit-appearance: none;

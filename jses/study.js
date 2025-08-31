@@ -105,7 +105,7 @@ document.querySelector('#en #post-send').addEventListener('click', (event) => {
 
 
     if(!en || !ja || !speech || !attribute || !description){
-        NicoNicoText('要素が足りません');
+        nicoText('要素が足りません');
         return;
     };
 
@@ -124,12 +124,12 @@ document.querySelector('#en #post-send').addEventListener('click', (event) => {
                 slang: slang //false
             })
             document.querySelector('#en #post-cancel').click();
-            NicoNicoText('Nice Job!!');
+            nicoText('Nice Job!!');
             exp += 10;
             updateUI();
             save();
         }else{
-            NicoNicoText('その単語はすでに存在します');
+            nicoText('その単語はすでに存在します');
             return;
         }
     })

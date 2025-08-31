@@ -68,7 +68,7 @@ const Commands = {
         name:'save',
         process:function(message){
             load();
-            NicoNicoText('君、もしやデバッガーだね..?')
+            nicoText('君、もしやデバッガーだね..?')
             return null;
         }
     },
@@ -77,9 +77,9 @@ const Commands = {
         process:function(message){
             database.ref('rooms/'+room).remove();
             setTimeout(displayAllMessages, 200);
-            NicoNicoText('すべてのメッセージが消去されました。');
-            NicoNicoText('あなたがやったのです。反省してね♡')
-            NicoNicoText('草');NicoNicoText('草');
+            nicoText('すべてのメッセージが消去されました。');
+            nicoText('あなたがやったのです。反省してね♡')
+            nicoText('草');nicoText('草');
             return null;    
         }
     },
@@ -112,14 +112,14 @@ const Commands = {
         name:'balance',
         process:function(message){
             load();
-            NicoNicoText(`now: ${userData.euro}$`)
+            nicoText(`now: ${userData.euro}$`)
             return null;
         }
     },
     'nico':{
         name:'nico',
         process:function(message){
-            NicoNicoText(message);
+            nicoText(message);
             return null;
         }
     },
@@ -143,7 +143,7 @@ const Commands = {
             database.ref(`users/${message}`).update({
                 banned:1
             })
-            NicoNicoText('Nice Job!')
+            nicoText('Nice Job!')
             return null;
         }
     },
@@ -153,7 +153,7 @@ const Commands = {
             database.ref(`users/${message}`).update({
                 banned:0
             })
-            NicoNicoText('Good Job!')
+            nicoText('Good Job!')
             return null;
         }
     }
@@ -189,7 +189,7 @@ function selectRoom(){
                 });
             
                 if(!matched){
-                    NicoNicoText('多分なんかコマンドミスってるで、君')
+                    nicoText('多分なんかコマンドミスってるで、君')
                     console.log('多分なんかコマンドミスってるで、君')
                 }else{
                     return;
@@ -215,7 +215,7 @@ function selectRoom(){
             //uRef = ss.val();
             uRef = 0; //一旦のやつ
             if(uRef == 1){ 
-                NicoNicoText('エラーが発生しました。')
+                nicoText('エラーが発生しました。')
                 document.querySelector('#username').value = '';
                 document.querySelector('#password').value = '';
                 menuToggle.style.display = 'none';
@@ -261,7 +261,7 @@ function selectRoom(){
                 uRef.on('value', function(ss) {
                     uRef = ss.val();
                     if(uRef == 1){
-                        NicoNicoText('エラーが発生しました。')
+                        nicoText('エラーが発生しました。')
                         document.querySelector('#username').value = '';
                         document.querySelector('#password').value = '';
                         menuToggle.style.display = 'none';
@@ -314,7 +314,7 @@ function selectRoom(){
         usernameElement.textContent = Mnickname
         usernameElement.addEventListener('contextmenu', event => {
             event.preventDefault();
-            NicoNicoText(`送信者:${Musername}`);
+            nicoText(`送信者:${Musername}`);
         })
         messageElement.appendChild(usernameElement);
 

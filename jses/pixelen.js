@@ -115,7 +115,7 @@ document.querySelector('#books #post-send').addEventListener('click', (event) =>
 
 
     if(!title || !body || !description || !attribute){
-        NicoNicoText('要素が足りません');
+        nicoText('要素が足りません');
         return;
     };
 
@@ -137,11 +137,11 @@ document.querySelector('#books #post-send').addEventListener('click', (event) =>
                 key:key
             })
             document.querySelector('#books #post-cancel').click();
-            NicoNicoText('Good book!!');
+            nicoText('Good book!!');
             exp += 50;
             updateUI();
         }else{
-            NicoNicoText('そのタイトルはすでに使用されています');
+            nicoText('そのタイトルはすでに使用されています');
             return;
         }
     })

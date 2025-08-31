@@ -303,7 +303,7 @@ document.querySelector('#login-login').addEventListener('click', () => {
                 banned: 0,
                 blocked: [],
             })
-            NicoNicoText('ようこそ');
+            nicoText('ようこそ');
             setLocalStorage("username", username)
             login();
         }
@@ -322,7 +322,7 @@ function autoLogin(){
 }
 
 document.querySelector('#logout').addEventListener('click', () => {
-    NicoNicoText("ログアウトしました");
+    nicoText("ログアウトしました");
     username = 'no name';removeLocalStorage("username");
     document.querySelector('#Username').textContent = username;
     document.querySelector('#Level').textContent = `Lv:#ERROR!`;
@@ -355,6 +355,9 @@ let maxexp = 50;
 let euro = 0;
 let expbar = document.querySelector('#exp');
 let exptext = document.querySelector('#exptext');
+let overHiraku = () => {location.href = 'over.html'};
+expbar.addEventListener('click', overHiraku);
+exptext.addEventListener('click', overHiraku);
 function updateUI(){
     if(exp >= maxexp){
         exp -= maxexp;
@@ -407,7 +410,7 @@ document.querySelector('#login-bonus').addEventListener('click', () => {
                 console.log('受け取れたね、めでたいね')
                 loginBonus(data.continued);
             }else{
-                NicoNicoText(`受取済みやで！！`);
+                nicoText(`受取済みやで！！`);
             }
         }
     })
@@ -421,8 +424,8 @@ function loginBonus(continued){
         bonus = LoginBonuses[6];
     }
     euro += bonus;
-    NicoNicoText(`連続ログイン${continued}回目`)
-    NicoNicoText(`ログインボーナス！${bonus}€をゲットだぜ！！！`);
+    nicoText(`連続ログイン${continued}回目`)
+    nicoText(`ログインボーナス！${bonus}€をゲットだぜ！！！`);
     updateUI();
     save();
 }

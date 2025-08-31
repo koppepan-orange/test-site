@@ -1,7 +1,20 @@
-@font-face {
-    font-family: genjuu;
-    src: url('../fonts/genjuu.ttf') format('truetype');
-}
+@font-face{src:url('../fonts/comicsans.ttf');font-family:comicsans;}
+@font-face{src:url('../fonts/papyrus.ttf');font-family:papyrus;}
+@font-face{src:url('../fonts/hangyaku.ttf');font-family:hangyaku;}
+@font-face{src:url('../fonts/cube12.ttf');font-family:cube12;}
+@font-face{src:url('../fonts/genjuu.ttf');font-family:genjuu;}
+@font-face{src:url('../fonts/kaimetsu.otf');font-family:kaimetsu;}
+@font-face{src:url('../fonts/hackgen.ttf');font-family:hackgen;}
+@font-face{src:url('../fonts/wingdings.ttf');font-family:wingdings;}
+@font-face{src:url('../fonts/wingdings2.ttf');font-family:wingdings2;}
+@font-face{src:url('../fonts/wingdings3.ttf');font-family:wingdings3;}
+@font-face{src:url('../fonts/kurundeco.otf');font-family: kurundeco;}
+@font-face{src:url('../fonts/starrysky.otf');font-family: starrysky;}
+@font-face{src:url('../fonts/kurobara.ttf');font-family: kurobara;}
+@font-face{src:url('../fonts/marukoius.ttf');font-family: marukoius;}
+@font-face{src:url('../fonts/novamono.ttf');font-family: novamono;}
+@font-face{src:url('../fonts/pricedown.ttf');font-family: pricedown;}
+@font-face{src:url('../fonts/corporate.otf');font-family: corporate;}
 html{
     margin: -8px;
     padding: -8px;
