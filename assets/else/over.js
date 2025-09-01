@@ -1,3 +1,47 @@
+//#region homeより
+function displayLocalStorage() {
+    const itemCount = localStorage.length;
+    for (let i = 0; i < itemCount; i++) {
+        const key = localStorage.key(i); // キーを取得
+        const value = localStorage.getItem(key); // 値を取得
+        nicoText(`キー: ${key}, 値: ${value}`);
+    }
+}
+document.addEventListener("paste", event => {
+    event.preventDefault(); // デフォルトのペーストを防ぐ
+    let text = (event.clipboardData || window.clipboardData).getData("Text"); // プレーンテキスト取得
+    document.execCommand("insertText", false, text); // プレーンテキストを挿入
+});
+
+function formatDate(date){ //見る用
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}/${month}/${day} ${hours}:${minutes}`;
+}
+function formatTime(date){ //データ保存用
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const time = `${year}${month}${day}${hours}${minutes}`;
+    return +time;
+}
+
+document.querySelectorAll('.hasp').forEach(ele => {
+    ele.classList.add('showp');
+    ele.addEventListener('focus', () => ele.classList.remove('showp'));
+    ele.addEventListener('blur', () => {
+        if (!ele.textContent.trim()) {
+            ele.classList.add('showp');
+        }
+    });
+})
+//#endregion
+
 //#region komagome
 function delay(ms){
     return new Promise(resolve=>setTimeout(resolve,ms));
@@ -1227,6 +1271,7 @@ let logS = logF.querySelector('.send');
 async function login(){
     setLocalStorage("banned", 0);
     usersRef = database.ref(`users/${username}`);
+    nickname = username
 
     nicoText('ログイン中...')
     await delay(500);
