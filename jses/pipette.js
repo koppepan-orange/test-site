@@ -1,32 +1,239 @@
 //こまごめピペット
+
+//#region komagome
+function delay(ms){
+    return new Promise(resolve=>setTimeout(resolve,ms));
+};
+async function nicoText(mes){
+    const newDiv = document.createElement('div');
+    newDiv.textContent = mes;
+    newDiv.className = 'nicotext';
+    newDiv.style.top = `calc(${random(0, 100)}vh - 20px)`;
+    newDiv.style.right = '0px';
+    document.querySelector('body').appendChild(newDiv);
+
+    requestAnimationFrame(() => {
+    newDiv.style.right = `${window.innerWidth + newDiv.offsetWidth}px`; //なんか電車の問題解いてるみたいだね
+    });
+    
+    await delay(2000); 
+    newDiv.remove();
+};
+function kaijou(num){
+    if(num == 0) return 0;
+    if(num == 1) return 1;
+    return num * kaijou(num - 1);
+}
+function arraySelect(array){
+    let select = Math.floor(Math.random()*array.length);
+    return array[select];
+};
+function arrayShuffle(array) {
+    for(let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+};
+function arraySize(array){
+    let res = new Set(array).size;
+    return res;
+};
+function arrayCount(array){
+    const counts = {};
+    for (let value of array) {
+    counts[value] = (counts[value] || 0) + 1;
+    }
+    return counts;
+}
+function arrayMult(array){
+    return array.reduce((a, v) => a * v, 1);
+}
+function arrayGacha(array,probability){
+    if(array.length !== probability.length){throw new Error("長さがあってないっす！先輩、ちゃんとチェックした方がいいっすよ〜？");}
+    const total = probability.reduce((sum, p) => sum + p, 0);
+    let random = Math.random() * total;
+    for (let i = 0; i < array.length; i++) {
+    if(random < probability[i]){
+    return array[i];
+    }
+    random -= probability[i];
+    }
+};
+function hask(obj, key){
+let res = obj.hasOwnProperty(key);
+res = res ? 1 : 0;
+return res;
+}
+function copy(obj){
+    if (obj === null || typeof obj !== 'object') {
+    return obj; // 基本型はそのまま返す
+    }
+    if (Array.isArray(obj)) {
+    return obj.map(copy); // 配列の各要素を再帰コピー
+    }
+    const result = {};
+    for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+        result[key] = copy(obj[key]); // オブジェクトのプロパティを再帰コピー
+    }
+    }
+    return result;
+};
+function probability(num){
+    return Math.random()*100 <= num;
+    //例:num == 20 → randomが20以内ならtrue,elseならfalseを返す
+};
+function random(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+function anagramSaySay(text, loop = 10, bet = '<br>'){
+    let menjo = 0;
+    let len = text.length;
+    if(len < 4) menjo = 1, console.log('長さが3以下なんで最大6っす');
+    
+    let optout = text.split('');
+    let optcou = arrayCount(optout);
+    let optvals = [];
+    for(a of Object.keys(optcou)){
+    let b = optcou[a];
+    b = kaijou(b);
+    optvals.push(b);
+    }
+    let optmat = arrayMult(optvals);
+    let cal = (kaijou(len) / optmat) - 1;
+
+    let loopen = loop;
+    console.log(`総数:${cal} 回数:${loopen}`);
+    if(cal < loopen) menjo = 1;
+    
+    let reses = [];
+    while(loopen > 0){
+    loopen -= 1;
+    let res = arrayShuffle(optout).join(''); 
+    if(reses.includes(res)){loopen += 1; continue}
+    
+    if(res == text && !menjo){loopen += 1; continue;}
+
+    if(res == text && menjo && reses.length < cal){loopen += 1; continue}
+    else if(res == text && menjo) res = '[重複エラー]';
+
+    reses.push(res);
+    }
+    
+    return reses.join(bet);
+}
+function setLocalStorage(name, value) {
+    localStorage.setItem(name, value || "");
+}
+function getLocalStorage(name) {
+    return localStorage.getItem(name);
+}
+async function error(){
+    addtext('errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
+    await delay(2000);
+    window.open('about:blank', '_self').close();
+}
+function hoshoku(color) {
+    color = color.replace(/^#/, ''); // #付きなら取る
+
+    if(color.length != 6) return console.log('カラーコードは6、ですよ〜？楽しないでくださいね〜♪')
+
+    // RGB分解
+    const r = parseInt(color.slice(0, 2), 16);
+    const g = parseInt(color.slice(2, 4), 16);
+    const b = parseInt(color.slice(4, 6), 16);
+
+    // 補色：255から引く
+    const compR = (255 - r).toString(16).padStart(2, '0');
+    const compG = (255 - g).toString(16).padStart(2, '0');
+    const compB = (255 - b).toString(16).padStart(2, '0');
+
+    return `#${compR}${compG}${compB}`;
+}
+//#endregion
+
+function displayLocalStorage() {
+    const itemCount = localStorage.length;
+    for (let i = 0; i < itemCount; i++) {
+        const key = localStorage.key(i); // キーを取得
+        const value = localStorage.getItem(key); // 値を取得
+        nicoText(`キー: ${key}, 値: ${value}`);
+    }
+}
+
+function removeLocalStorage(name){
+    localStorage.removeItem(name);
+}
+
+
+document.addEventListener("paste", event => {
+    event.preventDefault(); // デフォルトのペーストを防ぐ
+    let text = (event.clipboardData || window.clipboardData).getData("Text"); // プレーンテキスト取得
+    document.execCommand("insertText", false, text); // プレーンテキストを挿入
+});
+
+function formatDate(date){ //見る用
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}/${month}/${day} ${hours}:${minutes}`;
+}
+function formatTime(date){ //データ保存用
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const time = `${year}${month}${day}${hours}${minutes}`;
+    return +time;
+}
+
+document.querySelectorAll('.hasp').forEach(ele => {
+    ele.classList.add('showp');
+    ele.addEventListener('focus', () => ele.classList.remove('showp'));
+    ele.addEventListener('blur', () => {
+        if (!ele.textContent.trim()) {
+            ele.classList.add('showp');
+        }
+    });
+})
+
+//#region description
+let movableDescription = document.getElementById('movableDescription');
+document.addEventListener('mousemove', (e) => {
+    movableDescription.style.left = `${e.clientX + 10}px`;
+    movableDescription.style.top = `${e.clientY + 10}px`;
+});
+document.addEventListener('mouseover', (e) => {
+    const descTarget = e.target.closest('[data-description]');
+    if (descTarget) {
+        const desc = descTarget.dataset.description;
+        movableDescription.innerHTML = desc;
+        movableDescription.style.display = 'block';
+    }
+});
+document.addEventListener('mouseout', (e) => {
+    const descTarget = e.target.closest('[data-description]');
+    if (descTarget) {
+        movableDescription.innerHTML = '';
+        movableDescription.style.display = 'none';
+    }
+});
+//#endregion
+
+
+let doko = 'Home'
+
+
 //#region DOM
 document.addEventListener('DOMContentLoaded', async() => {
-    moveAnotherDimension();
     autoLogin();
 
     
-    let noticesRef = database.ref('kari/notices');
-    let firebaseData = await noticesRef.once('value');
-    let firebaseResults = firebaseData.exists() ? Object.values(firebaseData.val()) : [];
-    let localResults = noticeData;
-    let combinedResults = [...firebaseResults, ...localResults];
-
-    NList.innerHTML = '';
-    combinedResults.forEach(noti => {
-        let item = makeNotice(noti);
-        NList.appendChild(item);
-    });
-
-    noticesRef.on('child_added', (snapshot) => {
-        let noti = snapshot.val();
-        let item = makeNotice(noti);
-        let existing = document.querySelector(`#notice .list .item[data-key="${snapshot.key}"]`);
-        if(existing){
-            console.log("重複を確認");
-            return;
-        }
-        NList.appendChild(item);
-    });     
 
 });
 //#endregion
@@ -39,188 +246,7 @@ function vibrate(element) {
     }, 500);
 }
 //#endregion
-//#region upperUIとsideMenu
-const upperUI = document.querySelector('#upperUI');
 
-const menuToggle = document.querySelector('#menuToggle');
-const sideMenu = document.querySelector('#sideMenu');
-menuToggle.addEventListener('click', () => {
-    if(sideMenu.style.left === '0px'){
-        sideMenu.style.left = '-255px';
-    }else{
-        sideMenu.style.left = '0px';
-    }
-});
-
-document.querySelector(".smart-phone").addEventListener("click", function () {
-    document.querySelectorAll(".smart-icon:not(.smart-phone)").forEach(icon => {
-        icon.classList.toggle("hidden");
-    });
-});
-
-
-let cpopup = document.querySelector('#cpopup');
-let cpopupNow = 0;
-document.querySelectorAll('.hastxt').forEach((element) => {
-    addEventListener('click', (event) => {
-        element.addEventListener('click', (event) => {
-            if(cpopupNow == 0){
-                let name = event.target.getAttribute('data-name');
-                console.log(name+'が発動しましたぜぇい')
-                fetch(`assets/txts/${name}.txt`)
-                .then(response => response.text())
-                .then(data => {cpopup.innerText = data;})
-                .catch(error => console.error('Error:', error));
-                cpopup.style.display = 'block';
-                cpopupNow = 1;
-            }else{
-                cpopup.innerHTML = '';
-                cpopup.style.display = 'none';
-                cpopupNow = 0;
-            }
-        })
-    })
-})
-
-//change-font
-function changeFont(){
-    document.querySelector('#body').style.fontFamily = document.querySelector('#font-select').value;
-}
-
-//toggle
-document.querySelectorAll('.toggles').forEach((element) => {
-    element.addEventListener('change', (event) => {
-        if(event.target.checked){
-            document.getElementById(event.target.getAttribute('data-name')).style.display = 'block';
-        }else{
-            document.getElementById(event.target.getAttribute('data-name')).style.display = 'none';
-        }
-    })
-})
-
-//#endregion
-//#region tabs
-const Tabs = {
-    'Home':{
-        'home':{
-            name:'home',
-            initial:1,
-        },
-        'memo':{
-            name:'memo',
-            initial:0,
-        },
-        'tools':{
-            name:'tools',
-            initial:0,
-        },
-        'profile':{
-            name:'profile',
-            initial:0,
-        }
-    },
-
-    'Commu':{
-        'nanj':{
-            name:'nanj',
-            initial:1,
-        },
-        'twitter2':{
-            name:'twitter2',
-            initial:0,
-        },
-        'jine':{
-            name:'jine',
-            initial:0,
-        }
-    },
-
-    'Anonymous':{
-        'question':{
-            name:'question',
-            initial:1,
-        },
-    },
-
-    'Study':{
-        'en':{
-            name:'en',
-            initial:1,
-        },
-        'tips':{
-            name:'tips',
-            initial:0,
-        }
-    },
-
-    'Pixelen':{
-        'books':{
-            name:'books',
-            initial:1,
-        }
-    }
-}
-
-document.addEventListener('click', ele => {
-    if(ele.target.classList.contains('tab')){
-        let doko = Tabs[ele.target.dataset.doko]
-        let key = ele.target.dataset.name
-        Object.keys(doko).forEach(tab => {
-            document.getElementById(tab).style.display = 'none';
-            document.getElementById(`${tab}-tab`).src = `assets/icons/${doko[tab].name}2.png`;
-            Tabs[ele.target.dataset.doko][tab].initial = 0;
-        })
-        document.getElementById(ele.target.dataset.name).style.display = 'block';
-        ele.target.src = `assets/icons/${key}1.png`;
-        Tabs[ele.target.dataset.doko][key].initial = 1;
-    }
-})
-
-//#endregion
-//#region dimension
-document.querySelectorAll('.c-dimension').forEach(ele => {
-    ele.addEventListener('click', () => {
-        doko = ele.dataset.doko;
-        document.querySelectorAll('.tab').forEach(tab => {tab.remove()})
-        moveAnotherDimension();
-    })
-})
-function moveAnotherDimension(){
-    Object.keys(Tabs).forEach(d => {
-        document.getElementById(d).style.display = 'none';
-    })
-    Object.keys(Tabs[doko]).forEach(tab => {
-        const tabElement = document.createElement("img");
-        tabElement.className = "tab";
-        tabElement.id = `${tab}-tab`;
-        if(Tabs[doko][tab].initial == 1){
-            tabElement.src = `assets/icons/${Tabs[doko][tab].name}1.png`
-        }else{
-            tabElement.src = `assets/icons/${Tabs[doko][tab].name}2.png`;
-        }
-        tabElement.dataset.doko = doko;
-        tabElement.dataset.name = Tabs[doko][tab].name;
-        document.getElementById("tabs").appendChild(tabElement);
-    })
-    document.getElementById(doko).style.display = 'block';
-}
-//#endregion
-//#region wingdings特殊機構のお話
-let wdnow = 0;
-document.querySelector('#wdcheck').addEventListener('click', () => {
-if(wdnow == 0){
-wdnow = 1;
-document.querySelectorAll('.wd').forEach(element => {
-element.style.display = 'inline';
-})
-}else{
-wdnow = 0;
-document.querySelectorAll('.wd').forEach(element => {
-element.style.display = 'none';
-})
-}
-})
-//#endregion
 //#region firebaseのいざこざ
 const firebaseConfig = {
     apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
@@ -238,6 +264,7 @@ let username = 'no name';
 let usersRef = null;
 
 //#endregion
+
 //#region ログイン機構
 document.querySelector('#login-button').addEventListener('click', () => {
     if(document.querySelector('#login').style.opacity == 0){
@@ -252,9 +279,11 @@ document.querySelector('#login-button').addEventListener('click', () => {
 })
 
 async function login(){
-
     setLocalStorage("banned", 0);
-    usersRef = database.ref('users/'+username);
+    usersRef = database.ref(`users/${username}`);
+    
+    if(Iam == 'chat') chatLogin();
+    if(Iam != 'home') return;
 
     usersRef.once('value', function(snapshot){
         if(snapshot.exists()){
@@ -286,17 +315,24 @@ async function login(){
 }
 
 document.querySelector('#login-login').addEventListener('click', () => {
+    console.log('押されたよ！')
     username = document.querySelector('#username').value;
+    console.log(`usernameはこれ！=> ${username}`)
     let password = document.querySelector('#password').value;
-
+    console.log(`passwordはこれ！=> ${password}`)
     let kariusersRef = database.ref(`users/${username}`);
+    console.log("kariusersRefはこれ！↓")
+    console.log(kariusersRef)
+    x = 1
     kariusersRef.once('value', function(snapshot){
+        console.log("存在するってよ！！")
         if(snapshot.exists()){
             if(snapshot.val().password == password){
                 setLocalStorage("username", username)
                 login();
             }
         }else{
+            console.log("存在しないってよ！！")
             let usersRef = database.ref(`users/${username}`);
             usersRef.update({
                 password:password,
@@ -339,6 +375,7 @@ document.querySelector('#logout').addEventListener('click', () => {
 })
 
 window.addEventListener('beforeunload', () => {
+    if(!usersRef) return;
     usersRef.once('value').then(function(snapshot) {
         if(snapshot.exists()){
             usersRef.update({
@@ -347,122 +384,4 @@ window.addEventListener('beforeunload', () => {
         }
     })
 });
-//#endregion
-//#region expとか
-let exp = 0;
-let level = 1;
-let maxexp = 50;
-let euro = 0;
-let expbar = document.querySelector('#exp');
-let exptext = document.querySelector('#exptext');
-let overHiraku = () => {location.href = 'over.html'};
-expbar.addEventListener('click', overHiraku);
-exptext.addEventListener('click', overHiraku);
-function updateUI(){
-    if(exp >= maxexp){
-        exp -= maxexp;
-        level += 1;
-        maxexp += 25;
-    }
-    expbar.style.width = `${exp/maxexp*100}%`;
-    exptext.innerText = `${exp}/${maxexp}`
-    document.querySelector('#Username').textContent = username;
-    document.querySelector('#Level').textContent = `Lv:${level}`;
-    document.querySelector('#Euro').textContent = `${euro}€`;
-}
-function save(){
-    usersRef.update({
-        level:level,
-        exp:exp,
-        euro:euro
-    })
-}
-//#endregion
-//#region login-bonus
-document.querySelector('#login-bonus').addEventListener('click', () => {
-    let now = new Date();
-    let day = String(now.getDate()).padStart(2, '0');
-
-    usersRef.once('value', snapshot => {
-        let data = snapshot.val();
-        console.log(`今までのログイン[${data.logined??'何もないよ（笑)'}]に${day}は入ってるかな〜？`); //ラッキースターは誰かな〜？
-        
-        if(!data.logined || day == 1){
-            usersRef.update({
-                logined: [day],
-                continued: 1
-            })
-            console.log('今月初のログインらしい')
-            loginBonus(1);
-        }else{
-            if(!data.logined.includes(day)){
-                let last = data.logined.slice(-1)[0];
-                if(last == day - 1){
-                    data.continued += 1;
-                }else{
-                    data.continued = 1;
-                }
-                data.logined.push(day);
-                usersRef.update({
-                    logined: data.logined,
-                    continued: data.continued
-                })   
-                console.log('受け取れたね、めでたいね')
-                loginBonus(data.continued);
-            }else{
-                nicoText(`受取済みやで！！`);
-            }
-        }
-    })
-})
-const LoginBonuses = [50,80,100,150,200,250,300]
-function loginBonus(continued){
-    let bonus
-    if(continued < 7){
-        bonus = LoginBonuses[continued-1];
-    }else{
-        bonus = LoginBonuses[6];
-    }
-    euro += bonus;
-    nicoText(`連続ログイン${continued}回目`)
-    nicoText(`ログインボーナス！${bonus}€をゲットだぜ！！！`);
-    updateUI();
-    save();
-}
-//#endregion
-//#region notice
-const Notice = document.querySelector('#notice');
-const NList = document.querySelector('#notice .list');
-const NShow = document.querySelector('#notice .show');
-const NX = document.querySelector('#notice .x');
-function makeNotice(noti){
-    let item = document.createElement('div');
-    item.className = 'item';
-    item.innerText = noti.title;
-    item.setAttribute('data-key', noti.key);
-    item.addEventListener('click', () => {
-        NList.style.display = 'none';
-        NShow.style.display = 'block';
-        NShow.querySelector('.title').innerText = noti.title;
-        NShow.querySelector('.body').innerText = noti.body;
-    });
-    return item;
-}
-document.querySelector('#notice-button').addEventListener('click', () => {
-    Notice.style.display = 'block';
-    NList.style.display = 'block';
-    NShow.style.display = 'none';
-    NX.style.display = 'block';
-})
-document.querySelector('#notice .x').addEventListener('click', () => {
-    Notice.style.display = 'none';
-    NList.style.display = 'block';
-    NShow.style.display = 'none';
-    NX.style.display = 'none';
-})
-document.querySelector('#notice .show .back').addEventListener('click', () => {
-    NList.style.display = 'block';
-    NShow.style.display = 'none';
-    NX.style.display = 'block';
-})
 //#endregion

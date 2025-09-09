@@ -1,0 +1,365 @@
+@font-face{src:url('fonts/comicsans.ttf');font-family:comicsans;}
+@font-face{src:url('fonts/papyrus.ttf');font-family:papyrus;}
+@font-face{src:url('fonts/hangyaku.ttf');font-family:hangyaku;}
+@font-face{src:url('fonts/cube12.ttf');font-family:cube12;}
+@font-face{src:url('fonts/kaimetsu.otf');font-family:kaimetsu;}
+@font-face{src:url('fonts/kurundeco.otf');font-family: kurundeco;}
+@font-face{src:url('fonts/starrysky.otf');font-family: starrysky;}
+@font-face{src:url('fonts/kurobara.ttf');font-family: kurobara;}
+@font-face{src:url('fonts/marukoius.ttf');font-family: marukoius;}
+@font-face{src:url('fonts/novamono.ttf');font-family: novamono;}
+@font-face{src:url('fonts/pricedown.ttf');font-family: pricedown;}
+@font-face{src:url('fonts/corporate.otf');font-family: corporate;}
+
+html{
+    margin: -8px;
+    overflow: hidden;
+}
+.row{
+    display: flex;
+    flex-direction: row;
+}
+.column{
+    display: flex;
+    flex-direction: column;
+}
+img{
+    /* 画像をドラッグできないようにするやつ */
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+}
+::-webkit-scrollbar {
+    display: none;
+}
+:focus{
+    outline: none;
+}
+
+/*nicotext*/
+.nicotext{
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: #f0f8ff80;
+    color: #000000;
+    font-size: 20px;
+    transition: right 2.0s linear;
+    white-space: nowrap;
+    pointer-events: none;
+}
+/*logとtext*/
+#log{
+    display: none;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 320px;
+    height: 200px;
+    border: 1px solid #ffffff;
+    background-color: rgba(0,0,0,0);
+    position: fixed;
+    bottom: 150px;
+    right: -300px;
+    color: #fefefe;
+    overflow-y: hidden;
+    transition: right 0.3s;
+    z-index: 254;
+}
+#log .opener{
+    width: 20px;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+    color: #fefefe;
+    text-align: center;
+    cursor: pointer;
+    z-index: 254;
+}
+#log .log{
+    width: 300px;
+    height: 100%;
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background-color: rgba(0,0,0,0.8);
+    color: #fefefe;
+    text-align: left;
+    font-size: 14px;
+    transition: right 0.3s;
+    z-index: 253;
+}
+#text{
+    display: none;
+    background: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1.2em;
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+
+    white-space: nowrap;
+    overflow: hidden;
+    width: fit-content; /* 文字の長さに応じた幅 */
+    animation: fadeIn 0.5s ease forwards;
+}
+@keyframes fadeIn {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+.color-red{
+    color: #ff1919;
+}
+.color-pink{
+    color: #ff56e9;
+}
+.color-blue{
+    color: #1919ff;
+}
+
+/* description */
+#movableDescription{
+    display: none;
+    position: fixed;
+    pointer-events: none;
+    background-color: #363636e2;
+    color: #f0f8ff;
+    text-align: left;
+    padding: 5px 10px;
+    border-radius: 5px;
+    z-index: 256;
+}
+
+水色 #f0f8ff, #eaf5ff, #def0ff, #cfe9ff, #b5dcff
+紫色 #f8f6ff, #f5f2ff, #f1edff, #ece8ff, #e9e4ff
+橙色 #fffaf3, #fff7eb, #fff3e2, #fff0d9, #ffeccf
+緑色 #f6fff2, #eeffe7, #e6ffdc, #ddffd0, #d4ffc3
+
+#dummy{
+    color: #cfe9ff;
+    /* 上の謎の4つの文章によって、なんか最初のやつ無効化されるっぽい */
+    /* 謎に */
+}
+
+body {
+    margin: 0;
+    background-color: #f6fff2;
+    user-select: none;
+}
+
+#sideMenu {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    color: #333344;
+    background-color: #cecece;
+    transition: left 0.3s;
+}
+#sideMenu.tog{
+    left: 0;
+}
+#sideMenu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+#sideMenu ul li {
+    padding: 3px;
+}
+#sideMenu ul li a {
+    color: #000000;
+    text-decoration: none;
+}
+#sideMenu button {
+    background: none;
+    border: none;
+    color: #000000;
+    font: hangyaku;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 0;
+}
+#menuToggle {
+    display: none;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: #000000;
+    border: none;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+/* login */
+#Login, #nanj{
+    width: 100%;
+    max-width: 100%;
+    padding: 0 50px;
+    margin: 50px auto;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+}
+#Login {
+    display: flex;
+}
+.login-form {
+    padding: 20px;
+}
+.login-form input {
+    width: calc(100% - 20px);
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
+}
+.login-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #c8c8c8;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+.login-form button:hover {
+    background-color: #8b8b8b;
+}
+/* なんJ */
+#messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    max-height: 750px;
+    border-bottom: 1px solid #dedede;
+}
+.message {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background-color: #bebebe;
+    border-radius: 5px;
+    max-width: 80%;
+    max-height: 150px;
+    overflow-y: auto;
+}
+.message.user {
+    background-color: #c7dfff;
+    align-self: flex-end;
+}
+#message-input {
+    border: none;
+    padding: 15px;
+    flex: 1;
+    font-size: 16px;
+}
+#send-button {
+    border: none;
+    padding: 15px;
+    background-color: #c8c8c8;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+#send-button:hover {
+    background-color: #8b8b8b;
+}
+#room-select {
+    display: none;
+    width: 100%;
+    height: 30px;
+    border: 1px solid #ccc;
+}
+#room-make-zone {
+    display: flex; 
+    justify-content: space-between; 
+    padding: 10px; 
+}
+
+
+.hover-element {
+    position: relative;
+    display: inline-block;
+}
+.popup {
+    display: none;
+    padding: 10px;
+    background-color: rgba(72, 72, 72, 0.563);
+    color: #fff;
+    border-radius: 5px;
+}
+.hover-element:hover .popup {
+    display: block;
+}
+
+/* twitter2 */
+#twitter2 {
+    width: 500px;
+    margin: 50px auto;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    display: none;
+}
+.tweets {
+    position: relative;
+    flex: 1;
+    width: 500px;
+    overflow-y: scroll;
+    padding: 10px;
+    max-height: 750px;
+    border-bottom: 1px solid #dedede;
+}
+#t-make-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width:80px;
+    border: none;
+    padding: 5px;
+    background-color: #2d46fe;
+    color: #ffffff;
+    font-size: 32px;
+}
+#t-make-zone{
+    display: block;
+    position: absolute;
+    width: 500px;
+    height: 600px;
+    bottom: -600px;
+    background-color: #b5b5b5;
+    color:#000000;   
+    transition: bottom 0.3s;
+}
+#t-make-send, #t-make-cancel{
+    border: none;
+    background-color: none;
+    color: #2d46fe;
+    font-size: 18px;
+}
+#t-make-text{
+    background-color: #cecece;
+    resize: vertical;
+    height: 590px;
+}
+.tweet{
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    background-color: #ededed;
+    border-radius: 5px;
+    max-width: 80%;
+    max-height: 250px;
+    overflow-y: auto;
+}
