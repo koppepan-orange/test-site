@@ -329,252 +329,229 @@ async function pageChange(code){
 
 //#region リンクたちの動き
 const Links = {
-    'memo':{
-        'files':{
-            id: 'files',
+    'memo':[
+        {
             name: 'file-site',
             href: 'https://forest-inlet.github.io/tools/fileTransfer?koppepanorange',
             iframable:1,
             description: 'ファイルを送受信できるサイトです！！<br>まじですごいと思う<br>あ友達作です'
         },
-        'memoWeb': {
-            id: 'memoWeb',
+        {
             name: 'メモweb',
             href: 'https://memo.onl.jp/?Koppepan23',
             iframable:0,
             description: '昔使ってたところ。<br>今はmemo.html使ってるけどね'
         },
-        'fileWeb': {
-            id: 'fileWeb',
+        {
             name: 'ファイルweb',
             href: 'https://file.onl.jp/?Koppepan23',
             iframable:0,
             description: 'これは有用ちゃん<br>ファイルを送受信できる<br>そのうち作りたい.....'
         },
-        'writebox': {
-            id: 'writebox',
+        {
             name: 'writebox',
             href: 'https://write-box.appspot.com/',
             iframable:0,
             description: '簡単にhtmlのテストができるサイト<br>けどjsとcssは無効'
         },
-    },
-    'tool':{
-        'dropbox': {
-            id: 'dropbox',
+    ],
+    'tool':[
+        {
             name: 'dropbox',
             href: 'https://www.dropbox.com/home',
             iframable:0,
             description: '単純に優秀な子<br>ファイルWebよりも持続性が高い<br>ログイン必須'
         },
-        'roulette': {
-            id: 'roulette',
+        {
             name: 'ルーレット等生成機',
             href: 'https://jp.piliapp.com/random/wheel/',
             iframable:1,
             description: '名の通り感。<br>他にも乱数とかもいける<br>暇つぶしできるかもね'
         },
-        'colorSite': {
-            id: 'colorSite',
+        {
             name: 'カラーサイト',
             href: 'https://www.color-site.com/',
             iframable:1,
             description: '色の種類を調べれるサイト<br>まじで優秀<br>rgbにも対応'
         },
-        'mediaEdit': {
-            id: 'mediaEdit',
+        {
             name: 'mp3、mp4編集サイト',
             href: 'https://123apps.com/ja/',
             iframable:1,
             description: '動画→音ができるサイト<br>いつも愛用させていただいております<br>かんしゃ〜'
         },
-    },
-    'make':{
-        'scratch': {
-            id: 'scratch',
+    ],
+    'make':[
+        {
             name: 'scratch',
             href: 'https://scratch.mit.edu/users/koppepan_orange/',
             iframable:0,
             description: '言わずもがな<br>前はここで作ってた..っていう名残<br>でもやってほしい'
         },
-        'flat': {
-            id: 'flat',
+        {
             name: 'flat',
             href: 'https://flat.io/ja',
             iframable:0,
             description: '音楽が比較的簡単に作れるサイト<br>ログイン必須'
         },
-        'musescore': {
-            id: 'musescore',
+        {
             name: 'musescore',
             href: 'https://musescore.com/user/41107809',
             iframable:0,
             description: '楽譜を調べれるサイト<br>人気な曲はありがちだけど<br>そんなそんなな曲はないことが多い'
         },
-        'pixnote': {
-            id: 'pixnote',
+        {
             name: 'pixnote',
             href: 'https://pixnote.net/',
             iframable:1,
             description: '簡単にドット絵が描けるサイト<br>まじで良い<br>ほんとに'
         },
-        'pixlate': {
-            id: 'pixlate',
+        {
             name: 'pixlate',
             href: 'https://www.pixilart.com/koppepanorange',
             iframable:0,
             description: 'ドット絵が描けるサイト2<br>ちょっと複雑だけど自由度は高め'
         },
-        'thirtyDollar': {
-            id: 'thirtyDollar',
+        {
             name: 'thirty dollar',
             href: 'https://thirtydollar.website/',
             iframable:0,
             description: '効果音で音楽を作れるサイト<br>internet overdoseやってる人もいたね'
         },
-    },
-    'study':{
-        'duolingo': {
-            id: 'duolingo',
+    ],
+    'study':[
+        {
             name: 'duolingo',
             href: 'https://www.duolingo.com/profile/koppepan_orange',
             iframable:0,
             description: '言語が学べるサイト<br>ﾁｮｳﾕｰﾒｲ!ﾔﾊﾞｵ'
         },
-        'sushiDa': {
-            id: 'sushiDa',
+        {
             name: '寿司打',
             href: 'http://typingx0.net/sushida/',
             iframable:0,
             description: 'タイピング競いの定番<br私は苦手です'
         },
-        'ankey': {
-            id: 'ankey',
+        {
             name: 'ankey',
             href: 'https://ankey.io/@koppepanorange',
             iframable:0,
             description: '歌詞とか色々でタイピングができるサイト<br>楽しい<br>好き'
         },
-    },
-    'sns':{
-        'reddit': {
-            id: 'reddit',
+    ],
+    'sns':[
+        {
+            name: 'chat-site',
+            href: 'chat.html',
+            iframable:1,
+        },
+        {
             name: 'reddit',
             href: 'https://www.reddit.com/user/koppepan_orange/',
             iframable:0,
             description: '外国掲示板定番のやつ<br>英語しかない<br>絵はほとんど転載<br>まあ常時喧嘩してるtwitterよりはマシ'
         },
-        'github': {
-            id: 'github',
+        {
             name: 'github',
             href: 'https://github.com/koppepan-orange',
             iframable:0,
             description: 'ほんとにいつもありがとね...<br>このサイトもあなたのおかげです'
         },
-        'discord': {
-            id: 'discord',
+        {
             name: 'discord',
             href: 'https://discord.com/channels/@me',
             iframable:0,
             description: 'いつもありがとな、ほんとに<br>感謝してるぜ👍🏻'
         },
-        'chatWeb': {
-            id: 'chatWeb',
+        {
             name: 'チャットweb',
             href: 'https://chat.onl.jp/?koppepan23',
             iframable:0,
             description: 'ちゃんと喋れるいいサイト<br>けどchat.htmlの方が良い'
         },
-        'pixiv': {
-            id: 'pixiv',
+        {
             name: 'pixiv',
             href: 'https://www.pixiv.net/users/93550041',
             iframable:0,
             description: '絵が見れるサイト<br>twitterよりも民度が良い<br>絵師さんの巣窟'
         },
-        'twitch': {
-            id: 'twitch',
+        {
             name: 'twitch',
             href: 'https://www.twitch.tv/koppepan_orange',
             iframable:0,
             description: '配信が見れるサイト<br>いつかはしてみたいねぇ....'
         },
-        'instagram': {
-            id: 'instagram',
+        {
             name: 'instagram',
             href: 'https://www.instagram.com/koppepan_orange/',
             iframable:0,
             description: '2番目に好きなSNS<br>けど最近投稿できてない...'
         },
-        'twitter': {
-            id: 'twitter',
+        {
             name: 'twitter',
             href: 'https://twitter.com/koppepan_orange',
             iframable:0,
             description: '日本で最も人気なSNS<br>色んな界隈が入り混じってて良いけど<br>気抜いたら関係ないやつらが流れ込んでくるのが難点<br>好きだけどね'
         },
-        'youtube': {
-            id: 'youtube',
+        {
             name: 'youtube',
             href: 'https://www.youtube.com/channel/UCFvmwWDRrVqM22icC7QLx1w',
             iframable:0,
             description: '言わずもがな〜な動画投稿サイト<br>たまーーーに投稿してる<br>のばまんさんはおすすめ'
         },
-        'litLink': {
-            id: 'litLink',
+        {
             name: 'lit.link',
             href: 'https://lit.link/koppepanorange',
             iframable:0,
             description: '私についてまとめてあるサイト<br>けど多分このサイトだけで事足りる'
         },
-        'kiite': {
-            id: 'kiite',
+        {
             name: 'kiite',
             href: 'https://kiite.jp/user/koppapan_orange',
             iframable:0,
             description: '音楽が広告なしで見れるサイト<br>ボカロのみ<br>けどニコ動基盤だから学校では無理<br>ガッデム..ってやつ？<br>ベアさんといよわさんはおすすめ'
         },
-        'magicalDraw': {
-            id: 'magicalDraw',
+        {
             name: 'MagicalDraw',
             href: 'https://draw.kuku.lu/pchat.php?hash=898857247',
             iframable:0,
             description: '俗にいう"絵チャ"<br>友達と合作ができる<br>楽しい'
         },
-    },
-    'game':{
-        'cybercode': {
-            id: 'cybercode',
+    ],
+    'game':[
+        {
+            name: 'game-site',
+            href: 'https://koppepan-orange.github.io/game-site/',
+            iframable:1,
+        },
+        {
             name: 'cybercodeonline',
             href: 'https://cybercodeonline.com',
             iframable:0,
             description: '硬派で古き良きMMORPG<br>まじで楽しい..いや人によるかも<br>AFKが充実してて好き'
         },
-        'browserGame': {
-            id: 'browserGame',
+        {
             name: 'browsergame',
             href: 'https://sdin.jp/browser/',
             iframable:0,
             description: '色んなゲームで遊べるサイト<br>カジノ系列もあるよ<br>確かブロック貫通'
         },
-        'arealMe': {
-            id: 'arealMe',
+        {
             name: 'ARealMe',
             href: 'https://www.arealme.com/',
             iframable:0,
             description: '色んなテストができるサイト<br>クリック速度とか反射神経とか<br>テストサイトではないです。'
         },
-        'unityroom': {
-            id: 'unityroom',
+        {
             name: 'unityroom',
             href: 'https://unityroom.com/new_arrivals',
             iframable:0,
             description: '色んな人の作ったゲームで遊べるサイト<br>"ゆめきゃわ"みたいなやつはおすすめ'
         }
-    },
+    ],
 };
 
-Object.keys(Links).forEach(type => {
+for(let type of Links){
     const details = document.createElement('details');
     const summary = document.createElement('summary');
     summary.textContent = type;
@@ -582,8 +559,8 @@ Object.keys(Links).forEach(type => {
     details.id = `${type}tachi`;
     document.querySelector('#home .links').appendChild(details);
 
-    Object.keys(Links[type]).forEach(key => {
-        const link = Links[type][key];
+    for(let key of Links[type]){
+        const link = Links[type].find(k => k.name === key);
         const a = document.createElement('a');
         a.href = link.href;
         a.textContent = link.name;
@@ -600,9 +577,9 @@ Object.keys(Links).forEach(type => {
         
         document.getElementById(`${type}tachi`).appendChild(a);
         document.getElementById(`${type}tachi`).appendChild(document.createElement('br'));
-    });
+    };
     document.getElementById(`${type}tachi`).appendChild(document.createElement('br'));
-})
+};
 //#endregion
 
 //#region rakuraku-memo
