@@ -768,29 +768,6 @@ function memoAddCreate(){
 //#endregion
 //#region iframeのお話
 
-let Iframes = {
-    'bing':{
-        id:'bing',
-        name:'bing.com',
-        src:'https://www.bing.com/search?q=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae%e6%af%8d%e3%82%82%e6%88%91%e3%82%92%e5%be%85%e3%81%a4%e3%82%89%e3%82%80%e3%81%9d&qs=RQ&pq=%e6%86%b6%e8%89%af%e3%82%89%e3%81%af%e4%bb%8a%e3%81%af%e7%bd%b7%e3%82%89%e3%82%80%e5%ad%90%e6%b3%a3%e3%81%8f%e3%82%89%e3%82%80%e3%81%9d%e3%82%8c%e3%81%9d%e3%81%ae&sc=4-18&cvid=BDF68943856B40AC93BF5E6E4207F06D&FORM=QBRE&sp=1&ghc=1&lq=0',
-    },
-    'bing_trans':{
-        id:'bing_trans',
-        name:'bing-trans',
-        src:'https://www.bing.com/translator?from=&to=ja&setlang=ja',
-    },
-    // 'deepAI':{
-    //     id:'deepAI',
-    //     name:'deep.ai',
-    //     src:'https://deepai.org/chat',
-    // },
-    'talkAI':{
-        id:'talkAI',
-        name:'talk.ai',
-        src:'https://talkai.info/ja/chat/',
-    }
-    
-}
 let NowLinkframe = 1;
 function LinkframeGo(){
     document.getElementById(`Linkframe${NowLinkframe}`).setAttribute('data-src', document.getElementById("LinkInput").value);
@@ -811,7 +788,7 @@ document.querySelector('#LinkSelect').addEventListener('change', event =>{
     document.querySelector('#LinkInput').value = document.getElementById(`Linkframe${NowLinkframe}`).getAttribute('data-src');
 })
 
-document.querySelector('#linkSite .iframe-full').addEventListener('click', event => {
+document.querySelector('#linkSite .full').addEventListener('click', event => {
     event.preventDefault();
     console.log('clicked~~~'+NowLinkframe);
     document.querySelector(`#Linkframe${NowLinkframe}`).requestFullscreen();
@@ -834,31 +811,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     
-    Object.keys(Iframes).forEach(iframe => {
-        const details = document.createElement("details");
-
-        const summary = document.createElement("summary");
-        summary.textContent = Iframes[iframe].name;
-
-        const button = document.createElement("button");
-        button.className = "iframe-button";
-        button.dataset.id = `Iframe-${iframe}`;
-        button.textContent = "full";
-
-        const br = document.createElement("br");
-
-        const iframeElement = document.createElement("iframe");
-        iframeElement.dataset.id = `Iframe-${iframe}`;
-        iframeElement.className = "iframe-frame";
-        iframeElement.src = Iframes[iframe].src;
-
-        details.appendChild(summary);
-        details.appendChild(button);
-        details.appendChild(br);
-        details.appendChild(iframeElement);
-
-        document.getElementById("iframes").appendChild(details); // 追加したい要素に変更して
-    })
     
     
     

@@ -551,7 +551,7 @@ const Links = {
     ],
 };
 
-for(let type of Links){
+Object.keys(Links).forEach(type => {
     const details = document.createElement('details');
     const summary = document.createElement('summary');
     summary.textContent = type;
@@ -559,8 +559,7 @@ for(let type of Links){
     details.id = `${type}tachi`;
     document.querySelector('#home .links').appendChild(details);
 
-    for(let key of Links[type]){
-        const link = Links[type].find(k => k.name === key);
+    for(let link of Links[type]){
         const a = document.createElement('a');
         a.href = link.href;
         a.textContent = link.name;
@@ -579,7 +578,7 @@ for(let type of Links){
         document.getElementById(`${type}tachi`).appendChild(document.createElement('br'));
     };
     document.getElementById(`${type}tachi`).appendChild(document.createElement('br'));
-};
+});
 //#endregion
 
 //#region rakuraku-memo

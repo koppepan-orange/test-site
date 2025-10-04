@@ -86,7 +86,7 @@ html{
 }
 
 /*こまごめピペット*/
-#description {
+#movableDescription {
     display: none;
     position: fixed;
     pointer-events: none;
@@ -353,10 +353,17 @@ hr{
     padding:2px;
     z-index: 1100;
 }
+
 #Linkframe2,#Linkframe3,#Linkframe4{
     display: none;
 }
-.iframe-button{
+#iframes .commands{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+#iframes .button{
     width: 30px;
     height: 20px;
     border: 1px solid #b2b2b2;
@@ -365,12 +372,6 @@ hr{
     appearance: none;
 }
 
-.toggle{
-    width:50px;
-    height:20px;
-    border: 1px solid #cfe9ff;
-    background-color: #e5ecf2;
-}
 
 .wd{
     display: none;
