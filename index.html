@@ -1,131 +1,35 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="Icon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="assets/else/over.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-    <link rel="stylesheet" href="style.css">
-    <title>test-site</title>
 </head>
-<body id="body">
-
-    <div id="upperUI">
-        <div id="user">
-            <div id="Username">no name</div>
-            <div id="Level">Lv:#ERROR!</div>
-            <div id="Euro">0€</div>
-        </div>
-        <div id="expbar">
-            <div id="exp"></div>
-            <div id="exptext">0/NaN</div>
-        </div>
-        <div id="login-button">login</div>
-        <div id="menuToggle">☰</div>
-    </div>
-    <nav id="sideMenu">
-        <hr noshade="true">
-        <ul>
-            <li><input type="checkbox" data-name="links" class="toggles" checked>Links</li>
-            <li><input type="checkbox" data-name="memos" class="toggles" checked>Memos</li>
-            <li><input type="checkbox" data-name="iframes" class="toggles" checked>Iframes</li>
-        </ul>
-        <hr noshade="true">
-        <ul>
-        <li>
-            <select id="font-select" onchange="changeFont()">
-                <option value="comicsans">comicsans</option>
-                <option value="papyrus">papyrus</option>
-                <option value="Hangyaku">Hangyaku</option>
-                <option value="cube12">cube12</option>
-                <option value="genjuu">genjuu</option>
-                <option value="hackgen">hackgen</option>
-                <option class="wd" value="webdings">webdings</option>
-                <option class="wd" value="wingdings">wingdings</option>
-                <option class="wd" value="wingdings2">wingdings2</option>
-                <option class="wd" value="wingdings3">wingdings3</option>
-            </select>
-        </li>
-        </ul>
-        <hr noshade="true">
-        <ul>
-            <li><a href="https://koppepan-orange.github.io/game-site/welcome.html">to game</a></li>
-            <li><a href="tools.html">to tools</a></li>
-            <li><a href="books.html">to books</a></li>
-            <li><a href="hidden.html">to hidden</a></li>
-            <li class="wd"><a href="home-ura.html">to ura</a></li>
-        </ul>
-        <hr noshade="true">
-        <ul>
-            <li class="hastxt" data-name="chara+">chara+</li>
-            <li class="hastxt" data-name="enemies+">enemies+</li>
-        </ul>
-        <hr noshade="true">
-        <ul>
-            <li><span id="logout">Logout</span></li>
-            <li><span id="wdcheck">HELLO</spanid></li>
-        </ul>
-        <hr noshade="true">
-        <div class="yurayura-x">ゆらら</div>
-    </nav>
-
-    <div class="smart-menu">
-        <div class="smart-icon hidden" id="notice-button" data-name="notice-icon">V</div>
-        <div class="smart-icon hidden" id="login-bonus" data-name="daily-icon">e</div>
-        <div class="smart-icon c-dimension hidden" data-name="home-icon" data-doko="Home">H</div>
-        <div class="smart-icon c-dimension hidden" data-name="commu-icon" data-doko="Commu">^</div>
-        <div class="smart-icon c-dimension hidden" data-name="anonymous-icon" data-doko="Anonymous">A</div>
-        <div class="smart-icon c-dimension hidden" data-name="study-icon" data-doko="Study">S</div>
-        <div class="smart-icon c-dimension hidden" data-name="pixelen-icon" data-doko="Pixelen">P</div>
-        <div class="smart-icon smart-phone">:</div>
-    </div>
-
-    <div id="notice">
-        <div class="x">x</div>
-
-        <div class="list">
-
-        </div>
-
-        <div class="show">
-            <div class="back">←</div>
-            <div class="title"></div>
-            <div class="body"></div>
-        </div>
-    </div>
-
-    <div id="login">
-        <div id="login-form">
-            <input type="text" id="username" placeholder="username">
-            <input type="password" id="password" placeholder="password">
-            <button id="login-login">Login</button>
-        </div>
-    </div>
-
-    <div id="cpopup"></div>
-    <iframe id="iframe"></iframe>
+<body>
+    <div id="text"></div>
     <div id="movableDescription"></div>
 
-    <div id="Home">
-        <div id="home">
-            <div id="links"></div>
-            <div id="memos"></div>
-            <div id="iframes">
+    <div id="pages">
+        <div id="home" class="page">
+            <div class="links"></div>
+            <div class="memos"></div>
+            <div class="iframes">
+                <span align="center">調べれたりするところ</span>
                 <details id="linkSite"><summary>link site</summary>
-                    <div class="commands">
-                        <input type="text" id="LinkInput" placeholder="write link here" value="about:blank">
-                        <button class="button" onclick="LinkframeGo()">Go</button>
-                        <select id="LinkSelect" class="button">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                        </select>
-                        <button class="button full">full</button><br>
-                    </div>
+                    <input type="text" id="LinkInput" placeholder="write link here" value="about:blank">
+                    <button class="iframe-button" onclick="LinkframeGo()">Go</button>
+                    <select id="LinkSelect" class="iframe-button">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                    <button class="iframe-button iframe-full">full</button><br>
                     <iframe id="Linkframe1" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
                     <iframe id="Linkframe2" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
                     <iframe id="Linkframe3" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
@@ -133,27 +37,39 @@
                 </details>
             </div>
         </div>
-
-        <div id="memo">
+        <div id="memo" class="page" style="right: -100%;">
             <div class="row">
                 <div type="text" class="title" contenteditable></div>
                 <button class="search">search</button>
             </div>
             <div class="text" contenteditable></div>
         </div>
-
-        <div id="tools">
+        <div id="tool" class="page" style="right: -100%;">
             <!-- こちら偏差値計算機です！！！！ -->
-            <p align="center">偏差値計算機<br>
-                <input id="HENPoint" type="text" placeholder="write 得点" size="20" style="width:80px;"></input>　
-                <input id="HENAve" type="text" placeholder="write 平均" size="20" style="width:80px;"><br>   
-                <button onclick="HENsum()">go</button>
-                <br><span id="HENAnswer"></span>
-            </p>
-            <p align="center">
-            <input type="text" id="Input" size="3" maxlength="2" placeholder="num"><button id="ToggleButton" onclick="Toggle()">less</button><button onclick="Activate()">Go!</button><br>
-            <span id="OutPut"></span>
-            </p>
+            <div class="Hen">
+                <div class="row">yourtestp: <input class="input" type="text"/></div>
+                <div class="row">averagesp: <input class="average" type="text"/></div>
+                <div class="row">deviation: <input class="output" type="text" readonly value="?"/></div>
+            </div>
+            <div class="TextCount">
+                <div class="label">mozisu-count</div>
+                <input type="text" class="in"/>
+                <div class="out">0</div>
+            </div>
+            <div class="Anagram">
+                <div class="label">anagram-saysay</div>
+                <input type="text" class="in"/>
+                <button class="send">check</button>
+                <div class="out"></div>
+            </div>
+            <div class="RanKana">
+                <input type="text" class="input" maxlength="2" placeholder="num">
+                <button class="toggle">less</button>
+                <button class="over">重複</button>
+                <button class="active">act</button><br>
+                <span class="output"></span>
+            </div>
+            
             <!-- まりぱのげーむをちょっとだけいれようかな〜と -->
             <details style="margin:0 auto;"><summary>Game-Center</summary>
             <p align="center">Count Game Desu
@@ -188,22 +104,17 @@
                 </div>
             </p>
             </details>
+        </div>
 
-            <div class="meiboToggle"></div>
-            <div class="meibo">
-                <div class="list"></div>
+        <div id="login" class="page" style="right: -100%;">
+            <div class="form">
+                <input type="text" name="username" class="username" placeholder="username">
+                <input type="password" name="password" class="password" placeholder="password">
+                <button class="send">Login</button>
             </div>
+            <div id="logout">Logout</div>
         </div>
-
-        <div id="profile">
-            <img class="icon" src="assets/sozais/none.png" alt="アイコン" width="150" height="150">
-            <input type="file" class="fileInput" accept="image/*">
-        </div>
-        
-    </div>
-
-    <div id="Commu">
-        <div id="nanj">
+        <div id="chat" class="page" style="right: -100%;">
             <select id="room-select" name="room-select" onchange="selectRoom()">
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -214,176 +125,21 @@
                 <option value="Anonymous-2">Anonymous-2</option>
                 <option value="Anonymous-3">Anonymous-3</option>
             </select>
-    
+
             <div id="messages"></div>
-    
+
             <div id="additional-zone">
                 <div class="hover-element">
-                    <div class="popup">
-                        <button onclick="sendStamp(1)">OK</button> <button onclick="sendStamp(2)">最高か</button> <button onclick="sendStamp(3)">ぴえん</button> <button onclick="sendStamp(4)">わりどう</button><br>
-                        <button onclick="sendStamp(5)">ごめん</button> <button onclick="sendStamp(6)">無事終了</button> <button onclick="sendStamp(7)">LOVE</button> <button onclick="sendStamp(8)">SORENA</button><br>
-                        <button onclick="sendStamp('hownice')">いいね</button> <button onclick="sendStamp('koresuki')">これすき</button> <button onclick="sendStamp('ohitasi')">おひたし</button> <button onclick="sendStamp('spacecat')">宇宙猫</button><br>
-                        <button onclick="sendStamp('youaresick')">病気ね</button> <button onclick="sendStamp('nasanao')">なさなお</button> <button onclick="sendStamp('4coma1')">外人4コマ-high</button> <button onclick="sendStamp('4coma2')">外人4コマ-low</button><br>
-                        <button onclick="sendStamp('maxwell1')">maxwell-hop</button> <button onclick="sendStamp('maxwell2')">maxwell-spin</button> <button onclick="sendStamp('hello')">こにちゃ</button> <button onclick="sendStamp('gdng')">おやすみ</button><br>
-                    </div>
+                    <div id="stamps" class="popup"></div>
                     囧
                 </div>
             </div>
 
-            <input type="textarea" id="message-input" placeholder="メッセージを書く">
+            <input type="textarea" id="message-input" placeholder="メッセージを書く" contenteditable>
             <button id="send-button">送信</button>
         </div>
-
-        <div id="twitter2">
-            <div id="tweets"></div>
-            <button id="t-make-button">✎</button>
-            <div id="t-make-zone">
-                <div id="t-make-header">
-                    <div id="t-make-cancel">キャンセル</div>
-                    <div id="t-make-send">完了</div>
-                </div>
-                <div id="t-make-body">
-                    <div id="t-make-text" contenteditable></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="jine">
-        </div>
     </div>
 
-    <div id="Anonymous">
-        <div id="question">
-        </div>
-    </div>
-
-    <div id="Study">
-        <div id="en">
-            <div id="search-area" contenteditable></div>
-            <div id="search-narrow">
-                <div id="narrow-options"></div>
-                <button id="narrow-apply">絞り込む</button>
-            </div>
-            <div id="search-result"></div>
-
-            <button id="post-make-button">✎</button>
-            <div id="post-area">
-                <div id="post-header">
-                    <div id="post-cancel">リセット</div>
-                    <div id="post-send">送信</div>
-                </div>
-                <div id="post-body">
-                    <div id="post-en">
-                        <span>en <font color="#bebebe">例:apple</font></span>
-                        <textarea></textarea>
-                    </div>
-                    <div id="post-ja" >
-                        <span>ja <font color="#bebebe">例:りんご</font></span>
-                        <textarea></textarea>
-                    </div>
-                    <div id="post-speech">
-                        <span>speech <font color="#bebebe">例:名詞</font></span>
-                        <textarea></textarea>
-                    </div>
-                    <div id="post-attribute">
-                        <span>attribute <font color="#bebebe">例:food fruit</font></span>
-                        <textarea></textarea>
-                    </div>
-                    <div id="post-description">
-                        <span>description <font color="#bebebe">例:何よりも美味しい果物。</font></span>
-                        <textarea></textarea>
-                    </div>
-                    <div id="post-checkboxes">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="post-slang">
-                            <span>スラング</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="post-sentence">
-                            <span>文</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="tips">
-        </div>
-    </div>
-
-    <div id="Pixelen">
-        <div id="books">
-            <div id="search-zone">
-                <div id="search-area" contenteditable></div>
-                <div id="search-narrow">
-                    <div id="narrow-options"></div>
-                    <button id="narrow-apply">絞り込む</button>
-                </div>
-                <div id="search-result"></div>
-            </div>
-
-            <div id="show-area">
-                <div class="back">←</div>
-                <div class="title"></div>
-                <div class="description"></div>
-                <div class="body"></div>
-            </div>
-
-            <button id="post-make-button">✎</button>
-            <div id="post-area">
-                <div id="post-header">
-                    <div id="post-cancel">リセット</div>
-                    <div id="post-send">送信</div>
-                </div>
-                <div id="post-body">
-                    <div id="post-title">
-                        <span>title <font color="#bebebe">例:転生したら最弱の水魔法使いだったのでとりあえず極めてみようと思います</font></span>
-                        <textarea></textarea>
-                    </div>  
-                    <div id="post-description">
-                        <span>description <font color="#bebebe">例:とりあえず流行りに乗ってみたやつです 水が一番強いんですよ</font></span>
-                        <textarea></textarea>
-                    </div>
-                    <div id="post-attribute">
-                        <span>attribute <font color="#bebebe">例:なろう系 魔法 ファンタジー</font></span>
-                        <textarea></textarea>
-                    </div>
-                    <div id="post-checkboxes">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="post-usedAI">
-                            <span>AI使用</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="post-yokunai">
-                            <span>よくない</span>
-                        </label>
-                    </div>
-                    <div id="post-bodies">
-                        <span>body <font color="#bebebe">目が覚めた。記憶がない。昨日飲みすぎたか？などと考えながら起き上がる。</font></span>
-                        <textarea></textarea>
-                    </div>
-
-                    (この例の話は書いてないので作ってもらえると喜びます)
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-
-    <div id="tabs"></div>
-    <script>
-        let shozoku = ['home', 'commu', 'anonymous', 'study', 'pixelen'];
-        let Iam = 'home';
-    </script>
-    <script src="jses/pipette.js"></script>
-    <script src="jses/data.js" defer></script>
-    <script src="jses/home.js" defer></script>
-    <script src="jses/commu.js" defer></script>
-    <script src="jses/anonymous.js" defer></script>
-    <script src="jses/study.js" defer></script>
-    <script src="jses/pixelen.js" defer></script>
-    
-
+    <script src="assets/else/over.js" defer></script>
 </body>
 </html>
