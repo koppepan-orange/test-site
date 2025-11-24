@@ -40,7 +40,7 @@ textarea{
 
 html{
     width: 100%;
-    overflow: hidden;
+    /* overflow: hidden; */
     background-color: #f0f8ff;
 }
 #body{
@@ -354,6 +354,9 @@ hr{
     z-index: 1100;
 }
 
+#iframes{
+    display: none;
+}
 #Linkframe2,#Linkframe3,#Linkframe4{
     display: none;
 }

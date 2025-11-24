@@ -17,7 +17,6 @@
 @font-face{src:url('../fonts/corporate.otf');font-family: corporate;}
 html{
     margin: -8px;
-    padding: -8px;
 }
 body{
     scrollbar-width: none;
@@ -68,14 +67,16 @@ body{
 .page{
     width: 100vw;
     height: 100%;
+    padding-bottom: 30%;
     position: fixed;
     transition: right 0.5s ease, left 0.5s ease;
-    
-    background: linear-gradient(to right, #f0f8ff, #eaf5ff, #def0ff, #cfe9ff, #b5dcff);
-    background: linear-gradient(to right, #f8f6ff, #f5f2ff, #f1edff, #ece8ff, #e9e4ff);
-    background: linear-gradient(to right, #fffaf3, #fff7eb, #fff3e2, #fff0d9, #ffeccf);
-    background: linear-gradient(to right, #f6fff2, #eeffe7, #e6ffdc, #ddffd0, #d4ffc3);
+    inset: 0;
+    /* background: linear-gradient(to right, #f0f8ff, #eaf5ff, #def0ff, #cfe9ff, #b5dcff); */
+    /* background: linear-gradient(to right, #f8f6ff, #f5f2ff, #f1edff, #ece8ff, #e9e4ff); */
+    /* background: linear-gradient(to right, #fffaf3, #fff7eb, #fff3e2, #fff0d9, #ffeccf); */
+    /* background: linear-gradient(to right, #f6fff2, #eeffe7, #e6ffdc, #ddffd0, #d4ffc3); */
     background: #ffffff;
+    overflow-y: auto;
 }
 
 /*こっからhome*/
@@ -96,7 +97,7 @@ body{
 }
 
 #home .memos{
-    max-height: 60%;
+    max-height: 50%;
     overflow-y: scroll;
     overflow-x: hidden;
     border: 2px solid #cfecff;
@@ -163,6 +164,7 @@ body{
 }
 
 #home .iframes{
+    display: none;
     height: 20%;
     max-height: 1200px;
     overflow-y: scroll;

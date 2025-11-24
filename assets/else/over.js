@@ -206,6 +206,8 @@ document.addEventListener('mousedown', e => {
     document.addEventListener('mouseup', onMouseUp);
 });
 //#endregion
+
+
 //#region swipe
 let startX, startY, endX, endY;
 document.addEventListener("touchstart", (e) => {
@@ -847,7 +849,7 @@ let RanKana = {
 RanKana.togB.addEventListener('click', () => {
     let val = RanKana.togB.textContent;
     let arr = RanKana.togs.map(a => a.name);
-    console.log(arr);
+    // console.log(arr);
     let valn = arr.indexOf(val);
     let ele = RanKana.togs[valn];
     let nexn = (valn + 1) % RanKana.togs.length;
@@ -859,7 +861,7 @@ RanKana.togB.addEventListener('click', () => {
     RanKana.togB.setAttribute('data-description', nexele.desc);
 })
 RanKana.oveB.addEventListener('click', () => {
-    console.log(RanKana.ove)
+    // console.log(RanKana.ove)
     if(RanKana.ove == 0){
         RanKana.ove = 1;
         RanKana.oveB.style.backgroundColor = '#a2ffa8';
@@ -1734,6 +1736,8 @@ function makeNanjPost(messageData,key){
 //読み込まれ be read
 document.addEventListener('DOMContentLoaded', () => {
     memoRead();
+    RanKana.togB.click();
+    RanKana.oveB.click();
     stampRead();
     autoLogin()
 });
