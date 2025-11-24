@@ -1571,7 +1571,7 @@ function selectRoom(){
                     if (message.startsWith(`/${command}`)) {
                         let mes = message.replace(`/${command} `, '');
                         let result = Commands[command].process(mes);
-                        console.log(result, !result);
+                        // console.log(result, !result);
                         if(!result){
                             MessageIn.value = '';
                             return true;
