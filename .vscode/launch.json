@@ -13,20 +13,20 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "home.",
+            "name": "オーバー！",
             "file": "index.html"
         },
         {
             "type": "chrome",
             "request": "launch",
-            "name": "home?",
+            "name": "home.",
             "file": "home.html"
         },
         {
             "type": "chrome",
             "request": "launch",
-            "name": "over",
-            "file": "over.html"
+            "name": "tool",
+            "file": "tool.html"
         },
         {
             "type": "chrome",

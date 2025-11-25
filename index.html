@@ -6,20 +6,25 @@
     <link rel="icon" href="Icon.ico">
     <title>オーバー！</title>
     <link rel="stylesheet" href="assets/else/over.css">
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
 </head>
+
 <body>
     <div id="text"></div>
     <div id="movableDescription"></div>
 
     <div id="pages">
+
         <div id="home" class="page">
             <div class="links"></div>
+
             <div class="memos"></div>
-            <div class="iframes">
+
+            <div class="iframes" style="display: none;">
                 <span align="center">調べれたりするところ</span>
                 <details id="linkSite"><summary>link site</summary>
                     <input type="text" id="LinkInput" placeholder="write link here" value="about:blank">
@@ -38,32 +43,39 @@
                     <iframe id="Linkframe4" width="100%" height="800" src="about:blank" data-src="about:blank"></iframe>
                 </details>
             </div>
+
         </div>
-        <div id="memo" class="page" style="right: -100%;">
+
+        <div id="memo" class="page">
+
             <div class="row">
                 <div type="text" class="title" contenteditable></div>
                 <button class="search">search</button>
             </div>
             <div class="text" contenteditable></div>
+
         </div>
-        <div id="tool" class="page" style="right: -100%;">
-            <!-- こちら偏差値計算機です！！！！ -->
-            <div class="Hen">
+        <div id="tool" class="page">
+
+            <div class="Hen"><!-- こちら偏差値計算機です！！！！ -->
                 <div class="row">yourtestp: <input class="input" type="text"/></div>
                 <div class="row">averagesp: <input class="average" type="text"/></div>
                 <div class="row">deviation: <input class="output" type="text" readonly value="?"/></div>
             </div>
+
             <div class="TextCount">
                 <div class="label">mozisu-count</div>
                 <input type="text" class="in"/>
                 <div class="out">0</div>
             </div>
+
             <div class="Anagram">
                 <div class="label">anagram-saysay</div>
                 <input type="text" class="in"/>
                 <button class="send">click</button>
                 <div class="out"></div>
             </div>
+
             <div class="RanKana">
                 <input type="text" class="input" maxlength="2" placeholder="num">
                 <button class="toggle">less</button>
@@ -75,9 +87,9 @@
             <!-- まりぱのげーむをちょっとだけいれようかな〜と -->
             <details style="margin:0 auto;"><summary>Game-Center</summary>
             <p align="center">Count Game Desu
-                <br><span id="COUNTGameBar"></span>
-                <br><br><span id="COUNTButton"><button onclick="COUNTGameStart()">start</button></span>
-                <br><br><span id="COUNTLog"></span>
+                <span id="COUNTGameBar"></span>
+                <span id="COUNTButton"><button onclick="COUNTGameStart()">start</button></span>
+                <span id="COUNTLog"></span>
             </p>
             <p align="center">Race Game(Just Look)
                 <div id="RACEoutput-one"></div>
@@ -108,7 +120,7 @@
             </details>
         </div>
 
-        <div id="login" class="page" style="right: -100%;">
+        <div id="login" class="page">
             <div class="form">
                 <input type="text" name="username" class="username" placeholder="username">
                 <input type="password" name="password" class="password" placeholder="password">
@@ -116,7 +128,7 @@
             </div>
             <div id="logout">Logout</div>
         </div>
-        <div id="chat" class="page" style="right: -100%;">
+        <div id="chat" class="page">
             <select id="room-select" name="room-select" onchange="selectRoom()">
                 <option value="1">1</option>
                 <option value="2">2</option>
