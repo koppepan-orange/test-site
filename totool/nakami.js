@@ -37,7 +37,7 @@ function arraySize(array){
     let res = new Set(array).size;
     return res;
 };
-function arrayCount(array){
+function arraycountCnt(array){
     const counts = {};
     for (let value of array) {
     counts[value] = (counts[value] || 0) + 1;
@@ -90,8 +90,8 @@ function random(min, max) {
     let num = Math.floor(Math.random() * (max - min + 1)) + min;
     return Math.floor(num);
 };
-function fl(num){
-    let res = num ? 1 : 0;
+function fl(val, arr = [0, 1]){
+    let res = val == arr[0] ? arr[1] : arr[0];
     return res;
 }
 
@@ -101,7 +101,7 @@ function anagramSaySay(text, loop = 10, bet = '<br>'){
     if(len < 4) menjo = 1, console.log('長さが3以下なんで最大6っす');
     
     let optout = text.split('');
-    let optcou = arrayCount(optout);
+    let optcou = arraycountCnt(optout);
     let optvals = [];
     for(a of Object.keys(optcou)){
         let b = optcou[a];
@@ -548,97 +548,59 @@ document.addEventListener('mouseup', () => clicking = false);
 
 
 //#region 文字数カウント
-let Cou = {
-    inI: document.querySelector('#main .textcount').querySelector('.in'),
-    outD: document.querySelector('#main .textcount').querySelector('.out'),
+let countD = document.querySelector('#main .textcount');
+let countC = {
+    inI: countD.querySelector('.in'),
+    outD: countD.querySelector('.out')
 }
-Cou.inI.addEventListener('input', () => {
-    let text = Cou.inI.value;
+countC.inI.addEventListener('input', () => {
+    let text = countC.inI.value;
     let count = text.length;
     let size = arraySize(text.split(''))
-    Cou.outD.textContent = `文字数${count} 種類${size}`;
+    countC.outD.textContent = `文字数${count} 種類${size}`;
 });
 //#endregion
 
 //#region アナグラム生成器
-let Anag = {
-    inI: document.querySelector('#main .Anagram .in'),
-    outD: document.querySelector('#main .Anagram .out'),
-    sendB: document.querySelector('#main .Anagram .send')
+let anagD = document.querySelector('#main .anagram');
+let anagC = {
+    inD: anagD.querySelector('.in'),
+    outD: anagD.querySelector('.out'),
+    senD: anagD.querySelector('.send')
 }
-Anag.sendB.addEventListener('click', () => {
-    let text = Anag.inI.value;
+anagC.senD.addEventListener('click', () => {
+    let text = anagC.inD.value;
     let res = anagramSaySay(text, 10, '<br>');
-    Anag.outD.innerHTML = res;
+    anagC.outD.innerHTML = res;
 });
-function anagramSaySay(text, loop = 10, bet = '<br>'){
-    let menjo = 0;
-    let len = text.length;
-    // if(len < 4) menjo = 1, console.log('長さが3以下なんで最大6っす');
-    
-    let optout = text.split('');
-    let optcou = arrayCount(optout);
-    let optvals = [];
-    for(a of Object.keys(optcou)){
-        let b = optcou[a];
-        b = kaijou(b); //bの階乗、b!
-        optvals.push(b);
-    }
-    let optmat = arrayMult(optvals); //階乗したもの同士をそれぞれを掛け合わさせる
-    let cal = (kaijou(len) / optmat) - 1;
-
-    let loopen = loop;
-    console.log(`総数:${cal} 回数:${loopen}`);
-    if(cal < loopen) menjo = 1;
-    
-    let reses = [];
-    while(loopen > 0){
-        loopen -= 1;
-        let res = arrayShuffle(optout).join(''); //continueは{}外せないのじゃ
-        if(reses.includes(res)){loopen += 1; continue} 
-        
-        if(res == text && !menjo){loopen += 1; continue;}
-
-        if(res == text && menjo && reses.length < cal){loopen += 1; continue}
-        else if(res == text && menjo) res = '!--[重複エラー]--';
-
-        //なんか小ネタを仕込むならここ
-        if(text == 'undertale' && res == 'deltarune'){
-            let tex = 'deltarune, undertaleのアナグラム説検証成功！！！';
-            console.log(tex);
-            res = `<span style="color: #;">${tex}</span>`;
-        }
-
-        reses.push(res);
-    }
-    
-    return reses.join(bet);
-}
 //#endregion
 
 //#region 偏差値計算するやつ
-let hen = {
+let henC = {
     valI: document.querySelector('#main .hen .input'),
     aveI: document.querySelector('#main .hen .average'),
-    outD: document.querySelector('#main .hen .output'),
-    process: function(){
-        let val = +hen.valI.value;
-        let ave = +hen.aveI.value;
-        let res = ((val - ave) / 18 * 10) + 50;
-        //18の部分は変更可能。得点分布だから一点集中なら1とかなんじゃないかな
-        res = Math.round(res);
-        hen.outD.value = res;
-    }
+    outI: document.querySelector('#main .hen .output'),
 };
-hen.valI.addEventListener('input', hen.process);
-hen.aveI.addEventListener('input', hen.process);
+let henF = {};
+henF.process = () => {
+    let [val, ave] = [+henC.valI.value, +henC.aveI.value];
+    if(isNaN(val) || isNaN(ave)) return 1;
+    let bun = 18; //これは変更可能。得点分布だから一点集中なら1とかなんじゃないかな
+    let res = Math.round(((val-ave) / bun*10) + 50)
+
+    henC.outI.value = res;
+    return 0;
+}
+henC.valI.addEventListener('input', henF.process);
+henC.aveI.addEventListener('input', henF.process);
 //#endregion
 
 //#region カタカナランダム言葉生成器
-let RanKana = {
-    togB: document.querySelector('#main .RanKana .toggle'),
+let rannmD = document.querySelector('#main .rannm');
+let rannmC = {
+    togB: rannmD.querySelector('.toggle'),
     tog: 'stan',
-    togs: [
+    togL: [
         {
             name: 'stan',
             color: '#b5d9ff',
@@ -652,46 +614,43 @@ let RanKana = {
             words: ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ヤ','ユ','ヨ','ラ','リ','ル','レ','ロ','ワ','ヲ','ン','ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ','ァ','ィ','ゥ','ェ','ォ','ッ','ャ','ュ','ョ','ー'] 
         },
     ],
-    actB: document.querySelector('#main .RanKana .active'),
-    inpI: document.querySelector('#main .RanKana .input'),
-    outD: document.querySelector('#main .RanKana .output'),
+
+    actB: rannmD.querySelector('.active'),
+    inpI: rannmD.querySelector('.input'),
+    outD: rannmD.querySelector('.output'),
     ove: 0,
-    oveB: document.querySelector('#main .RanKana .over'),
+    oveB: rannmD.querySelector('.over'),
 }
-RanKana.togB.addEventListener('click', () => {
-    let val = RanKana.togB.textContent;
-    let arr = RanKana.togs.map(a => a.name);
+rannmC.togB.addEventListener('click', () => {
+    let val = rannmC.togB.textContent;
+    let arr = rannmC.togL.map(a => a.name);
     // console.log(arr);
     let valn = arr.indexOf(val);
-    let ele = RanKana.togs[valn];
-    let nexn = (valn + 1) % RanKana.togs.length;
-    let nexele = RanKana.togs[nexn];
+    let ele = rannmC.togL[valn];
+    let nexn = (valn + 1) % rannmC.togL.length;
+    let nexele = rannmC.togL[nexn];
 
-    RanKana.tog = nexele.name;
-    RanKana.togB.textContent = nexele.name;
-    RanKana.togB.style.backgroundColor = nexele.color;
-    RanKana.togB.setAttribute('data-description', nexele.desc);
+    rannmC.tog = nexele.name;
+    rannmC.togB.textContent = nexele.name;
+    rannmC.togB.style.backgroundColor = nexele.color;
+    rannmC.togB.setAttribute('data-description', nexele.desc);
 })
-RanKana.oveB.addEventListener('click', () => {
-    // console.log(RanKana.ove)
-    if(RanKana.ove == 0){
-        RanKana.ove = 1;
-        RanKana.oveB.style.backgroundColor = '#a2ffa8';
-    }else{
-        RanKana.ove = 0;
-        RanKana.oveB.style.backgroundColor = '#c4c4c4';
-    }
+rannmC.oveB.addEventListener('click', () => {
+    // console.log(`${rannmC.ove} => ${fl(rannmC.ove)}`);
+    rannmC.ove = fl(rannmC.ove);
+    if(rannmC.ove == 1) rannmC.oveB.style.backgroundColor = '#a2ffa8';
+    if(rannmC.ove == 0) rannmC.oveB.style.backgroundColor = '#c4c4c4';
 })
-RanKana.actB.addEventListener('click', () => {
-    let ele = RanKana.togs.find(a => a.name == RanKana.tog);
+rannmC.actB.addEventListener('click', () => {
+    let ele = rannmC.togL.find(a => a.name == rannmC.tog);
     let words = ele.words;
-    let val = RanKana.inpI.value
-    if(val == '' || val <= 0) return nicoText('死ね');
+    let val = rannmC.inpI.value
+    if(val == '' || val <= 0) return nicoText('スーパーマリオさんしね');
 
     let outputs = [];
-    RanKana.outD.innerHTML = '';    
-    for(let i = 0; i < 10; i++){
-        if(RanKana.ove == 0){
+    rannmC.outD.innerHTML = '';    
+    for(let i=0; i<10; i++){
+        if(rannmC.ove == 0){
             let res = arrayShuffle(words).slice(0, val);
             res = res.join('');
             if(outputs.includes(res)){
@@ -700,7 +659,7 @@ RanKana.actB.addEventListener('click', () => {
             }
             outputs.push(res);
         }   
-        if(RanKana.ove == 1){
+        if(rannmC.ove == 1){
             let res = [];
             for(let i = 0; i < val; i++){
                 let ares = arraySelect(words);
@@ -714,16 +673,18 @@ RanKana.actB.addEventListener('click', () => {
             outputs.push(res);
         }
     }
-    RanKana.outD.innerHTML = outputs.join('<br>');
+    rannmC.outD.innerHTML = outputs.join('<br>');
 })
 //#endregion
 
 //#region マリパのハチの巣のやつ
+
+/*
 let COUNTx = 0;
 let COUNTope = 0;
 let COUNTgamebar = 0;
 const COUNTgamebars = ['##@','####@','######@','########@','##########@','############@','##############@'];
-const COUNTTips = ['パン工場〜','だから愛だよ','ひとえに、愛だよ','うにょ〜ん','異議あり!','ウロボロスの弟、ウヌボロス','もろたで四輪工藤','小籠包と小論文のハーフ、ショウロンプォゥン','なんだかすごそう建武の新政',"しのごの言わずにoh no, you know it's a pizza"];
+const COUNTTips = ['パン工場〜','だから愛だよ','ひとえに愛だよ','うにょ〜ん','異議あり!','ウロボロスの弟、ウヌボロス','もろたで四輪工藤','小籠包と小論文のハーフ、ショウロンプォゥン','なんだかすごそう建武の新政'];
 function COUNTGameStart(){
     COUNTgamebar = COUNTgamebars[Math.floor(Math.random() * COUNTgamebars.length)];
     document.getElementById("COUNTGameBar").textContent = COUNTgamebar;
@@ -789,6 +750,118 @@ function COUNTGameReset(){
     document.getElementById("COUNTButton").innerHTML = '<button onclick="COUNTGameStart()">start</button>';
     COUNTx = 0;
     }
+*/
+
+let beeGD = document.querySelector('#main .bee-game');
+let beeGC = {
+    now: 0,
+    ing: 0,
+    turn: 0,
+    who: 1,
+    bar: [],
+    barL: [2,14],
+    
+    barD: beeGD.querySelector('.bar'),
+    logD: beeGD.querySelector('.log'),
+    startD: beeGD.querySelector('.start'),
+    b1D: beeGD.querySelector('.buttons .b1'),
+    b2D: beeGD.querySelector('.buttons .b2'),
+}
+let beeGF = {};
+beeGF.logres = () => {
+    beeGC.logD.innerHTML = '';
+}
+beeGC.logD.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    beeGF.logres();
+});
+
+beeGF.logadd = (text) => {
+    let span = document.createElement('span');
+    span.textContent = text;
+    beeGC.logD.appendChild(span);
+
+    beeGC.logD.scrollTop = beeGC.logD.scrollHeight;
+}
+
+beeGF.finish = (who) => {
+    beeGC.now = 0;
+    beeGF.logadd('ゲームフィニッシュド！');
+    beeGF.logadd(`プレイヤー${who}の勝ち`);
+    beeGD.classList.remove('play');
+}
+
+beeGF.tekiou = () => {
+    let who = beeGC.who;
+    beeGD.classList.remove('w1', 'w2');
+
+    beeGC.barD.textContent = beeGC.bar.join('');
+    if(beeGC.bar.length == 0){
+        let who = beeGC.who;
+        let rwho = fl(who, [1,2]);
+        beeGD.classList.add(`w${rwho}`);
+        beeGF.finish(rwho);
+        return 1;
+    }
+
+    beeGD.classList.add(`w${who}`);
+
+    return 0;
+}
+beeGF.ing = (val) => {
+    if(val == 0) beeGD.classList.remove('ing');
+    if(val == 1) beeGD.classList.add('ing'); 
+}
+beeGF.next = () => {
+    if(beeGC.bar.length == 0) return;
+    if(beeGC.bar.length == 1){
+        beeGF.logadd(`${fl(beeGC.who, [1,2])}の確負け`);
+    }
+
+    beeGC.turn += 1;
+    // beeGC.who = beeGC.who == 1 ? 2 : 1;
+    beeGC.who = fl(beeGC.who, [1,2])
+    if(beeGF.tekiou()) return;
+}
+beeGF.start = () => {
+    if(beeGC.now) return;
+
+    beeGC.now = 1;
+    beeGC.turn = 0;
+    beeGC.who = 2;
+
+    beeGC.bar = [];
+    let num = random(...beeGC.barL);
+    for(let i=0; i<num; i++) beeGC.bar.push('#');
+    beeGC.bar.push('@');
+    if(beeGF.tekiou()) return;
+
+    beeGF.logadd(`スタート！長さは${num}です！`);
+    beeGD.classList.add('play');
+
+    beeGF.next();
+}
+beeGC.startD.addEventListener('click', beeGF.start);
+
+beeGF.take = async(n = 1) => {
+    if(beeGC.ing) return;
+    if(!beeGC.now) return;
+    
+    beeGF.ing(1)
+    for(let i=0; i<n; i++){
+        // beeGC.barの最初の要素を消す
+        beeGC.bar.shift();
+        if(beeGF.tekiou()) return 1; //だいぶ無茶だけど、0じゃないものが帰ってきたら終わらせる
+        await delay(500);
+    }
+    beeGF.ing(0)
+
+    // ここにきたと言うことは、そのターンは無事終了
+    beeGF.next()
+}
+beeGC.b1D.addEventListener('click', () => beeGF.take(1));
+beeGC.b2D.addEventListener('click', () => beeGF.take(2));
+
 //#endregion
 
 //#region 田中のレースのあれ
