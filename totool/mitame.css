@@ -56,7 +56,7 @@ img{
     position: fixed;
     top: 0;
     right: 0;
-    background-color: #f0f8ff80;
+    background: #f0f8ff80;
     color: #000000;
     font-size: 20px;
     transition: right 2.0s linear;
@@ -87,7 +87,7 @@ img{
 #log .opener{
     width: 30px;
     height: 100%;
-    background-color: #000000ef;
+    background: #000000ef;
     text-align: center;
     cursor: pointer;
     z-index: inherit;
@@ -97,7 +97,7 @@ img{
     height: 100%;
     max-height: 100%;
     overflow-x: hidden; overflow-y: scroll;
-    background-color: #000000de;
+    background: #000000de;
     text-align: left;
     font-size: 14px;
     transition: right 0.3s;
@@ -145,7 +145,7 @@ img{
     display: none;
     position: fixed;
     pointer-events: none;
-    background-color: #363636e2;
+    background: #363636e2;
     color: #f0f8ff;
     text-align: left;
     padding: 5px 10px;
@@ -181,7 +181,7 @@ img{
     height: 100px;
     /* aspect-ratio: 1/1; */
     padding: 5px;
-    background-color: #f0f8ff;
+    background: #f0f8ff;
     border: 1px solid #000000;
     color: #000000;
     font-size: 12px;
@@ -247,6 +247,7 @@ img{
     background: #fffaf3;
 }
 
+/* #region bee-game */
 #main .bee-game{
     display: flex;
     flex-direction: column;
@@ -317,4 +318,103 @@ img{
     justify-content: center;
     align-items: center;
     gap: 10px;
+}
+/* #endregion */
+
+#main .race-game{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#main .race-game .area{
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    box-sizing: border-box;
+}
+
+#main .race-game .area.title{
+    display: block;
+    background: #ffefd8;
+}
+#main .race-game.play .area.title{display: none;}
+#main .race-game .title .lavel{
+    font-size: 40px;
+    color: #895000;
+    text-align: center;
+}
+#main .race-game .title .start{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    aspect-ratio: 5 / 2;
+    background: #ffeed6;
+    scale: 1;
+    transition: scale 0.05s ease-in-out;
+    margin: 0 auto;
+    border: 3px solid #a46b00;
+    font-size: 28px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+#main .race-game .title .start:hover{
+    background: #ffe6c2;
+    scale: 1.2;
+}
+
+#main .race-game .area.junbee{
+    /* スマブラ風にする予定 */
+    background: #ffe7e2;
+}
+#main .race-game.phase1 .junbee{
+    display: block;
+}
+#main .race-game .junbee .list{
+    display: grid;
+    justify-items: center;
+    justify-content: space-between;
+    grid-template-columns: repeat(8, 1fr);
+    /* gap: 4px; */
+}
+#main .race-game .junbee .list .item{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    padding: 5px;
+    background: #ffd1d1;
+    border: 2px solid #ffffff;
+    box-sizing: border-box;
+}
+#main .race-game .junbee .go{
+    display: block;
+    width: 120%;
+    height: 60px;
+    background: #300000;
+    border: 4px solid #ab0000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(30);
+    color: #ffffff;
+    font-size: 40px;
+    text-align: center;
+}
+#main .race-game.kimeing .junbee .go{
+    display: none;
+}
+
+
+#main .race-game .area.kaijou{background: #f1f9ff;}
+#main .race-game.phase2 .area.kaijou{
+    display: block;
+}
+#main .race-game .area.kaijou .end{
+    display: none;
+}
+#main .race-game.phase3 .area.kaijou .end{
+    display: block;
 }

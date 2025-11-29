@@ -57,9 +57,9 @@ function arrayGacha(array,probability){
     }
 };
 function hask(obj, key){
-let res = obj.hasOwnProperty(key);
-res = res ? 1 : 0;
-return res;
+    let res = obj.hasOwnProperty(key);
+    res = res ? 1 : 0;
+    return res;
 }
 function copy(moto) {
     if(Array.isArray(moto)){
@@ -679,79 +679,6 @@ rannmC.actB.addEventListener('click', () => {
 
 //#region マリパのハチの巣のやつ
 
-/*
-let COUNTx = 0;
-let COUNTope = 0;
-let COUNTgamebar = 0;
-const COUNTgamebars = ['##@','####@','######@','########@','##########@','############@','##############@'];
-const COUNTTips = ['パン工場〜','だから愛だよ','ひとえに愛だよ','うにょ〜ん','異議あり!','ウロボロスの弟、ウヌボロス','もろたで四輪工藤','小籠包と小論文のハーフ、ショウロンプォゥン','なんだかすごそう建武の新政'];
-function COUNTGameStart(){
-    COUNTgamebar = COUNTgamebars[Math.floor(Math.random() * COUNTgamebars.length)];
-    document.getElementById("COUNTGameBar").textContent = COUNTgamebar;
-    document.getElementById("COUNTButton").innerHTML = '<button onclick="COUNTMove1()">1</button>   <button onclick="COUNTMove2()">2</button>';
-    COUNTx = COUNTgamebar.length - 1;
-    document.getElementById("COUNTLog").textContent = 'gamestart!今回は' + COUNTx + 'の長さです!!';
-    COUNTope = 1;
-}
-async function COUNTMove1(){
-    if(COUNTope == 1){
-    COUNTope = 0;
-    document.getElementById("COUNTButton").innerHTML = '';
-    document.getElementById("COUNTButton").innerHTML = '<button onclick="COUNTMove1()">1</button>   <button onclick="COUNTMove2()">2</button>';
-        if (COUNTgamebar.length == 1){
-        COUNTGameOver();
-        COUNTope = 0;
-        } else {
-            COUNTgamebar = COUNTgamebar.slice( 1 );
-            document.getElementById("COUNTGameBar").textContent = COUNTgamebar;
-            COUNTx -= 1;
-            document.getElementById("COUNTLog").textContent = '1が取り除かれ,残りは' + COUNTx + '個になりました!';
-            await new Promise(COUNTresolve => setTimeout(COUNTresolve, 300));
-            COUNTope = 1;
-            document.getElementById("COUNTButton").innerHTML = '<button onclick="COUNTMove1()">1</button>   <button onclick="COUNTMove2()">2</button>';
-    }
-    }
-}
-async function COUNTMove2(){
-    if(COUNTope == 1){
-    COUNTope = 0;
-    document.getElementById("COUNTButton").innerHTML = '';
-    if (COUNTgamebar.length == 1){
-    COUNTope = 0;
-    COUNTGameOver();
-    } else {
-    COUNTgamebar = COUNTgamebar.slice( 1 );
-    document.getElementById("COUNTGameBar").textContent = COUNTgamebar;
-    COUNTx -= 1;
-    document.getElementById("COUNTLog").textContent = '1が取り除かれ,残りは' + COUNTx + '個になりました!';
-    await new Promise(COUNTresolve => setTimeout(COUNTresolve, 300));
-    if (COUNTgamebar.length == 1){
-        COUNTope = 0;
-        COUNTGameOver();
-    } else {
-        COUNTgamebar = COUNTgamebar.slice( 1 );
-        document.getElementById("COUNTGameBar").textContent = COUNTgamebar;
-        COUNTx -= 1;
-        document.getElementById("COUNTLog").textContent = '1が取り除かれ,残りは' + COUNTx + '個になりました!';
-        await new Promise(COUNTresolve => setTimeout(COUNTresolve, 300));
-        COUNTope = 1;
-        document.getElementById("COUNTButton").innerHTML = '<button onclick="COUNTMove1()">1</button>   <button onclick="COUNTMove2()">2</button>';
-        }
-    }
-    }
-    }
-function COUNTGameOver(){
-    document.getElementById("COUNTLog").textContent = 'gameover!';
-    document.getElementById("COUNTButton").innerHTML = '<button onclick="COUNTGameReset()">reset</button>';
-    }
-function COUNTGameReset(){
-    document.getElementById("COUNTGameBar").textContent = '';
-    document.getElementById("COUNTLog").textContent = COUNTTips[Math.floor(Math.random() * COUNTTips.length)];
-    document.getElementById("COUNTButton").innerHTML = '<button onclick="COUNTGameStart()">start</button>';
-    COUNTx = 0;
-    }
-*/
-
 let beeGD = document.querySelector('#main .bee-game');
 let beeGC = {
     now: 0,
@@ -865,6 +792,8 @@ beeGC.b2D.addEventListener('click', () => beeGF.take(2));
 //#endregion
 
 //#region 田中のレースのあれ
+
+/*
 let RACEgamenow = 0;
 let RACEtimer = 0;
 let RACEnumber = ['one', 'two', 'three', 'four'];
@@ -1025,7 +954,345 @@ async function RACEstanOthers(num) {
 }
 //#endregion
 
-//#region 連打するやつ
+*/
+
+let raceGD = document.querySelector('.race-game');
+let raceGC = {
+    now: 0,
+    time: 0,
+    timer: null, //eventListener
+    loop: 0,
+    players: [],
+    leng: 14,
+
+    pssl: 0, //selectで選んでいるか
+    psid: 0, //selectで誰のを選んでいるか
+
+    title: raceGD.querySelector('.title'),
+     startD: raceGD.querySelector('.title .start'),
+    junbee: raceGD.querySelector('.junbee'),
+     listD: raceGD.querySelector('.junbee .list'),
+     seleD: raceGD.querySelector('.junbee .selected'),
+     goD: raceGD.querySelector('.junbee .go'),
+    kaijou: raceGD.querySelector('.kaijou'),
+     playersD: raceGD.querySelector('.kaijou .players'),
+     logD: raceGD.querySelector('.kaijou .log'),
+     timeD: raceGD.querySelector('.kaijou .time'),
+     endD: raceGD.querySelector('.end'),
+}
+raceGC.Players = [ //data
+    {
+        name:'alice',
+        jpnm: '青春アリス',
+        delay: 600,
+        sei:[],
+        acts: [
+            [0],
+            [0],
+            ['進む', 1],
+            ['進む', 1],
+            ['進む', 1],
+            ['進む', 2],
+        ],
+        epm:80, //epのmax
+        epa:10, //epのadd(回復)量（基本妨害を受けた時に回復する）
+        lastwordn: '華やかなお茶会',
+        lastwordp: async() => {
+            //全員を強制スタン(自分含む)、しばらくした後その後全員、進む時に+1されるバフを付与
+
+        }
+    },
+
+    {
+        name:'bob', //もうアークナイツのあいつしか思い浮かばんのやが
+        jpnm: 'ボブ・サック',
+        delay: 900,
+        sei:['スタン無効'],
+        acts: [
+            [0,0],
+            ['進む', 1],
+            ['進む', 1],
+        ],
+    },
+
+    // {
+    //     name:'charlie',
+    //     jpnm: 'チョコ工場',
+    //     delay: 600,
+    //     sei:[]
+    // },
+
+]
+let raceGF = {};
+raceGF.logres = () => {
+    raceGC.logD.innerHTML = '';
+}
+raceGC.logD.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    raceGF.logres();
+});
+raceGF.logadd = (text) => {
+    let span = document.createElement('span');
+    span.textContent = text;
+    raceGC.logD.appendChild(span);
+
+    raceGC.logD.scrollTop = raceGC.logD.scrollHeight;
+}
+raceGF.error = (text) => {
+    raceGF.logadd('エラード！！！');
+    raceGF.logadd(text);
+    nicoText('エラード！！')
+    nicoText(text)
+    
+    raceGF.end();
+}
+
+
+raceGF.start = async() => {
+    if(raceGC.now) return;
+    raceGC.now = 1;
+
+    raceGD.classList.add('play');
+    raceGD.classList.add('phase1');
+
+    raceGF.pload();
+}
+raceGC.startD.addEventListener('click', raceGF.start);
+
+raceGF.pload =() => {
+    let div0 = raceGC.listD;
+    div0.innerHTML = '';
+    for(let item of raceGC.Players){
+        let div = document.createElement('div');
+        div.className = `item ${item.name}`;
+        div.textContent = item.name;
+        
+        div.addEventListener('click', () => {
+            if(raceGC.pssl) return;
+
+            raceGF.pkime(raceGC.psid, item.name);
+        })
+
+        div0.appendChild(div);
+    }
+
+    raceGC.psid = 0;
+    raceGC.pssl = 1;
+    raceGD.classList.add('kimeing');
+}
+raceGF.pkime = (id, name) => {
+    let div2 = raceGC.seleD.querySelector(`.sele.w${id}`);
+    div2.dataset.name = name;
+    div2.classList.add('kimed');
+
+    raceGC.pssl = 0;
+    raceGD.classList.remove('kimeing');
+}
+
+raceGF.pmake = (name) => {
+    let data = raceGC.Players.find(p => p.name == name);
+    if(!data) return 'no name';
+    let player = {
+        name,
+        pos: 0,
+        bar: [],
+        buffs: [],
+        inc: {},
+        data: copy(data),
+    }
+    for(let i=0; i<raceGC.leng; i++) player.bar.push('=');
+    player.bar[0] = '@';
+
+    return player;
+}
+
+raceGF.goaway = async() => {
+    if(!raceGC.now) return;
+
+    let charge = [];
+    raceGC.players = []; //4人
+    for(let i=0; i<4; i++){
+        let sdiv = raceGC.seleD.querySelector(`.sele.w${i}`);
+        let name = sdiv.dataset.name;
+        let player = raceGF.pmake(name);
+        if(player == 'no name') return raceGF.error(`${name}という選手は存在しないです！！`);
+        player.id = i;
+        player.div = raceGC.playersD.querySelector(`.player.w${i}`);
+        player.sdiv = sdiv;
+
+        raceGC.players.push(player);
+
+        charge.push(() => raceGF.loop(i));
+    }
+
+    raceGD.classList.remove('phase1');
+    raceGD.classList.add('phase2');
+
+    raceGC.loop = 1;
+    raceGF.timer('reset')
+    raceGF.timer('start');
+    await Promise.all(charge.map(f => f()));
+}
+raceGC.goD.addEventListener('click', raceGF.goaway);
+
+
+raceGF.timer = (code) => {
+    if(!code) return console.log('codeがないですわ〜〜！！')
+    switch(code){
+        case 'start':{
+            raceGC.timer = setInterval(() => {
+                raceGC.time += 1;
+                raceGF.tekiou()
+            }, 1000);
+            break;
+        }
+
+        case 'stop':{
+            if(raceGC.timer) clearInterval(raceGC.timer);
+            break;
+        }
+
+        case 'reset':{
+            if(raceGC.timer) clearInterval(raceGC.timer);
+            raceGC.time = 0;
+            break;
+        }
+    }
+}
+
+raceGF.loop = async(id) => {
+    if(!raceGC.loop) return;
+    let who = raceGC.players.find(p => p.id == id);
+    let act = arraySelect(who.data.acts);
+    // if(!act) return raceGF.error(`${who.name}の行動aが不正です..`);
+    let [key, ...val] = act;
+    if(key == 0) IamVerySmartAndTensaiHuman_NiceToMeetYou = 1; //これの意味はないです。そのうち待機したら系を作るとしたらの温床で残してる
+    if(key == '進む') await raceGF.move(id, val[0], '+');
+    if(key == '戻る') await raceGF.move(id, val[0], '-');
+    if(key == '状態') raceGF.buffadd(...val), await delay(who.data.delay);
+
+    requestAnimationFrame(() => raceGF.loop(id));
+}
+raceGF.tekiou = () => {
+    if(!raceGC.loop) return 1;
+
+    // time
+    let [hun, byo] = [raceGC.time%60, Math.floor(raceGC.time/60)]
+        .map(a => a.toFixed(0).padStart(2, '0')); //初めて自ら改行したわ
+    raceGC.timeD.textContent = `${byo}:${hun}`;
+
+
+    for(let who of raceGC.players){
+        who.bar.fill('=');
+        who.bar[who.pos] = '@';
+        who.div.textContent = who.bar.join('');
+
+        //buff
+        for(let buff of who.buffs){
+            if(buff.time <= raceGC.time) raceGF.buffrem(who.id, buff.name);
+        }
+    }
+
+    // 終了？
+    if(raceGC.players.every(p => p.pos >= raceGC.leng-1)){
+        raceGF.finish();
+        return 1;
+    }
+
+    return 0;
+}
+
+raceGF.inc = (id, key, val, code = 'set') => {
+    let who = raceGC.players.find(p => p.id == id);
+
+    if(!hask(who.inc, key)) who.inc[key] = 0;
+    if(code == 'set') who.inc[key] = val;
+    if(code == 'add') who.inc[key] += val;
+}
+
+raceGF.move = async(id, num, code = '+') => {
+    if(!raceGC.loop) return 1;
+    let who = raceGC.players.find(p => p.id == id);
+    // if(!who) return nicoText(`${who}番目の選手は存在しないです..`);
+
+    if(hask(who.inc, '移動')) num += who.inc['移動'];
+
+    for(let i=0; i<num; i++){
+        if(code == '+') who.pos += 1;
+        if(code == '-') who.pos -= 1;
+        if(who.pos < 0) who.pos = 0;
+        if(raceGC.leng <= who.pos) who.pos = raceGC.leng-1;
+
+        raceGF.tekiou();
+        await delay(who.data.delay);
+    }
+
+    return 0;
+}
+
+raceGF.buffhas = (buffs, buff) => {
+    return buffs.find(a => a.name == buff);
+}
+raceGF.buffadd = (id, tid, buff, time) => {
+    if(!raceGC.loop) return 1;
+    let who = raceGC.players.find(p => p.id == id);
+    let are = raceGC.players.find(p => p.id == tid);
+
+    if(hask(who.inc, '与バフ')) time += who.inc['与バフ'];
+
+    if(raceGF.buffhas(are.buffs, buff)) raceGF.buffrem(tid, buff);
+
+    let mono = {
+        name: buff,
+        time: raceGC.time + time
+    }
+    are.buffs.push(mono);
+
+    raceGF.tekiou();
+    return 0;
+}
+raceGF.buffrem = (id, buff) => {
+    if(!raceGC.loop) return 1;
+    let who = raceGC.players.find(p => p.id == id);
+    
+    if(!raceGF.buffhas(who.buffs, buff)) return 0;
+    let idx = who.buffs.findIndex(a => a.name == buff);
+    who.buffs.splice(idx, 1);
+    raceGF.tekiou();
+
+    return 0;
+}
+
+raceGF.finish = () => {
+    raceGC.loop = 0;
+    raceGF.timer('stop');
+
+    let ended = [];
+    for(let who of raceGC.players) if(who.pos == raceGC.leng-1) ended.push(who);
+    
+    raceGF.logadd('レースエンデド！');
+    if(ended.length == 1) raceGF.logadd(`${ended[0].name}の勝利！`);
+    if(ended.length > 1) raceGF.logadd(`引き分け！ ${ended.map(a => a.name).join('と')}は同着でした！！`);
+    if(ended.length == 4) raceGF.logadd(`奇跡！！`); //WiiPartyのあれ
+
+    raceGD.classList.remove('phase2');
+    raceGD.classList.add('phase3')
+}
+
+raceGF.end = () => {
+    raceGC.loop = 0;
+    raceGF.timer('stop');
+
+    raceGD.classList.remove('phase2');
+    raceGD.classList.remove('phase3');
+    raceGD.classList.remove('play');
+
+    raceGC.now = 0;
+}
+raceGC.endD.addEventListener('click', raceGF.end);
+// #endregion
+
+// #region 連打するやつ
 let count = 0;
 let startTime;
 let duration = 5000;
@@ -1107,3 +1374,4 @@ function CookingGameChoeese(num){
     }
 }
 //#endregion
+
