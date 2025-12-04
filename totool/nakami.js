@@ -975,16 +975,17 @@ let raceGC = {
      seleD: raceGD.querySelector('.junbee .selected'),
      goD: raceGD.querySelector('.junbee .go'),
     kaijou: raceGD.querySelector('.kaijou'),
-     playersD: raceGD.querySelector('.kaijou .players'),
+     seshD: raceGD.querySelector('.kaijou .senshus'),
      logD: raceGD.querySelector('.kaijou .log'),
      timeD: raceGD.querySelector('.kaijou .time'),
      endD: raceGD.querySelector('.end'),
 }
 raceGC.Players = [ //data
+    // a b c d e f g h i j k l m n o p q r s t u v w x y z
     {
-        name:'alice',
-        jpnm: '青春アリス',
-        delay: 600,
+        name:'alice', //
+        jpnm:'青春アリス',
+        delay: 500,
         sei:[],
         acts: [
             [0],
@@ -994,33 +995,67 @@ raceGC.Players = [ //data
             ['進む', 1],
             ['進む', 2],
         ],
+
+        P:{
+            name:'なし',
+            if:'',
+            func:() => {}
+        },
+
         epm:80, //epのmax
         epa:10, //epのadd(回復)量（基本妨害を受けた時に回復する）
-        lastwordn: '華やかなお茶会',
-        lastwordp: async() => {
-            //全員を強制スタン(自分含む)、しばらくした後その後全員、進む時に+1されるバフを付与
-
-        }
+        E:{
+            name:'華やかなお茶会',
+            func:async() => {
+                //全員を強制スタン(自分含む)、しばらくした後その後全員、進む時に+1されるバフを付与
+            }
+        },
     },
 
     {
         name:'bob', //もうアークナイツのあいつしか思い浮かばんのやが
-        jpnm: 'ボブ・サック',
-        delay: 900,
+        jpnm:'ビッグ・ボブ',
+        desc:"重装備ゆえに動きが遅い。\nしかしその分スタン耐性がある",
+        delay: 1200,
         sei:['スタン無効'],
         acts: [
-            [0,0],
+            [0],
             ['進む', 1],
             ['進む', 1],
         ],
     },
 
-    // {
-    //     name:'charlie',
-    //     jpnm: 'チョコ工場',
-    //     delay: 600,
-    //     sei:[]
-    // },
+    {
+        name:'charles',
+        jpnm:'機関車',
+        desc:"機関車.. だが 足が生えてるので 線路不要！\n高速で動くがたまに事故るぞ！",
+        delay: 200,
+        sei:[],
+        acts:[
+            ['進む', 1],
+            ['進む', 1],
+            ['状態', 'me', 'スタン', 10],
+        ],
+
+        P:{
+            name:'パニック',
+            if:'状態解除←_スタン',
+            func:() => {
+                //自身のdelayを+400
+                raceGF.buffadd('me', 'delay', 5, 400);
+            }
+        }
+    },
+
+    // freezer()
+    // greg(ory)（グレッグ）
+     // gregorius（グレゴリオ）でもいいかも？
+    // h
+    // i(未)
+    // john(遠吠え) 歌の名前/歌詞で 主軸定めが吉
+    // kris(クリス) 殺す
+    // wonka(ウォンカ) チョコ
+
 
 ]
 let raceGF = {};
@@ -1039,10 +1074,12 @@ raceGF.logadd = (text) => {
     raceGC.logD.scrollTop = raceGC.logD.scrollHeight;
 }
 raceGF.error = (text) => {
-    raceGF.logadd('エラード！！！');
-    raceGF.logadd(text);
-    nicoText('エラード！！')
-    nicoText(text)
+    let arr = ['エラード！！！', text];
+    for(let a of arr){
+        raceGF.logadd(a);
+        nicoText(a);
+        console.error(a);
+    }
     
     raceGF.end();
 }
@@ -1062,28 +1099,64 @@ raceGC.startD.addEventListener('click', raceGF.start);
 raceGF.pload =() => {
     let div0 = raceGC.listD;
     div0.innerHTML = '';
-    for(let item of raceGC.Players){
+
+    console.log(raceGC.Players)
+    let arr = copy(raceGC.Players);
+    console.log(copy(raceGC.Players))
+    arr.push({name:'random'});
+    console.log(arr);
+    for(let item of arr){
         let div = document.createElement('div');
         div.className = `item ${item.name}`;
         div.textContent = item.name;
         
         div.addEventListener('click', () => {
-            if(raceGC.pssl) return;
+            if(!raceGC.pssl) return;
 
-            raceGF.pkime(raceGC.psid, item.name);
+            raceGF.pkimed(raceGC.psid, item.name);
         })
 
         div0.appendChild(div);
+    }
+
+    for(let i=0; i<4; i++){
+        let div = document.createElement('div');
+        div.className = `raceG-lect w${i}`;
+        div.dataset.name = '未選択';
+
+        div.addEventListener('click', () => {
+            if(raceGC.pssl) return;
+            raceGF.pkime(i);
+            div.classList.add('moving');
+        })
+        div.addEventListener('mousemove', (e) => {
+            if(!raceGC.pssl) return;
+            div.style.left = `${e.clientX}px`;
+            div.style.top = `${e.clientY}px`;
+        })
+
+        let ranD = raceGC.listD.querySelector(`.item.random`);
+        ranD.appendChild(div);
     }
 
     raceGC.psid = 0;
     raceGC.pssl = 1;
     raceGD.classList.add('kimeing');
 }
-raceGF.pkime = (id, name) => {
+raceGF.psave = () => {
+        
+}
+
+raceGF.pkime = (id) => {
+    
+}
+raceGF.pkimed = (id, name) => {
     let div2 = raceGC.seleD.querySelector(`.sele.w${id}`);
     div2.dataset.name = name;
     div2.classList.add('kimed');
+
+    div2.dataset.name = name;
+    div2.querySelector('.img').src = `assets/raceGCs/${name}.png`;
 
     raceGC.pssl = 0;
     raceGD.classList.remove('kimeing');
@@ -1092,14 +1165,18 @@ raceGF.pkime = (id, name) => {
 raceGF.pmake = (name) => {
     let data = raceGC.Players.find(p => p.name == name);
     if(!data) return 'no name';
+    data = copy(data);
+
     let player = {
         name,
         pos: 0,
+        delay: data.delay,
         bar: [],
         buffs: [],
         inc: {},
-        data: copy(data),
+        data: data,
     }
+
     for(let i=0; i<raceGC.leng; i++) player.bar.push('=');
     player.bar[0] = '@';
 
@@ -1114,10 +1191,11 @@ raceGF.goaway = async() => {
     for(let i=0; i<4; i++){
         let sdiv = raceGC.seleD.querySelector(`.sele.w${i}`);
         let name = sdiv.dataset.name;
+         if(name == 'random') name = arraySelect(raceGC.Players).name;
         let player = raceGF.pmake(name);
-        if(player == 'no name') return raceGF.error(`${name}という選手は存在しないです！！`);
+        if(player == 'no name') return raceGF.error(`[raceGF.goaway] (${i})${name}という選手は存在しないです！！`);
         player.id = i;
-        player.div = raceGC.playersD.querySelector(`.player.w${i}`);
+        player.div = raceGC.seshD.querySelector(`.sesh.w${i}`);
         player.sdiv = sdiv;
 
         raceGC.players.push(player);
@@ -1129,7 +1207,7 @@ raceGF.goaway = async() => {
     raceGD.classList.add('phase2');
 
     raceGC.loop = 1;
-    raceGF.timer('reset')
+    raceGF.timer('reset');
     raceGF.timer('start');
     await Promise.all(charge.map(f => f()));
 }
@@ -1163,13 +1241,21 @@ raceGF.timer = (code) => {
 raceGF.loop = async(id) => {
     if(!raceGC.loop) return;
     let who = raceGC.players.find(p => p.id == id);
+
+    let wait = who.delay;
+    let delayB = raceGF.buffhas(id, 'delay');
+    if(delayB) console.log(`${who.name}(${id})様はdelayバフをお持ちになられているので、delayに${wait}ms追加しますね`);
+    if(delayB) wait += delayB.val;
+    
     let act = arraySelect(who.data.acts);
     // if(!act) return raceGF.error(`${who.name}の行動aが不正です..`);
     let [key, ...val] = act;
-    if(key == 0) IamVerySmartAndTensaiHuman_NiceToMeetYou = 1; //これの意味はないです。そのうち待機したら系を作るとしたらの温床で残してる
+    if(key == 0); //これの意味はないです。そのうち待機したら系を作るとしたらの温床で残してる
     if(key == '進む') await raceGF.move(id, val[0], '+');
     if(key == '戻る') await raceGF.move(id, val[0], '-');
-    if(key == '状態') raceGF.buffadd(...val), await delay(who.data.delay);
+    if(key == '状態') raceGF.buffadd(id, ...val);
+
+    await delay(wait);
 
     requestAnimationFrame(() => raceGF.loop(id));
 }
@@ -1189,6 +1275,7 @@ raceGF.tekiou = () => {
 
         //buff
         for(let buff of who.buffs){
+            if(buff.time == "null") continue;
             if(buff.time <= raceGC.time) raceGF.buffrem(who.id, buff.name);
         }
     }
@@ -1203,6 +1290,7 @@ raceGF.tekiou = () => {
 }
 
 raceGF.inc = (id, key, val, code = 'set') => {
+    // 移動とか、付バフ/被バフとか
     let who = raceGC.players.find(p => p.id == id);
 
     if(!hask(who.inc, key)) who.inc[key] = 0;
@@ -1224,28 +1312,49 @@ raceGF.move = async(id, num, code = '+') => {
         if(raceGC.leng <= who.pos) who.pos = raceGC.leng-1;
 
         raceGF.tekiou();
-        await delay(who.data.delay);
+        await delay(who.delay);
     }
 
     return 0;
 }
 
-raceGF.buffhas = (buffs, buff) => {
-    return buffs.find(a => a.name == buff);
+raceGF.buffhas = (id, buff) => {
+    let who = raceGC.players.find(p => p.id == id);
+    let sore = who.buffs.find(a => a.name == buff);
+    if(sore) return sore;
+
+    return 0;
 }
-raceGF.buffadd = (id, tid, buff, time) => {
+raceGF.buffadd = (id, tid, buff, time, val) => {
     if(!raceGC.loop) return 1;
+
+    if(tid == 'me') tid = id;
     let who = raceGC.players.find(p => p.id == id);
     let are = raceGC.players.find(p => p.id == tid);
 
     if(hask(who.inc, '与バフ')) time += who.inc['与バフ'];
+    time += raceGC.time;
 
-    if(raceGF.buffhas(are.buffs, buff)) raceGF.buffrem(tid, buff);
+    val = val ?? 0;
+
+    if(raceGF.buffhas(tid, buff)){
+        let sore = are.buffs.find(a => a.name == buff);
+        let dou = 0;
+        if(val > sore.val) dou = 1;
+        if(time > sore.time && val == sore.val) dou = 1;
+        if(time == 'null') dou = 1;
+
+        if(dou) raceGF.buffrem(tid, buff);
+        else return 1;
+    }
 
     let mono = {
         name: buff,
-        time: raceGC.time + time
+        time,
+        val
     }
+    if(time == 'null') mono.time = "null";
+
     are.buffs.push(mono);
 
     raceGF.tekiou();
@@ -1255,7 +1364,7 @@ raceGF.buffrem = (id, buff) => {
     if(!raceGC.loop) return 1;
     let who = raceGC.players.find(p => p.id == id);
     
-    if(!raceGF.buffhas(who.buffs, buff)) return 0;
+    if(!raceGF.buffhas(id, buff)) return 0;
     let idx = who.buffs.findIndex(a => a.name == buff);
     who.buffs.splice(idx, 1);
     raceGF.tekiou();

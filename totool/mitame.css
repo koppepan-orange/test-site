@@ -375,8 +375,8 @@ img{
     display: grid;
     justify-items: center;
     justify-content: space-between;
-    grid-template-columns: repeat(8, 1fr);
-    /* gap: 4px; */
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
 }
 #main .race-game .junbee .list .item{
     display: flex;
@@ -388,6 +388,30 @@ img{
     background: #ffd1d1;
     border: 2px solid #ffffff;
     box-sizing: border-box;
+}
+#main .raceG-lect{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    padding: 5px;
+    scale: 1.0;
+    background: #fff3e2;
+    border: 2px solid #8f6d3d;
+    transition: scale 0.05s ease-in-out;
+    text-align: center;
+    font-size: 20px;
+    color: #2b2b2b;
+    box-sizing: border-box;
+}
+#main .raceG-lect:hover{
+    scale: 1.2;
+}
+#main .raceG-lect.moving{
+    scale: 0.9;
+    position: fixed;
 }
 #main .race-game .junbee .go{
     display: block;
