@@ -1096,22 +1096,25 @@ raceGF.start = async() => {
 }
 raceGC.startD.addEventListener('click', raceGF.start);
 
-raceGF.pload =() => {
+raceGF.pload = () => {
     let div0 = raceGC.listD;
     div0.innerHTML = '';
 
-    console.log(raceGC.Players)
+    //上のリスト
     let arr = copy(raceGC.Players);
-    console.log(copy(raceGC.Players))
     arr.push({name:'random'});
-    console.log(arr);
     for(let item of arr){
         let div = document.createElement('div');
         div.className = `item ${item.name}`;
-        div.textContent = item.name;
+        // div.textContent = item.name;
         
         div.addEventListener('click', () => {
             if(!raceGC.pssl) return;
+
+            /* 
+            moveしてもなんか消えてるから不可
+            kaijouがrow
+            */
 
             raceGF.pkimed(raceGC.psid, item.name);
         })
@@ -1119,6 +1122,7 @@ raceGF.pload =() => {
         div0.appendChild(div);
     }
 
+    //選ぶコマ
     for(let i=0; i<4; i++){
         let div = document.createElement('div');
         div.className = `raceG-lect w${i}`;
@@ -1126,8 +1130,11 @@ raceGF.pload =() => {
 
         div.addEventListener('click', () => {
             if(raceGC.pssl) return;
-            raceGF.pkime(i);
+            
             div.classList.add('moving');
+            div.remove();
+            document.querySelector('body').appendChild(div);
+            raceGF.pkime(i);
         })
         div.addEventListener('mousemove', (e) => {
             if(!raceGC.pssl) return;
@@ -1139,24 +1146,50 @@ raceGF.pload =() => {
         ranD.appendChild(div);
     }
 
+    for(let i=0; i<4; i++){
+        let div = document.createElement('div');
+        div.className = `sele w${i}`;
+        div.dataset.name = '未選択';
+        
+        let img = document.createElement('img');
+        img.className = 'img';
+        div.appendChild(img);
+        
+        let text = document.createElement('div');
+        text.className = 'text';
+        text.textContent = '未選択';
+        div.appendChild(text);
+        
+        raceGC.seleD.appendChild(div);
+
+        if(i) raceGF.pkimed(i, 'random');
+    }
+
     raceGC.psid = 0;
     raceGC.pssl = 1;
     raceGD.classList.add('kimeing');
 }
-raceGF.psave = () => {
-        
-}
 
 raceGF.pkime = (id) => {
-    
+    if(raceGC.pssl) return;
+    raceGC.psid = id;
+    raceGD.classList.add('kimeing');
+    setTimeout(() => raceGC.pssl = 1, 10);
 }
 raceGF.pkimed = (id, name) => {
+    let div0 = raceGC.listD.querySelector(`.item.${name}`);
+    let div = document.querySelector(`.raceG-lect.w${id}`);
+    div.classList.remove('moving');
+    div.remove();
+    div0.appendChild(div);
+    
     let div2 = raceGC.seleD.querySelector(`.sele.w${id}`);
     div2.dataset.name = name;
     div2.classList.add('kimed');
 
     div2.dataset.name = name;
     div2.querySelector('.img').src = `assets/raceGCs/${name}.png`;
+    div2.querySelector('.text').textContent = name;
 
     raceGC.pssl = 0;
     raceGD.classList.remove('kimeing');
