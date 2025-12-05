@@ -388,6 +388,10 @@ img{
     background: #ffd1d1;
     border: 2px solid #ffffff;
     box-sizing: border-box;
+    pointer-events: none;
+}
+#main .race-game.kimeing .junbee .list .item{
+    pointer-events: all;
 }
 /* alice, bob, charles, random */
 #main .race-game .junbee .list .item.alice::after{content:'alice';}
@@ -395,14 +399,13 @@ img{
 #main .race-game .junbee .list .item.charles::after{content:'charles';}
 #main .race-game .junbee .list .item.random::after{content:'random';}
 
-#main .raceG-lect{
+.raceG-lect{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 20px;
+    width: 22px;
     aspect-ratio: 1/1;
     border-radius: 50%;
-    padding: 5px;
     scale: 1.0;
     background: #fff3e2;
     border: 2px solid #8f6d3d;
@@ -411,15 +414,26 @@ img{
     font-size: 10px;
     color: #2b2b2b;
     box-sizing: border-box;
+    pointer-events: all;
 }
-#main .raceG-lect:hover{
+.raceG-lect:hover{
     scale: 1.1;
 }
-#main .raceG-lect.moving{
+.raceG-lect.moving{
     scale: 0.9;
     position: fixed;
+    transform: translate(-50%,-50%);
     pointer-events: none;
+    z-index: 2147483647;
 }
+#main .race-game .junbee .list .item .raceG-lect{
+    z-index: 2;
+}
+.raceG-lect.w0{border-color: #ff5454;}
+.raceG-lect.w1{border-color: #5269ff;}
+.raceG-lect.w2{border-color: #fffc55;}
+.raceG-lect.w3{border-color: #54ff42;}
+
 #main .race-game .junbee .selected{
     display: flex;
     flex-direction: row;
@@ -530,12 +544,12 @@ img{
 }
 
 #main .race-game .area.kaijou{background: #f1f9ff;}
-#main .race-game.phase2 .area.kaijou{
-    display: block;
+#main .race-game .kaijou .senshus{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
-#main .race-game .area.kaijou .end{
-    display: none;
-}
-#main .race-game.phase3 .area.kaijou .end{
-    display: block;
-}
+
+#main .race-game.phase2 .area.kaijou{display: block}
+#main .race-game .area.kaijou .end{display: none}
+#main .race-game.phase3 .area.kaijou .end{display: block}
