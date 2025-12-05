@@ -983,8 +983,9 @@ let raceGC = {
 raceGC.Players = [ //data
     // a b c d e f g h i j k l m n o p q r s t u v w x y z
     {
-        name:'alice', //
+        name:'alice',
         jpnm:'青春アリス',
+        moto:'#コンパス'
         delay: 500,
         sei:[],
         acts: [
@@ -1015,6 +1016,7 @@ raceGC.Players = [ //data
     {
         name:'bob', //もうアークナイツのあいつしか思い浮かばんのやが
         jpnm:'ビッグ・ボブ',
+        moto:'アークナイツ'
         desc:"重装備ゆえに動きが遅い。\nしかしその分スタン耐性がある",
         delay: 1200,
         sei:['スタン無効'],
@@ -1028,6 +1030,7 @@ raceGC.Players = [ //data
     {
         name:'charles',
         jpnm:'機関車',
+        moto:'choo choo charles'
         desc:"機関車.. だが 足が生えてるので 線路不要！\n高速で動くがたまに事故るぞ！",
         delay: 200,
         sei:[],
@@ -1047,14 +1050,17 @@ raceGC.Players = [ //data
         }
     },
 
-    // freezer()
-    // greg(ory)（グレッグ）
-     // gregorius（グレゴリオ）でもいいかも？
-    // h
-    // i(未)
-    // john(遠吠え) 歌の名前/歌詞で 主軸定めが吉
-    // kris(クリス) 殺す
-    // wonka(ウォンカ) チョコ
+    // digda（ディグダ）[ポケモン]
+    // e（）[]
+    // feater（エフイーター）[アークナイツ] 元被り。
+    // greg(ory)（グレッグ）[ヘイ・デイ]
+     // gregorius（グレゴリオ）[ブルーアーカイブ]でもいいかも？
+    // h（）[]
+    // i（）[]
+    // john(遠吠え) [作曲家さん]歌の名前/歌詞で 主軸定めが吉
+    // kris(クリス) [デルタルーン]殺す
+
+    // wonka(ウォンカ) [洋画]チョコ
 
 
 ]
