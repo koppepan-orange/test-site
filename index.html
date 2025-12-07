@@ -19,7 +19,7 @@
 
     <div id="pages">
 
-        <div id="home" class="page">
+        <div id="home" class="page" style="opacity: 1; left: 0px;">
             <div class="links"></div>
 
             <div class="memos"></div>
@@ -46,7 +46,7 @@
 
         </div>
 
-        <div id="memo" class="page">
+        <div id="memo" class="page" style="opacity: 0; left: 100vw;">
 
             <div class="row">
                 <div type="text" class="title" contenteditable></div>
@@ -55,7 +55,8 @@
             <div class="text" contenteditable></div>
 
         </div>
-        <div id="tool" class="page">
+
+        <div id="tool" class="page" style="opacity: 0; left: 100vw;">
 
             <div class="Hen"><!-- こちら偏差値計算機です！！！！ -->
                 <div class="row">yourtestp: <input class="input" type="text"/></div>
@@ -120,7 +121,7 @@
             </details>
         </div>
 
-        <div id="login" class="page">
+        <div id="login" class="page" style="opacity: 0; left: 100vw;">
             <div class="form">
                 <input type="text" name="username" class="username" placeholder="username">
                 <input type="password" name="password" class="password" placeholder="password">
@@ -128,7 +129,8 @@
             </div>
             <div id="logout">Logout</div>
         </div>
-        <div id="chat" class="page">
+
+        <div id="chat" class="page" style="opacity: 0; left: 100vw;">
             <select id="room-select" name="room-select" onchange="selectRoom()">
                 <option value="1">1</option>
                 <option value="2">2</option>
