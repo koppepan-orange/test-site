@@ -325,11 +325,12 @@ img{
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: fit-content;
 }
 #main .race-game .area{
     display: none;
     width: 100%;
-    height: 100%;
+    height: fit-content;
     position: relative;
     box-sizing: border-box;
 }
@@ -394,10 +395,7 @@ img{
     pointer-events: all;
 }
 /* alice, bob, charles, random */
-#main .race-game .junbee .list .item.alice::after{content:'alice';}
-#main .race-game .junbee .list .item.bob::after{content:'bob';}
-#main .race-game .junbee .list .item.charles::after{content:'charles';}
-#main .race-game .junbee .list .item.random::after{content:'random';}
+.item::after{content: attr(data-name)}
 
 .raceG-lect{
     display: flex;
@@ -637,6 +635,28 @@ img{
     position: absolute;
     top: 0;
     left: 0;
+}
+#main .race-game .kaijou .senshus .sesh .load .koma img::after{
+    content: '';
+    display: block;
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: #fff3e2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+#main .race-game .kaijou .senshus .sesh .load .koma img::before{
+    content: '';
+    width: 120%;
+    aspect-ratio: 1/1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    background: #fffaf3;
 }
 
 

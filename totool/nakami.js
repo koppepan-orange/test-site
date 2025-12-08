@@ -985,6 +985,7 @@ let raceGC = {
 raceGC.Players = [ //data
     // a b c d e f g h i j k l m n o p q r s t u v w x y z
     {
+        able: 1,
         name:'alice',
         jpnm:'青春アリス',
         moto:'#コンパス',
@@ -1005,8 +1006,8 @@ raceGC.Players = [ //data
             func:() => {}
         },
 
-        epm:80, //epのmax
-        epa:10, //epのadd(回復)量（基本妨害を受けた時に回復する）
+        //epのmaxは360
+        epa:5, //epのadd(回復)量（基本妨害を受けた時に回復する）
         E:{
             name:'華やかなお茶会',
             func:async() => {
@@ -1016,6 +1017,7 @@ raceGC.Players = [ //data
     },
 
     {
+        able: 1,
         name:'bob', //もうアークナイツのあいつしか思い浮かばんのやが
         jpnm:'ビッグ・ボブ',
         moto:'アークナイツ',
@@ -1027,13 +1029,47 @@ raceGC.Players = [ //data
             ['進む', 1],
             ['進む', 1],
         ],
+
+        P:{
+            name:'なし',
+            if:'状態付与←_スタン',
+            func:() => {
+                
+            }
+        },
     },
 
     {
-        name:'charles',
-        jpnm:'機関車',
-        moto:'choo choo charles',
-        desc:"機関車.. だが 足が生えてるので 線路不要！\n高速で動くがたまに事故るぞ！",
+        able: 0,
+        name:'clockboy',
+        jpnm:'クロックボーイ',
+        moto:'崩壊・スターレイル',
+        desc:"",
+        delay: 200,
+        sei:[],
+        acts:[
+            ['進む', 1],
+            ['進む', 1],
+        ],
+
+        P:{
+            name:'パニック',
+            if:'状態解除←_スタン',
+            func:() => {
+                //自身のdelayを+400
+                raceGF.buffadd('me', 'fast', 5, 400);
+            }
+        },
+
+        epa:2
+    },
+
+    {
+        able: 1,
+        name:'highlander',
+        jpnm:'HIGH5LANDER',
+        moto:'ブルーアーカイブ',
+        desc:"法定速度以上だが脱線はしない列車。\n高速で動くがたまに事故るぞ！",
         delay: 200,
         sei:[],
         acts:[
@@ -1047,9 +1083,12 @@ raceGC.Players = [ //data
             if:'状態解除←_スタン',
             func:() => {
                 //自身のdelayを+400
-                raceGF.buffadd('me', 'fast', 5, 400);
+                raceGF.buffadd('me', '無効_スタン', 4);
+                raceGF.buffadd('me', 'slow', 4, 300);
             }
-        }
+        },
+
+
     },
 
     // digda（ディグダ）[ポケモン]
@@ -1061,7 +1100,8 @@ raceGC.Players = [ //data
     // i（）[]
     // john(遠吠え) [作曲家さん]歌の名前/歌詞で 主軸定めが吉
     // kris(クリス) [デルタルーン]殺す
-
+    // teto(テト)[ボーカロイド] オーバーライド Pのifが「状態付与←-悪」(デバフをつけられたら)になるやつ
+     // chihiro(チヒロ)[ブルーアーカイブ]にオーバーライドさせてもいいかも？
     // wonka(ウォンカ) [洋画]チョコ
 
 
@@ -1118,11 +1158,13 @@ raceGF.pload = () => {
     div0.innerHTML = '';
 
     //上のリスト
-    let arr = copy(raceGC.Players);
+    let arr0 = raceGC.Players.filter(a => a.able);
+    let arr = copy(arr0);
     arr.push({name:'random'});
     for(let item of arr){
         let div = document.createElement('div');
         div.className = `item ${item.name}`;
+        div.dataset.name = item.name;
         // div.textContent = item.name;
         
         div.addEventListener('click', () => {
@@ -1264,7 +1306,7 @@ raceGF.goaway = async() => {
     for(let i=0; i<4; i++){
         let sdiv = raceGC.seleD.querySelector(`.sele.w${i}`);
         let name = sdiv.dataset.name;
-         if(name == 'random') name = arraySelect(raceGC.Players).name;
+         if(name == 'random') name = arraySelect(raceGC.Players.filter(a => a.able)).name;
         let player = raceGF.pmake(name);
         if(player == 'no name') return raceGF.error(`[goaway] (${i})${name}という選手は存在しないです！！`);
         player.id = i;
@@ -1277,6 +1319,7 @@ raceGF.goaway = async() => {
     raceGD.classList.remove('phase1');
     raceGD.classList.add('phase2');
 
+    raceGF.timer('reset');
     await raceGF.hazime();
 }
 raceGC.goD.addEventListener('click', raceGF.goaway);
@@ -1286,7 +1329,6 @@ raceGF.hazime = async() => {
     for(let i=0; i<4; i++) charge.push(() => raceGF.loop(i));
     
     raceGC.loop = 1;
-    raceGF.timer('reset');
     raceGF.timer('start');
     await Promise.all(charge.map(f => f()));
 }
@@ -1305,13 +1347,35 @@ document.addEventListener('keydown', (e) => {
 raceGF.happen = async(what, id, tid) => {
 	if(!raceGC.loop) return;
 
+    let list = [];
+    if(what.startsWith('状態')){
+        //状態解除←_スタン
+        let name = what.substr(6);
+        
+        list.push(what.substr(0,2));
+        list.push(what.substr(0,4));
+        list.push(what.substr(0,5));
+
+        let list2 = copy(list);
+        list2.map(a => a += `_${name}`);
+        list = list.concat(list2);
+        console.log(list)
+    }
+
+    for(let i=0; i<4; i++){
+        let who = raceGF.who(i);
+        if(list.includes(who.data.P.if)) await who.data.P.func();
+    }
+
     return 0;
 }
 
 raceGF.who = (id) => raceGC.players.find(p => p.id == id);
 
 raceGF.tekiou = async() => {
+
     if(!raceGC.loop) return 1;
+
 
     // time
     let [hun, byo] = [raceGC.time%60, Math.floor(raceGC.time/60)]
@@ -1338,13 +1402,6 @@ raceGF.tekiou = async() => {
         //     if(n == '@') who.div.appendChild(atto.cloneNode(true));
         // }
 
-        // //buff
-        // for(let buff of who.buffs){
-        //     if(buff.time == "null") continue;
-        //     if(buff.time <= raceGC.time) raceGF.buffrem(who.id, buff.name), console.log(`[${who.id}] ${buff.name} 削除`);
-        // }
-        
-
         // 画像というかイメージ載せる、新ver column
         for(let i=0; i<raceGC.leng; i++){
             let div = document.createElement('div');
@@ -1367,6 +1424,12 @@ raceGF.tekiou = async() => {
             who.div.appendChild(div);
         }
 
+        
+        //buff
+        for(let buff of who.buffs){
+            if(buff.time == "null") continue;
+            if(buff.time <= raceGC.time) raceGF.buffrem(who.id, buff.name), console.log(`[${who.id}] ${buff.name} 削除`);
+        }
     }
 
     // 終了？
@@ -1401,13 +1464,13 @@ raceGF.loop = async(id) => {
 
     jump:{
         if(huka) break jump;
-        console.log(`[${id}] jumpしませんでした`)
+        // console.log(`[${id}] jumpしませんでした`)
 
         let act = copy(arraySelect(who.data.acts));
         // if(!act) return raceGF.error(`${who.name}の行動aが不正です..`);
         let [key, ...val] = act; //このact、たまに最後の要素が"強"になる。強ならば、強制、スタンされてたり不可だったりしても絶対動ける
         // console.log(`[${key}] (${id})${val.join(', ')}`);
-        if(key == 0) if(raceGF.happen("待機", id)) return 1;
+        if(key == 0 && await raceGF.happen("待機", id)) return 1;
         if(key == '進む') await raceGF.move(id, val[0], '+');
         if(key == '戻る') await raceGF.move(id, val[0], '-');
         if(key == '状態') raceGF.buffadd(id, ...val);
@@ -1415,7 +1478,9 @@ raceGF.loop = async(id) => {
 
     await delay(wait);
 	
-	if(huka)if(await raceGF.happen("行動できズ", id)) return 1;
+	if(huka && await raceGF.happen("行動できズ", id)) return 1;
+
+    raceGF.tekiou()
 
     who.looped += 1;
     requestAnimationFrame(() => raceGF.loop(id));
@@ -1478,7 +1543,7 @@ raceGF.buffis = (name, code) => {
 
     return 0;
 }
-raceGF.buffadd = (id, tid, name, time, val, force) => {
+raceGF.buffadd = (id, tid, name, time, val, force, yuuhatsu) => {
     if(!raceGC.loop) return 1;
     console.log(`[buffadd] ${id} ${tid} ${name} ${time} ${val}`);
 
@@ -1498,7 +1563,7 @@ raceGF.buffadd = (id, tid, name, time, val, force) => {
         if(time > sore.time && val == sore.val) dou = 1;
         if(time == 'null') dou = 1;
 
-        if(dou) raceGF.buffrem(tid, name);
+        if(dou) raceGF.buffrem(tid, tid, name, 1, 0);
         else return 1;
     }
 
@@ -1515,7 +1580,7 @@ raceGF.buffadd = (id, tid, name, time, val, force) => {
     raceGF.tekiou();
     return 0;
 }
-raceGF.buffrem = (id, name, forve) => {
+raceGF.buffrem = async(id, tid, name, force=0, yuuhatsu=1) => {
     if(!raceGC.loop) return 1;
     let who = raceGF.who(id);
     
@@ -1524,6 +1589,11 @@ raceGF.buffrem = (id, name, forve) => {
     who.buffs.splice(idx, 1);
     raceGF.tekiou();
 
+    if(id != tid){
+        raceGF.happen(`状態解除→_${name}`, id, tid);
+        raceGF.happen(`状態解除←_${name}`, tid, id);
+    }
+    
     return 0;
 }
 
