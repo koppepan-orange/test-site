@@ -517,13 +517,24 @@ img{
     display: none;
 }
 
-#main .race-game .area.kaijou{background: #fff9f1}
+#main .race-game .area.kaijou{
+    background: #fff9f1;
+    position: relative;
+}
 #main .race-game .kaijou .timer{
     display: block;
     width: 100px;
     aspect-ratio: 1/1;
-    position: relative;
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    opacity: 0.9;
+    z-index: 2;
 }
+#main .race-game .kaijou .timer.tog{
+    opacity: 0.1;
+}
+/* logは中央に黒背景白文字で出して、押したらほぼ透明/逆透明を切り替えれる形？追加されると0.5に？ */
 #main .race-game .kaijou .timer .zyou{
     width: 100%;
     aspect-ratio: 1/1;
@@ -639,29 +650,19 @@ img{
 #main .race-game .kaijou .senshus .sesh .load .koma img::after{
     content: '';
     display: block;
-    width: 100%;
+    width: 120%;
     aspect-ratio: 1/1;
     background: #fff3e2;
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1;
-}
-#main .race-game .kaijou .senshus .sesh .load .koma img::before{
-    content: '';
-    width: 120%;
-    aspect-ratio: 1/1;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     z-index: 2;
-    background: #fffaf3;
 }
 
 
 
 
 #main .race-game.phase2 .area.kaijou{display: block}
+#main .race-game.phase3 .area.kaijou{display: block}
 #main .race-game .area.kaijou .end{display: none}
 #main .race-game.phase3 .area.kaijou .end{display: block}

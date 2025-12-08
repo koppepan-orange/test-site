@@ -979,6 +979,7 @@ let raceGC = {
     kaijou: raceGD.querySelector('.kaijou'),
      seshD: raceGD.querySelector('.kaijou .senshus'),
      logD: raceGD.querySelector('.kaijou .log'),
+     timerD: raceGD.querySelector('.kaijou .timer'),
      timeD: raceGD.querySelector('.kaijou .timer .time'),
      endD: raceGD.querySelector('.end'),
 }
@@ -1297,6 +1298,7 @@ raceGF.timer = (code) => {
         }
     }
 }
+raceGC.timerD.addEventListener('click', () => raceGC.timerD.classList.toggle('tog'));
 
 raceGF.goaway = async() => {
     if(!raceGC.now) return;
@@ -1428,13 +1430,16 @@ raceGF.tekiou = async() => {
         //buff
         for(let buff of who.buffs){
             if(buff.time == "null") continue;
-            if(buff.time <= raceGC.time) raceGF.buffrem(who.id, buff.name), console.log(`[${who.id}] ${buff.name} 削除`);
+            if(buff.time <= raceGC.time){
+                raceGF.buffrem(who.id, who.id, buff.name)
+                console.log(`[${who.id}] ${buff.name} 削除`)
+            };
         }
-    }
 
+    }
+    
     // 終了？
-    if(raceGC.players.every(p => p.pos >= raceGC.leng-1)){
-		if(await raceGF.happen("終了", id)) return 1;
+    if(raceGC.players.some(p => p.pos >= raceGC.leng-1)){
         raceGF.finish();
         return 1;
     }
