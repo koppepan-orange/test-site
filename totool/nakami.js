@@ -962,6 +962,8 @@ let raceGC = {
     time: 0,
     timer: null, //eventListener
     loop: 0,
+    loging: 0,
+    lognum: 0,
     players: [],
     leng: 18,
 
@@ -1123,13 +1125,30 @@ raceGC.logD.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     raceGF.logres();
 });
+
 raceGF.logadd = (text) => {
-    let span = document.createElement('span');
+    let span = document.createElement('div');
+    span.className = 'span';
     span.textContent = text;
     raceGC.logD.appendChild(span);
 
     raceGC.logD.scrollTop = raceGC.logD.scrollHeight;
+    raceGC.lognum += 1000;
+    raceGF.logope();    
 }
+raceGF.logope = async() => {
+    if(raceGC.loging) return;
+
+    raceGC.loging = 1;
+    raceGC.logD.classList.remove('tog');
+    for(let i=0; i<raceGC.lognum; i+=10){
+        await delay(10);
+    }
+    raceGC.loging = 0;
+    raceGC.logD.classList.add('tog');
+}
+raceGC.logD.addEventListener('click', () => raceGC.logD.classList.toggle('tog'));
+
 raceGF.error = (text) => {
     let arr = ['エラード！！！', text];
     for(let a of arr){
@@ -1303,7 +1322,6 @@ raceGC.timerD.addEventListener('click', () => raceGC.timerD.classList.toggle('to
 raceGF.goaway = async() => {
     if(!raceGC.now) return;
 
-    let charge = [];
     raceGC.players = []; //4人
     for(let i=0; i<4; i++){
         let sdiv = raceGC.seleD.querySelector(`.sele.w${i}`);
@@ -1317,16 +1335,33 @@ raceGF.goaway = async() => {
 
         raceGC.players.push(player);
     }
+    
 
     raceGD.classList.remove('phase1');
     raceGD.classList.add('phase2');
 
     raceGF.timer('reset');
     await raceGF.hazime();
+    await delay(10)
+    raceGF.yame();
+    await delay(1490);
+    let count0 = 3, wait = 1000, ed = 0;
+    for(let i=count0; 0<i; i--){
+        for(let i2=0; i2<random(1,8); i2++){
+            raceGF.logadd(`${i}...${".".repeat(ed)}`);
+            await delay(wait);
+            ed += 1;
+        }
+
+        ed = 0;
+    }
+    raceGC.logD.classList.add('tog');
+    raceGF.hazime();
 }
 raceGC.goD.addEventListener('click', raceGF.goaway);
 
 raceGF.hazime = async() => {
+    if(raceGC.loop) return;
     let charge = [];
     for(let i=0; i<4; i++) charge.push(() => raceGF.loop(i));
     
@@ -1335,6 +1370,7 @@ raceGF.hazime = async() => {
     await Promise.all(charge.map(f => f()));
 }
 raceGF.yame = () => {
+    if(!raceGC.loop) return;
     raceGC.loop = 0;
     raceGF.timer('stop');
 }

@@ -518,7 +518,7 @@ img{
 }
 
 #main .race-game .area.kaijou{
-    background: #fff9f1;
+    background: #fff7eb;
     position: relative;
 }
 #main .race-game .kaijou .timer{
@@ -543,7 +543,6 @@ img{
     position: absolute;
     top: -10%;
     left: 0;
-    z-index: 1;
 }
 #main .race-game .kaijou .timer .naka{
     width: 100%;
@@ -553,7 +552,6 @@ img{
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1;
 }
 #main .race-game .kaijou .timer .time{
     display: block;
@@ -564,7 +562,41 @@ img{
     font-size: 35px;
     font-family: misaki;
     color: #ffffff;
-    z-index: 1;
+}
+
+#main .race-game .kaijou .log{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    height: 200px;
+    max-height: 200px;
+    padding: 10px 5px;
+    opacity: 0.85;
+    background: #000000;
+    border: 5px solid #ffd297;
+    border-top: none;
+    border-bottom: none;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    transition: opacity 0.5s;
+    text-align: left;
+    overflow-y: scroll;
+    box-sizing: border-box;
+    z-index: 2;
+}
+#main .race-game .kaijou .log.tog{
+    opacity: 0.05;
+}
+#main .race-game .kaijou .log .span{
+    width: 100%;
+    font-size: 15px;
+    font-family: craft;
+    color: #ffffff;
 }
 
 /*
