@@ -528,6 +528,7 @@ img{
     position: absolute;
     left: 0px;
     bottom: 0px;
+    transition: opacity 0.5s ease-in-out;
     opacity: 0.9;
     z-index: 2;
 }
@@ -689,6 +690,13 @@ img{
     top: 0;
     left: 0;
     z-index: 2;
+}
+
+#main .race-game .kaijou .senshus .sesh .load .koma .スタン{
+    display: block;
+    width: 100%;
+    aspect-ratio: 1/1;
+    background-image: "../assets/raceGCs/stun.png";
 }
 
 

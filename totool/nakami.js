@@ -1356,20 +1356,20 @@ raceGF.goaway = async() => {
         ed = 0;
     }
     raceGC.logD.classList.add('tog');
-    raceGF.hazime();
+    raceGF.hazime(1);
 }
 raceGC.goD.addEventListener('click', raceGF.goaway);
 
-raceGF.hazime = async() => {
+raceGF.hazime = async(code=0) => {
     if(raceGC.loop) return;
     let charge = [];
     for(let i=0; i<4; i++) charge.push(() => raceGF.loop(i));
     
     raceGC.loop = 1;
     raceGF.timer('start');
-    await Promise.all(charge.map(f => f()));
+    if(code) await Promise.all(charge.map(f => f()));
 }
-raceGF.yame = () => {
+raceGF.yame = (code=0) => {
     if(!raceGC.loop) return;
     raceGC.loop = 0;
     raceGF.timer('stop');
@@ -1638,15 +1638,16 @@ raceGF.buffrem = async(id, tid, name, force=0, yuuhatsu=1) => {
     return 0;
 }
 
-raceGF.ef = (id, code) => {
+raceGF.ef = (code, time, id, tid) => {
     //エフェクト出すやつ
     if(!raceGC.loop) return 1;
     let who = raceGF.who(id);
-    let koma = raceGC.div.querySelector(`.load.iru .koma`);
+    let koma = who.div.querySelector(`.load.iru .koma`);
 
-    let ichi = koma.getBoundingClientRect();
-    let top = ichi.top;
-    let left = ichi.left;
+    let div = document.createElement('div');
+    div.className = `ef ${code}`;
+    koma.appendChild(div);
+    // setTimeout(() => div.remove(), time);
 }
 
 raceGF.finish = () => {
