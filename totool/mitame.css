@@ -591,7 +591,7 @@ img{
     z-index: 2;
 }
 #main .race-game .kaijou .log.tog{
-    opacity: 0.05;
+    opacity: 0.01;
 }
 #main .race-game .kaijou .log .span{
     width: 100%;
