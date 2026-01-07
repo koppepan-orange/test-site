@@ -26,7 +26,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "tool",
-            "file": "tool.html"
+            "file": "tool/index.html"
         },
         {
             "type": "chrome",
