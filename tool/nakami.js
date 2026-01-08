@@ -1654,28 +1654,31 @@ raceGF.end = () => {
 raceGC.endD.addEventListener('click', raceGF.end);
 // #endregion
 
-// #region 連打するやつ
-let count = 0;
-let startTime;
-let duration = 5000;
-document.querySelector('#start-btn').addEventListener('click', () => {
-    count = 0;
-    startTime = Date.now();
-    document.querySelector('#result').textContent = 'pless Enter(nandomo)';
-    document.querySelector('#start-btn').style.display = 'none';
-    document.addEventListener('keyup', countRensha);
-    setTimeout(() => {
-        document.removeEventListener('keyup', countRensha);
-        document.querySelector('#result').textContent = `結果: ${count} 回`;
-        document.querySelector('#start-btn').style.display = 'block';
-    }, duration);
-});
-function countRensha(event) {if (event.key === 'Enter') {count++;}}
-function RENDAchange(time) {
-    document.getElementById(`RENDABUTTON${duration}`).style.color = '#000000';
-    document.getElementById(`RENDABUTTON${time}`).style.color = '#23aa23';
-    duration = time;
-}
+//#region 連打するやつ
+
+// let count = 0;
+// let startTime;
+// let duration = 5000;
+// document.querySelector('#start-btn').addEventListener('click', () => {
+//     count = 0;
+//     startTime = Date.now();
+//     document.querySelector('#result').textContent = 'pless Enter(nandomo)';
+//     document.querySelector('#start-btn').style.display = 'none';
+//     document.addEventListener('keyup', countRensha);
+//     setTimeout(() => {
+//         document.removeEventListener('keyup', countRensha);
+//         document.querySelector('#result').textContent = `結果: ${count} 回`;
+//         document.querySelector('#start-btn').style.display = 'block';
+//     }, duration);
+// });
+// function countRensha(event) {if (event.key === 'Enter') {count++;}}
+// function RENDAchange(time) {
+//     document.getElementById(`RENDABUTTON${duration}`).style.color = '#000000';
+//     document.getElementById(`RENDABUTTON${time}`).style.color = '#23aa23';
+//     duration = time;
+// }
+
+let renGD = document.getElementById()
 //#endregion
 
 //#region WiiPartyのコックのあれ
