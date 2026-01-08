@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tool-site</title>
+    <link rel="stylesheet" href="mitame.css">
+    <style id="font_load_css"></style>
+</head>
+<body>
+    <div id="mobileDesc"></div>
+    <div id="log">
+        <div class="opener"><</div>
+        <div class="log"></div>
+    </div>
+
+    <div id="main">
+
+        <div class="mono hen"><!-- こちら偏差値計算機です！！！！ -->
+            <div class="row">
+                <span class="label">yourtestp:</span>
+                <input class="input" type="text"/></div>
+            <div class="row">
+                <span class="label">averagesp:</span>
+                <input class="average" type="text"/></div>
+            <div class="row">
+                <span class="label">deviation:</span>
+                <input class="output" type="text" value="?" readonly/></div>
+        </div>
+
+        <div class="mono textcount">
+            <div class="label">mozisu-count</div>
+            <input type="text" class="in"/>
+            <div class="out">0</div>
+        </div>
+
+        <div class="mono anagram">
+            <div class="label">anagram-saysay</div>
+            <div class="row">
+                <input type="text" class="in"/>
+                <button class="send">click</button>
+            </div>
+            <div class="out"></div>
+
+            <div class="sage">
+                <input type="text" class="kira"/>
+                <div class="opener">aditional</div>
+            </div>
+        </div>
+
+        <div class="mono rannm">
+            <input type="text" class="input" maxlength="2" placeholder="num">
+            <div class="row">
+                <div class="bt toggle">less</div>
+                <div class="bt over">重複</div>
+                <div class="bt active">act</div><br>
+            </div>
+            <span class="output"></span>
+        </div>
+        
+        <!-- まりぱのげーむをちょっとだけいれようかな〜と -->
+        <div class="mono bee-game">
+            <div class="bar"></div>
+            <div class="log"></div>
+
+            <div class="bt start">スタート</div>
+            <div class="buttons">
+                <div class="bt b1">1</div>
+                <div class="bt b2">2</div>
+            </div>
+        </div>
+
+        <div class="mono race-game">
+            <div class="area title">
+                <div class="lavel">@'s Race Game</div>
+                <div class="start">start</div>
+
+            </div>
+
+            <div class="area junbee">
+                <div class="list"></div>
+                <div class="selected"></div>
+                <div class="go">LEADY</div>
+            </div>
+
+            <div class="area kaijou">
+                <div class="senshus">
+                    <div class="sesh w0"></div>
+                    <div class="sesh w1"></div>
+                    <div class="sesh w2"></div>
+                    <div class="sesh w3"></div>
+                </div>
+                <div class="log"></div>
+
+                <div class="timer">
+                    <div class="zyou"></div>
+                    <div class="naka"></div>
+                    <div class="time"></div>
+                </div>
+
+                <div class="end">end</div>
+            </div>
+        </div>
+
+        <div class="mono rendagame">
+            <button id="start-btn">スタート</button>
+            <div id="result"></div>
+            <button id="RENDABUTTON1000" onclick="RENDAchange(1000)">1s</button><button id="RENDABUTTON3000" onclick="RENDAchange(3000)">3s</button><button id="RENDABUTTON5000" onclick="RENDAchange(5000)" style="color:#23aa23;">5s</button><button id="RENDABUTTON10000" onclick="RENDAchange(10000)">10s</button><button id="RENDABUTTON30000" onclick="RENDAchange(30000)">30s</button>
+        </div>
+
+        <div class="mono cookgame">
+            <button id="CookingGameStart" onclick="Start()">start</button><br>
+            <div id="CookingGameArea">
+            <div id="CookingGameList"></div>
+            <button id="CookingGameChoose-1" onclick="CookingGameChoeese('1')">1</button>
+            <button id="CookingGameChoose-2" onclick="CookingGameChoeese('2')">2</button>
+            <button id="CookingGameChoose-3" onclick="CookingGameChoeese('3')">3</button>
+            <button id="CookingGameChoose-4" onclick="CookingGameChoeese('4')">4</button>
+            <button id="CookingGameChoose-5" onclick="CookingGameChoeese('5')">5</button>
+            <button id="CookingGameChoose-6" onclick="CookingGameChoeese('6')">6</button><br>
+            <span id="CookingGameLog">logやで</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="nakami.js"></script>
+</body>
+</html>
