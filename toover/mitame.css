@@ -1,24 +1,15 @@
-@font-face{src:url('../fonts/comicsans.ttf');font-family:comicsans;}
-@font-face{src:url('../fonts/papyrus.ttf');font-family:papyrus;}
-@font-face{src:url('../fonts/hangyaku.ttf');font-family:hangyaku;}
-@font-face{src:url('../fonts/cube12.ttf');font-family:cube12;}
-@font-face{src:url('../fonts/genjuu.ttf');font-family:genjuu;}
-@font-face{src:url('../fonts/kaimetsu.otf');font-family:kaimetsu;}
-@font-face{src:url('../fonts/hackgen.ttf');font-family:hackgen;}
-@font-face{src:url('../fonts/wingdings.ttf');font-family:wingdings;}
-@font-face{src:url('../fonts/wingdings2.ttf');font-family:wingdings2;}
-@font-face{src:url('../fonts/wingdings3.ttf');font-family:wingdings3;}
-@font-face{src:url('../fonts/kurundeco.otf');font-family: kurundeco;}
-@font-face{src:url('../fonts/starrysky.otf');font-family: starrysky;}
-@font-face{src:url('../fonts/kurobara.ttf');font-family: kurobara;}
-@font-face{src:url('../fonts/marukoius.ttf');font-family: marukoius;}
-@font-face{src:url('../fonts/novamono.ttf');font-family: novamono;}
-@font-face{src:url('../fonts/pricedown.ttf');font-family: pricedown;}
-@font-face{src:url('../fonts/corporate.otf');font-family: corporate;}
+/* #region スターターパック */
 html{
     margin: -8px;
     overflow: hidden;
     user-select:none;
+}
+body{
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    white-space: nowrap;
+    touch-action: none;
 }
 .row{
     display: flex;
@@ -53,6 +44,23 @@ img{
     font-size: 20px;
     transition: right 2.0s linear;
     white-space: nowrap;
+    pointer-events: none;
+    z-index: 2147483647;
+}
+/* #endregion */
+
+/* #region tobitext */
+.tobitext{
+    opacity: 1;
+    padding: 4px 8px;
+    background: rgba(0,0,0,0.72);
+    border-radius: 8px;
+    transform: translate(-50%, -50%) translateY(0px);
+    white-space: nowrap;
+    color: #ffffff;
+    position: absolute;
+    transition: none;
+    z-index: 2147483647;
     pointer-events: none;
 }
 /* #endregion */
@@ -121,19 +129,10 @@ img{
         opacity: 1;
     }
 }
-.color-red{
-    color: #ff1919;
-}
-.color-pink{
-    color: #ff56e9;
-}
-.color-blue{
-    color: #1919ff;
-}
 /* #endregion */
 
 /* #region description */
-#movableDescription{
+#mobileDesc{
     display: none;
     position: fixed;
     pointer-events: none;
@@ -142,7 +141,10 @@ img{
     text-align: left;
     padding: 5px 10px;
     border-radius: 5px;
-    z-index: 256;
+    z-index: 2147483647;
+}
+#mobileDesc.show{
+    display: block;
 }
 /* #endregion */
 
@@ -152,6 +154,94 @@ img{
 }
 .tk.mostop{
     z-index: 2147483647;
+}
+.tk.cenXY{
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+.tk.cenX{
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+}
+.tk.cenY{
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+}
+/* #endregion */
+
+/* #region alertD */
+.alertD{
+    display: block;
+    width: 320px;
+    height: 70px;
+    border-radius: 15px;
+    box-shadow: #000000 5px 5px 20px;
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: bottom 0.1s linear;
+    will-change: bottom;
+    overflow: hidden;
+    box-sizing: border-box;
+    z-index: 2147483646;
+}
+.alertD.show{
+    bottom: 20px;
+}
+.alertD .row{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.alertD .row .icon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    font-size: 20px;
+}
+.alertD .row .text{
+    font-size: 18px;
+}
+.alertD .x{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background: #00000000;
+    position: absolute;
+    right: 5px;
+    top: 0;
+    font-size: 20px;
+    cursor: pointer;
+}
+.alertD .bar{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 5px;
+    border-radius: 0 0 15px 15px;
+    overflow: hidden;
+}
+.alertD .bar .inner{
+    width: 0px;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
 }
 /* #endregion */
 
@@ -185,6 +275,7 @@ img{
     margin-right: 5px;
     margin-bottom: 5px;
 }
+/* #endregion */
 
 
 #pages{

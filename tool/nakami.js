@@ -1800,7 +1800,12 @@ raceGC.endD.addEventListener('click', raceGF.end);
 //     duration = time;
 // }
 
-let renGD = document.getElementById()
+let renGD = document.getElementById('renda-game');
+let renGC = {
+    now: 0,
+    count: 0,
+}
+let renGF = {};
 //#endregion
 
 //#region WiiPartyのコックのあれ
