@@ -367,6 +367,10 @@ img{
     height: 60%;
     aspect-ratio: 1/1;
     border: 3px dotted #4473ad;
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
     line-height: 100%;
     color: #2b2b2b;
     font-size: 30px;
