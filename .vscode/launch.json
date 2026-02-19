@@ -32,7 +32,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "chat",
-            "file": "chat.html"
+            "file": "chat/index.html"
         },
         {
             "type": "chrome",

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="https://koppepan-orange.github.io/test-site/Icon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chat-site</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <!-- <script src="https://koppepan-orange.github.io/test-site/library.js"></script> -->
+    <link rel="stylesheet" href="mitame.css">
+</head>
+<body id="body">
+    <div id="mobileDesc"></div>
+    <div id="log">
+        <div class="opener">‹</div>
+        <div class="log"></div>
+    </div>
+
+    <div id="commu">
+        <div id="upper">
+            <div class="home">
+                <div class="name"></div>
+                <div class="rank">
+                    <div class="label">23</div>
+                    <div class="bar">
+                        <div class="inner"></div>
+                        <div class="val">NaN/NaN</div>
+                    </div>
+                </div>
+                <div class="euro"></div>
+                <div class="menu">三</div>
+            </div>
+    
+            <div class="ue"></div>
+        </div>
+
+        </div>
+        <nav id="sideMenu">
+            <hr noshade="true">
+            <ul>
+                <li><button onclick="GoTo('nanj')">NanJ</button></li>
+                <li><button onclick="GoTo('twitter2')">Twitter2</button></li>
+            </ul>
+            <hr noshade="true">
+            <ul>
+            <li><a href="home.html">to home</a></li>
+            </ul>
+            <hr noshade="true">
+            <button id="login-button">押さないでね。</button>
+            <button id="logout" onclick="logout()">Logout</button>
+        </nav>
+
+        <div id="login">
+            <form class="form">
+                <input type="text" class="username" placeholder="ユーザー名" required>
+                <input type="password" class="password" placeholder="パスワード" required>
+                <div class="bt">ログイン</div>
+                <div class="errored">パスワードが間違っています。</div>
+            </form>
+        </div>
+        
+
+
+        <div id="nanj">
+            <select id="room-select" onchange="selectRoom()">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="Anonymous-1">Anonymous-1</option>
+                <option value="Anonymous-2">Anonymous-2</option>
+                <option value="Anonymous-3">Anonymous-3</option>
+            </select>
+
+            <div class="make-room-zone">
+                <input type="text" id="room-make" size="50" placeholder="write room name"/>
+                <input type="password" id="room-make-pass" size="12" placeholder="write room pass"/>
+                <button id="room-make-button" onclick="makeRoom()">Make</button>
+            </div>
+
+            <div id="messages"></div>
+
+            <div id="additional-zone">
+                <div class="hover-element">
+                    <div class="popup">
+                        <button onclick="sendStamp(1)">OK</button> <button onclick="sendStamp(2)">最高か</button> <button onclick="sendStamp(3)">ぴえん</button> <button onclick="sendStamp(4)">わりどう</button><br>
+                        <button onclick="sendStamp(5)">ごめん</button> <button onclick="sendStamp(6)">無事終了</button> <button onclick="sendStamp(7)">LOVE</button> <button onclick="sendStamp(8)">SORENA</button><br>
+                        <button onclick="sendStamp('hownice')">いいね</button> <button onclick="sendStamp('koresuki')">これすき</button> <button onclick="sendStamp('ohitasi')">おひたし</button> <button onclick="sendStamp('spacecat')">宇宙猫</button><br>
+                        <button onclick="sendStamp('youaresick')">病気ね</button> <button onclick="sendStamp('nasanao')">なさなお</button> <button onclick="sendStamp('4coma1')">外人4コマ-high</button> <button onclick="sendStamp('4coma2')">外人4コマ-low</button><br>
+                        <button onclick="sendStamp('maxwell1')">maxwell-hop</button> <button onclick="sendStamp('maxwell2')">maxwell-spin</button> <button onclick="sendStamp('hello')">こにちゃ</button> <button onclick="sendStamp('gdng')">おやすみ</button><br>
+                    </div>
+                    囧
+                </div>
+            </div>
+            <input type="textarea" id="message-input" placeholder="メッセージを書く">
+            <button id="send-button">送信</button>     
+        </div>
+
+        <!--twitter2-->
+        <div id="twitter2">
+            <select id="t-room-select" name="t-room-select" onchange="selectTweetsroom()">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+            <div class="tweets" id="tweets"></div>
+            <button id="t-make-button">✎</button>
+            <div id="t-make-zone">
+                <span id="t-make-cancel">キャンセル</span>　<span id="t-make-send">完了</span><br>
+                <textarea id="t-make-text" rows="15" cols="72"></textarea>
+            </div>
+        </div>
+    </div>
+    <!-- ログイン画面 --
+
+    <script src="data.js" defer></script>
+    <script src="nakami.js" defer></script>
+</body>
+</html>
