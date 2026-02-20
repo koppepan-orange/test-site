@@ -15,7 +15,7 @@ async function nicoText(mes){
     await delay(2000); 
     newDiv.remove();
 };
-function tobiText(youso, mes) {
+function tobiText(youso, mes){
     let el = youso;
     if(typeof el == 'string') el = document.querySelector(youso);
     if(!el) return console.error('せんぱ〜い？この要素壊れてますよ〜〜？');
@@ -56,6 +56,12 @@ function tobiText(youso, mes) {
 function copytext(text){
     navigator.clipboard.writeText(text);
 }
+function El(tag, cls, children = []){
+    let e = document.createElement(tag);
+    if(cls) e.className = cls;
+    children.forEach(c => e.appendChild(c));
+    return e;
+}
 function kaijou(num){
     if(num == 0) return 0;
     if(num == 1) return 1;
@@ -81,8 +87,8 @@ function arraySelect(array){
     let select = Math.floor(Math.random()*array.length);
     return array[select];
 };
-function arrayShuffle(array) {
-    for(let i = array.length - 1; i > 0; i--) {
+function arrayShuffle(array){
+    for(let i=(array.length-1); i>0; i--){
         let i2 = Math.floor(Math.random() * (i + 1));
         [array[i], array[i2]] = [array[i2], array[i]];
     };
@@ -116,7 +122,7 @@ function hask(obj, key){
     res = res ? 1 : 0;
     return res;
 };
-function copy(moto) {
+function copy(moto){
     if(Array.isArray(moto)){
         let arr = [];
         for(let i = 0; i < moto.length; i++){
@@ -135,7 +141,7 @@ function copy(moto) {
         return moto;
     };
 };
-function probability(num){
+function probb(num){
     return Math.random()*100 <= num;
     //例:num == 20 → randomが20以内ならtrue,elseならfalseを返す
 };
@@ -204,7 +210,7 @@ function getLocalStorage(name){
     return localStorage.getItem(name);
 };
 async function error(text = 'errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'){
-    addtext(text);
+    await logF.addtext(text);
     await delay(2000);
     // window.open('about:blank', '_self').close();
 };
@@ -251,152 +257,159 @@ function ranshoku(){
     let ato = '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
     return ato;
 };
-function timeDifference(pastTimestamp) {
-    let now = new Date(); // 現在時刻
-    let pastDate = new Date(
-        pastTimestamp.slice(0, 4),
-        pastTimestamp.slice(4, 6) - 1,
-        pastTimestamp.slice(6, 8),
-        pastTimestamp.slice(8, 10),
-        pastTimestamp.slice(10, 12)
+function timeDifference(kako){
+    let now = new Date();
+    let past = new Date(
+        kako.slice(0, 4),
+        kako.slice(4, 6) - 1,
+        kako.slice(6, 8),
+        kako.slice(8, 10),
+        kako.slice(10, 12)
     );
 
-    let diffMs = now - pastDate; // ミリ秒の差分
-    let diffMinutes = Math.floor(diffMs / (1000 * 60)); // 分に変換
-    let diffHours = Math.floor(diffMs / (1000 * 60 * 60)); // 時間に変換
-    let diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24)); // 日に変換
-    let diffMonths = (now.getFullYear() - pastDate.getFullYear()) * 12 + now.getMonth() - pastDate.getMonth(); // 月差分計算
-    let diffYears = now.getFullYear() - pastDate.getFullYear(); // 年差分計算
+    let diff = now - past;
+    let d = {
+        minute:Math.floor(diff / (1000 * 60)),
+        hour:Math.floor(diff / (1000 * 60 * 60)),
+        day:Math.floor(diff / (1000 * 60 * 60 * 24)),
+        month:(now.getFullYear() - past.getFullYear()) * 12 + now.getMonth() - past.getMonth(),
+        year:now.getFullYear() - past.getFullYear()
+    };
 
-    // 条件分岐で返す
-    if (diffMinutes < 60) {
-        return `${diffMinutes}分前`;
-    } else if (diffHours < 24) {
-        return `${diffHours}時間前`;
-    } else if (diffDays < 30) { // 30日未満なら「日」
-        return `${diffDays}日前`;
-    } else if (diffMonths < 12) { // 12ヶ月未満なら「月」
-        return `${diffMonths}ヶ月前`;
-    } else { // それ以上なら「年」
-        return `${diffYears}年前`;
+    if(d.minute < 60){
+        return `${d.minute}分前`;
+    }else if(d.hour < 24){
+        return `${d.hour}時間前`;
+    }else if(d.day < 30){
+        return `${d.day}日前`; //30日未満なら「日」
+    }else if(d.month < 12){
+        return `${d.month}ヶ月前`; //12ヶ月未満なら「月」
+    }else{
+        return `${d.year}年前`; //それ以上なら「年」
     }
 }
 //#endregion
 //#region log&text
-let textDiv = document.getElementById('text');
-let autoDelay = 1;
-let skipText = false;
-let clearText = false;
-let textShowing = 0;
+let logD = document.getElementById('log');
+let logC = {
+    mainD: logD.querySelector('.main'),
+    togD: logD.querySelector('.opener'),
+    textD: logD.querySelector('.text'),
+    autoDelay: 1,
+    skipText: false,
+    clearText: false,
+    loopText: 0,
+    ing: 0,
+    queue: []
+}
+logC.colors = [
+    {
+        name: 'red',
+        sym: '*',
+        col: '#ff4040'
+    },
+    {
+        name: 'pink',
+        sym: '&',
+        col: '#ff80bf'
+    },
+    {
+        name: 'yell',
+        sym: '^',
+        col: '#ffff40'
+    }
+];
+let logF = {};
 
-function colorcheck(rawtext) {
+logF.cc = (raw) => {
     let text = [];
     let color = null;
-    let colors = [
-        {
-            name: 'red',
-            sym: '*',
-            col: '#ff4040'
-        },
-        {
-            name: 'pink',
-            sym: '&',
-            col: '#ff80bf'
-        },
-        {
-            name: 'yell',
-            sym: '^',
-            col: '#ffff40'
-        }
-    ];
 
-    for(let i = 0; i < rawtext.length; i++){
+    for(let i = 0; i < raw.length; i++){
         let sym = false;
-        for(let c of colors){
-            if(rawtext[i] == c.sym && rawtext[i + 1] == c.sym){
-                console.log(`→${rawtext[i]}← 発見！ ${c.name}色です`);
+        for(let c of logC.colors){
+            if(raw[i] == c.sym && raw[i + 1] == c.sym){
+                console.log(`→${raw[i]}← 発見！ ${c.name}色です`);
                 color = color ? null : c.col;
                 i++;
                 sym = true;
                 break;
             }
         };
-
         if(sym) continue;
-        if(color) console.log(color);
+
         text.push({
-            char: rawtext[i],
+            char: raw[i],
             color: color
         });
     }
     return text;
 };
 
-let queueAddtext = [];
-let loopAddtext = 0;
-async function waitforAddtext(){
-    let len = queueAddtext.length;
+logF.waitfor = async() => {
+    let len = logC.queue.length;
 
-    if(len == 0) loopAddtext = 0;
-    else loopAddtext = 1;
+    if(len == 0) logC.loopText = 0;
+    else logC.loopText = 1;
 
-    if(!loopAddtext) return console.log('loopがないんでしゅーりょー');
+    if(!logC.loopText) return;
     requestAnimationFrame(waitforAddtext);
 
-    if(textShowing) return console.log('文字表示されたんでスキップ');
-    
-    let raw = queueAddtext.shift();
+    if(logC.ing) return;
+    let raw = logC.queue.shift();
     // console.log(`${raw}を送信します`);
-    // console.log(`残り: (${len - 1})[${queueAddtext}]`);
-    await addtext(raw);
+    // console.log(`残り: (${len - 1})[${logC.queue}]`);
+    await logF.addtext(raw);
 };
-async function addtext(raw){
+logF.addtext = async(raw) => {
     if(!raw) return console.log('「内容が？内容が〜〜？ないよ〜〜〜つってwwww直せ」');
+    if(typeof raw != 'string') raw = String(raw);
 
-    if(textShowing){
-        queueAddtext.push(raw);
+    if(logC.ing){
+        logC.queue.push(raw);
 
-        if(!loopAddtext) waitforAddtext();
+        if(!logC.loopText) logF.waitfor();
         return;
     };
     
-    textShowing = 1;
-    text = colorcheck(raw);
-    textDiv.innerHTML = "";
-    textDiv.style.display = "block";
-    let index = 0;
-    clearText = false;
+    logC.ing = 1;
+    text = logF.cc(raw);
+    logC.textD.innerHTML = "";
+    logC.textD.style.display = "block";
+    logC.clearT = false;
 
+    let index = 0;
     return new Promise((resolve) => {
         async function type(){
             if(index < text.length){
-                if(skipText){
-                    while (index < text.length) {
+                if(logC.skipT){
+                    while(index < text.length){
                         let span = document.createElement("span");
                         span.textContent = text[index].char;
-                        if(text[index].color) span.classList.add(`color-${text[index].color}`);
-                        textDiv.appendChild(span);
+                        if(text[index].color) span.style.color = text[index].color;
+                        logC.textD.appendChild(span);
 
                         index++;
                     }
                     index = text.length;
-                    skipText = false;
+                    logC.skipT = false;
                     setTimeout(type, 10);
                 }else{
                     let span = document.createElement("span");
                     span.textContent = text[index].char;
-                    if(text[index].color) span.classList.add(`color-${text[index].color}`);
-                    textDiv.appendChild(span);
+                    if(text[index].color) span.style.color = text[index].color;
+                    logC.textD.appendChild(span);
 
                     index++;
                     setTimeout(type, 80); // 次の文字を表示する間隔
                 }
             }else{
-                addlog(textDiv.innerHTML);
-                let waitTime = autoDelay * 1000;
+                logF.addlog(logC.textD.innerHTML);
+                let waitTime = logC.autoDelay * 1000;
                 let timeout = new Promise(resolve => setTimeout(resolve, waitTime));
                 let userAction = new Promise(resolve => {
-                    function waitToClear(event) {
+
+                    function waitToClear(event){
                         if(event.type === 'click' || event.key === 'z' || event.key === 'Enter'){
                             document.removeEventListener('click', waitToClear);
                             document.removeEventListener('keydown', waitToClear);
@@ -408,11 +421,11 @@ async function addtext(raw){
                 });
 
                 Promise.race([timeout, userAction]).then(() => {
-                    textDiv.textContent = "";
-                    textDiv.style.display = "none";
-                    clearText = true;
-                    skipText = false
-                    textShowing = 0;
+                    logC.textD.textContent = "";
+                    logC.textD.style.display = "none";
+                    logC.clearT = true;
+                    logC.skipT = false
+                    logC.ing = 0;
                     resolve('end');
                 });
             }
@@ -421,47 +434,40 @@ async function addtext(raw){
     });
 };
 document.addEventListener('keydown', (e) => {
-    if(e.key === 'z' || e.key === 'Enter'){
-        skipText = true;
-    }
+    if(e.key === 'z' || e.key === 'Enter') logC.skipT = true;
 });
 document.addEventListener('keyup', (e) => {
-    if(e.key === 'z' || e.key === 'Enter'){
-        skipText = false;
-    }
+    if(e.key === 'z' || e.key === 'Enter') logC.skipT = false;
 });
 document.addEventListener('click', () => {
-    skipText = true;
-    setTimeout(() => skipText = false, 50); // 一時的にスキップを有効化
+    logC.skipT = true;
+    setTimeout(() => logC.skipT = false, 50); // 一時的にスキップを有効化
 });
 
-let logOOmoto = document.getElementById('log');
-let log = logOOmoto.querySelector('.log');
-let logOpener = logOOmoto.querySelector('.opener');
-let log_open = (code = NaN) => {
+logF.tog = (code = NaN) => {
     jump:{
         if(!isNaN(code)) break jump;
 
-        logOOmoto.classList.toggle('tog');
-        logOpener.textContent = logOOmoto.classList.contains('tog') ? '<' : '>';
+        logD.classList.toggle('tog');
+        logC.togD.textContent = logD.classList.contains('tog') ? '<' : '>';
         return;
     };
 
     if(code == 1){
-        logOOmoto.classList.add('tog');
-        logOpener.textContent = '<';
+        logD.classList.add('tog');
+        logC.togD.textContent = '<';
     };
     if(code == 0){
-        logOOmoto.classList.remove('tog');
-        logOpener.textContent = '>';
+        logD.classList.remove('tog');
+        logC.togD.textContent = '>';
     };
 
 };
-logOpener.addEventListener('click', log_open);
+logC.togD.addEventListener('click', logF.tog);
 
-function addlog(text){
-    log.innerHTML += text + '<br>';
-    log.scrollTop = log.scrollHeight;
+logF.addlog = (text) => {
+    logC.mainD.innerHTML += text + '<br>';
+    logC.mainD.scrollTop = logC.mainD.scrollHeight;
 };
 //#endregion
 //#region description
@@ -491,7 +497,11 @@ document.addEventListener('mousedown', e => {
     // let descTarget = e.target.closest('[data-description]');
     let div = e.target;
     
-    if(!div.classList.contains('draggable')) return;
+    while(div && !div.classList.contains('draggable')){
+        if(div.tagName == 'BODY') return; //戻りすぎね
+        div = div.parentElement;
+    }
+
     offsetX = e.clientX - div.getBoundingClientRect().left;
     offsetY = e.clientY - div.getBoundingClientRect().top;
     
@@ -508,7 +518,7 @@ document.addEventListener('mousedown', e => {
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
 });
-//#endregion 
+//#endregion //#region tk
 //#region tk
 class tk{
     constructor(type, x = 'half', y = 'half', w = window.innerWidth/2, h = window.innerWidth/2){
@@ -746,7 +756,8 @@ document.addEventListener('mousemove', (e) => {
 //#endregion
 //#region fonts
 let Fonts = [
-    // {src:'comicsans', type:'ttf'},
+    {src:'comicsans', type:'ttf'},
+    {src:'cube12', type:'ttf'}
 ];
 function fontsLoad(){
     let id = "font_load_css";
@@ -754,7 +765,7 @@ function fontsLoad(){
     if(existing) existing.remove();
 
     let css = Fonts.map(f => {
-        let src = `url('assets/fonts/${f.src}.${f.type}')`;
+        let src = `url('../assets/fonts/${f.src}.${f.type}')`;
         let weight = f.weight ?? 'normal';
         return `@font-face{
             font-family:'${f.src}';
@@ -935,25 +946,36 @@ document.addEventListener('DOMContentLoaded', async() => await loaF.load());
 
 //#region document
 let comD = document.getElementById('commu');
-let Nanj = document.getElementById('nanj');
-let Twitter2 = document.getElementById('twitter2');
-let Jine = document.getElementById('jine');
-let roomSelect = document.getElementById('room-select');
+let comC = {
+}
+//#endregion
+
+//#region update
+function update(){
+    
+    
+}
 //#endregion
 
 //#region Login
-function commuLogin(){
-    console.log('commu「ログインしてくれてありがとう鳩」')
-    Nanj.style.display = 'flex';
-    room = roomSelect.value;
+let logiD = document.getElementById('login');
+function autoLogin(){
+    username = getLocalStorage("username");
+    if(username){
+        console.log("自動ログインしました");
+        usersRef = database.ref(`users/${username}`);
+        rontoRef = database.ref(`users/${username}/rontoConnect`);
+        nicoText('wait for now...')
+        login();
+    }else{
+        console.log("ログインしてください");
+        loginD.classList.add('appe')
+    }
+}
+function login(){
     nickname = username;
-    selectRoom();
-    selectTweetsroom();
 }
 function commuLogout(){
-    Nanj.style.display = 'none';
-    Twitter2.style.display = 'none';
-    Jine.style.display = 'none';
     room = 1;
     nickname = '';   
 }
@@ -965,10 +987,13 @@ let userData = null;
 //#endregion
 
 //#region nanj
+let nanD = document.getElementById('nanj');
+let nanC = {
+    room: "hub",
+}
 let sendButton = document.getElementById('send-button');
 let MessageIn = document.getElementById('message-input');
 let Messages = document.getElementById('messages');
-room = roomSelect.value; //1
 let messagesRef = database.ref(`rooms/${room}/messages`);
 
 MessageIn.addEventListener('keypress', function(e) {
@@ -982,318 +1007,36 @@ if (e.key === 'Enter') {
 }
 });
 
-let stampawait = 0;
-function sendStamp(num){//data-typeにpngとgif設定しといて Stampsで管理していつも通りAppendCHildで
-    if(stampawait == 1){return};if(room == 'debug'){return};
-    let Musername = username;
-    let Mtext = `<img src='assets/stamps/${num}.png' width="80" height="80"/>`;
-    if(num == 'maxwell1'||num == `maxwell2`){
-        Mtext = `<img src='assets/stamps/${num}.gif' width="80" height="80"/>`;
-    };
-    messagesRef.push({
-        text: Mtext,
-        nickname: nickname,
-        username: Musername,
-        timestamp: formatDate(new Date())
-    });
-    stampawait = 1;
-    window.setTimeout(StampAwait, 100);//10s
-}
-function StampAwait(){stampawait = 0;}
 
-let Commands = {
-    'save':{
-        name:'save',
-        process:function(message){
-            load();
-            nicoText('君、もしやデバッガーだね..?')
-            return null;
-        }
-    },
-    'clear':{
-        name:'clear',
-        process:function(message){
-            database.ref('rooms/'+room).remove();
-            setTimeout(displayAllMessages, 200);
-            nicoText('すべてのメッセージが消去されました。');
-            nicoText('あなたがやったのです。反省してね♡')
-            nicoText('草');nicoText('草');
-            return null;    
-        }
-    },
-    'reload':{
-        name:'reload',
-        process:function(message){
-            window.location.reload();   
-            return null;
-        }
-    },
-    'online':{
-        name:'online',
-        process:function(message){
-            usersRef.update({
-                status: 'online'
-            });
-            return null;
-        }
-    },
-    'offline':{
-        name:'offline',
-        process:function(message){
-            usersRef.update({
-                status:'offline'
-            });
-            return null;
-        }
-    },
-    'balance':{
-        name:'balance',
-        process:function(message){
-            load();
-            nicoText(`now: ${userData.euro}$`)
-            return null;
-        }
-    },
-    'nico':{
-        name:'nico',
-        process:function(message){
-            nicoText(message);
-            return null;
-        }
-    },
-    'rename':{
-        name:'rename',
-        process:function(message){
-            nickname = message;
-            return null;
-        }
-    },
-    'nanj':{
-        name:'nanj',
-        process:function(message){
-            AnonymousName = message;
-            return null;
-        }
-    },
-    'ban':{
-        name:'ban',
-        process:function(message){
-            database.ref(`users/${message}`).update({
-                banned:1
-            })
-            nicoText('Nice Job!')
-            return null;
-        }
-    },
-    'unban':{
-        name:'unban',
-        process:function(message){
-            database.ref(`users/${message}`).update({
-                banned:0
-            })
-            nicoText('Good Job!')
-            return null;
-        }
-    }
-};
+/*
 
-let MessageSendE;
-function selectRoom(){
-    messagesRef.off();
-    sendButton.removeEventListener('click', MessageSendE);
-    room = roomSelect.value;
-    messagesRef = database.ref('rooms/' + room + '/messages');
-    document.getElementById('messages').innerHTML = '';
+messagesRef.push({
+    text: Mtext,
+    nickname: nickname,
+    username: Musername,
+    timestamp: formatDate(new Date())
+});
 
-    // メッセージ送信
-    MessageSendE = sendButton.addEventListener('click', async function(){
-        let message = MessageIn.value;
-        let Musername = username;
-        if(message.trim() !== ''){
-            //commands
-            if (message.startsWith('/')) {
-                let matched = Object.keys(Commands).some(command => {
-                    if (message.startsWith(`/${command}`)) {
-                        let mes = message.replace(`/${command} `, '');
-                        let result = Commands[command].process(mes);
-                        console.log(result, !result);
-                        if(!result){
-                            MessageIn.value = '';
-                            return true;
-                        }
-                        return true;
-                    }
-                    return false;
-                });
-            
-                if(!matched){
-                    nicoText('多分なんかコマンドミスってるで、君')
-                    console.log('多分なんかコマンドミスってるで、君')
-                }else{
-                    return;
-                }
-            }
+messagesRef.push({
+    text: message,
+    nickname: nickname,
+    username: username,
+    timestamp: formatDate(new Date())
+}); 
 
-            messagesRef.push({
-                text: message,
-                nickname: nickname,
-                username: username,
-                timestamp: formatDate(new Date())
-            });
-            MessageIn.value = '';
-            
-            
-        }
-    });
+messagesRef.on('child_added', async function(snapshot){
+    let messageData = snapshot.val();
+    let messageElement = makeNanjPost(messageData,snapshot.key)
+    Messages.appendChild(messageElement);
+});
 
-    // 新しいメッセージが追加された時のみ、そのメッセージを追加表示
-    messagesRef.on('child_added', async function(snapshot){
-        let uRef = database.ref(`users/${username}/banned`)
-        uRef.on('value', function(ss) {
-            //uRef = ss.val();
-            uRef = 0; //一旦のやつ
-            if(uRef == 1){ 
-                nicoText('エラーが発生しました。')
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
-                menuToggle.style.display = 'none';
-                nanjContainer.style.display = 'none';
-                document.getElementById('Login').style.display = 'block';
-                document.getElementById('room-select').style.display = 'none';
-            }else{
-                let messageData = snapshot.val();
-                let messageElement = makeNanjPost(messageData,snapshot.key);
-                messageElement.setAttribute('data-dokosan','追加の読み込み')
-                let existing = document.querySelector(`#messages .message[data-key="${snapshot.key}"]`);
-                if(existing){
-                    console.log("重複してますね...このバグ治したい:", snapshot.key);
-                    return;
-                }
-                Messages.appendChild(messageElement);
-
-                messagesRef.on('value', function(snapshot) {
-                    if (snapshot.numChildren() > maxMessage) {
-                        let firstMessageKey = Object.keys(snapshot.val())[0];
-                        messagesRef.child(firstMessageKey).remove();
-                    }
-                });
-
-                Messages.scrollTop = Messages.scrollHeight;
-            }
-        });
-    });
-
-    messagesRef.once('value', function(snapshot) {
-        displayAllMessages();
-    });    
-}
-    function displayAllMessages(){
-        let roomSelect = document.getElementById('room-select');
-        room = roomSelect.value;
-        document.getElementById('messages').innerHTML = '';
-
-        // データベースから全てのメッセージを取得
-        messagesRef.once('value', function(pealentsnapshot) {
-            pealentsnapshot.forEach(function(snapshot) {
-                let uRef = database.ref(`users/${username}/banned`)
-                uRef.on('value', function(ss) {
-                    uRef = ss.val();
-                    if(uRef == 1){
-                        nicoText('エラーが発生しました。')
-                        document.getElementById('username').value = '';
-                        document.getElementById('password').value = '';
-                        menuToggle.style.display = 'none';
-                        nanjContainer.style.display = 'none';
-                        document.getElementById('Login').style.display = 'block';
-                        document.getElementById('room-select').style.display = 'none';
-                    }else{
-                        let messageData = snapshot.val();
-                        
-                        let messageElement = makeNanjPost(messageData,snapshot.key)
-                        messageElement.setAttribute('data-dokosan','最初の読み込み')
-                        let existing = document.querySelector(`#messages .message[data-key="${snapshot.key}"]`);
-                        if(existing){
-                            console.log("重複してますね...このバグ治したい:");
-                            return;
-                        }
-                        Messages.appendChild(messageElement);
-
-                        messagesRef.on('value', function(snapshot) {
-                            if (snapshot.numChildren() > maxMessage) {
-                                let firstMessageKey = Object.keys(snapshot.val())[0];
-                                messagesRef.child(firstMessageKey).remove();
-                            }
-                        });
-
-                        Messages.scrollTop = Messages.scrollHeight;
-                    }
-                });
-            });
-        });
-    }
+*/
 
 
-    function makeNanjPost(messageData,key){
-        let messageElement = document.createElement('div');
-        messageElement.className = 'message';
-        messageElement.setAttribute('data-key', key);
 
-        let Musername = messageData.username;
-        let Mnickname = messageData.nickname;
-        let Mtimestamp = messageData.timestamp;
-        let Mtext = messageData.text;
-
-        if(room == 'Anonymous-1' || room == 'Anonymous-2' || room == 'Anonymous-3'){
-            Mnickname = AnonymousName;
-        }
-
-        let usernameElement = document.createElement('span');
-        usernameElement.className = 'username';
-        usernameElement.textContent = Mnickname
-        usernameElement.addEventListener('contextmenu', event => {
-            event.preventDefault();
-            nicoText(`送信者:${Musername}`);
-        })
-        messageElement.appendChild(usernameElement);
-
-        let timestampElement = document.createElement('span');
-        timestampElement.className = 'timestamp';
-        timestampElement.textContent = '  —' + Mtimestamp;
-        messageElement.appendChild(timestampElement);
-
-        let copyButton = document.createElement('button');
-        copyButton.textContent = '❐';
-        copyButton.addEventListener('click', function(){
-            navigator.clipboard.writeText(Mtext);
-        });
-        messageElement.appendChild(copyButton);
-
-        if(username == messageData.username){
-            let editButton = document.createElement('button');
-            editButton.textContent = '✎';
-            editButton.addEventListener('click', function(){
-                Mtext = prompt('メッセージを編集', Mtext);//MessageIn.value;
-                textElement.innerHTML = Mtext;
-                let ImadakeRef = database.ref('rooms/'+room+'/messages/'+snapshot.key);
-                ImadakeRef.update(messageData);
-                setTimeout(displayAllMessages, 200);
-            });
-            messageElement.appendChild(editButton);
-        }
-
-        let brElement = document.createElement('br');
-        messageElement.appendChild(brElement);
-
-        let textElement = document.createElement('div');
-        textElement.innerHTML = Mtext;
-        messageElement.appendChild(textElement);
-
-        return messageElement;
-    }
-
-
-//#endregion
 //#region twitter2
+let twiD = document.getElementById('twitter2');
+
 let tweets = document.getElementById('tweets');
 let troom = 'home';
 let tweetsRef = database.ref('tweets/1');
@@ -1340,7 +1083,7 @@ document.getElementById('t-make-send').addEventListener('click', () => {
                 'null':true
             },
             reply:{
-                '-KorE8NUl1DeSU4':{
+                'null':{
                     text:'null',
                     username:'null',
                     timestamp:'2009/09/22 00:00:00',
@@ -1583,6 +1326,7 @@ function displayAllTweets(){
 
 //#endregion
 //#region jine
+let jinD = document.getElementById('jine');
 
 //#endregion
 

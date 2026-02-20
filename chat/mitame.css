@@ -1,8 +1,10 @@
 /* #region スターターパック */
 html{
+    margin: -8px;
+}
+body{
     width: 100vw;
     height: 100vh;
-    margin: -8px;
     overflow: hidden;
     user-select:none;
     white-space: nowrap;
@@ -84,39 +86,38 @@ img{
 #log .opener{
     width: 30px;
     height: 100%;
-    background: #000000ef;
+    background-color: #000000ef;
     text-align: center;
     cursor: pointer;
     z-index: inherit;
 }
-#log .log{
+#log .main{
     width: 300px;
     height: 100%;
     max-height: 100%;
     overflow-x: hidden; overflow-y: scroll;
-    background: #000000de;
+    background-color: #000000de;
     text-align: left;
     font-size: 14px;
     transition: right 0.3s;
     z-index: inherit;
 }
-#text{
+#log .text{
     display: none;
-    background: rgba(0, 0, 0, 0.8);
-    color: #ffffff;
+    width: fit-content;
     padding: 10px 15px;
     border-radius: 5px;
-    font-size: 1.2em;
+    background: #000000ce;
     position: fixed;
-    bottom: 120px;
     left: 50%;
+    bottom: 120px;
     transform: translateX(-50%);
-    z-index: 10000;
-
+    color: #ffffff;
+    font-size: 1.2em;
     white-space: nowrap;
     overflow: hidden;
-    width: fit-content; /* 文字の長さに応じた幅 */
     animation: fadeIn 0.5s ease forwards;
+    z-index: 2147483647;
 }
 @keyframes fadeIn {
     0%{
@@ -276,13 +277,15 @@ img{
 
 
 #commu{
+    width: 100%;
+    height: 100%;
     background: #f6fff2;
 }
 
 /* #region upper 10 */
 #upper{
     display: block;
-    width: calc(100vw - 40px);
+    width: calc(100% - 40px);
     height: 80px;
     position: fixed;
     top: 0;
@@ -298,12 +301,13 @@ img{
     display: block;
     width: calc(100% - 40px);
     height: 100%;
-    background: #bdd0df;
+    background: #e6ffdc;
     position: absolute;
     top: 0;
     right: 0;
     box-sizing: border-box;
 }
+
 #upper .home .rank{
     display: flex;
     justify-content: center;
@@ -325,7 +329,7 @@ img{
     width: 100%;
     height: 100%;
     background: #c8e4ff;
-    border: 10px groove #74c3ff;
+    border: 10px groove #c1ffa8;
     position: absolute;
     top: 0;
     left: 0;
@@ -335,7 +339,7 @@ img{
     display: block;
     width: calc(100vw - 80px);
     height: 10px;
-    background: #b0c9dd;
+    background: #cff2c1;
     position: absolute;
     left: 80px;
     bottom: 0;
@@ -345,7 +349,7 @@ img{
     display: block;
     width: 0;
     height: 100%;
-    background: #74c3ff;
+    background: #c1ffa8;
     transition: width 0.1s ease;
 }
 #upper .home .rank .bar .val{
@@ -360,6 +364,16 @@ img{
     z-index: 1;
 }
 
+#upper .home .column{
+    display: flex;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+#upper .home .column .name{
+    font-size: 18px;
+}
+
 #upper .home .menu{
     display: flex;
     justify-content: center;
@@ -369,7 +383,7 @@ img{
     border: 3px dotted #4473ad;
     position: absolute;
     top: 50%;
-    right: 5px;
+    right: 10px;
     transform: translateY(-50%);
     line-height: 100%;
     color: #2b2b2b;
