@@ -1,0 +1,139 @@
+<!-- コピペでそのまま動くやつ -->
+<button id="target" data-chars="★☆✦✧✩✪✫✬✭✮✯*+~<>/\\^">押すと文字が飛ぶ</button>
+
+<style>
+.particle {
+    position: fixed;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 5s linear; /* 5秒でフェードアウト */
+    display: inline-block;
+    line-height: 1;
+    transform-origin: center center;
+    user-select: none;
+    font-weight: 700;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.25);
+}
+</style>
+
+<script>
+/* シンプル版：spawnStarsFrom(fromEl, count)
+   - 設定は固定（さっきの例の挙動そのまま）
+   - 要素に data-chars 属性があればその文字群を使う（記号可）
+   - フェード 5s → さらに 5s で .remove()（合計10s）
+*/
+function spawnStarsFrom(fromEl,count){
+    if(!fromEl) return;
+    let defaultChars = '★☆✦✧✩✪✫✬✭✮✯✰✱✷✸✹✺✻✼✽✾*+~<>/\\\\^ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let chars = (fromEl.dataset && fromEl.dataset.chars) ? fromEl.dataset.chars : defaultChars;
+
+    let sizeBase = 10; // 基本サイズ(px)
+    let spread = 80; // 出現範囲(px)
+    let gravity = 900; // px/s^2
+    let maxVx = 120;
+    let maxVy = 220;
+    let maxVr = 240; // deg/s
+
+    let rect = fromEl.getBoundingClientRect();
+    let container = document.body;
+    let particles = [];
+
+    function createParticle(){
+        let el = document.createElement('div');
+        el.className = 'particle';
+
+        // ランダムな文字を選ぶ
+        let ch = chars.charAt(Math.floor(Math.random() * chars.length));
+        el.textContent = ch;
+
+        // サイズを少しばらつかせる
+        let size = sizeBase + Math.floor(Math.random() * 8) - 3; // 7..15 くらい
+        el.style.fontSize = size + 'px';
+
+        // 初期位置：要素中心あたりにランダムオフセット
+        let spawnX = rect.left + rect.width / 2 + (Math.random() * 2 - 1) * spread;
+        let spawnY = rect.top + rect.height / 2 + (Math.random() * 2 - 1) * spread * 0.4;
+
+        // 初速（px/s）
+        let vx = (Math.random() * 2 - 1) * maxVx;
+        let vy = -(Math.random() * maxVy + 40); // 上向き初速
+        let rot = Math.random() * 360;
+        let vr = (Math.random() * 2 - 1) * maxVr;
+
+        el.style.transform = 'translate3d(' + spawnX + 'px,' + spawnY + 'px) rotate(' + rot + 'deg)';
+        container.appendChild(el);
+
+        // フェード開始（transition を発火させるために次フレームで opacity を 0 に）
+        requestAnimationFrame(()=>{ requestAnimationFrame(()=>{ el.style.opacity = '0'; }); });
+
+        let obj = {
+            el: el,
+            x: spawnX,
+            y: spawnY,
+            vx: vx,
+            vy: vy,
+            rot: rot,
+            vr: vr,
+            alive: true
+        };
+        particles.push(obj);
+
+        // 10秒後に必ず削除（5s フェード + 5s 後に remove）
+        setTimeout(()=>{
+            if(el.parentNode) el.remove();
+            obj.alive = false;
+        }, 10000);
+    }
+
+    // 少しずつばら撒く見た目で
+    for(let i = 0; i < count; i++){
+        setTimeout(createParticle, i * 30);
+    }
+
+    // アニメーションループ（物理：重力 + 簡易空気抵抗）
+    let last = performance.now();
+    function tick(now){
+        let dt = (now - last) / 1000;
+        last = now;
+        for(let i = particles.length - 1; i >= 0; i--){
+            let p = particles[i];
+            if(!p.alive){
+                particles.splice(i,1);
+                continue;
+            }
+            p.vy += gravity * dt;
+            // 簡易空気抵抗
+            p.vx *= Math.pow(0.995, dt * 60);
+            p.vy *= Math.pow(0.995, dt * 60);
+
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.rot += p.vr * dt;
+
+            p.el.style.transform = 'translate3d(' + p.x + 'px,' + p.y + 'px) rotate(' + p.rot + 'deg)';
+
+            // 画面下へ大きく外れたら安全削除
+            if(p.y > window.innerHeight + 200){
+                if(p.el.parentNode) p.el.remove();
+                p.alive = false;
+                particles.splice(i,1);
+            }
+        }
+        if(particles.length > 0) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+}
+
+/* 使い方（そのままコピペでOK） */
+let btn = document.getElementById('target');
+if(btn) btn.addEventListener('click', function(){ spawnStarsFrom(btn, 20); });
+
+/* 
+  カスタム文字を使いたければ、要素に data-chars 属性を付けるだけ：
+  <button id="target" data-chars="♥♦♣♠♪♫♪">押すとハートが出る</button>
+*/
+</script>

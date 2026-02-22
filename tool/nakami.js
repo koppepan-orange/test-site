@@ -53,6 +53,52 @@ function tobiText(youso, mes) {
 
     requestAnimationFrame(frame);
 };
+async function kirameki(div0, zukey = 'star', n = 20, time = 2000, col){
+    //heart!!!!!!!!!
+    let taioued = ['star', 'heart'];
+    // if(!taioued.includes(zukey)) return console.log(`図形が対応していません。現在対応しているのは[${taioued.join(', ')}だけあります。`);
+    let rect = div0.getBoundingClientRect();
+    let cenX = rect.left + rect.width / 2;
+    let cenY = rect.top + rect.height / 2;
+
+    let divs = [];
+    for(let i=0; i<n; i++){
+        let div = document.createElement('div');
+        div.className = `kirameki p_${zukey}`;
+        div.style.top = `${Math.random() * 100}%`;
+        div.style.left = `${Math.random() * 100}%`;
+        div.style.transform = `rotate(${Math.random() * 360}deg)`;
+        div.style.background = col;
+        document.body.appendChild(div);
+        divs.push(div);
+    }
+
+    divs.forEach(div => {
+        let angle = Math.random() * 2 * Math.PI;
+        let speed = Math.random() * 2 + 1;
+        let velocityX = Math.cos(angle) * speed;
+        let velocityY = Math.sin(angle) * speed;
+
+        let lifeTime = 0;
+        let maxLifeTime = time;
+
+        function animate(){
+            lifeTime += 16; // 約60fpsで更新
+            if(lifeTime >= maxLifeTime){
+                div.remove();
+                return;
+            }
+
+            velocityY += 0.01; // 重力
+            div.style.left = `${cenX + velocityX * (lifeTime / 16)}px`;
+            div.style.top = `${cenY + velocityY * (lifeTime / 16)}px`;
+            div.style.opacity = String(1 - lifeTime / maxLifeTime);
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+    })
+}
 function kaijou(num){
     if(num == 0) return 0;
     if(num == 1) return 1;
@@ -784,6 +830,45 @@ countC.inI.addEventListener('input', () => {
     let count = text.length;
     let size = arraySize(text.split(''))
     countC.outD.textContent = `文字数${count} 種類${size}`;
+});
+//#endregion
+
+//#region ランダムな文字を抽出するやつ -arraySelect-
+let ransD = document.querySelector('#main .ransele');
+let ransC = {
+    oyaD: ransD.querySelector('.oya'),
+    texD: ransD.querySelector('.oya .text'),
+    impI: ransD.querySelector('.input'),
+}
+let ransF = {};
+ransF.act = async() => {
+    let val0 = ransC.impI.value;
+    if(!val0) return tobiText(ransC.texD, '文字が入力されていないですよ〜？');
+    
+    let val = val0.split('\n').filter(v => v.trim() !== '');
+    if(val.length == 0) return tobiText(ransC.texD, 'えっと〜..できれば空行のみはやめてほしくってぇ...');
+    if(val.length == 1) tobiText(ransC.texD, '文字が一つしかないんで、ランダムに選ばれても同じですよ〜？');
+
+    // console.log(val)
+    let res = arraySelect(val);
+    let ippo = 50;
+    let wait = 1000;
+    for(let i=0; i<wait/ippo; i++){ //でんでけでけでけ〜〜
+        let temp = arraySelect(val);
+        ransC.texD.textContent = temp;
+        await delay(ippo);
+    }
+    ransC.texD.textContent = res; //ぽん
+    kirameki(ransC.texD, 'star')
+}
+
+ransC.oyaD.addEventListener('click', ransF.act);
+ransC.texD.addEventListener('click', ransF.act);
+ransC.texD.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    if(!ransC.texD.textContent) return;
+    navigator.clipboard.writeText(ransC.texD.textContent);
+    tobiText(ransC.texD, 'コピーしました！');
 });
 //#endregion
 
