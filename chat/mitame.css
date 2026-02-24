@@ -33,22 +33,20 @@ img{
     outline: none;
 }
 
-/* #region nicotext */
+/* #region else */
 .nicotext{
     position: fixed;
     top: 0;
     right: 0;
-    background: #f0f8ff80;
+    background-color: #f0f8ff80;
     color: #000000;
     font-size: 20px;
     transition: right 2.0s linear;
     white-space: nowrap;
     pointer-events: none;
-    z-index: 2147483647;
+    z-index: var(--mostop);
 }
-/* #endregion */
 
-/* #region tobitext */
 .tobitext{
     opacity: 1;
     padding: 4px 8px;
@@ -59,8 +57,43 @@ img{
     color: #ffffff;
     position: absolute;
     transition: none;
-    z-index: 2147483647;
     pointer-events: none;
+    z-index: var(--mostop);
+}
+
+.p_star{
+    background: #ffe048;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+.p_heart{
+    background:#ff9ce6;
+    transform:rotate(-45deg);
+}
+.p_heart::before,
+.p_heart::after{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:inherit;
+    border-radius:50%;
+}
+.p_heart::before{
+    top:-60px;
+    left:0;
+}
+.p_heart::after{
+    left:60px;
+    top:0;
+}
+
+.kirameki{
+    display: block;
+    width: 20px;
+    aspect-ratio: 1/1;
+    position: absolute;
+    pointer-events: none;
+    z-index: 255;
 }
 /* #endregion */
 
@@ -69,38 +102,43 @@ img{
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    width: 320px;
-    height: 24vh;
+    width: 310px;
+    height: 200px;
     border: 2px solid #ffffff;
-     border-left: none;
+     border-right: none;
     position: fixed;
-    left: -334px;
+    right: -280px;
+    bottom: 20%;
+    transition: right 1.0s ease;
     color: #fefefe;
-    overflow-y: hidden;
-    transition: left 1.0s ease;
+    overflow: hidden;
+    box-sizing: border-box;
     z-index: 10;
 }
+#log.hid{
+    right: -310px;
+}
 #log.tog{
-    left: 54px;
+    right: 0px;
 }
 #log .opener{
     width: 30px;
     height: 100%;
-    background-color: #000000ef;
+    background: #000000ef;
     text-align: center;
+    box-sizing: border-box;
     cursor: pointer;
-    z-index: inherit;
 }
 #log .main{
-    width: 300px;
+    width: 280px;
     height: 100%;
     max-height: 100%;
-    overflow-x: hidden; overflow-y: scroll;
-    background-color: #000000de;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background: #000000de;
     text-align: left;
     font-size: 14px;
-    transition: right 0.3s;
-    z-index: inherit;
+    box-sizing: border-box;
 }
 #log .text{
     display: none;
@@ -117,6 +155,7 @@ img{
     white-space: nowrap;
     overflow: hidden;
     animation: fadeIn 0.5s ease forwards;
+    box-sizing: border-box;
     z-index: 2147483647;
 }
 @keyframes fadeIn {
@@ -328,7 +367,7 @@ img{
     align-items: center;
     width: 100%;
     height: 100%;
-    background: #c8e4ff;
+    background: #f0ffe1;
     border: 10px groove #c1ffa8;
     position: absolute;
     top: 0;
@@ -378,8 +417,9 @@ img{
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 60%;
+    width: fit-content;
     aspect-ratio: 1/1;
+    padding: 5px;
     border: 3px dotted #4473ad;
     position: absolute;
     top: 50%;
@@ -387,7 +427,8 @@ img{
     transform: translateY(-50%);
     line-height: 100%;
     color: #2b2b2b;
-    font-size: 30px;
+    font-size: 25px;
+    cursor: pointer;
 }
 /* #endregion */
 
@@ -437,19 +478,22 @@ img{
     cursor: pointer;
 }
 
-/* login */
-#Login, #nanj{
-    width: 100%;
-    max-width: 100%;
-    padding: 0 50px;
-    margin: 50px auto;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    overflow: hidden;
+.space{
     display: none;
     flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    padding: 20px 50px;
+    margin: 50px auto;
+    margin-top: 100px;
+    overflow: hidden;
+    box-sizing: border-box;
 }
+.space.tog{
+    display: flex;
+}
+
+/* login */
 #Login {
     display: flex;
 }
@@ -473,44 +517,65 @@ img{
 .login-form button:hover {
     background: #8b8b8b;
 }
-/* なんJ */
-#messages {
+/* なんJ民 */
+#nanj{
+    display: block;
+    content:'nanj';
+}
+#nanj .main{
+    display: flex;
+    flex-direction: column;
+    width: 380px;
+    height: fit-content;
+    margin: 0 auto;
+    background: #44ad73;
+}
+#nanj .main .messages {
+    display: flex;
+    flex-direction: column;
     flex: 1;
     padding: 10px;
     overflow-y: auto;
     max-height: 750px;
     border-bottom: 1px solid #dedede;
 }
-.message {
+#nanj .main .messages .mes {
     margin-bottom: 10px;
     padding: 8px 12px;
-    background: #bebebe;
+    background: #6affad;
     border-radius: 5px;
     max-width: 80%;
     max-height: 150px;
     overflow-y: auto;
 }
-.message.user {
-    background: #c7dfff;
+#nanj .main .messages .mes.mine{
+    /* ユーザー自身のものならば、要素ごと右に寄せる（普通は左寄り） */
     align-self: flex-end;
+    /* background: #44ad73;
+    color: #6affad; */
 }
-#message-input {
-    border: none;
-    padding: 15px;
+#nanj .main .messages .mes .row{
+    gap: 10px;
+}
+#nanj .main .input {
     flex: 1;
+    padding: 15px;
+    background: #eeffe7;
+    border: none;
     font-size: 16px;
 }
-#send-button {
+#nanj .main .send {
     border: none;
     padding: 15px;
-    background: #c8c8c8;
-    color: #fff;
+    background: #44ad73;
+    color: #6affad;
     font-size: 16px;
     cursor: pointer;
 }
-#send-button:hover {
+#nanj .main .send:hover {
     background: #8b8b8b;
 }
+/* 
 #room-select {
     display: none;
     width: 100%;
@@ -538,6 +603,7 @@ img{
 .hover-element:hover .popup {
     display: block;
 }
+*/
 
 /* twitter2 */
 #twitter2 {

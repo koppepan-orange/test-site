@@ -39,7 +39,7 @@ img{
     position: fixed;
     top: 0;
     right: 0;
-    background-color: #f0f8ff80;
+    background: #f0f8ff80;
     color: #000000;
     font-size: 20px;
     transition: right 2.0s linear;
@@ -107,7 +107,7 @@ img{
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    width: 320px;
+    width: 330px;
     height: 24vh;
     border: 2px solid #ffffff;
      border-left: none;
@@ -116,6 +116,7 @@ img{
     color: #fefefe;
     overflow-y: hidden;
     transition: left 1.0s ease;
+    box-sizing: border-box;
     z-index: 10;
 }
 #log.tog{
@@ -124,47 +125,43 @@ img{
 #log .opener{
     width: 30px;
     height: 100%;
-    background-color: #000000ef;
+    background: #000000ef;
     text-align: center;
     cursor: pointer;
-    z-index: inherit;
+    box-sizing: border-box;
 }
-#log .log{
+#log .main{
     width: 300px;
     height: 100%;
     max-height: 100%;
-    overflow-x: hidden; overflow-y: scroll;
-    background-color: #000000de;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background: #000000de;
     text-align: left;
     font-size: 14px;
     transition: right 0.3s;
-    z-index: inherit;
+    box-sizing: border-box;
 }
-#text{
+#log .text{
     display: none;
-    background: rgba(0, 0, 0, 0.8);
-    color: #ffffff;
+    width: fit-content;
     padding: 10px 15px;
+    background: #000000ce;
     border-radius: 5px;
-    font-size: 1.2em;
     position: fixed;
     bottom: 120px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 10000;
-
+    animation: fadeIn 0.5s ease forwards;
+    color: #ffffff;
+    font-size: 1.2em;
     white-space: nowrap;
     overflow: hidden;
-    width: fit-content; /* 文字の長さに応じた幅 */
-    animation: fadeIn 0.5s ease forwards;
+    z-index: 10000;
 }
 @keyframes fadeIn {
-    0%{
-        opacity: 0;
-    }
-    100%{
-        opacity: 1;
-    }
+    0%{opacity: 0;}
+    100%{opacity: 1;}
 }
 /* #endregion */
 
@@ -173,7 +170,7 @@ img{
     display: none;
     position: fixed;
     pointer-events: none;
-    background-color: #363636e2;
+    background: #363636e2;
     color: #f0f8ff;
     text-align: left;
     padding: 5px 10px;
@@ -300,7 +297,7 @@ img{
     height: 100px;
     /* aspect-ratio: 1/1; */
     padding: 5px;
-    background-color: #f0f8ff;
+    background: #f0f8ff;
     border: 1px solid #000000;
     color: #000000;
     font-size: 12px;

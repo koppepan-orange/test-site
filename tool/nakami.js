@@ -839,16 +839,19 @@ let ransC = {
     oyaD: ransD.querySelector('.oya'),
     texD: ransD.querySelector('.oya .text'),
     impI: ransD.querySelector('.input'),
+    ing: 0
 }
 let ransF = {};
 ransF.act = async() => {
+    if(ransC.ing) return nicoText('少々お待ちを〜');
     let val0 = ransC.impI.value;
     if(!val0) return tobiText(ransC.texD, '文字が入力されていないですよ〜？');
     
     let val = val0.split('\n').filter(v => v.trim() !== '');
     if(val.length == 0) return tobiText(ransC.texD, 'えっと〜..できれば空行のみはやめてほしくってぇ...');
-    if(val.length == 1) tobiText(ransC.texD, '文字が一つしかないんで、ランダムに選ばれても同じですよ〜？');
+    if(val.length == 1) tobiText(ransC.texD, '単語が一つしかないんで、ランダムに選ばれても同じですよ〜？');
 
+    ransC.ing = 1;
     // console.log(val)
     let res = arraySelect(val);
     let ippo = 50;
@@ -859,7 +862,8 @@ ransF.act = async() => {
         await delay(ippo);
     }
     ransC.texD.textContent = res; //ぽん
-    kirameki(ransC.texD, 'star')
+    kirameki(ransC.texD, 'star');
+    ransC.ing = 0;
 }
 
 ransC.oyaD.addEventListener('click', ransF.act);

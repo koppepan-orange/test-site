@@ -56,6 +56,52 @@ function tobiText(youso, mes){
 function copytext(text){
     navigator.clipboard.writeText(text);
 }
+async function kirameki(div0, zukey = 'star', n = 20, time = 2000, col){
+    //heart!!!!!!!!!
+    let taioued = ['star', 'heart'];
+    if(!taioued.includes(zukey)) return console.log(`図形が対応していません。現在対応しているのは[${taioued.join(', ')}だけあります。`);
+    let rect = div0.getBoundingClientRect();
+    let cenX = rect.left + rect.width / 2;
+    let cenY = rect.top + rect.height / 2;
+
+    let divs = [];
+    for(let i=0; i<n; i++){
+        let div = document.createElement('div');
+        div.className = `kirameki p_${zukey}`;
+        div.style.top = `${Math.random() * 100}%`;
+        div.style.left = `${Math.random() * 100}%`;
+        if(zukey == 'star') div.style.transform = `rotate(${Math.random() * 360}deg)`;
+        if(col) div.style.background = col;
+        document.body.appendChild(div);
+        divs.push(div);
+    }
+
+    divs.forEach(div => {
+        let angle = Math.random() * 2 * Math.PI;
+        let speed = Math.random() * 2 + 1;
+        let velocityX = Math.cos(angle) * speed;
+        let velocityY = Math.sin(angle) * speed;
+
+        let lifeTime = 0;
+        let maxLifeTime = time;
+
+        function animate(){
+            lifeTime += 16; // 約60fpsで更新
+            if(lifeTime >= maxLifeTime){
+                div.remove();
+                return;
+            }
+
+            velocityY += 0.05; // 重力
+            div.style.left = `${cenX + velocityX * (lifeTime / 16)}px`;
+            div.style.top = `${cenY + velocityY * (lifeTime / 16)}px`;
+            div.style.opacity = String(1 - lifeTime / maxLifeTime);
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+    })
+}
 function El(tag, cls, children = []){
     let e = document.createElement(tag);
     if(cls) e.className = cls;
@@ -75,7 +121,7 @@ function kaikyu(sta, end, row, val){
 
     let kari = Math.floor((val-sta) / row);
     let sta2 = sta + kari*row;
-    let end2 = sta + row-1;
+    let end2 = sta2 + row - 1;
     if(end2 > end) end2 = end;
 
     let arr = [];
@@ -203,14 +249,30 @@ function anagramCan(mae, ato){
 
     return 1;
 };
-function setLocalStorage(name, value){
+// LocalStorage(Data) => lsd
+function lsdSet(name, value){
     localStorage.setItem(name, value || "");
 };
-function getLocalStorage(name){
+function lsdGet(name){
     return localStorage.getItem(name);
 };
+function lsdRem(name){
+    localStorage.removeItem(name);
+}
+function lsdShow(){
+    let itemCount = localStorage.length;
+    console.error(`-- LocalStorageのアイテム数: ${itemCount} --`);
+    for(let i = 0; i < itemCount; i++){
+        let key = localStorage.key(i);
+        let value = localStorage.getItem(key);
+        // nicoText(`キー: ${key}, 値: ${value}`);
+        console.log(`キー: ${key}, 値: ${value}`);
+    }
+    console.error(`-- 以上 --`);
+}
+
 async function error(text = 'errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'){
-    await logF.addtext(text);
+    await logText(text);
     await delay(2000);
     // window.open('about:blank', '_self').close();
 };
@@ -257,7 +319,8 @@ function ranshoku(){
     let ato = '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
     return ato;
 };
-function timeDifference(kako){
+function timeDiff(kako){
+    if(typeof kako == 'number') kako = kako.toString();
     let now = new Date();
     let past = new Date(
         kako.slice(0, 4),
@@ -287,6 +350,25 @@ function timeDifference(kako){
     }else{
         return `${d.year}年前`; //それ以上なら「年」
     }
+}
+function timeToshow(date){ //見る用
+    if(!date) console.error('日付がありませんぜ旦那！');
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, '0');
+    let day = String(date.getDate()).padStart(2, '0');
+    let hours = String(date.getHours()).padStart(2, '0');
+    let minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}/${month}/${day} ${hours}:${minutes}`;
+}
+function timeTodata(date){ //データ保存用
+    if(!date) date = new Date(), console.warn('あなた、日付を入れ忘れてるわよ');
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, '0');
+    let day = String(date.getDate()).padStart(2, '0');
+    let hours = String(date.getHours()).padStart(2, '0');
+    let minutes = String(date.getMinutes()).padStart(2, '0');
+    let time = `${year}${month}${day}${hours}${minutes}`;
+    return +time;
 }
 //#endregion
 //#region log&text
@@ -359,9 +441,9 @@ logF.waitfor = async() => {
     let raw = logC.queue.shift();
     // console.log(`${raw}を送信します`);
     // console.log(`残り: (${len - 1})[${logC.queue}]`);
-    await logF.addtext(raw);
+    await logText(raw);
 };
-logF.addtext = async(raw) => {
+async function logText(raw){
     if(!raw) return console.log('「内容が？内容が〜〜？ないよ〜〜〜つってwwww直せ」');
     if(typeof raw != 'string') raw = String(raw);
 
@@ -404,7 +486,7 @@ logF.addtext = async(raw) => {
                     setTimeout(type, 80); // 次の文字を表示する間隔
                 }
             }else{
-                logF.addlog(logC.textD.innerHTML);
+                logText_log(logC.textD.innerHTML);
                 let waitTime = logC.autoDelay * 1000;
                 let timeout = new Promise(resolve => setTimeout(resolve, waitTime));
                 let userAction = new Promise(resolve => {
@@ -445,27 +527,42 @@ document.addEventListener('click', () => {
 });
 
 logF.tog = (code = NaN) => {
-    jump:{
-        if(!isNaN(code)) break jump;
-
+    if(isNaN(code)){
         logD.classList.toggle('tog');
         logC.togD.textContent = logD.classList.contains('tog') ? '<' : '>';
-        return;
-    };
+    }
+    else{
+        if(code == 1){
+            logD.classList.add('tog');
+            logC.togD.textContent = '<';
+        };
+        if(code == 0){
+            logD.classList.remove('tog');
+            logC.togD.textContent = '>';
+        };
+    }
 
-    if(code == 1){
-        logD.classList.add('tog');
-        logC.togD.textContent = '<';
-    };
-    if(code == 0){
-        logD.classList.remove('tog');
-        logC.togD.textContent = '>';
-    };
-
+    let isTog = logD.classList.contains('tog');
+    let isHid = logD.classList.contains('hid');
+    if(isTog && isHid) logF.woah(0);
 };
 logC.togD.addEventListener('click', logF.tog);
 
-logF.addlog = (text) => {
+logF.woah = (code = NaN) => {
+    if(isNaN(code)){
+        logD.classList.toggle('hid');
+    }
+    else{
+        if(code == 1) logD.classList.add('hid');
+        if(code == 0) logD.classList.remove('hid');
+    }
+
+    let isTog = logD.classList.contains('tog');
+    let isHid = logD.classList.contains('hid');
+    if(isTog && isHid) logF.tog(0);
+};
+
+function logText_log(text){
     logC.mainD.innerHTML += text + '<br>';
     logC.mainD.scrollTop = logC.mainD.scrollHeight;
 };
@@ -939,100 +1036,301 @@ soundVolume(50);
 
 document.addEventListener('DOMContentLoaded', async() => await loaF.load());
 //#endregion
+//#region 幸せになれる隠しコマンドがあるらしい
+let secrates = [
+    {
+        ind:0,
+        name:'koppepan',
+        arr:['k','o','p','p','e','p','a','n'],
+        limit:3,
+        func: async function(){
+            nicoText('なんにも起こらない＝ヨーン');
+        }
+    },
+    {
+        ind:0,
+        name:'re',
+        arr:['r','e'],
+        limit:1,
+        func: async function(){
+            let img = document.createElement('img');
+            img.id = 'hakaisatsu';
+            img.src = 'assets/images/systems/hakai_1.png'
+            img.dataset.phase = 1;
+            document.querySelector('body').appendChild(img);
+
+            setTimeout(() => {
+                img.remove();
+                this.ind = 0;
+                this.limit = 1;
+            }, 3000)
+
+            return 0;
+        }
+    },
+    {
+        ind:0,
+        name:'rere',
+        arr:['r','e','r','e'],
+        limit:1,
+        func: async function(){
+            let img = document.getElementById('hakaisatsu');
+            if(!img) return;
+
+            img.src = 'assets/images/systems/hakai_2.png'
+            img.dataset.phase = 2;
+
+            setTimeout(() => {
+                img.remove();
+                this.ind = 0;
+                this.limit = 1;
+            }, 3000)
+
+            return 0;
+        }
+    },
+    {
+        ind:0,
+        name:'rerere',
+        arr:['r','e','r','e','r','e'],
+        limit:1,
+        func: async function(){
+            let img = document.getElementById('hakaisatsu');
+            if(!img) return 1;
+            console.log(img.dataset.phase);
+            if(img.dataset.phase != '2') return 1;
+            location.reload();
+        }
+    },
+]
+document.addEventListener('keydown', async function(e){
+    let key = e.key.toLowerCase();
+    if(key == 'escape') loop = 0;
+
+    if(document.activeElement.tagName == 'INPUT') return;
+    if(document.activeElement.tagName == 'TEXTAREA') return;
+
+    for(let sec of secrates){
+        let nke = sec.arr[sec.ind];
+        // console.log(`必要は${nke}、押されたは${key}！`);
+        if(key == nke){
+            sec.ind += 1;
+            if(sec.ind == sec.arr.length && sec.limit){
+                console.log(`${sec.name}発動！！[${sec.arr.join(' ')}]`);
+                sec.ind = 0;
+                let res = await sec.func();
+                if(!res && sec.limit != 'n') sec.limit -= 1;
+            }
+        }
+        else sec.ind = 0;
+    }
+})
+//#endregion
 
 
-
-
-
-//#region document
 let comD = document.getElementById('commu');
 let comC = {
+    noname: 'no name',
 }
-//#endregion
 
 //#region update
 function update(){
-    
-    
+    uppF.tekiou();
+}
+//#endregion
+
+//#region upper
+let uppD = document.getElementById('upper');
+let uppC = {
+    userD: uppD.querySelector('.name'),
+    euroD: uppD.querySelector('.euro'),
+}
+let uppF = {};
+uppF.tekiou = () => {
+    uppC.userD.textContent = User.idora ?? "ErrOr";
+    uppC.euroD.textContent = `${User.euro ?? "NaN"}€`;
 }
 //#endregion
 
 //#region Login
+let firebaseConfig = {
+    apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
+    authDomain: "koppepan-orange.firebaseapp.com",
+    databaseURL: "https://koppepan-orange-default-rtdb.firebaseio.com",
+    projectId: "koppepan-orange",
+    storageBucket: "koppepan-orange.appspot.com",
+    messagingSenderId: "730150198097",
+    appId: "1:730150198097:web:076a074a3d406053155170",
+    measurementId: "G-MYKJWD203Z"
+};
+firebase.initializeApp(firebaseConfig);
+let database = firebase.database();
+let User = {
+    truth: comC.noname,
+    idora: comC.noname,
+    ref: null,
+    data: null,
+}
+
 let logiD = document.getElementById('login');
-function autoLogin(){
-    username = getLocalStorage("username");
-    if(username){
-        console.log("自動ログインしました");
-        usersRef = database.ref(`users/${username}`);
-        rontoRef = database.ref(`users/${username}/rontoConnect`);
-        nicoText('wait for now...')
+let logiF = {};
+logiF.auto = () => {
+    User.truth = lsdGet("username");
+    if(User.truth){
+        nicoText("自動ログインしました");
         login();
-    }else{
-        console.log("ログインしてください");
-        loginD.classList.add('appe')
+    }
+    else{
+        logText("ログインしてください");
+        logiD.classList.add('appe')
     }
 }
-function login(){
-    nickname = username;
+async function login(){
+    User.ref = database.ref(`users/${User.truth}`);
+    User.idora = User.truth;
+    await delay(500);
+    update();
+    nanF.load();
+    nanD.classList.add('tog');
 }
-function commuLogout(){
+function logout(){
     room = 1;
-    nickname = '';   
+    User.truth = comC.noname;
 }
 let room = 1;
-let nickname = 'no name';
-let AnonymousName = "/nanj 名前 で変えられるよ!!!!";
-let maxMessage = 20;
-let userData = null;
 //#endregion
 
 //#region nanj
 let nanD = document.getElementById('nanj');
 let nanC = {
-    room: "hub",
-}
-let sendButton = document.getElementById('send-button');
-let MessageIn = document.getElementById('message-input');
-let Messages = document.getElementById('messages');
-let messagesRef = database.ref(`rooms/${room}/messages`);
+    mainD: nanD.querySelector('.main'),
+    senD: nanD.querySelector('.main .send'),
+    inpuD: nanD.querySelector('.main .input'),
+    messD: nanD.querySelector('.main .messages'),
+    ref: null, //database.ref(`rooms/${nanC.room}/messages`),
 
-MessageIn.addEventListener('keypress', function(e) {
-if (e.key === 'Enter') {
+    hub: "hub",
+    room: null,
+    tocme: "/nanj 名前 で変えられるよ!!!!",
+    max: 30,
+}
+let nanF = {};
+
+nanF.load = () => {
+    nanF.change(nanC.hub);
+}
+nanF.change = async(room) => {
+    if(!room) return console.error('ルーム名がなかった')
+    if(room == nanC.room) return logText('どういうわけか もう そこにいる');
+    nanC.room = room;
+    nanC.ref = database.ref(`rooms/${nanC.room}/messages`);
+    nanC.messD.innerHTML = '';
+    nanC.ref.off('child_added');
+    nanC.ref.on('child_added', async function(snapshot){
+        let messageData = snapshot.val();
+        let messageElement = nanF.make(messageData,snapshot.key)
+        // console.log("召喚！");
+        nanC.messD.appendChild(messageElement);
+        while(nanC.messD.childElementCount > nanC.max){
+            nanC.messD.removeChild(nanC.messD.firstChild);
+        }
+    });
+    
+    
+    /* // 初回限定！全読み込み
+    // いらないかも。これのせいで重複してたのかも。
+    let snapshot = await nanC.ref.once('value');
+    snapshot.forEach(function(childSnapshot) {
+        let messageData = childSnapshot.val();
+        let messageElement = nanF.make(messageData,childSnapshot.key)
+        // console.log("召喚！(初版限定)");
+        nanC.messD.appendChild(messageElement);
+    });
+    */
+
+    logText(`ルームを ${room} に変更しました`);
+}
+
+nanC.inpuD.addEventListener('keypress', function(e) {
+if(e.key == 'Enter'){
     if(!e.shiftKey){
         e.preventDefault();
-        sendButton.click();
-    }else{
-        MessageIn.value += '<br>'
+        nanC.senD.click();
     }
+    else nanC.inpuD.value += '<br>';
+    // そのうち、ちゃんとtextareaにしようね。
 }
 });
 
 
 /*
 
-messagesRef.push({
+nanC.ref.push({
     text: Mtext,
-    nickname: nickname,
+    nickname: User.idora,
     username: Musername,
     timestamp: formatDate(new Date())
 });
 
-messagesRef.push({
+nanC.ref.push({
     text: message,
-    nickname: nickname,
-    username: username,
+    nickname: User.idora,
+    username: User.truth,
     timestamp: formatDate(new Date())
 }); 
 
-messagesRef.on('child_added', async function(snapshot){
+nanC.ref.on('child_added', async function(snapshot){
     let messageData = snapshot.val();
     let messageElement = makeNanjPost(messageData,snapshot.key)
-    Messages.appendChild(messageElement);
+    nanC.messD.appendChild(messageElement);
 });
 
 */
 
+// 首謀者
+nanF.send = async(text) => {
+    ock = {
+        text: text,
+        idora: User.idora,
+        truth: User.truth,
+        timestamp: timeTodata(new Date())
+    }
+    nanC.ref.push(ock);
+    nanC.inpuD.value = '';
+}
+nanC.senD.addEventListener('click', () => {
+    let text = nanC.inpuD.value;
+    if(text.trim() == '') return tobiText(nanC.inpuD, `送るんだったら何かしらは入れような？`);
+    nanF.send(text);
+});
 
+nanF.make = (mesd, key) => {
+    let div = document.createElement('div');
+    div.className = 'mes';
+    if(mesd.idora == User.idora) div.classList.add('mine');
+
+    let row = document.createElement('div');
+    row.className = 'row';
+        let name = document.createElement('div');
+        name.className = 'name';
+        name.textContent = mesd.idora;
+        row.appendChild(name);
+
+        let time = document.createElement('div');
+        time.className = 'time';
+        time.textContent = timeDiff(mesd.timestamp);
+        row.appendChild(time);
+    div.appendChild(row);
+
+    let text = document.createElement('div');
+    text.className = 'text';
+    text.innerHTML = mesd.text.replace(/\n/g, '<br>');
+    div.appendChild(text);
+
+    return div;
+}
+
+//#endregion
 
 //#region twitter2
 let twiD = document.getElementById('twitter2');
@@ -1049,7 +1347,7 @@ function selectTweetsroom(){
     tweets.innerHTML = '';
     troom = 'home'; //
     tweetsRef = database.ref(`tweets/${troom}`);
-    usersRef = database.ref('users/'+username);
+    User.ref = database.ref(`users/${User.truth}`);
     tweetsRef.once('value', function(snapshot){
         displayAllTweets();
     });
@@ -1075,7 +1373,7 @@ document.getElementById('t-make-send').addEventListener('click', () => {
     if(treplyMode == 0){
         let newPush = tweetsRef.push({
             text: Text,
-            username: username,
+            username: User.truth,
             timestamp: formatDate(new Date()),
             time: formatTime(new Date()),
             layer: 1,
@@ -1101,7 +1399,7 @@ document.getElementById('t-make-send').addEventListener('click', () => {
     }else{
         let newPush = treplyRef.push({
             text: Text,
-            username: username,
+            username: User.truth,
             timestamp: formatDate(new Date()),
             time: formatTime(new Date()),
             prevkey: keepKey,
@@ -1254,7 +1552,7 @@ function makeTwitter2Post(messageData, key, layer){
         let heartData = snapshot.val() || {}; 
         let count = Object.values(heartData).length - 1; // null分を引く
         heartElement.textContent = '♡ ' + Math.max(0, count);
-        heartElement.style.color = (username in heartData) ? 'red' : 'black';
+        heartElement.style.color = (User.truth in heartData) ? 'red' : 'black';
     };
     let heartRef = database.ref(`tweets/${troom}/${key}/heart`);
     if(layer == 2){
@@ -1264,10 +1562,10 @@ function makeTwitter2Post(messageData, key, layer){
     heartElement.addEventListener('click', async function () {
         heartRef.once('value', function(snapshot) {
             let heartData = snapshot.val() || {};
-            if (username in heartData) {
-                heartRef.child(username).remove();
+            if (User.truth in heartData) {
+                heartRef.child(User.truth).remove();
             } else {
-                heartRef.child(username).set(true);
+                heartRef.child(User.truth).set(true);
             }
         });
     });
@@ -1336,5 +1634,6 @@ let jinD = document.getElementById('jine');
 //#region start
 function start(){
     Style.tekiou();
+    logiF.auto();
 }
 //#endregion
