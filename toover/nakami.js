@@ -1015,6 +1015,12 @@ const Links = {
             description: '言語が学べるサイト<br>ﾁｮｳﾕｰﾒｲ!ﾔﾊﾞｵ'
         },
         {
+            name: 'studies-site',
+            href: 'https://koppepan-orange.github.io/test-site/studies/',
+            iframable:0,
+            description: '色々学べる。良いぞよジャブフ'
+        },
+        {
             name: '寿司打',
             href: 'http://typingx0.net/sushida/',
             iframable:0,
