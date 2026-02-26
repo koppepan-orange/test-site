@@ -916,7 +916,7 @@ loaC.imgL = {
 loaC.imgT = Object.values(loaC.imgL).length;
 
 loaC.souL = {
-    se:['error'],
+    // se:['error'],
     // bgm:[],
 }
 loaC.souT = Object.values(loaC.souL).length;
@@ -1418,7 +1418,7 @@ zimF.go = async() => {
                     sym.className = 'sym sir';
                     document.body.appendChild(sym);
                     await delay(50)
-                    soundPlay('error');
+                    // soundPlay('error');
                     sym.classList.add('tog');
 
                     // 以下得点計算
@@ -1439,7 +1439,7 @@ zimF.go = async() => {
                     sym.className = 'sym xox';
                     document.body.appendChild(sym);
                     await delay(50)
-                    soundPlay('error');
+                    // soundPlay('error');
                     sym.classList.add('tog');
                     await delay(1000)
                     sym.classList.remove('tog');
