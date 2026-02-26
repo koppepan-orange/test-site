@@ -1200,6 +1200,7 @@ let zimC = {
       titleAD: zimD.querySelector('.play .title .add'),
      listD: zimD.querySelector('.play .list'),
     
+    statu: 0, //AP, FCがある
     score: 0,
     timem: 4000,
     time: 0,
@@ -1291,11 +1292,22 @@ zimF.load = () => {
     zimF.move('loby');
 }
 
+zimF.tekiou = () => {
+    zimC.barD.classList.add(zimC.statu);
+    switch(zimC.statu){
+        case "AP": zimC.barD.classList.remove('FC'); break;
+        case "FC": zimC.barD.classList.remove('AP'); break;
+        default: zimC.barD.classList.remove('AP'); zimC.barD.classList.remove('FC');
+    }
+    zimC.barXD.style.width = `${ed.now/ed.max*100}%`;
+}
+
 let ed;
 // zimF.showMustGoOn = () => {
 zimF.go = async() => {
     zimF.move('play');
 
+    zimC.statu = "AP";
     zimC.score = 0;
     zimC.upMD.textContent = `${zimC.mode}モード`;
     zimC.barXD.style.width = 0;
@@ -1451,16 +1463,15 @@ zimF.go = async() => {
 
                     // 以下得点計算
                     zimC.score += 1;
-                    
-                    // time内ならばさらに+1
-                    if(!zimC.timeEnded) zimC.score += 1;
+                    if(!zimC.timeEnded) zimC.score += 1; // time内ならばさらに+1
+                    else if(zimC.timeEnded && zimC.statu == "AP") zimC.statu = "FC";
 
                     await delay(1000)
                     sym.classList.remove('tog');
                     setTimeout(() => sym.remove(), 500);
                 }
                 else{
-                    zimC.barXD.style.background = "#00a0ff";
+                    if(zimC.statu == "AP" || zimC.statu == "FC") zimC.statu = 0;
                     div.classList.add('danger');
                     zimC.listD.querySelector(`.item.true`).classList.add('secure');
 
@@ -1491,7 +1502,7 @@ zimF.go = async() => {
 
 
         ed.now += 1;
-        zimC.barXD.style.width = `${ed.now/ed.max*100}%`;
+        zimF.tekiou();
     }
 
     await delay(500)

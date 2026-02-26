@@ -466,13 +466,20 @@ img{
 #zimb2 .page.play .bar.dai .inner{
     width: 0%;
     height: 100%;
-    background: #5ae398;
+    background: #00a0ff;
     position: absolute;
     top: 0;
     left: 0;
     will-change: width;
     transition: width 0.5s ease-in-out;
     box-sizing: border-box;
+}
+/* #f68fff #5ae398 #00a0ff*/
+#zimb2 .page.play .bar.dai.AP .inner{
+    background: #f68fff;
+}
+#zimb2 .page.play .bar.dai.FC .inner{
+    background: #5ae398;
 }
 #zimb2 .page.play .up{
     display: flex;
@@ -527,6 +534,7 @@ img{
 #zimb2 .page.play .title .time{
     display: flex;
     flex-direction: row;
+    width: 100px;
     height: 35%;
     position: absolute;
     top: 5px;
@@ -534,14 +542,14 @@ img{
     box-sizing: border-box;
 }
 #zimb2 .page.play .title .time .icon{
-    flex: 1;
+    height: 100%;
     aspect-ratio: 1 / 1;
     box-sizing: border-box;
 }
 #zimb2 .page.play .title .time .column{
     justify-content: center;
     align-items: flex-start;
-    width: fit-content;
+    flex: 1;
     box-sizing: border-box;
 }
 #zimb2 .page.play .title .time .column .text{
