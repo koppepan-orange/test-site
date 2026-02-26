@@ -922,14 +922,10 @@ loaC.souL = {
 loaC.souT = Object.values(loaC.souL).length;
 
 loaF.load = async() => {
-    document.body.style.background = "#4473ad";
-    nicoText('ろーどかいーし')
     if(await loaF.loadI()) return 1;
     return 0;
 }
 loaF.loadI = async() => {
-    document.body.style.background = "#73ad44";
-    nicoText('がぞーろーどかいーし')
     let kasan = () => {
         loaC.imgD++;
         if(loaC.imgD == loaC.imgT) loaF.loadS();
@@ -957,8 +953,6 @@ loaF.loadI = async() => {
 }
 
 loaF.loadS = async() => {
-    document.body.style.background = "#ad4473";
-    nicoText('おんせいろーーどかいし')
     let kasan = () => {
         loaC.souD += 1;
         if(loaC.souD == loaC.souT) loaF.end();
@@ -997,8 +991,6 @@ loaF.loadS = async() => {
     };
 }
 loaF.end = () => {
-    document.body.style.background = "#9235d3";
-    nicoText('Arknights End Field 〜ンィー〜')
     console.log(`images & sounds loaded! (error: ${loaC.erd})`);
     start();
 }
@@ -1432,6 +1424,7 @@ zimF.go = async() => {
                     setTimeout(() => sym.remove(), 500);
                 }
                 else{
+                    zimC.barXD.style.background = "#00a0ff";
                     div.classList.add('danger');
                     zimC.listD.querySelector(`.item.${res.answer}`).classList.add('secure');
 
