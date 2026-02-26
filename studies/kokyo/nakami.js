@@ -26,7 +26,7 @@ function tobiText(youso, mes){
 
     let node = document.createElement('div');
     node.className = 'tobitext';
-    node.textContent = mes;
+    node.innerText = mes;
     node.style.top = `${top}px`;
     node.style.left = `${left}px`;
 
@@ -1193,10 +1193,18 @@ let zimC = {
       upMD: zimD.querySelector('.play .up .mode'),
       upTD: zimD.querySelector('.play .up .error'),
      titleD: zimD.querySelector('.play .title'),
+      titleDD: zimD.querySelector('.play .title .title2'),
       timeD: zimD.querySelector('.play .title .time'),
+       timeBD: zimD.querySelector('.play .title .time .bar'),
+       timeBXD: zimD.querySelector('.play .title .time .bar .inner'),
+      titleAD: zimD.querySelector('.play .title .add'),
      listD: zimD.querySelector('.play .list'),
     
     score: 0,
+    timem: 4000,
+    time: 0,
+    Timer: null, //interval
+    timeEnded: 0, //時間切れかどうか。1なら切れた。
 
     resD: zimD.querySelector('.result'),
      resDD: zimD.querySelector('.result .detail'),
@@ -1214,12 +1222,12 @@ zimF.g = (name) => { //getね
     let g = Kajohn.find(a => a.name == name);
     return g;
 }
-zimF.g_adden = (name) => {
+zimF.g_add = (name) => {
     let data = zimF.g(name);
-    let adden = copy(data.adden);
-    if(!Array.isArray(adden) || !adden) adden = [];
+    let add = copy(data.add);
+    if(!data.add) return 0;
     
-    return adden;
+    return add;
 }
 
 zimF.load = () => {
@@ -1264,8 +1272,9 @@ zimF.load = () => {
     // add
     let adds0 = [];
     for(let k of Kajohn){
-        let adds = zimF.g_adden(k.name);
-        for(let add of adds) if(!adds0.includes(add)) adds0.push(add);
+        let add = zimF.g_add(k.name);
+        if(!add) continue;
+        if(!adds0.includes(add)) adds0.push(add);
     }
     for(let add of adds0){
         let div = document.createElement('div');
@@ -1293,9 +1302,11 @@ zimF.go = async() => {
 
     let hitos = Kajohn.filter(a => {
         if(a.no) return false;
-        let adds = zimF.g_adden(a.name);
-        if(adds.length == 0) return true;
-        return adds.every(b => zimC.adds.includes(b));
+
+        let add = zimF.g_add(a.name);
+        if(!add) return true;
+        if(zimC.adds.includes(add)) return true;
+        return false;
     });
     // console.log(hitos);
 
@@ -1324,17 +1335,19 @@ zimF.go = async() => {
                 res.which = 'hito';
 
                 let arr = hitos.filter(a => !ed.hitos.includes(a.name));
-                let data = arraySelect(arr);
+                let data = copy(arraySelect(arr));
                 // console.log(data)
                 let name = data.name;
                 ed.hitos.push(name);
                 
                 res.title = name;
                 res.list = [];
+                if(data.add) res.add = data.add;
 
                 let list = data.list;
                 let verb = arraySelect(list);
-                verb.secure = 1;
+                verb.true = 1;
+                // console.error(`${verb.name}にtrueを付与しました`)
                 res.list.push(verb);
                 res.answer = verb.name;
                 
@@ -1355,7 +1368,7 @@ zimF.go = async() => {
                 res.which = 'verb';
 
                 let arr = hitos.filter(a => a.list.some(b => !ed.verbs.includes(b.name)));
-                let data = arraySelect(arr);
+                let data = copy(arraySelect(arr));
                 // console.log(data)
                 let list = data.list;
                 let verb = arraySelect(list);
@@ -1366,7 +1379,8 @@ zimF.go = async() => {
                 res.title = verb.name;
                 res.list = [];
 
-                data.secure = 1;
+                data.true = 1;
+                console.error(`${data.name}にtrueを付与しました`)
                 res.list.push(data);
 
                 Rarr = arr.filter(a => a.name != name);
@@ -1383,23 +1397,45 @@ zimF.go = async() => {
             default:
                 console.error(`error. ${which}って何です？`)
         }
-        // console.log(res)
+        console.log(res)
         // console.error(`----${i}----`)
 
         // DOM shot Dom(ドムシュッドム)
-        zimC.titleD.textContent = res.title;
+        let addT = res.add;
+        zimC.titleAD.textContent = addT ?? '';
+        zimC.titleDD.textContent = res.title;
         zimC.listD.innerHTML = '';
+        zimC.timeBXD.style.width = '100%';
 
         let clickend = 0;
         let answer = await new Promise(solve => {
+            zimC.time = 0;
+
+            let timerTome = () => {
+                clearInterval(zimC.Timer);
+                zimC.Timer = null;
+            }
+            zimC.Timer = setInterval(() => {
+                zimC.time += 10;
+                let nocory = zimC.timem - zimC.time;
+                zimC.timeBXD.style.width = `${nocory/zimC.timem*100}%`;
+                if(zimC.time >= zimC.timem){
+                    timerTome();
+                    zimC.timeEnded = 1;
+                }
+            }, 10)
+
             async function clicked(ev){
+                // 蠹:ここまでの間に、zimC.time秒を10msずつ図るタイマーを作りたい
                 if(clickend) return;
                 clickend += 1;
+
+                timerTome();
                 let div = ev.target;
                 let answer = div.classList[2];
                 if(!answer) console.log(div)
 
-                console.log(`回答: ${answer} 答え: ${res.answer}`)
+                console.log(`回答:${answer} 答え:${res.answer}`)
 
                 if(answer == res.answer){
                     // 「及第点」は一旦後で考える。
@@ -1409,7 +1445,7 @@ zimF.go = async() => {
 
                     sym.className = 'sym sir';
                     document.body.appendChild(sym);
-                    await delay(50)
+                    await delay(50) //ちょっとした実装時間
                     // soundPlay('error');
                     sym.classList.add('tog');
 
@@ -1417,24 +1453,24 @@ zimF.go = async() => {
                     zimC.score += 1;
                     
                     // time内ならばさらに+1
-                    
+                    if(!zimC.timeEnded) zimC.score += 1;
 
-                    await delay(500)
+                    await delay(1000)
                     sym.classList.remove('tog');
                     setTimeout(() => sym.remove(), 500);
                 }
                 else{
                     zimC.barXD.style.background = "#00a0ff";
                     div.classList.add('danger');
-                    zimC.listD.querySelector(`.item.${res.answer}`).classList.add('secure');
+                    zimC.listD.querySelector(`.item.true`).classList.add('secure');
 
                     let sym = document.createElement('div');
                     sym.className = 'sym xox';
                     document.body.appendChild(sym);
-                    await delay(50)
+                    await delay(50) //ちょっとした実装時間
                     // soundPlay('error');
                     sym.classList.add('tog');
-                    await delay(1000)
+                    await delay(2500)
                     sym.classList.remove('tog');
                     setTimeout(() => sym.remove(), 500);
                 }
@@ -1446,7 +1482,7 @@ zimF.go = async() => {
                 // console.log(data, data.name)
                 let div = document.createElement('div');
                 div.className = `item ${res.which} ${data.name}`;
-                if(data.secure) div.classList.add('true');
+                if(data.true) div.classList.add('true');
                 div.textContent = data.name;
                 div.addEventListener('click', clicked);
                 zimC.listD.appendChild(div);
@@ -1474,7 +1510,7 @@ zimF.go = async() => {
      zimC.resDD.appendChild(div3);
 
     let score = zimC.score;
-    score *= 100/qs;
+    score *= 100/(qs*2); //timeボーナスで2倍になるのだ
     zimC.resSD.textContent = `${score}点`;
 }
 zimC.goB.addEventListener('click', zimF.go);

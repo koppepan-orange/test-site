@@ -454,7 +454,7 @@ img{
     position: relative;
     box-sizing: border-box;
 }
-#zimb2 .page.play .bar{
+#zimb2 .page.play .bar.dai{
     width: 100%;
     height: 10px;
     background: #dedede;
@@ -463,7 +463,7 @@ img{
     left: 0;
     box-sizing: border-box;
 }
-#zimb2 .page.play .bar .inner{
+#zimb2 .page.play .bar.dai .inner{
     width: 0%;
     height: 100%;
     background: #5ae398;
@@ -509,44 +509,56 @@ img{
     width: 100%;
     height: 90px;
     background: #ffe149;
-    font-size: 20px;
+    position: relative;
     box-sizing: border-box;
+}
+#zimb2 .page.play .title .title2{
+    font-size: 20px;
+}
+#zimb2 .page.play .title .add{
+    display: block;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: #666666;
+    font-size: 14px;
 }
 
 #zimb2 .page.play .title .time{
     display: flex;
     flex-direction: row;
+    height: 35%;
     position: absolute;
-    top: 15px;
-    left: 0;
+    top: 5px;
+    left: 5px;
     box-sizing: border-box;
 }
 #zimb2 .page.play .title .time .icon{
-    height: 100%;
-    aspect-ratio: 1/1;
+    flex: 1;
+    aspect-ratio: 1 / 1;
     box-sizing: border-box;
 }
 #zimb2 .page.play .title .time .column{
     justify-content: center;
     align-items: flex-start;
-    flex: 1;
+    width: fit-content;
     box-sizing: border-box;
 }
 #zimb2 .page.play .title .time .column .text{
-    color: #fefefe;
+    color: #202020;
     font-size: 12px;
     box-sizing: border-box;
 }
 #zimb2 .page.play .title .time .column .bar{
     width: 100%;
     height: 5px;
-    background: #96581a;
+    background: #ffefa1;
     box-sizing: border-box;
 }
 #zimb2 .page.play .title .time .column .bar .inner{
     width: 0%;
     height: 100%;
-    background: #ededed;
+    background: #bd22ff;
     box-sizing: border-box;
 }
 #zimb2 .page.play .list{
@@ -585,7 +597,7 @@ img{
     left: 50%;
     transform: translate(-50%, -50%);
     will-change: opacity;
-    transition: opacity 0.5s ease-in-out;
+    transition: opacity 0.25s ease-in-out;
     box-sizing: border-box;
     z-index: 2147483647;
 }
@@ -599,7 +611,12 @@ img{
     clip-path: polygon(5% 0, 50% 45%, 95% 0, 100% 5%, 55% 50%, 100% 95%, 95% 100%, 50% 55%, 5% 100%, 0 95%, 45% 50%, 0 5%);
 }
 .sym.tog{
-    opacity: 1.0;
+    animation: ueeaaa 1.0s ease-in-out;
+}
+@keyframes ueeaaa{
+    0%{opacity: 0.0;}
+    50%{opacity: 1.0;}
+    100%{opacity: 0.0;}
 }
 /* #endregion */
 
