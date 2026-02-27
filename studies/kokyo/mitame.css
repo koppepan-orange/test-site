@@ -614,6 +614,9 @@ img{
     border-radius: 50%;
     border: 20px solid #ff8080;
 }
+.sym.sir.kyu{
+    border-color: #ffb17d;
+}
 .sym.xox{
     background: #8080ff;
     clip-path: polygon(5% 0, 50% 45%, 95% 0, 100% 5%, 55% 50%, 100% 95%, 95% 100%, 50% 55%, 5% 100%, 0 95%, 45% 50%, 0 5%);

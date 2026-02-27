@@ -1365,9 +1365,14 @@ zimF.go = async() => {
                 
                 let Rarr = arr.filter(a => a.name != name);
                 for(let i2=0; i2<3; i2++){
-                    let data2 = arraySelect(Rarr);
+                    let data2 = copy(arraySelect(Rarr));
                     // console.log(data2)
-                    let verb2 = arraySelect(data2.list);
+                    if(res.list.some(a => a.name == data2.name)) continue;
+
+                    let verb2; 
+                    do verb2 = arraySelect(data2.list)
+                    while(res.list.some(a => a.name == verb2.name));
+                    
                     res.list.push(verb2);
                     Rarr = Rarr.filter(a => a.name != data2.name);
                 }
@@ -1395,10 +1400,14 @@ zimF.go = async() => {
                 console.error(`${data.name}にtrueを付与しました`)
                 res.list.push(data);
 
-                Rarr = arr.filter(a => a.name != name);
+                Rarr = arr.filter(a => a.name != data.name);
                 for(let i2=0; i2<3; i2++){
-                    let data2 = arraySelect(Rarr);
+                    let data2 = copy(arraySelect(Rarr));
+                    // console.log(data2)
+                    if(res.list.some(a => a.name == data2.name)) continue;
+
                     let name2 = data2.name;
+                    if(data.ovecca && data.ovecca.includes(name2)) data2.true = 1, console.error(`${data2.name}にもtrueを付与しときますね`);
                     res.list.push(data2);
                     Rarr = Rarr.filter(a => a.name != name2);
                 }
@@ -1456,6 +1465,7 @@ zimF.go = async() => {
                     let sym = document.createElement('div');
 
                     sym.className = 'sym sir';
+                    if(zimC.timeEnded) sym.classList.add('kyu')
                     document.body.appendChild(sym);
                     await delay(50) //ちょっとした実装時間
                     // soundPlay('error');
