@@ -562,16 +562,6 @@ let Kajohn = [
         ]
     },
     {
-        name:"",
-        add:"追加物のゴリラ",
-        list:[
-            {
-                name:"",
-                desc:""
-            }
-        ]
-    },
-    {
         name:"丸山真男",
         add:"追加物のゴリラ",
         list:[
