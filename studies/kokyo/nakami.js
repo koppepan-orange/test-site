@@ -3,17 +3,18 @@ function delay(ms){
     return new Promise(resolve=>setTimeout(resolve,ms));
 };
 async function nicoText(mes){
-    let newDiv = document.createElement('div');
-    newDiv.textContent = mes;
-    newDiv.className = 'nicotext';
-    newDiv.style.top = `calc(${random(0, 100)}vh - 20px)`;
-    newDiv.style.right = '0px';
-    document.querySelector('body').appendChild(newDiv);
+    let div = document.createElement('div');
+    div.textContent = mes;
+    div.className = 'nicotext';
+    document.querySelector('body').appendChild(div);
 
-    requestAnimationFrame(() => newDiv.style.right = `${window.innerWidth + newDiv.offsetWidth}px`);
+    div.style.top = `calc(${random(0, 100)}vh - 20px)`;
+    div.style.right = `-${div.offsetWidth}px`;
+
+    requestAnimationFrame(() => div.style.right = `${window.innerWidth + div.offsetWidth}px`);
     
-    await delay(2000); 
-    newDiv.remove();
+    await delay(5000); 
+    div.remove();
 };
 function tobiText(youso, mes){
     let el = youso;
@@ -1271,20 +1272,18 @@ zimF.load = () => {
     zimC.qsOS.textContent = zimC.qss[1];
 
     // add
-    let adds0 = [];
-    for(let k of Kajohn){
-        let add = zimF.g_add(k.name);
-        if(!add) continue;
-        if(!adds0.includes(add)) adds0.push(add);
-    }
-    for(let add of adds0){
+    for(let add of Adds){
+        let name = add.name;
         let div = document.createElement('div');
-        div.className = `add check ${add}`;
-        div.textContent = add;
+        div.className = `add check ${name}`;
+        div.textContent = add.name;
+        // div.dataset.description = add.desc;
         div.addEventListener('click', () => {
             div.classList.toggle('tog');
-            zimC.adds = arrayToggle(zimC.adds, add);
-            console.log(`[add] ${add}を${zimC.adds.includes(add) ? '追加' : '削除'}しました`);
+            zimC.adds = arrayToggle(zimC.adds, name);
+            if(zimC.adds.includes(name)) nicoText(add.desc);
+            else nicoText(`あ、日和ったね`);
+            // console.log(`[add] ${name}を${zimC.adds.includes(name) ? '追加' : '削除'}しました`);
         });
         zimC.addS.appendChild(div);
     }
