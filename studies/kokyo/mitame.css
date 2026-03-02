@@ -40,7 +40,7 @@ img{
 /* #region else */
 .nicotext{
     position: fixed;
-    background-color: #f0f8ff80;
+    /* background-color: #f0f8ff80; */
     color: #000000;
     font-size: 20px;
     transition: right 5.0s linear;
@@ -321,6 +321,7 @@ img{
     width: var(--iPhone-width);
     height: 100%;
     margin: 0 auto;
+    user-select: none;
     z-index: -1;
 }
 
