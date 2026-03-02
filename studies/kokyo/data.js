@@ -63,7 +63,6 @@ descのないもの/人は出ません。故にリリース直後はめっちゃ
 */
 let Kajohn = [
     {
-        no:1,
         name:"ソクラテス",
         list:[
             {name:"無知の知"},
@@ -73,7 +72,6 @@ let Kajohn = [
         ]
     },
     {
-        no:1,
         name:"プラトン",
         list:[
             {name:"イデア"},
@@ -85,7 +83,6 @@ let Kajohn = [
         ]
     },
     {
-        no:1,
         name:"ベーコン",
         list:[
             {name:"「知は力なり」"},
@@ -94,7 +91,6 @@ let Kajohn = [
         ]
     },
     {
-        no:1,
         name:"デカルト",
         list:[
             {name:"「われ思う、ゆえにわれあり」"},
@@ -104,7 +100,6 @@ let Kajohn = [
     },
 
     {
-        no:1,
         name:"マルクス",
         list:[
             {name:"社会主義"},
@@ -113,7 +108,6 @@ let Kajohn = [
         ]
     },
     {
-        no:1,
         name:"キルケゴール",
         list:[
             {name:"実存主義"},
@@ -122,7 +116,6 @@ let Kajohn = [
         ]
     },
     {
-        no:1,
         name:"ニーチェ",
         list:[
             {
@@ -134,14 +127,12 @@ let Kajohn = [
         ]
     },
     {
-        no:1,
         name:"ヤスパース",
         list:[
             {name:"限界状況"}
         ]
     },
     {
-        no:1,
         name:"ハイデッガー",
         list:[
             {name:"人間は「死への存在」"},
@@ -149,7 +140,6 @@ let Kajohn = [
         ]
     },
     {
-        no:1,
         name:"サルトル",
         list:[
             {name:"「実存は本質に先立つ」"},
@@ -161,7 +151,6 @@ let Kajohn = [
     },
 
     {
-        no:1,
         name:"孔子",
         list:[
             {name:"儒家の祖"},
@@ -170,7 +159,6 @@ let Kajohn = [
         ]
     },
     {
-        no:1,
         name:"孟子",
         list:[
             {
@@ -185,7 +173,6 @@ let Kajohn = [
                 name:"性善説"
             }
         ],
-        irans:[,]
     },
     {
         name:"筍子",
