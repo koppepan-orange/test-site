@@ -1426,6 +1426,7 @@ zimF.go = async() => {
         zimC.titleDD.textContent = res.title;
         zimC.listD.innerHTML = '';
         zimC.timeBXD.style.width = '100%';
+        zimC.timeEnded = 0
 
         let clickend = 0;
         let answer = await new Promise(solve => {
