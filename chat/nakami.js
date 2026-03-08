@@ -12,7 +12,7 @@ async function nicoText(mes){
 
     requestAnimationFrame(() => newDiv.style.right = `${window.innerWidth + newDiv.offsetWidth}px`);
     
-    await delay(2000); 
+    await delay(2000);
     newDiv.remove();
 };
 function tobiText(youso, mes){
@@ -595,9 +595,10 @@ document.addEventListener('mousedown', e => {
     let div = e.target;
     
     while(div && !div.classList.contains('draggable')){
-        if(div.tagName == 'BODY') return; //戻りすぎね
+        if(div.tagName == 'HTML') return; //戻りすぎね
         div = div.parentElement;
     }
+    console.log(div)
 
     offsetX = e.clientX - div.getBoundingClientRect().left;
     offsetY = e.clientY - div.getBoundingClientRect().top;
@@ -1131,6 +1132,15 @@ document.addEventListener('keydown', async function(e){
 let comD = document.getElementById('commu');
 let comC = {
     noname: 'no name',
+	spas: ["login", "nanj", "twit", "jine"]
+}
+let comF = {};
+
+comF.move = (code) => {
+	if(!code) return console.error(`せんぱ〜い？${code}ってどこですか〜？笑`);
+	
+	for(let a of comC.spas) comD.querySelector(`.space.${a}`).classList.remove('show');
+    comD.querySelector(`.space.${code}`).classList.add('show');
 }
 
 //#region update
@@ -1173,7 +1183,17 @@ let User = {
 }
 
 let logiD = document.getElementById('login');
+let logiC = {
+	tog:1,
+}
 let logiF = {};
+logiF.tog = (co = NaN) => {
+	if(isNaN(co)) co = fl(logiC.tog);
+	
+	if(co) logiD.classList.add("tog")
+	else logiD.classList.remove("tog")
+}
+
 logiF.auto = () => {
     User.truth = lsdGet("username");
     if(User.truth){
@@ -1182,13 +1202,13 @@ logiF.auto = () => {
     }
     else{
         logText("ログインしてください");
-        logiD.classList.add('appe')
+        logiF.tog(1)
     }
 }
 async function login(){
     User.ref = database.ref(`users/${User.truth}`);
     User.idora = User.truth;
-    await delay(500);
+    await delay(50);
     update();
     nanF.load();
     nanD.classList.add('tog');
@@ -1625,6 +1645,9 @@ function displayAllTweets(){
 //#endregion
 //#region jine
 let jinD = document.getElementById('jine');
+let jinC = {
+	
+}
 
 //#endregion
 
