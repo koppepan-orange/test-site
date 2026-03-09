@@ -38,7 +38,31 @@
     
             <div class="ue"></div>
         </div>
+        
+        <nav id="sideMenu">
+            <hr noshade="true">
+            <ul>
+                <li><button onclick="GoTo('nanj')">NanJ</button></li>
+                <li><button onclick="GoTo('twitter2')">Twitter2</button></li>
+            </ul>
+            <hr noshade="true">
+            <ul>
+            <li><a href="home.html">to home</a></li>
+            </ul>
+            <hr noshade="true">
+            <button id="login-button">押さないでね。</button>
+            <button id="logout" onclick="logout()">Logout</button>
+        </nav>
 
+        
+        <div id="login" class="space">
+            <form class="form">
+                <input type="text" class="username" placeholder="ユーザー名" required>
+                <input type="password" class="password" placeholder="パスワード" required>
+                <div class="bt">ログイン</div>
+                <div class="errored">パスワードが間違っています。</div>
+            </form>
+        </div>
 
         <div id="nanj" class="space">
             <!-- <select id="room-select" onchange="selectRoom()">
@@ -82,7 +106,7 @@
             </div>
         </div>
 
-        <div id="twitter2">
+        <div id="twit" class="space">
             <select id="t-room-select" name="t-room-select" onchange="selectTweetsroom()">
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -95,30 +119,11 @@
                 <textarea id="t-make-text" rows="15" cols="72"></textarea>
             </div>
         </div>
-    </div>
-    <nav id="sideMenu">
-        <hr noshade="true">
-        <ul>
-            <li><button onclick="GoTo('nanj')">NanJ</button></li>
-            <li><button onclick="GoTo('twitter2')">Twitter2</button></li>
-        </ul>
-        <hr noshade="true">
-        <ul>
-        <li><a href="home.html">to home</a></li>
-        </ul>
-        <hr noshade="true">
-        <button id="login-button">押さないでね。</button>
-        <button id="logout" onclick="logout()">Logout</button>
-    </nav>
+        
 
-    <div id="login" class="space">
-        <form class="form">
-            <input type="text" class="username" placeholder="ユーザー名" required>
-            <input type="password" class="password" placeholder="パスワード" required>
-            <div class="bt">ログイン</div>
-            <div class="errored">パスワードが間違っています。</div>
-        </form>
+        <div id="jine" class="space"></div>
     </div>
+
 
     <script src="data.js" defer></script>
     <script src="nakami.js" defer></script>

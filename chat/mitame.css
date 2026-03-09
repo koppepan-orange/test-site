@@ -492,14 +492,11 @@ img{
     overflow: hidden;
     box-sizing: border-box;
 }
-.space.tog{
+.space.show{
     display: flex;
 }
 
-/* login */
-#Login {
-    display: flex;
-}
+/* #region login */
 .login-form {
     padding: 20px;
 }
@@ -520,9 +517,10 @@ img{
 .login-form button:hover {
     background: #8b8b8b;
 }
-/* なんJ民 */
+/* #endregion */
+
+/* #region nanj */
 #nanj{
-    display: flex;
     content:'nanj';
     align-items: center;
 }
@@ -611,17 +609,11 @@ img{
 }
 */
 
-/* twitter2 */
-#twitter2 {
-    width: 500px;
-    margin: 50px auto;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    overflow: hidden;
-    display: none;
-    flex-direction: column;
-    display: none;
+/* #endregion */
+
+/* #region twitter2 */
+#twit{
+    content: "twitter2";
 }
 .tweets {
     position: relative;
@@ -673,3 +665,5 @@ img{
     max-height: 250px;
     overflow-y: auto;
 }
+/* #endregion */
+

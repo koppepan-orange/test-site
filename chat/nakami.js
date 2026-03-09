@@ -1139,13 +1139,13 @@ let comF = {};
 comF.move = (code) => {
 	if(!code) return console.error(`せんぱ〜い？${code}ってどこですか〜？笑`);
 	
-	for(let a of comC.spas) comD.querySelector(`.space.${a}`).classList.remove('show');
-    comD.querySelector(`.space.${code}`).classList.add('show');
+	for(let a of comC.spas) document.getElementById(a).classList.remove('show');
+    document.getElementById(code).classList.add('show');
 }
 
 //#region update
 function update(){
-    uppF.tekiou();
+    uppF.tekiou();pppppppp
 }
 //#endregion
 
@@ -1173,6 +1173,7 @@ let firebaseConfig = {
     appId: "1:730150198097:web:076a074a3d406053155170",
     measurementId: "G-MYKJWD203Z"
 };
+
 firebase.initializeApp(firebaseConfig);
 let database = firebase.database();
 let User = {
@@ -1184,15 +1185,11 @@ let User = {
 
 let logiD = document.getElementById('login');
 let logiC = {
+    senD: logiD.querySelector('.bt'),
 	tog:1,
 }
 let logiF = {};
-logiF.tog = (co = NaN) => {
-	if(isNaN(co)) co = fl(logiC.tog);
-	
-	if(co) logiD.classList.add("tog")
-	else logiD.classList.remove("tog")
-}
+
 
 logiF.auto = () => {
     User.truth = lsdGet("username");
@@ -1202,7 +1199,7 @@ logiF.auto = () => {
     }
     else{
         logText("ログインしてください");
-        logiF.tog(1)
+        comF.move('login');
     }
 }
 async function login(){
@@ -1217,7 +1214,6 @@ function logout(){
     room = 1;
     User.truth = comC.noname;
 }
-let room = 1;
 //#endregion
 
 //#region nanj
