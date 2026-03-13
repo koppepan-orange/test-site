@@ -16,16 +16,16 @@ let Style = {
 
 let Commands = [
     {
-        name:'save',
-        process:function(message){
-            load();
+        name:'log',
+        func:function(raw){
+            console.log(raw);
             nicoText('君、もしやデバッガーだね..?')
             return null;
         }
     },
     {
         name:'clear',
-        process:function(message){
+        func:function(raw){
             database.ref('rooms/'+room).remove();
             setTimeout(displayAllMessages, 200);
             nicoText('すべてのメッセージが消去されました。');
@@ -36,14 +36,14 @@ let Commands = [
     },
     {
         name:'reload',
-        process:function(message){
+        func:function(raw){
             window.location.reload();   
             return null;
         }
     },
     {
         name:'online',
-        process:function(message){
+        func:function(raw){
             usersRef.update({
                 status: 'online'
             });
@@ -52,7 +52,7 @@ let Commands = [
     },
     {
         name:'offline',
-        process:function(message){
+        func:function(raw){
             usersRef.update({
                 status:'offline'
             });
@@ -61,7 +61,7 @@ let Commands = [
     },
     {
         name:'balance',
-        process:function(message){
+        func:function(raw){
             load();
             nicoText(`now: ${userData.euro}$`)
             return null;
@@ -69,29 +69,29 @@ let Commands = [
     },
     {
         name:'nico',
-        process:function(message){
-            nicoText(message);
+        func:function(raw){
+            nicoText(raw);
             return null;
         }
     },
     {
         name:'rename',
-        process:function(message){
-            nickname = message;
+        func:function(raw){
+            nickname = raw;
             return null;
         }
     },
     {
         name:'nanj',
-        process:function(message){
-            AnonymousName = message;
+        func:function(raw){
+            AnonymousName = raw;
             return null;
         }
     },
     {
         name:'ban',
-        process:function(message){
-            database.ref(`users/${message}`).update({
+        func:function(raw){
+            database.ref(`users/${raw}`).update({
                 banned:1
             })
             nicoText('Nice Job!')
@@ -100,8 +100,8 @@ let Commands = [
     },
     {
         name:'unban',
-        process:function(message){
-            database.ref(`users/${message}`).update({
+        func:function(raw){
+            database.ref(`users/${raw}`).update({
                 banned:0
             })
             nicoText('Good Job!')

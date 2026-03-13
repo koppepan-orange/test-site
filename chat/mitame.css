@@ -1,13 +1,12 @@
 /* #region スターターパック */
 html{
     margin: -8px;
+    overflow-x: hidden;
+    user-select:none;
 }
 body{
     width: 100vw;
     height: 100vh;
-    max-height: 100vh;
-    /* overflow: hidden; */
-    user-select:none;
     white-space: nowrap;
     touch-action: none;
 }
@@ -34,15 +33,17 @@ img{
     outline: none;
 }
 
+:root{
+    --mostop: 2147483647;
+}
+
 /* #region else */
 .nicotext{
     position: fixed;
-    top: 0;
-    right: 0;
-    background-color: #f0f8ff80;
+    background: #f0f8ff80;
     color: #000000;
     font-size: 20px;
-    transition: right 2.0s linear;
+    transition: right 5.0s linear;
     white-space: nowrap;
     pointer-events: none;
     z-index: var(--mostop);
@@ -179,7 +180,7 @@ img{
     text-align: left;
     padding: 5px 10px;
     border-radius: 5px;
-    z-index: 2147483647;
+    z-index: var(--mostop);
 }
 #mobileDesc.show{
     display: block;
@@ -191,7 +192,7 @@ img{
     position: fixed;
 }
 .tk.mostop{
-    z-index: 2147483647;
+    z-index: var(--mostop);
 }
 .tk.cenXY{
     left: 50% !important;
@@ -223,7 +224,7 @@ img{
     will-change: bottom;
     overflow: hidden;
     box-sizing: border-box;
-    z-index: 2147483646;
+    z-index: var(--mostop);
 }
 .alertD.show{
     bottom: 20px;
@@ -296,6 +297,7 @@ img{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex-shrink: 0; /* なんか勝手に縮まるのを防ぐやつ */
     gap: 5px;
     width: 100px;
     height: 100px;
@@ -486,7 +488,7 @@ img{
     flex-direction: column;
     width: var(--iPhone-width);
     height: calc(100% - 80px);
-    padding: 0 50px;
+    padding-top: 10px;
     margin: 0 auto;
     margin-top: 80px;
     overflow: hidden;
@@ -534,8 +536,8 @@ img{
 #nanj .main .messages {
     display: flex;
     flex-direction: column;
-    height: fit-content;
-    max-height: 750px;
+    height: 85%;
+    max-height: 85%;
     padding: 10px;
     border-bottom: 1px solid #dedede;
     overflow-y: auto;
@@ -543,16 +545,18 @@ img{
 }
 #nanj .main .messages .mes {
     margin-bottom: 10px;
+    flex-shrink: 0;
     padding: 8px 12px;
     background: #6affad;
     border-radius: 5px;
-    max-width: 80%;
-    max-height: 150px;
+    width: fit-content;
+     max-width: 80%;
+    height: fit-content;
+     max-height: 150px;
     overflow-y: auto;
 }
 #nanj .main .messages .mes.mine{
-    /* ユーザー自身のものならば、要素ごと右に寄せる（普通は左寄り） */
-    align-self: flex-end;
+    align-self: flex-end; /* 右寄せ */
     /* background: #44ad73;
     color: #6affad; */
 }
@@ -567,10 +571,12 @@ img{
     font-size: 16px;
 }
 #nanj .main .send {
-    border: none;
+    display: flex;
+    align-items: center;
     flex: 1;
     padding: 15px;
     background: #44ad73;
+    border: none;
     color: #6affad;
     font-size: 16px;
     box-sizing: border-box;
@@ -579,36 +585,6 @@ img{
 #nanj .main .send:hover {
     background: #8b8b8b;
 }
-/* 
-#room-select {
-    display: none;
-    width: 100%;
-    height: 30px;
-    border: 1px solid #ccc;
-}
-#room-make-zone {
-    display: flex; 
-    justify-content: space-between; 
-    padding: 10px; 
-}
-
-
-.hover-element {
-    position: relative;
-    display: inline-block;
-}
-.popup {
-    display: none;
-    padding: 10px;
-    background: rgba(72, 72, 72, 0.563);
-    color: #fff;
-    border-radius: 5px;
-}
-.hover-element:hover .popup {
-    display: block;
-}
-*/
-
 /* #endregion */
 
 /* #region twitter2 */

@@ -2,18 +2,21 @@
 function delay(ms){
     return new Promise(resolve=>setTimeout(resolve,ms));
 };
-async function nicoText(mes){
-    let newDiv = document.createElement('div');
-    newDiv.textContent = mes;
-    newDiv.className = 'nicotext';
-    newDiv.style.top = `calc(${random(0, 100)}vh - 20px)`;
-    newDiv.style.right = '0px';
-    document.querySelector('body').appendChild(newDiv);
 
-    requestAnimationFrame(() => newDiv.style.right = `${window.innerWidth + newDiv.offsetWidth}px`);
+async function nicoText(mes){
+    let div = document.createElement('div');
+    div.textContent = mes;
+    div.className = 'nicotext';
+    document.querySelector('body').appendChild(div);
+
+    let wid = div.offsetWidth;
+    div.style.top = `calc(${random(0, 100)}vh - 20px)`;
+    div.style.right = `-${wid}px`;
+
+    requestAnimationFrame(() => div.style.right = `${window.innerWidth + wid}px`);
     
-    await delay(2000);
-    newDiv.remove();
+    await delay(5000); 
+    div.remove();
 };
 function tobiText(youso, mes){
     let el = youso;
@@ -108,6 +111,17 @@ function El(tag, cls, children = []){
     children.forEach(c => e.appendChild(c));
     return e;
 }
+function awase(div, min = 28, code = "innerText"){
+    if(min == 0) min = 28; //skipと仮定する
+    if(!code) return console.error(`せんぱ〜い..? ${code}なんていうよくわからないものは使わないでくださ〜い笑`);
+
+    let wid = div.clientWidth;
+    let len = div[code].length;
+     if(len == 0) return;
+    let px = wid/len;
+     if(min < px) px = min;
+    div.style.fontSize = `${px}px`;
+}
 function kaijou(num){
     if(num == 0) return 0;
     if(num == 1) return 1;
@@ -133,6 +147,14 @@ function arraySelect(array){
     let select = Math.floor(Math.random()*array.length);
     return array[select];
 };
+function arrayToggle(array, name){
+    let array2 = copy(array);
+    let index = array2.indexOf(name);
+    if(index == -1) array2.push(name);
+    else array2.splice(index, 1);
+    
+    return array2;
+}
 function arrayShuffle(array){
     for(let i=(array.length-1); i>0; i--){
         let i2 = Math.floor(Math.random() * (i + 1));
@@ -189,7 +211,7 @@ function copy(moto){
 };
 function probb(num){
     return Math.random()*100 <= num;
-    //例:num == 20 → randomが20以内ならtrue,elseならfalseを返す
+    //例:num == 20 → randomが20以内なら1,elseなら0を返す
 };
 function random(min, max){
     if(max < min) [min, max] = [max, min];
@@ -378,8 +400,8 @@ let logC = {
     togD: logD.querySelector('.opener'),
     textD: logD.querySelector('.text'),
     autoDelay: 1,
-    skipText: false,
-    clearText: false,
+    skipText: 0,
+    clearText: 0,
     loopText: 0,
     ing: 0,
     queue: []
@@ -408,13 +430,13 @@ logF.cc = (raw) => {
     let color = null;
 
     for(let i = 0; i < raw.length; i++){
-        let sym = false;
+        let sym = 0;
         for(let c of logC.colors){
             if(raw[i] == c.sym && raw[i + 1] == c.sym){
                 console.log(`→${raw[i]}← 発見！ ${c.name}色です`);
                 color = color ? null : c.col;
                 i++;
-                sym = true;
+                sym = 1;
                 break;
             }
         };
@@ -435,7 +457,7 @@ logF.waitfor = async() => {
     else logC.loopText = 1;
 
     if(!logC.loopText) return;
-    requestAnimationFrame(waitforAddtext);
+    requestAnimationFrame(logF.waitfor);
 
     if(logC.ing) return;
     let raw = logC.queue.shift();
@@ -458,7 +480,7 @@ async function logText(raw){
     text = logF.cc(raw);
     logC.textD.innerHTML = "";
     logC.textD.style.display = "block";
-    logC.clearT = false;
+    logC.clearT = 0;
 
     let index = 0;
     return new Promise((resolve) => {
@@ -474,7 +496,7 @@ async function logText(raw){
                         index++;
                     }
                     index = text.length;
-                    logC.skipT = false;
+                    logC.skipT = 0;
                     setTimeout(type, 10);
                 }else{
                     let span = document.createElement("span");
@@ -505,8 +527,8 @@ async function logText(raw){
                 Promise.race([timeout, userAction]).then(() => {
                     logC.textD.textContent = "";
                     logC.textD.style.display = "none";
-                    logC.clearT = true;
-                    logC.skipT = false
+                    logC.clearT = 1;
+                    logC.skipT = 0
                     logC.ing = 0;
                     resolve('end');
                 });
@@ -516,14 +538,14 @@ async function logText(raw){
     });
 };
 document.addEventListener('keydown', (e) => {
-    if(e.key === 'z' || e.key === 'Enter') logC.skipT = true;
+    if(e.key === 'z' || e.key === 'Enter') logC.skipT = 1;
 });
 document.addEventListener('keyup', (e) => {
-    if(e.key === 'z' || e.key === 'Enter') logC.skipT = false;
+    if(e.key === 'z' || e.key === 'Enter') logC.skipT = 0;
 });
 document.addEventListener('click', () => {
-    logC.skipT = true;
-    setTimeout(() => logC.skipT = false, 50); // 一時的にスキップを有効化
+    logC.skipT = 1;
+    setTimeout(() => logC.skipT = 0, 50); // 一時的にスキップを有効化
 });
 
 logF.tog = (code = NaN) => {
@@ -595,10 +617,9 @@ document.addEventListener('mousedown', e => {
     let div = e.target;
     
     while(div && !div.classList.contains('draggable')){
-        if(div.tagName == 'HTML') return; //戻りすぎね
+        if(div.tagName == 'BODY') return; //戻りすぎね
         div = div.parentElement;
     }
-    console.log(div)
 
     offsetX = e.clientX - div.getBoundingClientRect().left;
     offsetY = e.clientY - div.getBoundingClientRect().top;
@@ -616,7 +637,7 @@ document.addEventListener('mousedown', e => {
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
 });
-//#endregion //#region tk
+//#endregion
 //#region tk
 class tk{
     constructor(type, x = 'half', y = 'half', w = window.innerWidth/2, h = window.innerWidth/2){
@@ -816,46 +837,93 @@ class alertD{
     };
 };
 //#endregion
-//#region observer
-let keys = {};
-document.addEventListener('keydown', e => {
+//#region OBS
+let OBS = {
+    keys: {},
+    cling: 0,
+    cring: 0,
+    mx: 0,
+    my: 0
+}
+
+OBS.KeysA = (e) => {
     let key = e.key.toLowerCase();
     if(e.key == ' ') key = 'space';
-    keys[key] = true;
-});
-document.addEventListener('keyup', e => {
+    OBS.keys[key] = 1;
+};
+OBS.KeysR = (e) => {
     let key = e.key.toLowerCase();
     if(e.key == ' ') key = 'space';
-    keys[key] = false;
-});
+    OBS.keys[key] = 0;
+};
 
-let clicking = false;
-let cricking = false;
-document.addEventListener('pointerdown', (e) => {
-    if(e.buttons == 0) clicking = true;
-    if(e.buttons == 2) cricking = true;
-});
-document.addEventListener('pointerup', (e) => {
-    if(e.buttons == 0) clicking = false;
-    if(e.buttons == 2) cricking = false;
-});
-document.addEventListener('pointercancel', (e) => {
-    if(e.buttons == 0) clicking = false;
-    if(e.buttons == 2) cricking = false;
-});
-window.addEventListener('blur', () => {clicking = cricking = false});
+OBS.PonD = (e) => {
+    if(e.buttons == 0) OBS.cling = 1;
+    if(e.buttons == 2) OBS.cring = 1;
+};
+OBS.PonU = (e) => {
+    if(e.buttons == 0) OBS.cling = 0;
+    if(e.buttons == 2) OBS.cring = 0;
+};
+OBS.ponC = (e) => {
+    if(e.buttons == 0) OBS.cling = 0;
+    if(e.buttons == 2) OBS.cring = 0;
+};
+OBS.PonB = () => {
+    OBS.cling = 0;
+    OBS.cring = 0;
+}
 
-let mouseX = 0;
-let mouseY = 0;
-document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-});
+OBS.Mouse = (e) => {
+    OBS.mx = e.clientX;
+    OBS.my = e.clientY;
+};
+
+
+OBS.Paste = (event) => {
+    // プレーンペーストに強制的にするやつ？
+    event.preventDefault();
+    let text = event.clipboardData.getData("text/plain");
+    let selection = window.getSelection();
+    if(!selection.rangeCount) return;
+    selection.deleteFromDocument();
+    selection.getRangeAt(0).insertNode(document.createTextNode(text));
+    selection.collapseToEnd();
+};
+
+OBS.load = () => {
+    let sts = {
+        "Keys": 1,
+        "Mouse": 1,
+        "Click": 1,
+        "Paste": 0,
+    }
+
+    if(sts["Keys"]){
+        window.addEventListener('keydown', OBS.KeysA);
+        window.addEventListener('keyup', OBS.KeysR);
+    }
+
+    if(sts["Mouse"]){
+        window.addEventListener('mousemove', OBS.Mouse);
+    }
+
+    if(sts["Click"]){
+        window.addEventListener('pointerdown', OBS.PonD);
+        window.addEventListener('pointerup', OBS.PonU);
+        window.addEventListener('pointercancel', OBS.ponC);
+        window.addEventListener('blur', OBS.PonB);
+    }
+
+    if(sts["Paste"]){
+        window.addEventListener('paste', OBS.Paste);
+    }
+}
+
 //#endregion
 //#region fonts
-let Fonts = [
-    {src:'comicsans', type:'ttf'},
-    {src:'cube12', type:'ttf'}
+const Fonts = [
+    // {src:'comicsans', type:'ttf'},
 ];
 function fontsLoad(){
     let id = "font_load_css";
@@ -897,7 +965,7 @@ loaC.imgL = {
 loaC.imgT = Object.values(loaC.imgL).length;
 
 loaC.souL = {
-    // se:['error'],
+    se:['error'],
     // bgm:[],
 }
 loaC.souT = Object.values(loaC.souL).length;
@@ -918,13 +986,13 @@ loaF.loadI = async() => {
 
         for(let name of loaC.imgL[belong]){
             let img = new Image();
-            img.src = `assets/images/${belong}/${name}.png`;
+            img.src = `../assets/images/${belong}/${name}.png`;
             img.onload = kasan();
             img.onerror = () => {
-                console.error(`Image assets/images/${belong}/${name}.png failed to load.`);
+                console.error(`Image ../assets/images/${belong}/${name}.png failed to load.`);
                 loaC.erd += 1;
                  if(loaC.erd > 20) return console.error('さすがにやりすぎbonus'), 1;
-                img.src = `assets/images/systems/error.png`;
+                img.src = `../assets/images/systems/error.png`;
                 kasan();
             };
             
@@ -946,9 +1014,9 @@ loaF.loadS = async() => {
         for(let name of loaC.souL[belong]){
             let sound = new Audio();
             sound.preload = 'auto';
-            sound.src = `assets/sounds/${belong}/${name}.mp3`;
+            sound.src = `../assets/sounds/${belong}/${name}.mp3`;
             if(belong == 'bgm'){
-                sound.loop = true;
+                sound.loop = 1;
                 sound.dataset.type = 'bgm';
                 sound.volume = souC.bgm;
             }
@@ -960,10 +1028,10 @@ loaF.loadS = async() => {
                 kasan();
             }, {once: 1});
             sound.onerror = () => {
-                console.error(`Sound assets/sounds/${belong}/${name} failed to load.`);
+                console.error(`Sound ../assets/sounds/${belong}/${name} failed to load.`);
                 loaC.erd += 1;
                  if(loaC.erd > 20) return console.error('さすがにやりすぎbonus'), 1;
-                sound.src = `assets/sounds/se/error.mp3`;
+                sound.src = `../assets/sounds/se/error.mp3`;
                 kasan();
             };
 
@@ -995,7 +1063,7 @@ function soundPlay(name){
         proto.play().catch(e => console.warn('BGM 再生エラー', e));
         souC.nowBgm = name;
     }else{
-        let clone = proto.cloneNode(true);
+        let clone = proto.cloneNode(1);
         clone.volume = souC.se;
         clone.dataset.type = 'se';
         clone.addEventListener('ended', ()=> {
@@ -1129,6 +1197,8 @@ document.addEventListener('keydown', async function(e){
 //#endregion
 
 
+
+
 let comD = document.getElementById('commu');
 let comC = {
     noname: 'no name',
@@ -1145,7 +1215,7 @@ comF.move = (code) => {
 
 //#region update
 function update(){
-    uppF.tekiou();pppppppp
+    uppF.tekiou();
 }
 //#endregion
 
@@ -1207,8 +1277,10 @@ async function login(){
     User.idora = User.truth;
     await delay(50);
     update();
+    
     nanF.load();
-    nanD.classList.add('tog');
+
+    comF.move('nanj')
 }
 function logout(){
     room = 1;
@@ -1278,34 +1350,9 @@ if(e.key == 'Enter'){
 }
 });
 
-
-/*
-
-nanC.ref.push({
-    text: Mtext,
-    nickname: User.idora,
-    username: Musername,
-    timestamp: formatDate(new Date())
-});
-
-nanC.ref.push({
-    text: message,
-    nickname: User.idora,
-    username: User.truth,
-    timestamp: formatDate(new Date())
-}); 
-
-nanC.ref.on('child_added', async function(snapshot){
-    let messageData = snapshot.val();
-    let messageElement = makeNanjPost(messageData,snapshot.key)
-    nanC.messD.appendChild(messageElement);
-});
-
-*/
-
 // 首謀者
 nanF.send = async(text) => {
-    ock = {
+    let ock = {
         text: text,
         idora: User.idora,
         truth: User.truth,
@@ -1314,10 +1361,22 @@ nanF.send = async(text) => {
     nanC.ref.push(ock);
     nanC.inpuD.value = '';
 }
-nanC.senD.addEventListener('click', () => {
+nanC.senD.addEventListener('click', async() => {
     let text = nanC.inpuD.value;
     if(text.trim() == '') return tobiText(nanC.inpuD, `送るんだったら何かしらは入れような？`);
-    nanF.send(text);
+
+    if(text.startsWith('/')){
+        let slash = text.slice(1);
+        let [name, ...rest] = slash.split(' ');
+        for(let co of Commands){
+            if(co.name == name){
+                co.func(rest.join(' '));
+                return;
+            }
+        }
+    }
+    
+    await nanF.send(text);
 });
 
 nanF.make = (mesd, key) => {
