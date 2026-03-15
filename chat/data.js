@@ -15,30 +15,40 @@ let Style = {
 
 
 let Commands = [
+    // rawは配列です。
     {
         name:'log',
         func:function(raw){
-            console.log(raw);
+            let [, ...text] = raw;
+            console.log(text.join(' '));
             nicoText('君、もしやデバッガーだね..?')
-            return null;
+            return 0;
         }
     },
     {
         name:'clear',
         func:function(raw){
-            database.ref('rooms/'+room).remove();
-            setTimeout(displayAllMessages, 200);
+            let [, num, room = ''] = raw;
+            if(nanF.clear(num, room)) return 1;
             nicoText('すべてのメッセージが消去されました。');
-            nicoText('あなたがやったのです。反省してね♡')
-            nicoText('草');nicoText('草');
-            return null;    
+            return 0;    
+        }
+    },
+    {
+        name:'delete',
+        func:function(raw){
+            let [, room = ''] = raw;
+            if(nanC.officials.includes(room)) return tobiText(nanC.inpuD, '公式ルームは消去できません');
+            nanF.delete(room);
+            nicoText('ルームが消去されました。');
+            return 0;
         }
     },
     {
         name:'reload',
         func:function(raw){
             window.location.reload();   
-            return null;
+            return 0;
         }
     },
     {
@@ -47,7 +57,7 @@ let Commands = [
             usersRef.update({
                 status: 'online'
             });
-            return null;
+            return 0;
         }
     },
     {
@@ -56,7 +66,7 @@ let Commands = [
             usersRef.update({
                 status:'offline'
             });
-            return null;
+            return 0;
         }
     },
     {
@@ -64,28 +74,28 @@ let Commands = [
         func:function(raw){
             load();
             nicoText(`now: ${userData.euro}$`)
-            return null;
+            return 0;
         }
     },
     {
         name:'nico',
         func:function(raw){
             nicoText(raw);
-            return null;
+            return 0;
         }
     },
     {
         name:'rename',
         func:function(raw){
             nickname = raw;
-            return null;
+            return 0;
         }
     },
     {
         name:'nanj',
         func:function(raw){
             AnonymousName = raw;
-            return null;
+            return 0;
         }
     },
     {
@@ -95,7 +105,7 @@ let Commands = [
                 banned:1
             })
             nicoText('Nice Job!')
-            return null;
+            return 0;
         }
     },
     {
@@ -105,7 +115,7 @@ let Commands = [
                 banned:0
             })
             nicoText('Good Job!')
-            return null;
+            return 0;
         }
     }
 ];

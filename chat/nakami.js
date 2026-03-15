@@ -57,22 +57,22 @@ function tobiText(youso, mes){
     requestAnimationFrame(frame);
 };
 function copytext(text){
-    navigator.clipboard.writeText(text);
+    navigator.clipboard.writeText(text)
 }
 async function kirameki(div0, zukey = 'star', n = 20, time = 2000, col){
-    //heart!!!!!!!!!
     let taioued = ['star', 'heart'];
-    if(!taioued.includes(zukey)) return console.log(`図形が対応していません。現在対応しているのは[${taioued.join(', ')}だけあります。`);
+    if(!taioued.includes(zukey)) return console.log(`図形が対応していません。現在対応しているのは[${taioued.join(', ')}]だけであります。`);
     let rect = div0.getBoundingClientRect();
-    let cenX = rect.left + rect.width / 2;
-    let cenY = rect.top + rect.height / 2;
+    let cenX = rect.left + rect.width / 2 + window.scrollX;
+    let cenY = rect.top + rect.height / 2 + window.scrollY;
 
     let divs = [];
     for(let i=0; i<n; i++){
         let div = document.createElement('div');
         div.className = `kirameki p_${zukey}`;
-        div.style.top = `${Math.random() * 100}%`;
-        div.style.left = `${Math.random() * 100}%`;
+        // 初期は中央にpxで置く（CSS側で position:absolute を想定）
+        div.style.left = `${cenX}px`;
+        div.style.top = `${cenY}px`;
         if(zukey == 'star') div.style.transform = `rotate(${Math.random() * 360}deg)`;
         if(col) div.style.background = col;
         document.body.appendChild(div);
@@ -85,25 +85,24 @@ async function kirameki(div0, zukey = 'star', n = 20, time = 2000, col){
         let velocityX = Math.cos(angle) * speed;
         let velocityY = Math.sin(angle) * speed;
 
-        let lifeTime = 0;
-        let maxLifeTime = time;
-
-        function animate(){
-            lifeTime += 16; // 約60fpsで更新
-            if(lifeTime >= maxLifeTime){
+        let start = performance.now();
+        function animate(now){
+            let elapsed = now - start;
+            if(elapsed >= time){
                 div.remove();
                 return;
             }
-
-            velocityY += 0.05; // 重力
-            div.style.left = `${cenX + velocityX * (lifeTime / 16)}px`;
-            div.style.top = `${cenY + velocityY * (lifeTime / 16)}px`;
-            div.style.opacity = String(1 - lifeTime / maxLifeTime);
-
+            // 滑らかなイージング
+            let t = elapsed / time;
+            let e = 1 - Math.pow(1 - t, 3);
+            // 少し拡散するように速度を掛ける
+            div.style.left = `${cenX + velocityX * (elapsed / 16)}px`;
+            div.style.top = `${cenY + velocityY * (elapsed / 16)}px`;
+            div.style.opacity = String(1 - t);
             requestAnimationFrame(animate);
         }
-        animate();
-    })
+        requestAnimationFrame(animate);
+    });
 }
 function El(tag, cls, children = []){
     let e = document.createElement(tag);
@@ -111,15 +110,15 @@ function El(tag, cls, children = []){
     children.forEach(c => e.appendChild(c));
     return e;
 }
-function awase(div, min = 28, code = "innerText"){
-    if(min == 0) min = 28; //skipと仮定する
+function awase(div, max = 28, code = "innerText"){
+    if(max == 0) max = 28; //skipと仮定する
     if(!code) return console.error(`せんぱ〜い..? ${code}なんていうよくわからないものは使わないでくださ〜い笑`);
 
     let wid = div.clientWidth;
     let len = div[code].length;
      if(len == 0) return;
     let px = wid/len;
-     if(min < px) px = min;
+     if(max < px) px = max;
     div.style.fontSize = `${px}px`;
 }
 function kaijou(num){
@@ -156,11 +155,12 @@ function arrayToggle(array, name){
     return array2;
 }
 function arrayShuffle(array){
-    for(let i=(array.length-1); i>0; i--){
+    let ato = copy(array);
+    for(let i=(ato.length-1); i>0; i--){
         let i2 = Math.floor(Math.random() * (i + 1));
-        [array[i], array[i2]] = [array[i2], array[i]];
+        [ato[i], ato[i2]] = [ato[i2], ato[i]];
     };
-    return array;
+    return ato;
 };
 function arraySize(array){
     let res = new Set(array).size;
@@ -186,9 +186,9 @@ function arrayGacha(array, prob){
     };
 };
 function hask(obj, key){
-    let res = obj.hasOwnProperty(key);
-    res = res ? 1 : 0;
-    return res;
+    let res = Object.prototype.hasOwnProperty.call(obj, key)
+    if(res) return 1;
+    return 0;
 };
 function copy(moto){
     if(Array.isArray(moto)){
@@ -209,10 +209,19 @@ function copy(moto){
         return moto;
     };
 };
-function probb(num){
-    return Math.random()*100 <= num;
-    //例:num == 20 → randomが20以内なら1,elseなら0を返す
+function hit(num){
+    return +(Math.random()*100 <= num);
+    //例:num == 20 → randomが20以内なら1, elseなら0を返す
 };
+function roll(n, m){
+    let res = 0;
+    for(let i=0; i<n; i++) res += random(1, m);
+
+    if(3 < m && res == n*m) console.log('ファンブル！');
+    if(3 < m && res == n) console.log('クリティカル！');
+    return res;
+    //例:n = 1, m = 100 => 100面ダイスを1回振った出目の合計を返す
+}
 function random(min, max){
     if(max < min) [min, max] = [max, min];
     let num = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -230,7 +239,7 @@ function anagramSaySay(text, loop = 10, bet = '<br>'){
     let optout = text.split('');
     let optcou = arrayCount(optout);
     let optvals = [];
-    for(a of Object.keys(optcou)){
+    for(let a of Object.keys(optcou)){
         let b = optcou[a];
         b = kaijou(b);
         optvals.push(b);
@@ -273,10 +282,15 @@ function anagramCan(mae, ato){
 };
 // LocalStorage(Data) => lsd
 function lsdSet(name, value){
+    if(Array.isArray(value) ||
+       typeof value == 'object') value = JSON.stringify(value);
     localStorage.setItem(name, value || "");
 };
 function lsdGet(name){
-    return localStorage.getItem(name);
+    let res = localStorage.getItem(name);
+    if(res) res = JSON.parse(res);
+    else return null;
+    return res;
 };
 function lsdRem(name){
     localStorage.removeItem(name);
@@ -293,12 +307,7 @@ function lsdShow(){
     console.error(`-- 以上 --`);
 }
 
-async function error(text = 'errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'){
-    await logText(text);
-    await delay(2000);
-    // window.open('about:blank', '_self').close();
-};
-function hoshoku(color){
+function irohaHo(color){
     color = color.replace(/^#/, '');
 
     if(color.length != 6) return console.log('カラーコードは6桁、ですよ〜？楽しないでくださいね♪');
@@ -315,7 +324,7 @@ function hoshoku(color){
 
     return ato;
 };
-function mixshoku(c1, c2, ratio = 0.5){
+function irohaMix(c1, c2, ratio = 0.5){
     let toRGB = c => {
         c = c.replace('#', '');
         if (c.length === 3) c = c.split('').map(x => x + x).join('');
@@ -334,13 +343,28 @@ function mixshoku(c1, c2, ratio = 0.5){
 
     return ato;
 };
-function ranshoku(){
+function irohaRan(){
     let r = random(0, 255);
     let g = random(0, 255);
     let b = random(0, 255);
     let ato = '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
     return ato;
 };
+function irohaDark(color) {
+    color = color.replace('#', '');
+    if (color.length === 3) color = color.split('').map(x => x + x).join('');
+    
+    let r = parseInt(color.slice(0, 2), 16);
+    let g = parseInt(color.slice(2, 4), 16);
+    let b = parseInt(color.slice(4, 6), 16);
+
+    // 相対輝度の近似計算
+    // 0.2126 * R + 0.7152 * G + 0.0722 * B
+    let luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    
+    return luma < 128; // 暗い色ならtrue
+}
+
 function timeDiff(kako){
     if(typeof kako == 'number') kako = kako.toString();
     let now = new Date();
@@ -382,7 +406,7 @@ function timeToshow(date){ //見る用
     let minutes = String(date.getMinutes()).padStart(2, '0');
     return `${year}/${month}/${day} ${hours}:${minutes}`;
 }
-function timeTodata(date){ //データ保存用
+function timeTodata(date = new Date()){ //データ保存用
     if(!date) date = new Date(), console.warn('あなた、日付を入れ忘れてるわよ');
     let year = date.getFullYear();
     let month = String(date.getMonth() + 1).padStart(2, '0');
@@ -392,6 +416,48 @@ function timeTodata(date){ //データ保存用
     let time = `${year}${month}${day}${hours}${minutes}`;
     return +time;
 }
+
+function cursorSelect(){
+    let selected = window.getSelection();
+    let res = '';
+    if(0 >= selected.rangeCount) return '';
+
+    res = selected.toString();
+    return res;
+}
+function cursorEnd(){
+    let selected = window.getSelection();
+    if(0 >= selected.rangeCount) return 1;
+    selected.collapseToEnd();
+    return 0;
+}
+function cursorActive(){
+    let el = document.activeElement;
+    let res = 0;
+    if(el.tagName == 'INPUT') res = 1;
+    if(el.tagName == 'TEXTAREA') res = 2; //改行可
+    if(el.isContentEditable) res = 1;
+    return res;
+}
+function cursorHas(){
+    let selected = window.getSelection();
+    let text = selected.toString();
+    if(text.length <= 0) return 0;
+    return text;
+}
+function cursorRect(){
+    let selection = window.getSelection();
+    if(selection.rangeCount == 0) return 0;
+    
+    let range = selection.getRangeAt(0);
+    return range.getBoundingClientRect();
+}
+
+async function error(text = 'errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'){
+    await logText(text);
+    await delay(2000);
+    // window.open('about:blank', '_self').close();
+};
 //#endregion
 //#region log&text
 let logD = document.getElementById('log');
@@ -640,7 +706,7 @@ document.addEventListener('mousedown', e => {
 //#endregion
 //#region tk
 class tk{
-    constructor(type, x = 'half', y = 'half', w = window.innerWidth/2, h = window.innerWidth/2){
+    letructor(type, x = 'half', y = 'half', w = window.innerWidth/2, h = window.innerWidth/2){
         let youso = document.createElement(type);
         youso.className = `tk ${type}`;
 
@@ -743,7 +809,7 @@ function tkTest(){
 //#endregion
 //#region alertD
 class alertD{
-    constructor(text, elses = {}){
+    letructor(text, elses = {}){
         this.text = text;
         for(let key in elses) this[key] = elses[key];
         /*
@@ -880,10 +946,12 @@ OBS.Mouse = (e) => {
 };
 
 
+
 OBS.Paste = (event) => {
     // プレーンペーストに強制的にするやつ？
     event.preventDefault();
     let text = event.clipboardData.getData("text/plain");
+
     let selection = window.getSelection();
     if(!selection.rangeCount) return;
     selection.deleteFromDocument();
@@ -922,7 +990,7 @@ OBS.load = () => {
 
 //#endregion
 //#region fonts
-const Fonts = [
+let Fonts = [
     // {src:'comicsans', type:'ttf'},
 ];
 function fontsLoad(){
@@ -1166,7 +1234,7 @@ let secrates = [
         func: async function(){
             let img = document.getElementById('hakaisatsu');
             if(!img) return 1;
-            console.log(img.dataset.phase);
+            // console.log(img.dataset.phase);
             if(img.dataset.phase != '2') return 1;
             location.reload();
         }
@@ -1205,6 +1273,7 @@ let comC = {
 	spas: ["login", "nanj", "twit", "jine"]
 }
 let comF = {};
+
 
 comF.move = (code) => {
 	if(!code) return console.error(`せんぱ〜い？${code}ってどこですか〜？笑`);
@@ -1301,6 +1370,9 @@ let nanC = {
     room: null,
     tocme: "/nanj 名前 で変えられるよ!!!!",
     max: 30,
+
+    histN: 0,
+    histL: [],
 }
 let nanF = {};
 
@@ -1323,32 +1395,40 @@ nanF.change = async(room) => {
             nanC.messD.removeChild(nanC.messD.firstChild);
         }
     });
-    
-    
-    /* // 初回限定！全読み込み
-    // いらないかも。これのせいで重複してたのかも。
-    let snapshot = await nanC.ref.once('value');
-    snapshot.forEach(function(childSnapshot) {
-        let messageData = childSnapshot.val();
-        let messageElement = nanF.make(messageData,childSnapshot.key)
-        // console.log("召喚！(初版限定)");
-        nanC.messD.appendChild(messageElement);
-    });
-    */
 
     logText(`ルームを ${room} に変更しました`);
 }
+nanF.clear = async(val = 'error', room = nanC.room) => {
+    let ref = database.ref(`rooms/${room}/messages`);
 
-nanC.inpuD.addEventListener('keypress', function(e) {
-if(e.key == 'Enter'){
-    if(!e.shiftKey){
-        e.preventDefault();
-        nanC.senD.click();
+    if(val == 'error') return tobiText(nanC.inpuD, '数値を入力してください');
+    if(val == 'all'){
+        await ref.remove();
+        return;
     }
-    else nanC.inpuD.value += '<br>';
-    // そのうち、ちゃんとtextareaにしようね。
+
+    val = +val;
+    if(isNaN(val) || val <= 0) return tobiText(nanC.inpuD, '数値が歪です');
+
+    let snap = await ref.limitToLast(val).once('value');
+
+    let updates = {};
+    snap.forEach(child=>{
+        updates[`rooms/${room}/messages/${child.key}`] = null;
+    });
+
+    await database.ref().update(updates);
 }
-});
+nanF.delete = async(room = nanC.room) => {
+
+    await database.ref(`rooms/${room}`).remove();
+
+    if(room == nanC.room){
+        nanC.messD.innerHTML = '';
+        nanC.ref.off();
+    }
+}
+
 
 // 首謀者
 nanF.send = async(text) => {
@@ -1356,27 +1436,40 @@ nanF.send = async(text) => {
         text: text,
         idora: User.idora,
         truth: User.truth,
-        timestamp: timeTodata(new Date())
+        timestamp: timeTodata()
     }
     nanC.ref.push(ock);
-    nanC.inpuD.value = '';
 }
-nanC.senD.addEventListener('click', async() => {
-    let text = nanC.inpuD.value;
-    if(text.trim() == '') return tobiText(nanC.inpuD, `送るんだったら何かしらは入れような？`);
+nanF.imp = async(text) => {
+    console.log(text)
 
     if(text.startsWith('/')){
         let slash = text.slice(1);
-        let [name, ...rest] = slash.split(' ');
+        let arr = slash.split(' '); //空白
+        console.log(arr)
         for(let co of Commands){
-            if(co.name == name){
-                co.func(rest.join(' '));
-                return;
+            if(co.name == arr[0]){
+                console.log(`${co.name}を実行します [${arr}]`)
+                if(co.func(arr)) return 1;
+
+                return 0;
             }
         }
     }
     
-    await nanF.send(text);
+    if(await nanF.send(text)) return 1;
+
+    // exp増加
+    nanC.histN = 0;
+    nanC.histL.push(text);
+
+    return 0;
+}
+nanC.senD.addEventListener('click', async() => {
+    let value = nanC.inpuD.value.trim();
+    if(value == '') return tobiText(nanC.inpuD, `送るんだったら何かしらは入れような？`);
+    nanC.inpuD.value = '';
+    nanF.imp(value);
 });
 
 nanF.make = (mesd, key) => {
@@ -1404,6 +1497,29 @@ nanF.make = (mesd, key) => {
 
     return div;
 }
+
+
+nanC.inpuD.addEventListener('keydown', function(e) {
+    let key = e.key.toLowerCase();
+    if(key == 'enter'){
+        if(!OBS.keys['shift']){
+            e.preventDefault();
+            nanC.senD.click();
+        }
+        else nanC.inpuD.value += '<br>';
+        // そのうち、ちゃんとtextareaにしようね。
+    }
+
+    else if(key == 'arrowup'){
+        console.log('adsa')
+        if(OBS.keys['shift']) return;
+        if(nanC.histL.length == 0) return;
+        let len = nanC.histL.length;
+        nanC.inpuD.value = nanC.histL[len - nanC.histN -1];
+        nanC.histN += 1;
+        if(len <= nanC.histN) nanC.histN = len;
+    }
+});
 
 //#endregion
 
