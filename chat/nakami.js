@@ -4,6 +4,7 @@ function delay(ms){
 };
 
 async function nicoText(mes){
+    console.log(`[nico] ${mes}`);
     let div = document.createElement('div');
     div.textContent = mes;
     div.className = 'nicotext';
@@ -23,13 +24,15 @@ function tobiText(youso, mes){
     if(typeof el == 'string') el = document.querySelector(youso);
     if(!el) return console.error('せんぱ〜い？この要素壊れてますよ〜〜？');
 
+    console.log(`[tobi] ${mes}`);
+
     let rect = el.getBoundingClientRect();
     let left = rect.left + window.scrollX + rect.width / 2;
     let top = rect.top + window.scrollY + rect.height / 2;
 
     let node = document.createElement('div');
     node.className = 'tobitext';
-    node.textContent = mes;
+    node.innerText = mes;
     node.style.top = `${top}px`;
     node.style.left = `${left}px`;
 
@@ -57,6 +60,7 @@ function tobiText(youso, mes){
     requestAnimationFrame(frame);
 };
 function copytext(text){
+    console.log(`[copy] ${text}`);
     navigator.clipboard.writeText(text)
 }
 async function kirameki(div0, zukey = 'star', n = 20, time = 2000, col){
@@ -288,9 +292,16 @@ function lsdSet(name, value){
 };
 function lsdGet(name){
     let res = localStorage.getItem(name);
-    if(res) res = JSON.parse(res);
-    else return null;
-    return res;
+    
+    // データが存在しない場合は null を返す
+    if(res == null) return null;
+    if(res == undefined) return null;
+
+    try{
+        return JSON.parse(res);
+    }catch(e){
+        return res;
+    }
 };
 function lsdRem(name){
     localStorage.removeItem(name);
@@ -452,6 +463,10 @@ function cursorRect(){
     let range = selection.getRangeAt(0);
     return range.getBoundingClientRect();
 }
+
+function scrlEnd(div){
+    div.scrollTop = div.scrollHeight;
+};
 
 async function error(text = 'errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'){
     await logText(text);
@@ -1280,6 +1295,8 @@ comF.move = (code) => {
 	
 	for(let a of comC.spas) document.getElementById(a).classList.remove('show');
     document.getElementById(code).classList.add('show');
+
+    if(code == 'login') logiC.acsF.load();
 }
 
 //#region update
@@ -1293,12 +1310,15 @@ let uppD = document.getElementById('upper');
 let uppC = {
     userD: uppD.querySelector('.name'),
     euroD: uppD.querySelector('.euro'),
+    treeD: uppD.querySelector('.menu'),
 }
 let uppF = {};
 uppF.tekiou = () => {
     uppC.userD.textContent = User.idora ?? "ErrOr";
     uppC.euroD.textContent = `${User.euro ?? "NaN"}€`;
 }
+
+uppC.treeD.addEventListener('click', logout)
 //#endregion
 
 //#region Login
@@ -1324,26 +1344,64 @@ let User = {
 
 let logiD = document.getElementById('login');
 let logiC = {
+    nameI: logiD.querySelector('.username'),
+    passI: logiD.querySelector('.password'),
     senD: logiD.querySelector('.bt'),
 	tog:1,
+
+    acsD: logiD.querySelector('.acs'),
+     acsBD: logiD.querySelector('.acs .tog'),
+     acsLD: logiD.querySelector('.acs .list'),
+    acsC: {
+        tog: 0,
+    },
+    acsF: {},
 }
 let logiF = {};
 
 
 logiF.auto = () => {
-    User.truth = lsdGet("username");
-    if(User.truth){
+    let name = lsdGet("username");
+    // console.log(name)
+    if(name){
         nicoText("自動ログインしました");
-        login();
+        login(name);
     }
     else{
-        logText("ログインしてください");
+        nicoText("ログインしてください");
         comF.move('login');
     }
 }
-async function login(){
-    User.ref = database.ref(`users/${User.truth}`);
-    User.idora = User.truth;
+
+logiF.lsdHozon = (name, pass) => {
+    console.log(`${name}をlsdに保存しま〜す`)
+    lsdSet("username", name);
+
+    let arr = logiF.lsdList();
+    arr = arr.filter(a => a.name != name);
+
+    arr.push({
+        name:name,
+        pass:pass
+    });
+    lsdSet('accounts', arr);
+}
+logiF.lsdRHozon = (name) => {
+    lsdRem("username");
+    let arr = logiF.lsdList();
+    arr = arr.filter(a => a.name != name);
+    lsdSet('accounts', arr);
+}
+logiF.lsdList = () => {
+    let arr = lsdGet('accounts');
+    if(!arr) arr = [];
+    return arr;
+}
+
+async function login(name){
+    User.truth = name;
+    User.ref = database.ref(`users/${name}`);
+    User.idora = name;
     await delay(50);
     update();
     
@@ -1352,8 +1410,104 @@ async function login(){
     comF.move('nanj')
 }
 function logout(){
-    room = 1;
     User.truth = comC.noname;
+    User.idora = comC.noname;
+    User.ref = null;
+    User.data = null;
+
+    lsdRem("username");
+    logiC.nameI.value = '';
+    logiC.passI.value = '';
+    
+    comF.move('login');
+}
+
+logiF.going = () => {
+    let name = logiC.nameI.value;
+    let pass = logiC.passI.value;
+    if(name == '' || pass == '') return;
+    console.log(`username => ${name}`)
+    console.log(`password => ${pass}`)
+    
+    let success = () => {
+        nicoText('ようこそ');
+        logiF.lsdHozon(name, pass);
+        login(name);
+    }
+
+    let kariRef = database.ref(`users/${name}`);
+    kariRef.once('value', function(snapshot){
+        if(snapshot.exists()){
+            console.log("存在するってよ！！")
+            if(snapshot.val().password == pass) success();
+            else tobiText(logiC.senD, "パスワードまたはユーザー名が間違っています"); //ふぅぅわかりにくいねぇ！
+        }else{
+            console.log("存在しないってよ！！")
+            let usersRef = database.ref(`users/${name}`);
+            usersRef.update({
+                password:pass,
+                blocked: ['null'],
+            })
+            success();
+        }
+    })
+}
+logiC.senD.addEventListener('click', logiF.going);
+
+
+logiC.acsF.tog = (co = NaN) => {
+    if(logiC.acsLD.innerHTML == '') return;
+
+    if(typeof co != 'number') co = fl(logiC.acsC.tog);
+
+    if(co == 1) logiC.acsD.classList.add('tog');
+    if(co == 0) logiC.acsD.classList.remove('tog');
+    logiC.acsC.tog = co;
+}
+logiC.acsBD.addEventListener('click', logiC.acsF.tog);
+
+logiC.acsF.load = async() => {
+    logiC.acsLD.innerHTML = '';
+    
+    let arr = logiF.lsdList();
+    if(!arr.length) return;
+
+    for(let ac of arr){
+        let warn = 0;
+        //今のpassと、ac.pass(過去ログイン時のpass)が違えばcontinue
+        let acRef = database.ref(`users/${ac.name}`);
+        let snash = await acRef.once('value'); 
+        if(!snash.exists() || snash.val().password != ac.pass) warn = 1;
+
+        let div = El('div', 'item');
+    
+        let name = El('div', 'name');
+        name.textContent = ac.name;
+        name.addEventListener('click', () => {
+            if(warn) tobiText(name, "パスワードが変更されています。\n再度ログインしてください");
+
+            logiC.nameI.value = ac.name;
+            if(!warn) logiC.passI.value = ac.pass;
+            logiC.acsF.tog(0);
+        })
+        div.appendChild(name);
+
+        let del = El('div', 'del');
+        del.textContent = "×";
+        del.addEventListener('click', () => {
+            logiF.lsdRHozon(ac.name);
+            logiC.acsF.load();
+        })
+        div.appendChild(del);
+
+        let warnD = El('div', 'warn');
+        warnD.textContent = "！";
+        if(warn) div.appendChild(warnD);
+
+
+        logiC.acsLD.appendChild(div);
+    }
+    
 }
 //#endregion
 
@@ -1369,7 +1523,7 @@ let nanC = {
     hub: "hub",
     room: null,
     tocme: "/nanj 名前 で変えられるよ!!!!",
-    max: 30,
+    max: 200,
 
     histN: 0,
     histL: [],
@@ -1391,6 +1545,7 @@ nanF.change = async(room) => {
         let messageElement = nanF.make(messageData,snapshot.key)
         // console.log("召喚！");
         nanC.messD.appendChild(messageElement);
+        scrlEnd(nanC.messD)
         while(nanC.messD.childElementCount > nanC.max){
             nanC.messD.removeChild(nanC.messD.firstChild);
         }
