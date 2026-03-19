@@ -31,7 +31,7 @@ let Commands = [
             let [, num, room = ''] = raw;
             if(nanF.clear(num, room)) return 1;
             nicoText('すべてのメッセージが消去されました。');
-            return 0;    
+            return 0;
         }
     },
     {

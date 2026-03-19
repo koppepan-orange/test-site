@@ -761,7 +761,7 @@ class tk{
         if(dict == 'none') return;
         
         if(typeof dict == 'string'){
-            //attr: nanka
+            // attr: nanka
             let [key, val] = dict.split(':');
              key = key.trim();
              val = val.trim();
@@ -1014,7 +1014,7 @@ function fontsLoad(){
     if(existing) existing.remove();
 
     let css = Fonts.map(f => {
-        let src = `url('../assets/fonts/${f.src}.${f.type}')`;
+        let src = `url('${Pathes[1]}assets/fonts/${f.src}.${f.type}')`;
         let weight = f.weight ?? 'normal';
         return `@font-face{
             font-family:'${f.src}';
@@ -1034,6 +1034,10 @@ function fontsLoad(){
 fontsLoad();
 //#endregion
 //#region images & sounds
+let Pathes = [
+    "../",
+    "https://koppepan-orange.github.io/test-site/"
+]
 let images = {};
 let sounds = {};
 let loaC = {
@@ -1069,16 +1073,24 @@ loaF.loadI = async() => {
 
         for(let name of loaC.imgL[belong]){
             let img = new Image();
-            img.src = `../assets/images/${belong}/${name}.png`;
-            img.onload = kasan();
-            img.onerror = () => {
-                console.error(`Image ../assets/images/${belong}/${name}.png failed to load.`);
-                loaC.erd += 1;
-                 if(loaC.erd > 20) return console.error('さすがにやりすぎbonus'), 1;
-                img.src = `../assets/images/systems/error.png`;
-                kasan();
-            };
-            
+            let letsLoad = (i) => {
+                let ph = Pathes[i];
+                img.src = `${ph}assets/images/${belong}/${name}.png`;
+                img.onload = () => {return kasan()};
+                img.onerror = () => {
+                    if(i < Pathes.length-1) return letsLoad(i+1);
+
+                    console.error(`Image assets/images/${belong}/${name}.png failed to load.`);
+                    loaC.erd += 1;
+                     if(loaC.erd > 20) return console.error('さすがにやりすぎbonus'), 1;
+                    
+                    img.onerror = null;
+                    img.src = `${Pathes[1]}assets/images/systems/error.png`;
+                    kasan();
+                };
+            }
+            letsLoad(0);
+
             images[belong][name] = img;
         }   
     }
@@ -1097,7 +1109,6 @@ loaF.loadS = async() => {
         for(let name of loaC.souL[belong]){
             let sound = new Audio();
             sound.preload = 'auto';
-            sound.src = `../assets/sounds/${belong}/${name}.mp3`;
             if(belong == 'bgm'){
                 sound.loop = 1;
                 sound.dataset.type = 'bgm';
@@ -1107,16 +1118,26 @@ loaF.loadS = async() => {
                 sound.dataset.type = 'se';
                 sound.volume = souC.se;
             }
-            sound.addEventListener('canplaythrough', () => {
-                kasan();
-            }, {once: 1});
-            sound.onerror = () => {
-                console.error(`Sound ../assets/sounds/${belong}/${name} failed to load.`);
-                loaC.erd += 1;
-                 if(loaC.erd > 20) return console.error('さすがにやりすぎbonus'), 1;
-                sound.src = `../assets/sounds/se/error.mp3`;
-                kasan();
-            };
+
+            let letsLoad = (i) => {
+                let ph = Pathes[i];
+                sound.src = `${ph}assets/sounds/${belong}/${name}.mp3`;
+                sound.addEventListener('canplaythrough', () => {
+                    kasan();
+                }, {once: 1});
+                sound.onerror = () => {
+                    if(i < Pathes.length-1) return letsLoad(i+1);
+
+                    console.error(`Sound assets/sounds/${belong}/${name} failed to load.`);
+                    loaC.erd += 1;
+                    if(loaC.erd > 20) return console.error('さすがにやりすぎbonus'), 1;
+
+                    sound.onerror = null;
+                    sound.src = `${Pathes[1]}assets/sounds/se/error.mp3`;
+                    kasan();
+                }
+            }
+            letsLoad(0);
 
             sounds[belong][name] = sound;
         }
@@ -1522,6 +1543,7 @@ let nanC = {
 
     hub: "hub",
     room: null,
+    Im: null,
     tocme: "/nanj 名前 で変えられるよ!!!!",
     max: 200,
 
@@ -1535,8 +1557,9 @@ nanF.load = () => {
 }
 nanF.change = async(room) => {
     if(!room) return console.error('ルーム名がなかった')
-    if(room == nanC.room) return logText('どういうわけか もう そこにいる');
+    if(room == nanC.room && nanC.Im == User.truth) return logText('どういうわけか もう そこにいる');
     nanC.room = room;
+    nanC.Im = User.truth;
     nanC.ref = database.ref(`rooms/${nanC.room}/messages`);
     nanC.messD.innerHTML = '';
     nanC.ref.off('child_added');
