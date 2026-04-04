@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    <style>
+        #kokodayo{
+            width: 98%;
+            height: 700px;
+            word-wrap: break-word;/* 改行を勝手にしてくれるやつ */
+            white-space: normal;
+            font-family: default;
+        }
+    </style>
+    <div class="row">
+        <select id="change" onchange="document.querySelector('#kokodayo').style.fontFamily=document.querySelector('#change').value"></select>
+        <button id="download">←をdownload</button>
+    </div>
+    <textarea id="kokodayo"></textarea> 
+
+    <script>
+        let fontD = document.getElementById('change');
+        const Fonts = [
+            {src:'corporate', type:'otf'},
+            {src:'kaimetsu', type:'otf'},
+            {src:'kurundeco', type:'otf'},
+            {src:'starrysky', type:'otf'},
+            {src:'comicsans', type:'ttf'},
+            {src:'cube12', type:'ttf'},
+            {src:'genjuu', type:'ttf'},
+            {src:'hangyaku', type:'ttf', weight:'700'},
+            {src:'kurobara', type:'ttf'},
+            {src:'marukoius', type:'ttf'},
+            {src:'novamono', type:'ttf'},
+            {src:'papyrus', type:'ttf'},
+            {src:'pricedown', type:'ttf'},
+            {src:'webdings', type:'ttf'},
+            {src:'wingdings', type:'ttf'},
+            {src:'wingdings2', type:'ttf'},
+            {src:'wingdings3', type:'ttf'},
+            {src:'ancientpersia', type:'ttf'},
+            {src:'bodoniornaments', type:'ttf'},
+            {src:'poprumcute', type:'otf'},
+            {src:'craft', type:'otf'},
+            {src:'nyashi', type:'ttf'},
+            {src:'cinecaption226', type:'ttf'},
+            {src:'addheart2', type:'ttf'},
+            {src:'myHeart', type:'otf'},
+            {src:'akmy_prince', type:'ttf'},
+            {src:'adorableLady', type:'ttf'},
+            {src:'adorableDoll', type:'ttf'},
+            {src:'kaisoutai', type:'ttf'},
+            {src:'makinas', type:'otf'},
+            {src:'ipaexmincho', type:'ttf'}
+        ];
+
+        function fontsLoad(){
+            const id = "font_load_css";
+            const existing = document.getElementById(id);
+            if(existing) existing.remove();
+
+            const css = Fonts.map(f => {
+                let src = `url('assets/${f.src}.${f.type}')`;
+                let weight = f.weight ?? 'normal';
+                return `@font-face{
+                    font-family:'${f.src}';
+                    src: ${src};
+                    font-weight: ${weight};
+                    font-style: normal;
+                    font-display: swap;
+                }`;
+            }).join('\n');
+
+            const el = document.createElement('style');
+            el.id = id;
+            el.type = 'text/css';
+            el.appendChild(document.createTextNode(css));
+            document.head.appendChild(el);
+
+            //こっから今回限定
+            Fonts.forEach(f => {
+                let option = document.createElement('option');
+                option.value = f.src;
+                option.textContent = f.src;
+                fontD.appendChild(option);
+            });
+        }
+        fontsLoad();
+
+        let now = 0;
+        function fontCh(num){
+            let font = Fonts[num].src;
+            document.querySelector('#kokodayo').style.fontFamily = font;
+            document.querySelector('#change').value = font;
+        }
+        
+        let downloaD = document.getElementById('download');
+        downloaD.addEventListener('click', () => {
+            let font = Fonts[now];
+            // ${font.src}.${font.type}のファイルを保存させる
+            let a = document.createElement('a');
+            a.href = `assets/${font.src}.${font.type}`;
+            a.download = `${font.src}.${font.type}`;
+            a.click();
+        });
+
+        document.addEventListener('keydown', e => {
+            let key = e.key.toLowerCase();
+            if(e.key == ' ') key = 'space';
+            
+            if(key == 'arrowdown'){
+                e.preventDefault();
+                now++;
+                if(now >= Fonts.length) now = 0;
+                fontCh(now);
+            }
+            if(key == 'arrowup'){
+                e.preventDefault();
+                now--;
+                if(now < 0) now = Fonts.length - 1;
+                fontCh(now);
+            }
+        });
+    
+
+    </script>
+</body>
+</html>

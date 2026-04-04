@@ -23,6 +23,7 @@ body{
     pointer-events: none;
 }
 
+
 img{
     -webkit-user-drag: none;
 }
