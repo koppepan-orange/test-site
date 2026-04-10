@@ -2132,7 +2132,7 @@ raceGF.who = (id) => raceGC.players.find(p => p.id == id);
 raceGF.tekiou = async() => {
 
     if(!raceGC.loop) return 1;
-
+    
 
     // time
     let [hun, byo] = [raceGC.time%60, Math.floor(raceGC.time/60)]
