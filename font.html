@@ -60,7 +60,7 @@
             if(existing) existing.remove();
 
             const css = Fonts.map(f => {
-                let src = `url('assets/${f.src}.${f.type}')`;
+                let src = `url('assets/fonts/${f.src}.${f.type}')`;
                 let weight = f.weight ?? 'normal';
                 return `@font-face{
                     font-family:'${f.src}';
@@ -99,7 +99,7 @@
             let font = Fonts[now];
             // ${font.src}.${font.type}のファイルを保存させる
             let a = document.createElement('a');
-            a.href = `assets/${font.src}.${font.type}`;
+            a.href = `assets/fonts/${font.src}.${font.type}`;
             a.download = `${font.src}.${font.type}`;
             a.click();
         });
