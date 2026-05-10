@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="Icon.ico">
     <title>オーバー！</title>
-    <link rel="stylesheet" href="over/mitame.css">
+    <link rel="stylesheet" href="main/mitame.css">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -112,9 +112,14 @@
             <div class="form">
                 <input type="text" name="username" class="username" placeholder="username">
                 <input type="password" name="password" class="password" placeholder="password">
-                <button class="send">Login</button>
+                <button class="send">login</button>
             </div>
-            <div id="logout">Logout</div>
+            <!-- <div class="logout">Logout</div> -->
+
+            <div class="acs">
+                <div class="tog"></div>
+                <div class="list"></div>
+            </div>
         </div>
 
         <div id="chat" class="page" style="opacity: 0; left: 100vw;">
@@ -153,20 +158,11 @@
                     script.src = `${f}.js?v=${ts}`;
                     script.defer = true;
                     script.onload = res;
-                    console.log(script.src)
                     document.head.appendChild(script);
                 });        
             }
-            await ZettaiTukawarenaiKannsuu(`over/data`);
-            await ZettaiTukawarenaiKannsuu(`over/nakami`);
-            
-            let link = document.createElement('link');
-            link.rel = "stylesheet";
-            link.href = `over/mitame.css?v=${ts}`;
-            link.onload = () => {
-                document.body.style.visibility = "visible";
-            };
-            document.head.appendChild(link);
+            await ZettaiTukawarenaiKannsuu(`main/data`);
+            await ZettaiTukawarenaiKannsuu(`main/nakami`);
         })();
     </script>
 </body>

@@ -336,9 +336,13 @@ function lsdSet(name, value){
 };
 function lsdGet(name){
     let res = localStorage.getItem(name);
-    if(res) res = JSON.parse(res);
-    else return null;
-    return res;
+    if(!res) return null;
+    try{
+        res = JSON.parse(res);
+        return res;
+    }catch(e){
+        return res;
+    };
 };
 function lsdRem(name){
     localStorage.removeItem(name);
@@ -1598,16 +1602,16 @@ const Links = {
     ],
     'study':[
         {
+            name: 'studies-site',
+            href: '../studies/',
+            iframable:0,
+            description: '色々学べる。良いぞよジャブフ'
+        },
+        {
             name: 'duolingo',
             href: 'https://www.duolingo.com/profile/koppepan_orange',
             iframable:0,
             description: '言語が学べるサイト<br>ﾁｮｳﾕｰﾒｲ!ﾔﾊﾞｵ'
-        },
-        {
-            name: 'studies-site',
-            href: 'https://koppepan-orange.github.io/test-site/studies/',
-            iframable:0,
-            description: '色々学べる。良いぞよジャブフ'
         },
         {
             name: '寿司打',
@@ -1704,7 +1708,8 @@ const Links = {
     'game':[
         {
             name: 'game-site',
-            href: 'https://koppepan-orange.github.io/game-site/',
+            // href: 'https://koppepan-orange.github.io/game-site/',
+            href: 'https://game.koppepan-orange.com/',
             iframable:1,
         },
         {
@@ -1767,10 +1772,10 @@ Object.keys(Links).forEach(type => {
 //#region rakuraku-memo
 let numberOfMemo = 4;
 function memoRead(){
-    numberOfMemo = +getLocalStorage("numberOfMemo")??4;
+    numberOfMemo = +lsdGet("numberOfMemo")??4;
     console.log(`メモの数は${numberOfMemo}個やで`);
     for(let i = 1; i <= numberOfMemo; i++){
-        let memo = getLocalStorage(`memo${i}`);
+        let memo = lsdGet(`memo${i}`);
         let memodiv = memoCreate(memo, i);
         document.querySelector('#home .memos').appendChild(memodiv);
     }
@@ -1814,18 +1819,18 @@ function memoCreate(memo, i, code = 0){
             if(memoNum > i){
                 memo.setAttribute('data-num', memoNum - 1);
                 memo.querySelector('.title').innerText = `memo${memoNum-1}`;
-                memo.querySelector('.text').innerText = getLocalStorage(`memo${memoNum}`);
-                setLocalStorage(`memo${memoNum-1}`, getLocalStorage(`memo${memoNum}`));
+                memo.querySelector('.text').innerText = lsdGet(`memo${memoNum}`);
+                lsdSet(`memo${memoNum-1}`, lsdGet(`memo${memoNum}`));
             }
         });
         
         numberOfMemo = +numberOfMemo - 1;
-        setLocalStorage("numberOfMemo", +numberOfMemo);
+        lsdSet("numberOfMemo", +numberOfMemo);
     });
     div.appendChild(deleteButton);
 
     div.addEventListener('input', () => {
-        setLocalStorage(`memo${i}`, {
+        lsdSet(`memo${i}`, {
             num: i,
             title: document.getElementById(`memo${i}`).querySelector('.title').innerText,
             text: document.getElementById(`memo${i}`).querySelector('.text').innerText
@@ -1842,7 +1847,7 @@ function memoAddCreate(){
     memoAdd.addEventListener('click', () => {
         memoAdd.remove();
         numberOfMemo = +numberOfMemo + 1;
-        setLocalStorage("numberOfMemo", +numberOfMemo);
+        lsdSet("numberOfMemo", +numberOfMemo);
         let memodiv = memoCreate('', numberOfMemo, 1);
         document.querySelector('#home .memos').appendChild(memodiv);  
         let memoAdd2 = memoAddCreate();
@@ -1859,20 +1864,25 @@ const bodyTextarea = document.querySelector('#memo .text');
 const titleInput = document.querySelector('#memo .title');
 const searchButton = document.querySelector('#memo .search');
 
-titleInput.addEventListener('keydown', () => {if(e.key == "Enter") e.preventDefault()})
+titleInput.addEventListener('keydown', (e) => {
+    if(e.key == "Enter"){
+        e.preventDefault();
+        searchButton.click();
+    }
+})
 
 bodyTextarea.addEventListener('input', () => {
-    if(username !== 'no name'){
+    if(User.truth !== 'no name'){
         const title = titleInput.innerText.trim();
         const body = bodyTextarea.innerText;
-        database.ref(`users/${username}/memo/${title}`).update({body:body});
+        database.ref(`users/${User.truth}/memo/${title}`).update({body:body});
     }
 });
 
 searchButton.addEventListener('click', () => {
-    if(username !== 'no name'){
+    if(User.truth !== 'no name'){
         const title = titleInput.innerText;
-        database.ref(`users/${username}/memo/${title}`).once('value').then((snapshot) => {
+        database.ref(`users/${User.truth}/memo/${title}`).once('value').then((snapshot) => {
             bodyTextarea.innerText = snapshot.val()?.body || '';
         });
     }else{
@@ -2374,10 +2384,29 @@ function CookingGameChoeese(num){
 //#endregion tool
 
 
-function updateUI(){
-    logUsername.textContent = username;
-}
 //#region ワルシャワログイン機構
+let logiD = document.getElementById('login');
+let logiC = {
+    nameI: logiD.querySelector('.username'),
+    passI: logiD.querySelector('.password'),
+    senD: logiD.querySelector('.send'),
+	tog:1,
+
+    noname: 'no name',
+
+    acsD: logiD.querySelector('.acs'),
+     acsBD: logiD.querySelector('.acs .tog'),
+     acsLD: logiD.querySelector('.acs .list'),
+    acsC: {
+        tog: 0,
+    },
+    acsF: {},
+}
+let logiF = {};
+logiF.updateUI = () => {
+    // sidemenuにnameを表示？
+};
+
 let firebaseConfig = {
     apiKey: "AIzaSyBN5V_E6PzwlJn7IwVsluKIWNIyathhxj0",
     authDomain: "koppepan-orange.firebaseapp.com",
@@ -2392,28 +2421,11 @@ let firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 let database = firebase.database();
 let User = {
-    truth: comC.noname,
-    idora: comC.noname,
+    truth: logiC.noname,
+    idora: logiC.noname,
     ref: null,
     data: null,
 }
-
-let logiD = document.getElementById('login');
-let logiC = {
-    nameI: logiD.querySelector('.username'),
-    passI: logiD.querySelector('.password'),
-    senD: logiD.querySelector('.bt'),
-	tog:1,
-
-    acsD: logiD.querySelector('.acs'),
-     acsBD: logiD.querySelector('.acs .tog'),
-     acsLD: logiD.querySelector('.acs .list'),
-    acsC: {
-        tog: 0,
-    },
-    acsF: {},
-}
-let logiF = {};
 
 
 logiF.auto = () => {
@@ -2423,10 +2435,7 @@ logiF.auto = () => {
         nicoText("自動ログインしました");
         login(name);
     }
-    else{
-        nicoText("ログインしてください");
-        comF.move('login');
-    }
+    else nicoText("ログインしてください");
 }
 
 logiF.lsdHozon = (name, pass) => {
@@ -2459,19 +2468,17 @@ async function login(name){
     User.ref = database.ref(`users/${name}`);
     User.idora = name;
     await delay(50);
-    update();
+    // update();
     
     //load 2
-    loginD.style.display = 'none';
+    logiD.style.display = 'none';
     pageDel('login');
 
-    updateUI();
-
-    // comF.move('nanj')
+    logiF.updateUI();
 }
 function logout(){
-    User.truth = comC.noname;
-    User.idora = comC.noname;
+    User.truth = logiC.noname;
+    User.idora = logiC.noname;
     User.ref = null;
     User.data = null;
 
@@ -2479,7 +2486,7 @@ function logout(){
     logiC.nameI.value = '';
     logiC.passI.value = '';
     
-    comF.move('login');
+    window.location.reload();
 }
 
 logiF.going = () => {
@@ -2597,88 +2604,6 @@ MessageIn.addEventListener('keypress', function(e) {
     }
 });
 
-let Stamps = [
-    {
-        name:'1',
-        type:'png',
-    },
-    {
-        name:'2',
-        type:'png',
-    },
-    {
-        name:'3',
-        type:'png',
-    },
-    {
-        name:'4',
-        type:'png',
-    },
-    {
-        name:'5',
-        type:'png',
-    },
-    {
-        name:'6',
-        type:'png',
-    },
-    {
-        name:'7',
-        type:'png',
-    },
-    {
-        name:'8',
-        type:'png',
-    },
-    {
-        name:'hownice',
-        type:'png',
-    },
-    {
-        name:'koresuki',
-        type:'png',
-    },
-    {
-        name:'ohitashi',
-        type:'png',
-    },
-    {
-        name:'spacecat',
-        type:'png',
-    },
-    {
-        name:'youaresick',
-        type:'png',
-    },
-    {
-        name:'nasanao',
-        type:'png',
-    },
-    {
-        name:'4coma1',
-        type:'png',
-    },
-    {
-        name:'4coma2',
-        type:'png',
-    },
-    {
-        name:'maxwell1',
-        type:'gif',
-    },
-    {
-        name:'maxwell2',
-        type:'gif',
-    },
-    {
-        name:'hello',
-        type:'png',
-    },
-    {
-        name:'gdng',
-        type:'png',
-    }
-]
 let stampawait = 0;
 function stampRead(){
     Stamps.forEach(a => {
@@ -2690,7 +2615,7 @@ function stampRead(){
         div.addEventListener('click', () => {
             if(stampawait == 1) return;
             if(room == 'debug') return;
-            let Musername = username;
+            let Musername = User.truth;
             let Mtext = `<img src='${src}' width="80" height="80"/>`;
             messagesRef.push({
                 text: Mtext,
@@ -2801,7 +2726,7 @@ function selectRoom(){
     // メッセージ送信
     MessageSendE = sendButton.addEventListener('click', async function(){
         let message = MessageIn.value;
-        let Musername = username;
+        let Musername = User.truth;
         if(message.trim() !== ''){
             //commands
             if (message.startsWith('/')) {
@@ -2838,7 +2763,7 @@ function selectRoom(){
 
     // 新しいメッセージが追加された時のみ、そのメッセージを追加表示
     messagesRef.on('child_added', async function(snapshot){
-        let uRef = database.ref(`users/${username}/banned`)
+        let uRef = database.ref(`users/${User.truth}/banned`)
         uRef.on('value', function(ss) {
             //uRef = ss.val();
             uRef = 0; //一旦のやつ
@@ -2879,7 +2804,7 @@ function displayAllMessages(){
     // データベースから全てのメッセージを取得
     messagesRef.once('value', function(pealentsnapshot) {
         pealentsnapshot.forEach(function(snapshot) {
-            let uRef = database.ref(`users/${username}/banned`)
+            let uRef = database.ref(`users/${User.truth}/banned`)
             uRef.on('value', function(ss) {
                 uRef = ss.val();
                 if(uRef == 1){
@@ -2947,7 +2872,7 @@ function makeNanjPost(messageData,key){
     });
     messageElement.appendChild(copyButton);
 
-    if(username == messageData.username){
+    if(User.truth == messageData.username){
         let editButton = document.createElement('button');
         editButton.textContent = '✎';
         editButton.addEventListener('click', function(){
@@ -2971,11 +2896,35 @@ function makeNanjPost(messageData,key){
 }
 //#endregion
 
-//読み込まれ be read
-document.addEventListener('DOMContentLoaded', () => {
+
+//#region start
+function start(){
+    Style.tekiou();
+    OBS.load();
+
+    mainF.load();
+
     memoRead();
     RanKana.togB.click();
     RanKana.oveB.click();
     stampRead();
-    autoLogin()
-});
+    logiF.auto()
+    logiC.acsF.load();
+
+
+    // mainF.move('home');
+}
+//#endregion
+
+//#region DOM
+let LoadOfWait = async() => await loaF.load();
+if(document.readyState == "loading"){
+    document.addEventListener("DOMContentLoaded", init);
+}
+else LoadOfWait();
+
+async function init() {
+    await LoadOfWait();
+    start();
+}
+//#endregion
