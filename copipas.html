@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コピーできる。うん。それだけ。</title>
+    <style>
+        .nicotext{
+            position: fixed;
+            background: #f0f8ff80;
+            color: #000000;
+            font-size: 20px;
+            transition: right 5.0s linear;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: var(--mostop);
+        }
+
+        body{
+            width: 393px;
+            margin: 0 auto;
+            white-space: wrap;
+        }
+        #center{
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #center .list{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+            width: 200px;
+            box-sizing: border-box;
+        }
+        #center .list .item{
+            display: block;
+            width: 100%;
+            aspect-ratio: 4/1;
+            padding: 5px;
+            background: #def0ff;
+            cursor: pointer;
+        }
+        #center .list .item:hover, #center .list .item:active{
+            background: #b5dcff;
+        }
+    </style>
+</head>
+<body>
+    <div id="center">
+        <div class="list"></div>
+    </div>
+
+    <script src="assets/txts/copipas.js"></script>
+    <script defer>
+        // #region komagome-short
+        function delay(ms){
+            return new Promise(resolve=>setTimeout(resolve,ms));
+        };
+        async function nicoText(mes){
+            console.log(`[nico] ${mes}`);
+            let div = document.createElement('div');
+            div.textContent = mes;
+            div.className = 'nicotext';
+            document.querySelector('body').appendChild(div);
+
+            let wid = div.offsetWidth;
+            div.style.top = `calc(${random(0, 100)}vh - 20px)`;
+            div.style.right = `-${wid}px`;
+
+            requestAnimationFrame(() => div.style.right = `${window.innerWidth + wid}px`);
+            
+            await delay(5000); 
+            div.remove();
+        };
+        function copytext(text){
+            console.log(`[copy] ${text}`);
+            navigator.clipboard.writeText(text)
+        }
+        function random(min, max){
+            if(max < min) [min, max] = [max, min];
+            let num = Math.floor(Math.random() * (max - min + 1)) + min;
+            return Math.floor(num);
+        };
+        // #endregion
+
+        let listD = document.querySelector('.list');
+
+        for(let item of Copipas){
+            let btn = document.createElement('div');
+            btn.className = 'item';
+            btn.textContent = item.name;
+
+            btn.addEventListener('click', () => {
+                copytext(item.body);
+                nicoText('コピーかんりょー');
+            })
+
+            listD.appendChild(btn)
+        }
+    </script>
+</body>
+</html>
