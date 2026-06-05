@@ -144,6 +144,8 @@
             <li class="hastxt" data-name="chara">chara</li>
             <li class="hastxt" data-name="enemies">enemies</li>
         </ul>
+        <hr noshade="true">
+            <div class="itishint">${password}: [動]管理する, 投与する</div>
     </nav>
     <div id="upperUI">
         <span id="about" class="mpopup">About</span>　<span id="about-event" class="mpopup cpopup">Event</span>　<span id="admin-button" class="mpopup" data-description="管理者モードになれます<br>パスワードがわかれば、ですけどね〜〜〜">Admin-Mode</span>
@@ -355,7 +357,7 @@
         adminSubmit.addEventListener('click', e => {
             e.preventDefault();
             const password = adminPassword.value;
-            if(password === 'haidomodomo,adminyade'){
+            if(password === 'adminmodenisasetekudasaionegaisimasu'){
                 adminPassword.value = '';
                 adminForm.style.display = 'none';
                 database.ref('questions').on('value', snapshot => {

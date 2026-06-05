@@ -14,7 +14,23 @@ let Style = {
 }
 
 const Fonts = [
-    // {src:'comicsans', type:'ttf'},
+    {src:'comicsans', type:'ttf'},
+    {src:'papyrus', type:'ttf'},
+    {src:'hangyaku', type:'ttf'},
+    {src:'cube12', type:'ttf'},
+    {src:'genjuu', type:'ttf'},
+    {src:'kaimetsu', type:'otf'},
+    {src:'hackgen', type:'ttf'},
+    {src:'wingdings', type:'ttf'},
+    {src:'wingdings2', type:'ttf'},
+    {src:'wingdings3', type:'ttf'},
+    {src:'kurundeco', type:'otf'},
+    {src:'starrysky', type:'otf'},
+    {src:'kurobara', type:'ttf'},
+    {src:'marukoius', type:'ttf'},
+    {src:'novamono', type:'ttf'},
+    {src:'pricedown', type:'ttf'},
+    {src:'corporate', type:'otf'},
 ];
 
 const Images = {
@@ -25,4 +41,8 @@ const Sounds = {
     // se:['error'],
     // bgm:[],
 }
+
+const Spaces = [
+    { name:'home', rank:2, back:'#f0f8ff', sho:1 },
+];
 
