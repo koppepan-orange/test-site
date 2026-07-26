@@ -19,46 +19,70 @@ async function nicoText(mes){
     await delay(5000); 
     div.remove();
 };
-function tobiText(youso, mes){
+function tobiText(youso, mes, config = {}) {
+    let {
+        mode = "booba", //booba(楕円)かkiki(トゲトゲ)
+        back = "#2b2b2b",
+    } = config;
+
     let el = youso;
-    if(typeof el == 'string') el = document.querySelector(youso);
+    if(typeof el == "string") el = document.querySelector(youso);
     if(!el) return console.error('せんぱ〜い？この要素壊れてますよ〜〜？');
 
     console.log(`[tobi] ${mes}`);
 
     let rect = el.getBoundingClientRect();
-    let left = rect.left + window.scrollX + rect.width / 2;
-    let top = rect.top + window.scrollY + rect.height / 2;
+    let left = rect.left + (window.scrollX+rect.width/2);
+    let top = rect.top + (window.scrollY+rect.height/2);
 
-    let node = document.createElement('div');
-    node.className = 'tobitext';
-    node.innerText = mes;
-    node.style.top = `${top}px`;
-    node.style.left = `${left}px`;
+    let div = document.createElement('div');
+    div.className = `tobitext ${mode}`;
+    div.innerText = mes;
 
-    document.body.appendChild(node);
+    div.style.top = `${top}px`;
+    div.style.left = `${left}px`;
+    div.style.setProperty('---back', back);
+    div.style.color = "#2b2b2b";
+    if(irohaDark(back)) div.style.color = "#ffffff";
 
+    if(mode == 'kiki'){
+        let points = [];
+        let n = 18; //トゲの数
+        for (let i=0; i<n; i++) {
+            let angle = (i/n) * 360;
+            let rad = (angle*Math.PI) / 180;
+            let radius = 15 + Math.random()*10;
+             if(i%2 == 0) radius = 45 + Math.random()*10;
+
+            let x = 50 + radius*Math.cos(rad);
+            let y = 50 + radius*Math.sin(rad);
+            points.push(`${x.toFixed(1)}% ${y.toFixed(1)}%`);
+        }
+        div.style.clipPath = `polygon(${points.join(', ')})`;
+    }
+
+    document.body.appendChild(div);
+
+    // 動くよ
     let duration = 1200;
     let distance = -48;
     let jitter = (Math.random() - 0.5) * 10;
-
     let start = performance.now();
-
-    let easeOutCubic = (t) => {return 1 - Math.pow(1 - t, 3)};
+    let easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
     function frame(now){
         let t = Math.min(1, (now - start) / duration);
         let e = easeOutCubic(t);
         let tsY = distance * e;
         let tsX = jitter * (1 - e);
-        node.style.transform = `translate(-50%, -50%) translateY(${tsY}px) translateX(${tsX}px)`;
-        node.style.opacity = String(1 - t);
+        div.style.transform = `translate(-50%, -50%) translateY(${tsY}px) translateX(${tsX}px)`;
+        div.style.opacity = String(0.8 * (1 - t));
         if(t < 1) requestAnimationFrame(frame);
-        else node.remove();
+        else div.remove();
     };
 
     requestAnimationFrame(frame);
-};
+}
 function copytext(text){
     console.log(`[copy] ${text}`);
     navigator.clipboard.writeText(text)
@@ -126,7 +150,7 @@ function awase(div, max = 28, code = "innerText"){
     div.style.fontSize = `${px}px`;
 }
 function kaijou(num){
-    if(num == 0) return 0;
+    if(num == 0) return 1;
     if(num == 1) return 1;
     return num * kaijou(num - 1);
 };
@@ -190,6 +214,26 @@ function dogma(matu, shiki, k = 1){
 
     return res;
 }
+function jouyo(A, B){
+    let Q = Math.floor(A / B);
+    let R = A % B;
+    let res = {Q, R}
+    
+    return res;
+}
+function ketasu(num){
+    if(num == 0) return 1;
+    num = Math.abs(num);
+    let res = Math.floor(Math.log10(num))+1;
+    return res;
+}
+function whethPoint(num){
+    let str = num.toString();
+    if(0 <= str.indexOf('.')) return true;
+    
+    return false;
+}
+
 function arraySelect(array){
     let select = Math.floor(Math.random()*array.length);
     return array[select];
@@ -275,6 +319,16 @@ function random(min, max){
     let num = Math.floor(Math.random() * (max - min + 1)) + min;
     return Math.floor(num);
 };
+function randomF(min, max, keta = 0){
+    if(max < min) [min, max] = [max, min];
+
+    let scale = 10 ** keta;
+    let num = Math.floor(
+        Math.random() * ((max - min) * scale + 1)
+    ) + min * scale;
+
+    return num / scale;
+};
 function fl(val, arr = [0, 1]){
     let res = val == arr[0] ? arr[1] : arr[0];
     return res;
@@ -328,6 +382,61 @@ function anagramCan(mae, ato){
 
     return 1;
 };
+
+function cardDraw(val0 = 0, suit0 = 0){
+    let val = random(1, 13);
+    let suit = arraySelect(['♡', '♤', '♢', '♧']);
+    if(val0) val = val0;
+    if(suit0) suit = suit0;
+    
+    let hyou = val;
+    if(val == 1)  hyou = 'A';
+    if(val == 10) hyou = 'X';
+    if(val == 11) hyou = 'J';
+    if(val == 12) hyou = 'Q';
+    if(val == 13) hyou = 'K';
+    
+    let card = {    
+        suit,
+        val,
+        num: hyou
+    }
+
+    return card;
+}
+function cardCalc(arr, code = 0){
+    // code: bj == 1が11にもなる
+    if(!Array.isArray(arr)) return console.error('えっと...ごめん！これ配列じゃないと計算できないっ！！'), 0;
+    
+    let sum = 0;
+    let As = 0;
+
+    for(let card of arr){
+        if(card.hide) continue;
+        let v = card.val;
+        if(code == "bj"){
+            if(10 <= v) v = 10; //bjなら10に矯正
+            if(v == 1) As++;
+        }
+        sum += v;
+    }
+
+    if(code == "bj"){
+        while(21 < sum && 0 < As){
+            sum -= 10; //特殊すぎる
+            As--;
+        }
+    }
+
+    return sum;
+}
+function cardUnwrap(arr){
+    for(let card of arr){
+        if(card.hide) card.hide = 0;
+    }
+    return arr;
+}
+
 // LocalStorage(Data) => lsd
 function lsdSet(name, value){
     if(Array.isArray(value) ||
@@ -336,9 +445,13 @@ function lsdSet(name, value){
 };
 function lsdGet(name){
     let res = localStorage.getItem(name);
-    if(res) res = JSON.parse(res);
-    else return null;
-    return res;
+    if(!res) return null;
+    try{
+        res = JSON.parse(res);
+        return res;
+    }catch(e){
+        return res;
+    };
 };
 function lsdRem(name){
     localStorage.removeItem(name);
@@ -514,9 +627,9 @@ let logC = {
     togD: logD.querySelector('.opener'),
     textD: logD.querySelector('.text'),
     autoDelay: 1,
-    skipText: 0,
-    clearText: 0,
-    loopText: 0,
+    skipT: 0,
+    clearT: 0,
+    loopT: 0,
     ing: 0,
     queue: []
 }
@@ -565,33 +678,26 @@ logF.cc = (raw) => {
 };
 
 logF.waitfor = async() => {
-    let len = logC.queue.length;
+    if(logC.ing ||
+        logC.queue.length == 0) return;
 
-    if(len == 0) logC.loopText = 0;
-    else logC.loopText = 1;
-
-    if(!logC.loopText) return;
-    requestAnimationFrame(logF.waitfor);
-
-    if(logC.ing) return;
-    let raw = logC.queue.shift();
-    // console.log(`${raw}を送信します`);
-    // console.log(`残り: (${len - 1})[${logC.queue}]`);
-    await logText(raw);
+    let raw0 = logC.queue.shift();
+    // console.log(`${raw0[0]}を送信します`);
+    await logText(...raw0);
 };
-async function logText(raw){
+async function logText(raw, code = ""){
     if(!raw) return console.log('「内容が？内容が〜〜？ないよ〜〜〜つってwwww直せ」');
     if(typeof raw != 'string') raw = String(raw);
 
     if(logC.ing){
-        logC.queue.push(raw);
+        logC.queue.push([raw, code]);
 
-        if(!logC.loopText) logF.waitfor();
+        logF.waitfor();
         return;
     };
     
     logC.ing = 1;
-    text = logF.cc(raw);
+    let text = logF.cc(raw);
     logC.textD.innerHTML = "";
     logC.textD.style.display = "block";
     logC.clearT = 0;
@@ -609,9 +715,7 @@ async function logText(raw){
 
                         index++;
                     }
-                    index = text.length;
-                    logC.skipT = 0;
-                    setTimeout(type, 10);
+                    type();
                 }else{
                     let span = document.createElement("span");
                     span.textContent = text[index].char;
@@ -622,20 +726,40 @@ async function logText(raw){
                     setTimeout(type, 80); // 次の文字を表示する間隔
                 }
             }else{
-                logText_log(logC.textD.innerHTML);
+                let das = `[${code}] `;
+                das += logC.textD.innerHTML;
+                logText_log(das);
                 let waitTime = logC.autoDelay * 1000;
-                let timeout = new Promise(resolve => setTimeout(resolve, waitTime));
-                let userAction = new Promise(resolve => {
+                
+                let cleanupListeners = () => {};
+                let timeout = new Promise(resolveTimeout => {
+                    let timer = setTimeout(() => {
+                        cleanupListeners();
+                        resolveTimeout();
+                    }, waitTime);
+                    
+                    cleanupListeners = () => clearTimeout(timer);
+                });
+
+                let userAction = new Promise(resolveUser => {
 
                     function waitToClear(event){
                         if(event.type === 'click' || event.key === 'z' || event.key === 'Enter'){
                             document.removeEventListener('click', waitToClear);
                             document.removeEventListener('keydown', waitToClear);
-                            resolve();
+                            cleanupListeners();
+                            resolveUser();
                         }
                     }
                     document.addEventListener('click', waitToClear);
                     document.addEventListener('keydown', waitToClear);
+
+                    let oldCleanup = cleanupListeners;
+                    cleanupListeners = () => {
+                        oldCleanup();
+                        document.removeEventListener('click', waitToClear);
+                        document.removeEventListener('keydown', waitToClear);
+                    };
                 });
 
                 Promise.race([timeout, userAction]).then(() => {
@@ -645,6 +769,8 @@ async function logText(raw){
                     logC.skipT = 0
                     logC.ing = 0;
                     resolve('end');
+
+                    logF.waitfor();
                 });
             }
         };
@@ -752,6 +878,73 @@ document.addEventListener('mousedown', e => {
     document.addEventListener('mouseup', onMouseUp);
 });
 //#endregion
+//#region Timer
+class Timer{
+    constructor(k = 0, d = 1){
+        // k:開始数 d:増加量
+        if(typeof k != "number" || typeof d != "number") return;
+        this.time = k;
+        this.d = d;
+
+        this.ev = null;
+
+
+        let div = document.createElement("div");
+        div.id = "timer";
+         let num = document.createElement("div");
+         div.appendChild(num);
+        div.addEventListener('click', () => {div.classList.toggle("tog")})
+        div.addEventListener("contextmenu", e => {
+            e.preventDefault();
+            div.classList.remove("show");
+        })
+        this.div = div;
+        this.numD = num;
+
+        // let div0 = document.body;
+        let div0 = mainD;
+        div0.appendChild(div);
+        this.tekiou();
+    }
+
+    tekiou(){
+        let time = this.time;
+        let [hun, byo] = [time%60, Math.floor(time/60)]
+            .map(a => a.toFixed(0).padStart(2, "0")); //初めて自ら改行したわ
+        this.numD.textContent = `${byo}:${hun}`;
+    }
+
+    start(){
+        if(this.ev) return;
+        this.ev = setInterval(() => {
+            this.time += this.d;
+            this.tekiou()
+        }, 1000);
+    }
+    stop(){
+        if(this.ev){
+            clearInterval(this.ev);
+            this.ev = null;
+        }
+        this.tekiou();
+    }
+    reset(){
+        this.time = 0;
+        this.tekiou();
+    }
+
+    kite(){
+        this.div.classList.add("show");
+    }
+    kiero(){
+        this.div.classList.remove("show");
+    }
+
+    share(){
+        this.div.remove();
+    }
+}
+// #endregion
 //#region tk
 class tk{
     constructor(type, x = 'half', y = 'half', w = window.innerWidth/2, h = window.innerWidth/2){
@@ -762,7 +955,7 @@ class tk{
 
         let yoko = ['x', 'w'];
         for(let n of yoko){
-            console.log(n), console.log(eval(n));
+            // console.log(n);
             if(typeof contex[n] != 'string' || typeof contex[n] == 'string' && !contex[n].endsWith('%')) continue;
             let num = contex[n].slice(0, -1);
             contex[n] = num * window.innerWidth / 100;
@@ -951,6 +1144,282 @@ class alertD{
     };
 };
 //#endregion
+//#region CheckBox feat.Slider
+class Checkbox {
+    constructor(
+        name = "テキストを入力してください",
+        kitei = 0,
+        func = 0,
+        data = 0
+    ){
+        this.name = name;
+        this.kitei = kitei;
+        this.func = func;
+
+        if(!data) data = {
+            back: '#b2b2b2',
+            backed: '#2b2b2b'
+        }
+        this.data = data; //固有。func用だったりするのかも
+
+        this.make();
+        // ここでこいつをreturnしたらinstanceが消える(このclassの他の関数を作れなくなる)
+    }
+    make(){
+        let div = document.createElement('div');
+        div.className = 'checkbox';
+        if(this.kitei) div.classList.add('tog');
+        div.dataset.cl = this.kitei; //0がoff..のはず
+
+        let [cBack, cBacked] = [this.data.back, this.data.backed];
+        div.style.setProperty('--back', cBack);
+            div.style.setProperty('--back-col', irohaHo(cBack));
+        div.style.setProperty('--backed', cBacked);
+            div.style.setProperty('--backed-col', irohaHo(cBacked));
+        
+        let text = document.createElement('div');
+        text.className = 'text';
+        text.textContent = this.name;
+        div.appendChild(text);
+
+        let clcl = async () => {
+            div.dataset.cl = fl(div.dataset.cl);
+            div.classList.toggle('tog', div.dataset.cl == 1);
+
+            if(this.func) this.func();
+        };
+        div.addEventListener('click', clcl);
+
+        this.div = div;
+    };
+
+    append(parent){
+        parent.appendChild(this.div);
+    }
+};
+
+class Slider {
+    constructor(
+        name = "テキストを入力してくださ",
+        kitei = 50,
+        func = 0,
+        data = 0
+    ){
+        this.name = name;
+        this.kitei = kitei;
+        this.func = func;
+
+        if(!data) data = {
+            back: '#b2b2b2',
+            backed: '#2b2b2b'
+        }
+        this.data = data;
+
+        this.make();
+    }
+
+    make(){
+        let div = document.createElement('div');
+        div.className = `slider ${this.name}`;
+        
+        let text = document.createElement('div');
+        text.className = 'label';
+        text.textContent = `${this.name}:`;
+        div.appendChild(text);
+        
+        let range = document.createElement('input')
+        range.type = "range"
+        range.min = 0;
+        range.max = 100;
+        range.value = this.kitei;
+        range.step = 1;
+        range.addEventListener('input', (e) => {
+            let val = e.target.value;
+            let [A, B] = [this.data.back, this.data.backed];
+            /*
+            // 全体変え
+            let per = val / 100;
+            let mix = irohaMix(A, B, per);
+            range.style.setProperty('--tsuma', irohaHo(mix));
+            range.style.background = mix;
+            */
+
+            // つまみの位置で変え
+            let per = val;
+            let mix = irohaMix(A, B, 0.5);
+            range.style.setProperty('--tsuma', mix);
+            range.style.background = `
+                linear-gradient(to right,
+                    ${A} 0%,
+                    ${A} ${per - 10}%,
+                    ${mix} ${per}%,
+                    ${B} ${per + 10}%,
+                    ${B} 100%
+                )
+            `;
+
+
+            if(this.func) this.func(val);
+        })
+        div.appendChild(range);
+
+        this.div = div;
+        this.range = range;
+    }
+
+    append(parent){
+        parent.appendChild(this.div);
+        this.range.dispatchEvent(new Event('input'));
+    }
+}
+// #endregion
+//#region takushiSen
+class TakushiSen {
+    constructor(choices, mode = "tate", data = 0) {
+        this.choices = choices; // [{name, img}, {name, img}, ...]
+        this.mode = mode;
+
+        if(!data) data = {
+            back: '#b2b2b2',
+            backed: '#2b2b2b'
+        };
+        this.data = data;
+
+        this.make();
+    }
+
+    make() {
+        let div = document.createElement('div');
+        div.className = `mode ${this.mode}`;
+        
+        let [b, bEd] = [this.data.back, this.data.backed];
+        div.style.setProperty('--botan', b);
+        div.style.setProperty('--botan-col', irohaHo(b));
+        div.style.setProperty('--botan-ed', bEd);
+        div.style.setProperty('--botan-col-ed', irohaHo(bEd));
+
+        this.choices.forEach(ma => {
+            let [name, gazou] = [ma.name, ma.img];
+            if(typeof ma === 'string') name = ma;
+
+            let item = document.createElement('div');
+            item.className = `item ${name}`;
+            item.textContent = name;
+            item.dataset.name = name;
+
+            // 画像があるならば
+            if(gazou){
+                let img = document.createElement('img');
+                img.src = gazou;
+                item.appendChild(img);
+            }
+            div.appendChild(item);
+        });
+
+        this.div = div;
+        return div;
+    }
+
+    // ここがメイン！await で待ち受けるやつ
+    async select(parent) {
+        return new Promise(resolve => {
+            let div = this.make();
+            parent.appendChild(div);
+
+            div.addEventListener('click', (e) => {
+                let target = e.target.closest('.item');
+                if (target) {
+                    div.remove();
+                    resolve(target.dataset.name);
+                }
+            });
+        });
+    }
+}
+//#endregion
+//#region Tenshee
+class Tenshee {
+    // 天使なカノジョ です(??)
+    constructor(){
+        this.resolved = 0;
+    }
+
+    reset(){
+        tensheeC.now = "";
+        tensheeC.max = 0;
+        tensheeC.mode = "";
+        this.tekiou();
+    }
+
+    plzinput(max = 0, mode = 0){
+        if(tensheeC.ing) return;
+        tensheeC.ing = 1;
+        this.reset();
+
+        if(max) tensheeC.max = max;
+        if(mode) tensheeC.mode = mode;
+        tensheeD.classList.add('show');
+        return new Promise((resolve) => {
+            this.resolved = resolve;
+        });
+    }
+
+    tekiou(){
+        let disp = tensheeC.dispD;
+        let now = tensheeC.now;
+
+        if(tensheeC.mode == "pass") disp.textContent = '*'.repeat(now.length);
+        else disp.textContent = now;
+    }
+
+    num(num){
+        let now = tensheeC.now;
+        let max = tensheeC.max;
+        if(max != 0 && now.length >= max) return;
+        
+        now += num;
+        tensheeC.now = now;
+        this.tekiou();
+    }
+
+    del(){
+        let now = tensheeC.now;
+        if(now == "") return;
+
+        now = now.slice(0, -1);
+        tensheeC.now = now;
+        this.tekiou();
+    }
+
+    confirm(){
+        tensheeD.classList.remove('show');
+        let now = tensheeC.now;
+        console.log(`天カノ結果:: ${now}`)
+        if(now == "") console.error('入力されてないっすね');
+        if(this.resolved){
+            this.resolved(now);
+            this.resolved = 0;
+            tensheeC.ing = 0;
+        }
+    }
+}
+let tensheeD = document.getElementById('tenshee');
+let tensheeC = {
+    ing: 0,
+    now: "",
+    dispD: tensheeD.querySelector('.disp')
+}
+let tensheeF = {};
+const tenshee = new Tenshee();
+tensheeD.querySelectorAll('.bt').forEach(bt => {
+    bt.addEventListener('click', () => {
+        if(bt.classList.contains('num')) tenshee.num(bt.dataset.num)
+        if(bt.classList.contains('del')) tenshee.del();
+        if(bt.classList.contains('ok')) tenshee.confirm();
+    });
+})
+
+//#endregion
 //#region OBS
 let OBS = {
     keys: {},
@@ -1011,6 +1480,7 @@ OBS.load = () => {
         "Mouse": 1,
         "Click": 1,
         "Paste": 0,
+        "Context": 1,
     }
 
     if(sts["Keys"]){
@@ -1032,48 +1502,21 @@ OBS.load = () => {
     if(sts["Paste"]){
         window.addEventListener('paste', OBS.Paste);
     }
+
+    if(sts["Context"]){
+        window.addEventListener('contextmenu', e => e.preventDefault());
+    }
 }
 
 //#endregion
 //#region fonts
-const Fonts = [
-    {src:'corporate', type:'otf'},
-    {src:'kaimetsu', type:'otf'},
-    {src:'kurundeco', type:'otf'},
-    {src:'starrysky', type:'otf'},
-    {src:'comicsans', type:'ttf'},
-    {src:'cube12', type:'ttf'},
-    {src:'genjuu', type:'ttf'},
-    {src:'hangyaku', type:'ttf', weight:'700'},
-    {src:'kurobara', type:'ttf'},
-    {src:'marukoius', type:'ttf'},
-    {src:'novamono', type:'ttf'},
-    {src:'papyrus', type:'ttf'},
-    {src:'pricedown', type:'ttf'},
-    {src:'misaki', type:'ttf'},
-    {src:'webdings', type:'ttf'},
-    {src:'wingdings', type:'ttf'},
-    {src:'wingdings2', type:'ttf'},
-    {src:'wingdings3', type:'ttf'},
-    {src:'ancientpersia', type:'ttf'},
-    {src:'bodoniornaments', type:'ttf'},
-    {src:'poprumcute', type:'otf'},
-    {src:'craft', type:'otf'},
-    {src:'nyashi', type:'ttf'},
-    {src:'cinecaption226', type:'ttf'},
-    {src:'addheart2', type:'ttf'},
-    {src:'myHeart', type:'otf'},
-    {src:'akmy_prince', type:'ttf'},
-    {src:'adorableLady', type:'ttf'},
-    {src:'adorableDoll', type:'ttf'}
-];
 function fontsLoad(){
     let id = "font_load_css";
     let existing = document.getElementById(id);
     if(existing) existing.remove();
 
     let css = Fonts.map(f => {
-        let src = `url('../assets/fonts/${f.src}.${f.type}')`;
+        let src = `url('assets/fonts/${f.src}.${f.type}')`;
         let weight = f.weight ?? 'normal';
         return `@font-face{
             font-family:'${f.src}';
@@ -1084,7 +1527,7 @@ function fontsLoad(){
         }`;
     }).join('\n');
 
-    const el = document.createElement('style');
+    let el = document.createElement('style');
     el.id = id;
     el.type = 'text/css';
     el.appendChild(document.createTextNode(css));
@@ -1101,21 +1544,33 @@ let loaC = {
     erd: 0
 }
 let loaF = {};
-loaC.imgL = {
-    systems:['error'],
-}
-loaC.imgT = Object.values(loaC.imgL).reduce((a,b) => a + b.length, 0);
-
-loaC.souL = {
-    // se:['error'],
-    // bgm:[],
-}
-loaC.souT = Object.values(loaC.souL).reduce((a,b) => a + b.length, 0);
+loaC.souT = Object.values(Sounds).reduce((a,b) => a + b.length, 0);
 
 loaF.load = async() => {
+    console.log("loadを開始しました。少々お待ちください");
+
+    loaC.imgT = 0;
+    let MaaSorehaSoretoshite = (mono) => {
+        for(let key in mono){
+            if(key == 'すべて') continue;
+
+            let val = mono[key];
+            if(Array.isArray(val)){
+                loaC.imgT += val.length;
+            }
+            else if(val && typeof val == 'object'){
+                MaaSorehaSoretoshite(val);
+            }
+        }
+    };
+    MaaSorehaSoretoshite(Images);
+
     if(await loaF.loadI()) return 1;
     return 0;
 }
+
+/*
+// 元のカタチ
 loaF.loadI = async() => {
     let kasan = () => {
         loaC.imgD++;
@@ -1123,13 +1578,13 @@ loaF.loadI = async() => {
     }
 
     if(loaC.imgT == 0) return loaF.loadS();
-    for(let belong in loaC.imgL){
+    for(let belong in Images){
         images[belong] = {};
 
-        for(let name of loaC.imgL[belong]){
+        for(let name of Images[belong]){
             let img = new Image();
             img.src = `assets/images/${belong}/${name}.png`;
-            img.onload = kasan();
+            img.onload = kasan;
             img.onerror = () => {
                 console.error(`Image assets/images/${belong}/${name}.png failed to load.`);
                 loaC.erd += 1;
@@ -1142,6 +1597,72 @@ loaF.loadI = async() => {
         }   
     }
 }
+*/
+loaF.loadI = async() => {
+    if(loaC.imgT == 0) return loaF.loadS();
+
+    let kasan = () => {
+        loaC.imgD += 1;
+        if(loaC.imgD == loaC.imgT) loaF.loadS();
+    }
+
+    let loaloa = async(arr, route) => {
+        let srcBase = "assets/images/" + route.join("/") + "/";
+
+        let tar = images;
+        for(let r of route){
+            if(!tar[r]) tar[r] = {};
+            tar = tar[r];
+        }
+
+        arr.forEach(mono => {
+            let img = new Image();
+            img.src = `${srcBase}${mono}.png`;
+            
+            img.onload = () => {
+                tar[mono] = img;
+                kasan();
+            };
+
+            img.onerror = () => {
+                console.error(`Image ${srcBase}${mono}.png failed to load.`);
+                loaC.erd += 1;
+                
+                if(loaC.erd > 50) {
+                    console.error('さすがにやりすぎbonus');
+                    return;
+                }
+                
+                img.src = `assets/images/systems/error.png`;
+                tar[mono] = img;
+                kasan();
+            };
+        });
+    }
+
+    // 再帰的に掘り進む
+    let loaloa0 = async(mono, route = []) => {
+        for(let key in mono){
+            if(key == "すべて") continue; //"すべて"はスキップ
+
+            let val = mono[key];
+            if(!val) continue;
+
+            route.push(key); //追加
+
+            if(Array.isArray(val)){
+                loaloa(val, [...route]);
+            }
+            else if(typeof val == 'object'){
+                await loaloa0(val, route); //さらなる深みへ
+            }
+            
+            route.pop(); //階層を戻す
+        }
+    }
+
+    await loaloa0(Images);
+}
 
 loaF.loadS = async() => {
     let kasan = () => {
@@ -1150,15 +1671,15 @@ loaF.loadS = async() => {
     }
     
     if(loaC.souT == 0) return loaF.end();
-    for(let belong in loaC.souL){
+    for(let belong in Sounds){
         sounds[belong] = {};
 
-        for(let name of loaC.souL[belong]){
+        for(let name of Sounds[belong]){
             let sound = new Audio();
             sound.preload = 'auto';
             sound.src = `assets/sounds/${belong}/${name}.mp3`;
             if(belong == 'bgm'){
-                sound.loop = 1;
+                sound.loop = true;
                 sound.dataset.type = 'bgm';
                 sound.volume = souC.bgm;
             }
@@ -1183,6 +1704,7 @@ loaF.loadS = async() => {
 }
 loaF.end = () => {
     console.log(`images & sounds loaded! (error: ${loaC.erd})`);
+    souF.volume(50);
     start();
 }
 
@@ -1191,8 +1713,10 @@ let souC = {
     bgm: 0.5,
     nowBgm: null
 }
-function soundPlay(name){
-    if(!sounds[name]) return soundPlay('error');
+let souF = {};
+souF.play = (name) => {
+    console.log("ん")
+    if(!sounds[name]) return souF.play('error');
     let proto = sounds[name];
 
     if(proto.dataset.type == 'bgm'){
@@ -1204,7 +1728,9 @@ function soundPlay(name){
         proto.volume = souC.bgm;
         proto.play().catch(e => console.warn('BGM 再生エラー', e));
         souC.nowBgm = name;
-    }else{
+    }
+    else if(proto.dataset.type == 'se'){
+        console.log("se")
         let clone = proto.cloneNode(1);
         clone.volume = souC.se;
         clone.dataset.type = 'se';
@@ -1214,7 +1740,50 @@ function soundPlay(name){
         clone.play().catch(e => console.warn('SE 再生エラー', e));
     }
 }
-function soundStop(){
+
+souF.play = (name) => {
+    let proto = null;
+    let category = null;
+
+    for(let belong in sounds){
+        if(sounds[belong][name]){
+            proto = sounds[belong][name];
+            category = belong;
+            break;
+        }
+    }
+
+    if(!proto){
+        if(name != 'error') return souF.play('error');
+        else return;
+    }
+
+    if(proto.dataset.type === 'bgm'){
+        if(souC.nowBgm){
+            for(let belong in sounds){
+                if(sounds[belong][souC.nowBgm]){
+                    let oldBgm = sounds[belong][souC.nowBgm];
+                    if(!oldBgm.paused){
+                        oldBgm.pause();
+                        oldBgm.currentTime = 0;
+                    }
+                    break;
+                }
+            }
+        }
+
+        proto.volume = souC.bgm;
+        proto.play().catch(e => console.warn('BGM 再生エラー', e));
+        souC.nowBgm = name;
+    }else{
+        let clone = proto.cloneNode(true);
+        clone.volume = souC.se;
+        clone.dataset.type = 'se';
+        clone.addEventListener('ended', () => {clone.src = ""});
+        clone.play().catch(e => console.warn('SE 再生エラー', e));
+    }
+}
+souF.stop = () => {
     Object.keys(sounds).forEach(k => {
         try{
             sounds[k].pause();
@@ -1224,7 +1793,7 @@ function soundStop(){
     souC.nowBgm = null;
     document.querySelectorAll('audio,video').forEach(el => { el.pause(); el.currentTime = 0; });
 }
-function soundVolume(code, val){
+souF.volume = (code, val) => {
     if(typeof code == 'number' && typeof val == 'undefined') val = code, code = 'both';
     if(typeof val !== 'number') return console.error('val は数値にして');
     let v = val;
@@ -1233,85 +1802,65 @@ function soundVolume(code, val){
 
     if(code == 'se' || code == 'both'){
         souC.se = v;
-        for(k in sounds) if(sounds[k].dataset.type == 'se') sounds[k].volume = souC.se;
+
+        for(let belong in sounds){
+            for(let name in sounds[belong]){
+                let sound = sounds[belong][name];
+                if(sound.dataset.type == 'se'){
+                    sound.volume = souC.se;
+                }
+            }
+        }
     }
+
     if(code == 'bgm' || code == 'both'){
         souC.bgm = v;
-        for(k in sounds) if(sounds[k].dataset.type == 'bgm') sounds[k].volume = souC.bgm;
-        if(souC.nowBgm && sounds[souC.nowBgm]) sounds[souC.nowBgm].volume = souC.bgm;
+
+        for(let belong in sounds){
+            for(let name in sounds[belong]){
+                let sound = sounds[belong][name];
+                if(sound.dataset.type == 'bgm'){
+                    sound.volume = souC.bgm;
+                }
+            }
+        }
+
+        if(souC.nowBgm && sounds.bgm[souC.nowBgm]){
+            sounds.bgm[souC.nowBgm].volume = souC.bgm;
+        }
     }
 
     console.log(`[soundVolume] se:${souC.se} bgm:${souC.bgm}`);
 }
-soundVolume(50);
+
 //#endregion
 //#region 幸せになれる隠しコマンドがあるらしい
-let secrates = [
-    {
-        ind:0,
-        name:'koppepan',
-        arr:['k','o','p','p','e','p','a','n'],
-        limit:3,
-        func: async function(){
-            nicoText('なんにも起こらない＝ヨーン');
+const secrateses = [];
+function secratesP(key){
+    secrateses.push(key);
+
+    let lenlen = Secrates.sort((a,b) => b.arr.length - a.arr.length);
+    let len = lenlen[0].arr.length;
+    secrateses.splice(0, secrateses.length - len);
+    
+    secratesC();
+}
+async function secratesC(){
+    for(let sec of Secrates){
+        if(sec.limit == 0) continue;
+
+        let len = sec.arr.length;
+        if(secrateses.length < len) continue;
+
+        let tail = secrateses.slice(-len);
+
+        if(tail.join() == sec.arr.join()){
+            console.log(`${sec.name}発動！！[${sec.arr.join(' ')}]`);
+            let res = await sec.func();
+            if(!res && sec.limit != 'n') sec.limit -= 1;
         }
-    },
-    {
-        ind:0,
-        name:'re',
-        arr:['r','e'],
-        limit:1,
-        func: async function(){
-            let img = document.createElement('img');
-            img.id = 'hakaisatsu';
-            img.src = 'assets/images/systems/hakai_1.png'
-            img.dataset.phase = 1;
-            document.querySelector('body').appendChild(img);
-
-            setTimeout(() => {
-                img.remove();
-                this.ind = 0;
-                this.limit = 1;
-            }, 3000)
-
-            return 0;
-        }
-    },
-    {
-        ind:0,
-        name:'rere',
-        arr:['r','e','r','e'],
-        limit:1,
-        func: async function(){
-            let img = document.getElementById('hakaisatsu');
-            if(!img) return;
-
-            img.src = 'assets/images/systems/hakai_2.png'
-            img.dataset.phase = 2;
-
-            setTimeout(() => {
-                img.remove();
-                this.ind = 0;
-                this.limit = 1;
-            }, 3000)
-
-            return 0;
-        }
-    },
-    {
-        ind:0,
-        name:'rerere',
-        arr:['r','e','r','e','r','e'],
-        limit:1,
-        func: async function(){
-            let img = document.getElementById('hakaisatsu');
-            if(!img) return 1;
-            console.log(img.dataset.phase);
-            if(img.dataset.phase != '2') return 1;
-            location.reload();
-        }
-    },
-]
+    }
+}
 document.addEventListener('keydown', async function(e){
     let key = e.key.toLowerCase();
     if(key == 'escape') loop = 0;
@@ -1319,23 +1868,9 @@ document.addEventListener('keydown', async function(e){
     if(document.activeElement.tagName == 'INPUT') return;
     if(document.activeElement.tagName == 'TEXTAREA') return;
 
-    for(let sec of secrates){
-        let nke = sec.arr[sec.ind];
-        // console.log(`必要は${nke}、押されたは${key}！`);
-        if(key == nke){
-            sec.ind += 1;
-            if(sec.ind == sec.arr.length && sec.limit){
-                console.log(`${sec.name}発動！！[${sec.arr.join(' ')}]`);
-                sec.ind = 0;
-                let res = await sec.func();
-                if(!res && sec.limit != 'n') sec.limit -= 1;
-            }
-        }
-        else sec.ind = 0;
-    }
+    secratesP(key);
 })
 //#endregion
-
 
 // #region main
 let mainD = document.getElementById('main');
@@ -1346,20 +1881,18 @@ let mainC = {
      mvlsLD: document.querySelector('#movlis .list'),
     mvlsi: 0
 }
-mainC.spas = [ //classはspace想定、shoは1つだけ
-    // { name:'home', rank:2, back:'#f0f8ff', sho:1 }, 
-];
 let mainF = {};
 mainF.move = (to) => {
     if(mainC.spa == to) return console.log('どういうわけか もう そこにいる');
 	if(!to) return console.error(`せんぱ〜い？${to}ってどこですか〜？笑`);
 	
-	for(let a of mainC.spas) document.getElementById(a.name).classList.remove('show');
+	for(let a of Spaces) document.getElementById(a.name).classList.remove('show');
     document.getElementById(to).classList.add('show');
+    mainC.spa = to;
 }
 
 mainF.load = () => {
-    for(let spa of mainC.spas){
+    for(let spa of Spaces){
         let div = document.getElementById(spa.name);
         if(!div) continue;
 
@@ -1369,7 +1902,7 @@ mainF.load = () => {
 }
 
 //#region movlis
-for(let n of mainC.spas){
+for(let n of Spaces){
     let li = document.createElement('div');
     li.textContent = n.name;
     li.className = 'item';
@@ -1385,7 +1918,7 @@ document.addEventListener('keydown', (e) => {
     mainC.mvlsD.classList.add('tog');
     mainC.mvlsi = 1;
 })
-document.addEventListener('keyup', e => {
+document.addEventListener('keyup',e => {
     if(e.key != 'm') return;
     mainC.mvlsD.classList.remove('tog');
     mainC.mvlsi = 0;
@@ -1395,12 +1928,23 @@ document.addEventListener('keyup', e => {
 //#endregion main
 
 
+// #region tools
+let tooD = document.getElementById("tools");
+let tooC = {};
+let tooF = {};
+
 //#region 文字数カウント
-let countD = document.querySelector('#zatta .textcount');
+let countD = document.querySelector('#tools .textcount');
 let countC = {
+    labD: countD.querySelector('.label'),
     inI: countD.querySelector('.in'),
-    outD: countD.querySelector('.out')
+    outD: countD.querySelector('.out'),
+    hiro: 0
 }
+countC.labD.addEventListener('click', () => {
+    countC.hiro = fl(countC.hiro);
+    countD.classList.toggle('hiro', countC.hiro);
+})
 countC.inI.addEventListener('input', () => {
     let text = countC.inI.value;
     let count = text.length;
@@ -1410,7 +1954,7 @@ countC.inI.addEventListener('input', () => {
 //#endregion
 
 //#region ランダムな文字を抽出するやつ -arraySelect-
-let ransD = document.querySelector('#zatta .ransele');
+let ransD = document.querySelector('#tools .ransele');
 let ransC = {
     oyaD: ransD.querySelector('.oya'),
     texD: ransD.querySelector('.oya .text'),
@@ -1453,7 +1997,7 @@ ransC.texD.addEventListener('contextmenu', (e) => {
 //#endregion
 
 //#region アナグラム生成器
-let anagD = document.querySelector('#zatta .anagram');
+let anagD = document.querySelector('#tools .anagram');
 let anagC = {
     inD: anagD.querySelector('.in'),
     outD: anagD.querySelector('.out'),
@@ -1496,8 +2040,7 @@ anagC.stogD.addEventListener('click', () => {
 //#endregion
 
 //#region 偏差値計算するやつ
-
-let henD = document.querySelector('#zatta .hen');
+let henD = document.querySelector('#tools .hen');
 let henC = {
     valI: henD.querySelector('.input'),
     aveI: henD.querySelector('.average'),
@@ -1518,7 +2061,7 @@ henC.aveI.addEventListener('input', henF.process);
 //#endregion
 
 //#region カタカナランダム言葉生成器
-let rannmD = document.querySelector('#zatta .rannm');
+let rannmD = document.querySelector('#tools .rannm');
 let rannmC = {
     togB: rannmD.querySelector('.toggle'),
     tog: 'stan',
@@ -1601,9 +2144,18 @@ rannmC.actB.addEventListener('click', () => {
 })
 //#endregion
 
-//#region マリパのハチの巣のやつ
+// #endregion
 
-let beeGD = document.querySelector('#zatta .bee-game');
+
+// #region asobs
+let asoD = document.getElementById("asobs");
+let asoC = {
+
+}
+let asoF = {};
+
+//#region マリパのハチの巣のやつ
+let beeGD = document.querySelector('#asobs .bee-game');
 let beeGC = {
     now: 0,
     ing: 0,
@@ -1718,8 +2270,7 @@ beeGC.b2D.addEventListener('click', () => beeGF.take(2));
 //#endregion
 
 //#region 田中のレースのあれ
-
-let raceGD = document.querySelector('.race-game');
+let raceGD = document.querySelector('#asobs .race-game');
 let raceGC = {
     now: 0,
     time: 0,
@@ -2467,7 +3018,7 @@ raceGC.endD.addEventListener('click', raceGF.end);
 //     duration = time;
 // }
 
-let renGD = document.getElementById('renda-game');
+let renGD = document.querySelector("#asobs .renda-game");
 let renGC = {
     now: 0,
     count: 0,
@@ -2476,6 +3027,7 @@ let renGF = {};
 //#endregion
 
 //#region WiiPartyのコックのあれ
+let cooD = document.querySelector("#asobs .cookgame")
 let CGx = 0;
 let CGy = 0;
 let CGAllow = 0;
@@ -2519,21 +3071,22 @@ async function Start(){
 function CookingGameChoeese(num){
     if(CGAllow == 1){
         if(CGListArray.indexOf(num) >= 0){
-        CGx = CGListArray.indexOf(num);
-        CGListArray[CGx] = '0';
-        CGListArrayAppear[CGx] = num;
-        let firstHalf = CGListArrayAppear.slice(0, CGListArrayAppear.length / 2);
-        let secondHalf = CGListArrayAppear.slice(CGListArrayAppear.length / 2);
-        CGList.innerHTML = firstHalf.join(',') + '<br>' + secondHalf.join(',');
-        CGLog.textContent = 'ナーイス！！';
-    } else {
-        CGLog.innerHTML = `あいミス〜〜〜〜〜乙〜〜〜〜〜〜〜〜〜<br>あ、これ答えね(0は正解したとこ)<br>${CGListArray.join(',')}`;
-        CGAllow = 0;
-    }
+            CGx = CGListArray.indexOf(num);
+            CGListArray[CGx] = '0';
+            CGListArrayAppear[CGx] = num;
+            let firstHalf = CGListArrayAppear.slice(0, CGListArrayAppear.length / 2);
+            let secondHalf = CGListArrayAppear.slice(CGListArrayAppear.length / 2);
+            CGList.innerHTML = firstHalf.join(',') + '<br>' + secondHalf.join(',');
+            CGLog.textContent = 'ナーイス！！';
+        } else {
+            CGLog.innerHTML = `あいミス〜〜〜〜〜乙〜〜〜〜〜〜〜〜〜<br>あ、これ答えね(0は正解したとこ)<br>${CGListArray.join(',')}`;
+            CGAllow = 0;
+        }
     }
 }
 //#endregion
 
+// #endregion
 
 //#region start
 function start(){
@@ -2544,7 +3097,7 @@ function start(){
 
 
 
-    mainF.move('zatta');
+    mainF.move("tools");
 }
 //#endregion
 

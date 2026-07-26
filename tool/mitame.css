@@ -1,14 +1,29 @@
 /* #region スターターパック */
+/* -webkitの情報-
+    webkit- : Chrome, Safari, Opera
+    moz- : Firefox
+    ms- : Internet Explorer(考えなくてヨシ)
+    khtml- : Konqueror(考えなくてヨシ)
+    o- : 古いOpera(考えなくてヨシ)
+    ただし、-webkit-は**Safari以外**ではプレフィックスなしで使用可能なプロパティも多い。
+    例外的に、user-selectは全てのブラウザでプレフィックスが必要。
+    さらに例外的に、touch-calloutはSafariでしか使用できない。
+*/
 html{
     margin: -8px;
-    overflow-x: hidden;
+    overflow: hidden;
     user-select:none;
 }
 body{
     width: 100vw;
     height: 100vh;
     white-space: nowrap;
-    touch-action: none;
+
+    user-select: none;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
 }
 .row{
     display: flex;
@@ -25,6 +40,8 @@ body{
 
 img{
     -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+    pointer-events: none;
 }
 ::-webkit-scrollbar{
     display: none;
@@ -50,17 +67,25 @@ img{
 }
 
 .tobitext{
-    opacity: 1;
+    display: inline-block;
     padding: 4px 8px;
-    background: rgba(0,0,0,0.72);
+    background: var(---back);
     border-radius: 8px;
-    transform: translate(-50%, -50%) translateY(0px);
+    position: absolute;
     white-space: nowrap;
     color: #ffffff;
     position: absolute;
+    /* transform: translate(-50%, -50%) translateY(0px); */
     transition: none;
+    opacity: 1;
     pointer-events: none;
     z-index: var(--mostop);
+}
+.tobitext.booba{
+    border-radius: 50%;
+}
+.tobitext.kiki{
+    padding: 8px 20px;
 }
 
 .p_star{
@@ -96,6 +121,17 @@ img{
     position: absolute;
     pointer-events: none;
     z-index: 255;
+}
+
+#hakaisatsu{ /*img*/
+    height: 120vh;
+    aspect-ratio: 1/1;
+    position: fixed;
+    top: -10vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: var(--mostop);
+    pointer-events: none;
 }
 /* #endregion */
 
@@ -184,6 +220,50 @@ img{
 }
 #mobileDesc.show{
     display: block;
+}
+/* #endregion */
+
+/* #region timer */
+#timer{
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    aspect-ratio: 1/1;
+    background: #2b2b2b;
+    border-radius: 50%;
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    transition: opacity 0.1s ease-in-out;
+    color: #b2b2b2;
+    font-size: 28px;
+    line-height: 28px;
+    font-family: cube12;
+    opacity: 0.90;
+    cursor: grab;
+    z-index: 2;
+}
+#timer::after{
+    /* 上の突起物 */
+    content: "";
+    width: 30%;
+    aspect-ratio: 3/4;
+    background: #2b2b2b;
+    position: absolute;
+    top: -10%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: -2;
+}
+#timer.show{
+    display: flex;
+}
+#timer.tog{
+    opacity: 0.10;
+}
+#timer div{
+    pointer-events: none;
 }
 /* #endregion */
 
@@ -284,6 +364,256 @@ img{
 }
 /* #endregion */
 
+/* #region botan */
+.botan{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    aspect-ratio: 4/1;
+    padding: 0 5px;
+    background: var(--botan);
+    color: var(--botan-col, #2b2b2b);
+    border: 3px solid var(--botan-col, #2b2b2b);
+    transition: background 0.25s, color 0.25s;
+    position: relative;
+}
+.botan:hover{
+    scale: 1.05;
+}
+.botan:active{
+    scale: 0.95;
+}
+.botan.tog{
+    background: var(--botan-ed, #2b2b2b);
+    color: var(--botan-col-ed, #b2b2b2);
+    border: 3px solid var(--botan-col, #b2b2b2);
+}
+/* #endregion */
+
+/* #region checkbox　& slider */
+.checkbox{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100px;
+    aspect-ratio: 3/1;
+    padding: 0 5px;
+    background: var(--back, #b2b2b2);
+        color: var(--back-col, #2b2b2b);
+        transition: background 0.25s, color 0.25s;
+    position: relative;
+    border-radius: 20px;
+}
+.checkbox.tog{
+    background: var(--backed, #2b2b2b);
+        color: var(--backed-col, #b2b2b2);
+}
+.checkbox .text{
+    font-family: comicsans;
+}
+
+input[type="range"].slider{
+    /* スライダー */
+    appearance: none;
+    width: 100px;
+    height: 10px;
+    background: #b2b2b2;
+    border-radius: 5px;
+}
+
+input[type="range"].slider::-webkit-slider-thumb{
+    /* つまみ */
+    appearance: none;
+    height: 25px;
+    aspect-ratio: 1/1;
+    background: var(--tsuma, #2b2b2b);
+    /* border-radius: 50%; */
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+input[type="range"].slider::-webkit-slider-thumb:hover{
+    /* つまみ（ホバー） */
+    transform: scale(1.2);
+}
+/* #endregion */
+
+/* #region <モード> */
+.mode{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+.mode.tate{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+/* .mode.yoko{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+} */
+.mode.grid2{
+    /* 横に2、縦に無限 */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+    align-items: center;
+}
+.mode.grid3{
+    /* 横に3、縦に無限 */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    align-items: center;
+}
+.mode.tags{
+    /* 文字数に応じて大小が定まるwidthのdiv(heightは24px)をgridに格納する型。横は最大80%で、縦に制限はない。 */
+    display: flex;
+    flex-wrap: wrap; /* これで、横に入り切らなくなったら自動で下に折り返す */
+    justify-content: center; 
+    align-content: center;
+    max-width: 80%;
+    gap: 5px;
+}
+
+/* 弾を */
+.mode .item{
+    background: var(--botan, #b2b2b2);
+    color: var(--botan-col, #2b2b2b);
+    border: 4px solid var(--botan-col, #2b2b2b);
+    position: relative;
+    transition: all 0.1s ease-in-out;
+    box-sizing: border-box;
+    pointer-events: auto;
+    cursor: pointer;
+}
+.mode .item img{
+    width: fit-content;
+    height: 100%;
+    object-fit: contain;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.mode .item:hover{
+    scale: 1.05;
+}
+.mode .item:active{
+    scale: 0.95;
+    background: var(--botan-ed, #2b2b2b);
+    color: var(--botan-col-ed, #b2b2b2);
+}
+
+
+.mode.tate .item{
+    width: 80%;
+    aspect-ratio: 4/1;
+    padding: 0 5px;
+}
+/* .mode.yoko .item{
+    height: 70%;
+    aspect-ratio: 2/5;
+    padding: 5 5px;
+} */
+.mode.grid2 .item,
+.mode.grid3 .item{
+    width: 100%;
+    aspect-ratio: 1/1;
+    padding: 5px;
+}
+.mode.tags .item{
+    width: fit-content;
+    height: 24px;
+    padding: 0 8px;
+    line-height: 16px;
+    white-space: nowrap;
+}
+/* #endregion */
+
+/* #region テンキー */
+#tenshee{
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    width: 50%;
+    height: fit-content;
+    padding: 10px;
+    background: #dedede;
+    border: 4px groove #ff8000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: var(--mostop);
+}
+#tenshee.show{
+    display: flex;
+}
+#tenshee .disp{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 30px;
+    background: #ffffff;
+    border: 3px solid #a2a2a2;
+    box-sizing: border-box;
+    pointer-events: none;
+    /* cursolは"触れれないよ！"みたいなやつにしたい */
+    cursor: not-allowed;
+}
+#tenshee .bts{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    align-items: center;
+    gap: 10px;
+}
+#tenshee .bts .bt{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: #ffffff;
+    border: 3px solid #a2a2a2;
+    box-sizing: border-box;
+    pointer-events: auto;
+    cursor: pointer;
+}
+#tenshee .bts .bt:active{
+    scale: 0.90;
+}
+#tenshee .bts .bt.del{
+    /* background: #ce1414; */
+    background: #ffb8b8;
+}
+#tenshee .bts .bt.ok{
+    /* background: #27a227; */
+    background: #ceffce;
+}
+/* #endregion */
+
 /* #region movlis */
 #movlis{
     display: none;
@@ -331,6 +661,9 @@ img{
 }
 /* #endregion */
 
+/* #endregion */
+
+/* #region copypaste */
 水色 #f0f8ff, #eaf5ff, #def0ff, #cfe9ff, #b5dcff
 紫色 #f8f6ff, #f5f2ff, #f1edff, #ece8ff, #e9e4ff
 橙色 #fffaf3, #fff7eb, #fff3e2, #fff0d9, #ffeccf
@@ -367,8 +700,8 @@ img{
     display: block;
     width: var(--iPhone-width);
     height: 100%;
-    position: relative;
     margin: 0 auto;
+    position: relative;
     overflow: hidden;
     box-sizing: border-box;
 }
@@ -376,7 +709,7 @@ img{
 .space{
     display: none;
     flex-direction: column;
-    width: 100%;    
+    width: 100%;
     height: 100%;
     position: absolute;
     top: 0;
@@ -389,7 +722,8 @@ img{
     display: flex;
 }
 
-#zatta{
+
+#tools{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -398,7 +732,7 @@ img{
     overflow: auto;
     background: #fffaf3;
 }
-#zatta .mono{
+#tools .mono{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -413,7 +747,7 @@ img{
 }
 
 /* #region hen */
-#zatta .hen{
+#tools .hen{
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -421,10 +755,10 @@ img{
     font-family: genjuu;
     font-size: 23px;
 }
-#zatta .hen .lavel{
+#tools .hen .lavel{
     flex: 1;
 }
-#zatta .hen input{
+#tools .hen input{
     border: none;
     background: #fff3e2;
     color: #222222;
@@ -433,19 +767,46 @@ img{
 /* #endregion */
 
 /* #region textcount */
-#zatta .textcount{
+#tools .textcount{
     display: flex;
     flex-direction: column;
     gap: 2px;
+
+    .label{
+        border-bottom: 2px dashed #00000000;
+        line-height: 16px;
+        margin-bottom: 2px;
+    };
+     .label:hover{border-color: #363979};
+     .label:active{scale: 0.90};
+    & input{
+        background: #fffaf4;
+    };
+
+    &.hiro{
+        input{
+            width: 100%;
+            height: 200px;
+        }
+        
+    }
+
+    
+
+    /* &.hiro{
+        .lavel{
+            border-bottom: 1.5px dashed #363979;
+        }
+    } */
 }
 /* #endregion */
 
 /* #region roulette? */
-#zatta .ransele{
+#tools .ransele{
     height: fit-content;
     padding: 20px 10px;
 }
-#zatta .ransele .oya{
+#tools .ransele .oya{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -455,12 +816,12 @@ img{
     border: 6px groove #c98614;
     container-type:inline-size;
 }
-#zatta .ransele .oya .text{
+#tools .ransele .oya .text{
     /* border-bottom: 1.5px dashed #503d1d; */
     white-space:nowrap;
     font-size:clamp(8px,10cqi,20px);
 }
-#zatta .ransele .input{
+#tools .ransele .input{
     /* textarea */
     width: 70%;
     height: 100px;
@@ -471,7 +832,7 @@ img{
     box-sizing: border-box;
     font-size: 14px;
 }
-#zatta .ransele .bt{
+#tools .ransele .bt{
     /* 使われない かも */
     display: block;
     width: 35px;
@@ -481,14 +842,14 @@ img{
 /* #endregion */
 
 /* #region anagram */
-#zatta .anagram{
+#tools .anagram{
     height: 420px;
     position: relative;
 }
-#zatta .anagram .row{
+#tools .anagram .row{
     gap: 3px;
 }
-#zatta .anagram .out{
+#tools .anagram .out{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -498,21 +859,21 @@ img{
     max-height: 100%;
     overflow-y: scroll;
 }
-#zatta .anagram .out .item{
+#tools .anagram .out .item{
     width: 90%;
     padding: 2px 4px;
     border: 2px solid #00000000;
     background: #fff7eb;
 }
-#zatta .anagram .out .item.kira{
+#tools .anagram .out .item.kira{
     background: #daffd8;
 }
-#zatta .anagram .out .item:hover{
+#tools .anagram .out .item:hover{
     border: 2px solid #ffe7c3;
     background: #fff4e2;
 }
 
-#zatta .anagram .sage{
+#tools .anagram .sage{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -522,10 +883,10 @@ img{
     top: -25px;
     transition: top 0.5s ease;
 }
-#zatta .anagram .sage.tog{
+#tools .anagram .sage.tog{
     top: 0;
 }
-#zatta .anagram .sage .kira{
+#tools .anagram .sage .kira{
     opacity: 0;
     width: 140px;
     height: 25px;
@@ -534,10 +895,10 @@ img{
     transition: opacity 0.5s ease;
     box-sizing: border-box;
 }
-#zatta .anagram .sage.tog .kira{
+#tools .anagram .sage.tog .kira{
     opacity: 1;
 }
-#zatta .anagram .sage .opener{
+#tools .anagram .sage .opener{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -550,22 +911,22 @@ img{
     cursor: pointer;
     box-sizing: border-box;
 }
-#zatta .anagram .sage .opener:hover{
+#tools .anagram .sage .opener:hover{
     color: #5c4a2e;
 }
 /* #endregion */
 
 /* #region rannm */
-#zatta .rannm{
+#tools .rannm{
     content:'rannm';
     font-family: genjuu;
 }
-#zatta .rannm .input{
+#tools .rannm .input{
     border: none;
     border-bottom: 1px solid #2b2b2b;
     font-size: 18px;
 }
-#zatta .rannm .row{
+#tools .rannm .row{
     margin-top: 5px;
     display: flex;
     flex-direction: row;
@@ -573,7 +934,7 @@ img{
     align-items: center;
     gap: 0;
 }
-#zatta .rannm .row .bt{
+#tools .rannm .row .bt{
     display: block;
     width: 40px;
     aspect-ratio: 2/1;
@@ -584,25 +945,25 @@ img{
     text-align: center;
     transition: background 0.05s ease-in-out, scale 0.05s ease-in-out;
 }
-#zatta .rannm .row .bt:hover{
+#tools .rannm .row .bt:hover{
     scale: 1.1;
 }
-#zatta .rannm .row .bt:active{
+#tools .rannm .row .bt:active{
     scale: 0.9;
 }
 /* #endregion */
 
 /* #region bee-game */
-#zatta .bee-game{
+#asobs .bee-game{
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-#zatta .bee-game .bar{
+#asobs .bee-game .bar{
     font-family: misaki;
     font-size: 60px;
 }
-#zatta .bee-game .log{
+#asobs .bee-game .log{
     display: flex;
     flex-direction: column;
     gap: 1px;
@@ -619,16 +980,16 @@ img{
     box-sizing: border-box;
     margin-bottom: 10px;
 }
-#zatta .bee-game .log span{
+#asobs .bee-game .log span{
     pointer-events: none;
 }
-#zatta .bee-game.w1 .log{
+#asobs .bee-game.w1 .log{
     background: #ffe7e2;
 }
-#zatta .bee-game.w2 .log{
+#asobs .bee-game.w2 .log{
     background: #f1f9ff;
 }
-#zatta .bee-game .bt{
+#asobs .bee-game .bt{
     display: none;
     width: 60px;
     aspect-ratio: 3/1;
@@ -637,27 +998,27 @@ img{
     text-align: center;
     box-sizing: border-box;
 }
-#zatta .bee-game.play .bt{
+#asobs .bee-game.play .bt{
     display: block;
 }
-#zatta .bee-game .bt.start{
+#asobs .bee-game .bt.start{
     display: block;
     width: 90px;
     margin-bottom: 5px;
 }
-#zatta .bee-game.play .bt.start{
+#asobs .bee-game.play .bt.start{
     display: none;
 }
-#zatta .bee-game .bt:hover{
+#asobs .bee-game .bt:hover{
     padding: 3px 8px;
     background: #ffecd1;
     border: 2px solid #ffc250;
 }
-#zatta .bee-game.ing .bt:hover{
+#asobs .bee-game.ing .bt:hover{
     background: #8b8b8b;
     border-color: #464646;
 }
-#zatta .bee-game .buttons{
+#asobs .bee-game .buttons{
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -667,13 +1028,13 @@ img{
 /* #endregion */
 
 /* #region race-game */
-#zatta .race-game{
+#asobs .race-game{
     display: flex;
     flex-direction: column;
     align-items: center;
     height: fit-content;
 }
-#zatta .race-game .area{
+#asobs .race-game .area{
     display: none;
     width: 100%;
     height: fit-content;
@@ -681,17 +1042,17 @@ img{
     box-sizing: border-box;
 }
 
-#zatta .race-game .area.title{
+#asobs .race-game .area.title{
     display: block;
     background: #ffefd8;
 }
-#zatta .race-game.play .area.title{display: none;}
-#zatta .race-game .title .lavel{
+#asobs .race-game.play .area.title{display: none;}
+#asobs .race-game .title .lavel{
     font-size: 40px;
     color: #895000;
     text-align: center;
 }
-#zatta .race-game .title .start{
+#asobs .race-game .title .start{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -706,26 +1067,26 @@ img{
     box-sizing: border-box;
     cursor: pointer;
 }
-#zatta .race-game .title .start:hover{
+#asobs .race-game .title .start:hover{
     background: #ffe6c2;
     scale: 1.2;
 }
 
-#zatta .race-game .area.junbee{
+#asobs .race-game .area.junbee{
     /* スマブラ風にする予定 */
     background: #ffe7e2;
 }
-#zatta .race-game.phase1 .junbee{
+#asobs .race-game.phase1 .junbee{
     display: block;
 }
-#zatta .race-game .junbee .list{
+#asobs .race-game .junbee .list{
     display: grid;
     justify-items: center;
     justify-content: space-between;
     grid-template-columns: repeat(7, 1fr);
     gap: 5px;
 }
-#zatta .race-game .junbee .list .item{
+#asobs .race-game .junbee .list .item{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -737,11 +1098,11 @@ img{
     box-sizing: border-box;
     pointer-events: none;
 }
-#zatta .race-game.kimeing .junbee .list .item{
+#asobs .race-game.kimeing .junbee .list .item{
     pointer-events: all;
 }
 /* alice, bob, charles, random */
-#zatta .race-game.kimeing .junbee .list .item::after{content: attr(data-name)}
+#asobs .race-game.kimeing .junbee .list .item::after{content: attr(data-name)}
 
 .raceG-lect{
     display: flex;
@@ -770,7 +1131,7 @@ img{
     pointer-events: none;
     z-index: 2147483647;
 }
-#zatta .race-game .junbee .list .item .raceG-lect{
+#asobs .race-game .junbee .list .item .raceG-lect{
     z-index: 2;
 }
 .raceG-lect.w0{border-color: #ff5454;}
@@ -778,7 +1139,7 @@ img{
 .raceG-lect.w2{border-color: #fffc55;}
 .raceG-lect.w3{border-color: #54ff42;}
 
-#zatta .race-game .junbee .selected{
+#asobs .race-game .junbee .selected{
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -790,7 +1151,7 @@ img{
     padding-bottom:0px;
     box-sizing: border-box;
 }
-#zatta .race-game .junbee .selected .sele{
+#asobs .race-game .junbee .selected .sele{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -802,7 +1163,7 @@ img{
     position: relative;
     box-sizing: border-box;
 }
-#zatta .race-game .junbee .selected .sele::after{
+#asobs .race-game .junbee .selected .sele::after{
     content: '';
     width: 100%;
     height: 100%;
@@ -813,7 +1174,7 @@ img{
     left: 0;
     z-index: 1;
 }
-#zatta .race-game .junbee .selected .img{
+#asobs .race-game .junbee .selected .img{
     height: 85%;
     aspect-ratio: 1/1;
     object-fit: cover;
@@ -821,11 +1182,11 @@ img{
     left: 5%;
     bottom: 0;
 }
-#zatta .race-game .junbee .selected .sele.w0::before{background: #ff5454;}
-#zatta .race-game .junbee .selected .sele.w1::before{background: #5269ff;}
-#zatta .race-game .junbee .selected .sele.w2::before{background: #fffc55;}
-#zatta .race-game .junbee .selected .sele.w3::before{background: #54ff42;}
-#zatta .race-game .junbee .selected .sele::before{
+#asobs .race-game .junbee .selected .sele.w0::before{background: #ff5454;}
+#asobs .race-game .junbee .selected .sele.w1::before{background: #5269ff;}
+#asobs .race-game .junbee .selected .sele.w2::before{background: #fffc55;}
+#asobs .race-game .junbee .selected .sele.w3::before{background: #54ff42;}
+#asobs .race-game .junbee .selected .sele::before{
     content: '';
     width: 100%;
     height: 100%;
@@ -835,7 +1196,7 @@ img{
     left: 0;
     z-index: 1;
 }
-#zatta .race-game .junbee .selected .sele .text{
+#asobs .race-game .junbee .selected .sele .text{
     position: absolute;
     right: 1px;
     bottom: 10%;
@@ -844,7 +1205,7 @@ img{
     z-index: 2;
 }
 
-#zatta .race-game .junbee .go{
+#asobs .race-game .junbee .go{
     display: block;
     opacity: 0.9;
     width: 150%;
@@ -859,15 +1220,15 @@ img{
     font-size: 40px;
     text-align: center;
 }
-#zatta .race-game.kimeing .junbee .go{
+#asobs .race-game.kimeing .junbee .go{
     display: none;
 }
 
-#zatta .race-game .area.kaijou{
+#asobs .race-game .area.kaijou{
     background: #fff7eb;
     position: relative;
 }
-#zatta .race-game .kaijou .timer{
+#asobs .race-game .kaijou .timer{
     display: block;
     width: 100px;
     aspect-ratio: 1/1;
@@ -878,11 +1239,11 @@ img{
     opacity: 0.9;
     z-index: 2;
 }
-#zatta .race-game .kaijou .timer.tog{
+#asobs .race-game .kaijou .timer.tog{
     opacity: 0.1;
 }
 /* logは中央に黒背景白文字で出して、押したらほぼ透明/逆透明を切り替えれる形？追加されると0.5に？ */
-#zatta .race-game .kaijou .timer .zyou{
+#asobs .race-game .kaijou .timer .zyou{
     width: 100%;
     aspect-ratio: 1/1;
     clip-path: polygon(45% 0, 55% 0, 60% 20%, 40% 20%);
@@ -891,7 +1252,7 @@ img{
     top: -10%;
     left: 0;
 }
-#zatta .race-game .kaijou .timer .naka{
+#asobs .race-game .kaijou .timer .naka{
     width: 100%;
     aspect-ratio: 1/1;
     border-radius: 50%;
@@ -900,7 +1261,7 @@ img{
     top: 0;
     left: 0;
 }
-#zatta .race-game .kaijou .timer .time{
+#asobs .race-game .kaijou .timer .time{
     display: block;
     position: absolute;
     top: 50%;
@@ -911,7 +1272,7 @@ img{
     color: #ffffff;
 }
 
-#zatta .race-game .kaijou .log{
+#asobs .race-game .kaijou .log{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -936,10 +1297,10 @@ img{
     box-sizing: border-box;
     z-index: 2;
 }
-#zatta .race-game .kaijou .log.tog{
+#asobs .race-game .kaijou .log.tog{
     opacity: 0.01;
 }
-#zatta .race-game .kaijou .log .span{
+#asobs .race-game .kaijou .log .span{
     width: 100%;
     font-size: 15px;
     font-family: craft;
@@ -947,7 +1308,7 @@ img{
 }
 
 /*
-#zatta .race-game .kaijou .senshus{
+#asobs .race-game .kaijou .senshus{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -960,7 +1321,7 @@ img{
     box-sizing: border-box;
     z-index: 2;
 }
-#zatta .race-game .kaijou .senshus .sesh{
+#asobs .race-game .kaijou .senshus .sesh{
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -975,7 +1336,7 @@ img{
 }
 */
 
-#zatta .race-game .kaijou .senshus{
+#asobs .race-game .kaijou .senshus{
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -988,7 +1349,7 @@ img{
     box-sizing: border-box;
     z-index: 2;
 }
-#zatta .race-game .kaijou .senshus .sesh{
+#asobs .race-game .kaijou .senshus .sesh{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1001,13 +1362,13 @@ img{
     font-family: misaki;
     box-sizing: border-box;
 }
-#zatta .race-game .kaijou .senshus .sesh .load{
+#asobs .race-game .kaijou .senshus .sesh .load{
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
 }
-#zatta .race-game .kaijou .senshus .sesh .load .koma{
+#asobs .race-game .kaijou .senshus .sesh .load .koma{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1017,7 +1378,7 @@ img{
     top: 0;
     left: 0;
 }
-#zatta .race-game .kaijou .senshus .sesh .load .koma img{
+#asobs .race-game .kaijou .senshus .sesh .load .koma img{
     display: block;
     width: 100%;
     aspect-ratio: 1/1;
@@ -1026,7 +1387,7 @@ img{
     top: 0;
     left: 0;
 }
-#zatta .race-game .kaijou .senshus .sesh .load .koma img::after{
+#asobs .race-game .kaijou .senshus .sesh .load .koma img::after{
     content: '';
     display: block;
     width: 120%;
@@ -1038,17 +1399,17 @@ img{
     z-index: 2;
 }
 
-#zatta .race-game .kaijou .senshus .sesh .load .koma .スタン{
+#asobs .race-game .kaijou .senshus .sesh .load .koma .スタン{
     display: block;
     width: 100%;
     aspect-ratio: 1/1;
     background-image: "../assets/raceGCs/stun.png";
 }
 
-#zatta .race-game.phase2 .area.kaijou{display: block}
-#zatta .race-game.phase3 .area.kaijou{display: block}
-#zatta .race-game .area.kaijou .end{display: none}
-#zatta .race-game.phase3 .area.kaijou .end{display: block}
+#asobs .race-game.phase2 .area.kaijou{display: block}
+#asobs .race-game.phase3 .area.kaijou{display: block}
+#asobs .race-game .area.kaijou .end{display: none}
+#asobs .race-game.phase3 .area.kaijou .end{display: block}
 /* #endregion */
 
 
