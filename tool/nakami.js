@@ -1889,6 +1889,8 @@ mainF.move = (to) => {
 	for(let a of Spaces) document.getElementById(a.name).classList.remove('show');
     document.getElementById(to).classList.add('show');
     mainC.spa = to;
+
+    history.replaceState(null, '', `?${to}`);
 }
 
 mainF.load = () => {
@@ -3152,9 +3154,9 @@ function start(){
 
     mainF.load();
 
-    let hash = location.hash.replace('#', '');
-    let space = Spaces.find(s => s.name == hash);
-    if(!space) space = Spaces[0];
+    let hash = location.hash.replace('?', '');
+    let space = Spaces.find(a => a.name == hash);
+    if(!space) space = Spaces.find(a => a.spa);
     mainF.move(space.name);
 }
 //#endregion
