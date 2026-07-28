@@ -1933,6 +1933,27 @@ let tooD = document.getElementById("tools");
 let tooC = {};
 let tooF = {};
 
+//#region 偏差値計算するやつ
+let henD = document.querySelector('#tools .hen');
+let henC = {
+    valI: henD.querySelector('.input'),
+    aveI: henD.querySelector('.average'),
+    outI: henD.querySelector('.output'),
+};
+let henF = {};
+henF.process = () => {
+    let [val, ave] = [+henC.valI.value, +henC.aveI.value];
+    if(isNaN(val) || isNaN(ave)) return 1;
+    let bun = 18; //これは変更可能。得点分布だから一点集中なら1とかなんじゃないかな
+    let res = Math.round(((val-ave) / bun*10) + 50)
+
+    henC.outI.value = res;
+    return 0;
+}
+henC.valI.addEventListener('input', henF.process);
+henC.aveI.addEventListener('input', henF.process);
+//#endregion
+
 //#region 文字数カウント
 let countD = document.querySelector('#tools .textcount');
 let countC = {
@@ -1948,7 +1969,7 @@ countC.labD.addEventListener('click', () => {
 countC.inI.addEventListener('input', () => {
     let text = countC.inI.value;
     let count = text.length;
-    let size = arraySize(text.split(''))
+    let size = arraySize(text.split(''));
     countC.outD.textContent = `文字数${count} 種類${size}`;
 });
 //#endregion
@@ -2037,27 +2058,6 @@ anagC.senD.addEventListener('click', () => {
 anagC.stogD.addEventListener('click', () => {
     anagC.sageD.classList.toggle('tog');
 })
-//#endregion
-
-//#region 偏差値計算するやつ
-let henD = document.querySelector('#tools .hen');
-let henC = {
-    valI: henD.querySelector('.input'),
-    aveI: henD.querySelector('.average'),
-    outI: henD.querySelector('.output'),
-};
-let henF = {};
-henF.process = () => {
-    let [val, ave] = [+henC.valI.value, +henC.aveI.value];
-    if(isNaN(val) || isNaN(ave)) return 1;
-    let bun = 18; //これは変更可能。得点分布だから一点集中なら1とかなんじゃないかな
-    let res = Math.round(((val-ave) / bun*10) + 50)
-
-    henC.outI.value = res;
-    return 0;
-}
-henC.valI.addEventListener('input', henF.process);
-henC.aveI.addEventListener('input', henF.process);
 //#endregion
 
 //#region カタカナランダム言葉生成器
@@ -2153,6 +2153,62 @@ let asoC = {
 
 }
 let asoF = {};
+
+// #region ロシアのあれをするやつ
+let royaD = document.getElementById("royal");
+let royaC = {
+    numD: royaD.querySelector(".rest .num"),
+    maxD: royaD.querySelector(".rest .max"),
+    hitD: royaD.querySelector(".bts .hit"),
+    resD: royaD.querySelector(".bts .res"),
+
+    max: 0,
+    now: 0,
+    rest: [],
+}
+let royaF = {};
+
+royaF.update = () => {
+    royaC.numD.innerText = num;
+    royaC.maxD.innerText = `/${max}`;
+}
+
+royaF.res = () => {
+    royaD.classList.remove("dead");
+
+    max = random(4, 10);
+    num = max;
+    
+    rest = [];
+    for(let i=0; i<max; i++) rest.push(0);
+    rest[0] = 1;
+    arrayShuffle(rest);
+
+    update();
+}
+royaC.resD.addEventListener("click", royaF.res);
+
+royaF.hit = () => {
+    if(rest.length < 1) return;
+
+    let len = rest.length;
+    let r = random(0, len-1);
+    let atai = rest[r];
+    
+    num -= 1;
+    rest.splice(r, 1);
+    
+    if(atai == 1) return shot();
+
+    update();
+}
+royaC.hitD.addEventListener("click", royaF.hit);
+
+royaF.shot = () => {
+    // ffcfcf
+    royaD.classList.add("dead");
+}
+// #endregion
 
 //#region マリパのハチの巣のやつ
 let beeGD = document.querySelector('#asobs .bee-game');
@@ -3086,6 +3142,7 @@ function CookingGameChoeese(num){
 }
 //#endregion
 
+
 // #endregion
 
 //#region start
@@ -3095,9 +3152,10 @@ function start(){
 
     mainF.load();
 
-
-
-    mainF.move("tools");
+    let hash = location.hash.replace('#', '');
+    let space = Spaces.find(s => s.name == hash);
+    if(!space) space = Spaces[0];
+    mainF.move(space.name);
 }
 //#endregion
 

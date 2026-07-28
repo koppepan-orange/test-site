@@ -17,6 +17,7 @@ const Fonts = [
     {src:'comicsans', type:'ttf'},
     {src:'papyrus', type:'ttf'},
     {src:'cube12', type:'ttf'},
+    {src:'hackgen', type:'ttf'},
 ];
 
 const Images = {
@@ -105,8 +106,8 @@ const Secrates = [
 ]
 
 const Spaces = [
-    { name:'tools', rank:2, back:'#f0f8ff', sho:1 },
-    { name:'asobs', rank:2, back:'#f0f8ff' },
+    { name:'tools', rank:2, back:'#ffffff', sho:1 },
+    { name:'asobs', rank:2, back:'#ffffff' },
 ];
 
 
