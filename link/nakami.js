@@ -114,11 +114,11 @@ linF.load = (code = 0) => {
         if(link.no) continue;
         let mode = Style.link["mode"];
 
-        let url = new URL(link.url).hostname
+        let url;
+         if(link.url.startsWith("https")) url = new URL(link.url).hostname;
         let img = El("img", link.name); //El(type, className, children): ヘルパー関数。つまりはcreateElement
-        // img.src = `https://gstatic.com${link.url}&size=32`;
-        // img.src = `https://gstatic.com{encodeURIComponent(link.url)}&size=32`;
-        img.src = `https://www.google.com/s2/favicons?domain=${url}&sz=32`
+        if(url) img.src = `https://www.google.com/s2/favicons?domain=${url}&sz=32`
+        else img.src = "../icon.ico";
 
         let label = El("div", "label");
         label.textContent = link.name;
@@ -128,9 +128,20 @@ linF.load = (code = 0) => {
             if(link.tag.length && link.tag.includes("自社")) window.open(link.url, "_self");
             else window.open(link.url, "_blank");
         })
+
+        if(mode == 2){
+            let tags = El("div", "tags", link.tag.map(a => {
+                let t = El("div", "tag");
+                t.textContent = `#${a}`;
+                return t;
+            }));
+            div.appendChild(tags);
+        }
+
         main.appendChild(div);
 
-        let wid = (Style.iPhone["width"]*0.9-25*(mode-1)) / mode;
+        let ipw = +Style.iPhone["width"].slice(0, -2);
+        let wid = (ipw*0.9-25*(mode-1)) / mode;
         let siz = (wid)/ link.name.length;
          label.style.fontSize = `${Math.min(siz, 12)}px`;
     }

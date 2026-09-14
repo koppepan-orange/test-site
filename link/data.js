@@ -213,5 +213,51 @@ const Links = [
         name:"pixnote",
         url:"https://pixnote.net/",
         tag:[],
+    },
+    {
+        name:"Discord",
+        url:"https://discord.com/channels/@me",
+        tag:["会話", "ありがとう"]
+    },
+    {
+        name:"史上最高の神サイト", //愉快痛快のドン底で
+        url:"https://koppepan-orange.github.io/together/koppe/fishing/index.html",
+        tag:["神", "真実", "富", "全てがそこにある"]
+    },
+    
+    {
+        name:"HUB",
+        url:"../hub/index.html",
+        tag:["自社", "未完成讃歌"]
+    },
+    {
+        name:"memo-site",
+        url:"../memo.html",
+        tag:["自社"]
+    },
+    {
+        name:"tool-site",
+        url:"../tool/index.html",
+        tag:["自社"]
+    },
+    {
+        name:"chat-site",
+        url:"../chat/index.html",
+        tag:["自社", "会話"]
+    },
+    {
+        name:"game-site",
+        url:"https://koppepan-orange.github.io/game-site/index.html",
+        tag:["自社"]
+    },
+    {
+        name:"scrap-site",
+        url:"https://koppepan-orange.github.io/scrap-site/index.html",
+        tag:["自社"]
+    },
+    {
+        name:"game-site",
+        url:"https://koppepan-orange.github.io/game-site/index.html",
+        tag:["自社"]
     }
 ]
