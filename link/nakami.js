@@ -119,6 +119,7 @@ linF.load = (code = 0) => {
         let img = El("img", link.name); //El(type, className, children): ヘルパー関数。つまりはcreateElement
         if(url) img.src = `https://www.google.com/s2/favicons?domain=${url}&sz=32`
         else img.src = "../icon.ico";
+		 img.onerror = () => img.src = "assets/systems/error.png";
 
         let label = El("div", "label");
         label.textContent = link.name;
