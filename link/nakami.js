@@ -124,10 +124,14 @@ linF.load = (code = 0) => {
         label.textContent = link.name;
 
         let div = El("div", "item", [img, label]);
+		div.addEventListener("pointerover", () => {
+			main.querySelectorAll(".item").forEach(d => d.classList.remove("focus"));
+			div.classList.add("focus");
+		});
         div.addEventListener("click", () => {
             if(link.tag.length && link.tag.includes("自社")) window.open(link.url, "_self");
             else window.open(link.url, "_blank");
-        })
+        });
 
         if(mode == 2){
             let tags = El("div", "tags", link.tag.map(a => {
