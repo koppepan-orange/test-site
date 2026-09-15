@@ -922,6 +922,9 @@ input[type="range"].slider::-webkit-slider-thumb:hover{
         transition: scale 0.2s;
         box-sizing: border-box;
         &:active{scale: 0.90}
+        &.focus{
+            animate:fuwaY 2.0s ease-in-out infinite;
+        }
 
         & img{
             display: block;
@@ -957,4 +960,10 @@ input[type="range"].slider::-webkit-slider-thumb:hover{
             line-height: 14px;
         }
     }
+}
+@keyframes fuwaY{
+    0%{transform: translateY(0)}
+    25%{transform: translateY(30px)}
+    75%{transform: translateY(-30px)}
+    100%{transform: translateY(0)}
 }
