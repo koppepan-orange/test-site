@@ -115,10 +115,10 @@ linF.load = (code = 0) => {
         let mode = Style.link["mode"];
 
         let url;
-         if(link.url.startsWith("https")) url = new URL(link.url).hostname;
+            if(link.url.startsWith("https")) url = new URL(link.url).hostname;
         let img = El("img", link.name); //El(type, className, children): ヘルパー関数。つまりはcreateElement
-        if(url) img.src = `https://www.google.com/s2/favicons?domain=${url}&sz=32`
-        else img.src = "../icon.ico";
+        if(url) img.src = `https://www.google.com/s2/favicons?domain=${url}&sz=32`;
+        else img.src = "assets/systems/error.png";
 		 img.onerror = () => img.src = "assets/systems/error.png";
 
         let label = El("div", "label");
