@@ -2117,7 +2117,7 @@ rannmC.actB.addEventListener('click', () => {
     if(val == '' || val <= 0) return nicoText('スーパーマリオさんしね');
 
     let outputs = [];
-    rannmC.outD.innerHTML = '';    
+    rannmC.outD.innerHTML = "";    
     for(let i=0; i<10; i++){
         if(rannmC.ove == 0){
             let res = arrayShuffle(words).slice(0, val);
@@ -2127,7 +2127,7 @@ rannmC.actB.addEventListener('click', () => {
                 continue;
             }
             outputs.push(res);
-        }   
+        }
         if(rannmC.ove == 1){
             let res = [];
             for(let i = 0; i < val; i++){
@@ -2142,7 +2142,13 @@ rannmC.actB.addEventListener('click', () => {
             outputs.push(res);
         }
     }
-    rannmC.outD.innerHTML = outputs.join('<br>');
+
+    for(let text of outputs){
+        let div = El("div", "text");
+        div.textContent = text;
+        
+        rannmC.outD.appendChild(div);
+    }
 })
 //#endregion
 
@@ -3156,7 +3162,8 @@ function start(){
 
     let hash = location.hash.replace('?', '');
     let space = Spaces.find(a => a.name == hash);
-    if(!space) space = Spaces.find(a => a.spa);
+    if(!space) space = Spaces.find(a => a.sho);
+    console.log(space)
     mainF.move(space.name);
 }
 //#endregion
